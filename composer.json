@@ -1,0 +1,9 @@
+{
+	"autoload": {
+		"psr-4": { "Milko\\": "src/" }
+	},
+	"require": {
+		"mongodb/mongodb": ">=1.0-stable",
+		"triagens/arangodb": ">=2.8-stable"
+	}
+}
