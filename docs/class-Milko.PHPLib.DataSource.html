@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Milko\PHPLib\DataSource | milkolib reference documentation</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-Milko.html">
+						Milko<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-Milko.PHPLib.html">
+						PHPLib					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-PHP.html">
+						PHP					</a>
+
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Milko.PHPLib.Container.html">Container</a></li>
+				<li><a href="class-Milko.PHPLib.DatabaseServer.html">DatabaseServer</a></li>
+				<li class="active"><a href="class-Milko.PHPLib.DataSource.html">DataSource</a></li>
+				<li><a href="class-Milko.PHPLib.Server.html">Server</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Milko.PHPLib.html" title="Summary of Milko\PHPLib"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+				<li>
+					<a href="annotation-group-todo.html" title="List of elements with todo annotation">
+						<span>Todo</span>
+					</a>
+				</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="-API-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+			</li>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class DataSource</h1>
+
+
+	<div class="description">
+	<h4>Data source or URL object.</h4>
+
+<p>This class implements a data source, that is, an URL that contains the connection
+properties needed by classes representing connection instances, such as servers and
+databases.</p>
+
+<p>When instantiated, this class will parse the provided connection URL and store the
+connection parameters in the object's properties, the supported offsets are:</p>
+
+<ul>
+<li><tt><code><a href="class-Milko.PHPLib.DataSource.html#PROT">Milko\PHPLib\DataSource::<b>PROT</b></a></code></tt>: The protocol.
+<li><tt><code><a href="class-Milko.PHPLib.DataSource.html#HOST">Milko\PHPLib\DataSource::<b>HOST</b></a></code></tt>: The host.
+<li><tt><code><a href="class-Milko.PHPLib.DataSource.html#PORT">Milko\PHPLib\DataSource::<b>PORT</b></a></code></tt>: The port.
+<li><tt><code><a href="class-Milko.PHPLib.DataSource.html#USER">Milko\PHPLib\DataSource::<b>USER</b></a></code></tt>: The user name.
+<li><tt><code><a href="class-Milko.PHPLib.DataSource.html#PASS">Milko\PHPLib\DataSource::<b>PASS</b></a></code></tt>: The user password.
+<li><tt><code><a href="class-Milko.PHPLib.DataSource.html#PATH">Milko\PHPLib\DataSource::<b>PATH</b></a></code></tt>: The path.
+<li><tt><code><a href="class-Milko.PHPLib.DataSource.html#QUERY">Milko\PHPLib\DataSource::<b>QUERY</b></a></code></tt>: The query parameters.
+<li><tt><code><a href="class-Milko.PHPLib.DataSource.html#FRAG">Milko\PHPLib\DataSource::<b>FRAG</b></a></code></tt>: The fragment.
+</ul>
+
+<p>There is also a set of member accessor methods that can be used to manage the data source
+elements:</p>
+
+<ul>
+<li><b><code><a href="class-Milko.PHPLib.DataSource.html#_Protocol">Milko\PHPLib\DataSource::Protocol()</a></code></b>: Manages the protocol.
+<li><b><code><a href="class-Milko.PHPLib.DataSource.html#_Host">Milko\PHPLib\DataSource::Host()</a></code></b>: Manages the host.
+<li><b><code><a href="class-Milko.PHPLib.DataSource.html#_Port">Milko\PHPLib\DataSource::Port()</a></code></b>: Manages the port.
+<li><b><code><a href="class-Milko.PHPLib.DataSource.html#_User">Milko\PHPLib\DataSource::User()</a></code></b>: Manages the user name.
+<li><b><code><a href="class-Milko.PHPLib.DataSource.html#_Password">Milko\PHPLib\DataSource::Password()</a></code></b>: Manages the user password.
+<li><b><code><a href="class-Milko.PHPLib.DataSource.html#_Path">Milko\PHPLib\DataSource::Path()</a></code></b>: Manages the path.
+<li><b><code><a href="class-Milko.PHPLib.DataSource.html#_Query">Milko\PHPLib\DataSource::Query()</a></code></b>: Manages the query.
+<li><b><code><a href="class-Milko.PHPLib.DataSource.html#_Fragment">Milko\PHPLib\DataSource::Fragment()</a></code></b>: Manages the fragment.
+</ul>
+
+<p>Casting the object to a string will return its data source name.</p>
+
+<p>There is no value checking when setting properties, this is the responsibility of the
+caller: to ensure the URL is valid instantiate a new object.</p>
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-ArrayObject.html"><span>ArrayObject</span></a>
+			
+			 implements 
+				<a href="class-IteratorAggregate.html"><span>IteratorAggregate</span></a>, 
+			
+				<a href="class-Traversable.html"><span>Traversable</span></a>, 
+			
+				<a href="class-ArrayAccess.html"><span>ArrayAccess</span></a>, 
+			
+				<a href="class-Serializable.html"><span>Serializable</span></a>, 
+			
+				<a href="class-Countable.html"><span>Countable</span></a>
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-Milko.PHPLib.Container.html"><span>Milko\PHPLib\Container</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Milko\PHPLib\DataSource</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a>
+	</div>
+
+	<div>
+		<h4>Indirect known subclasses</h4>
+			<a href="class-Milko.PHPLib.DatabaseServer.html">Milko\PHPLib\DatabaseServer</a>
+	</div>
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Milko.html">Milko</a>\<a href="namespace-Milko.PHPLib.html">PHPLib</a><br>
+		<b>Package:</b> Core<br>
+
+				<b>Author:</b>
+				Milko A. Škofič <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;">&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;</a><br>
+				<b>Version:</b>
+				1.00<br>
+				<b>Since:</b>
+				05/02/2016<br>
+				<b>Example:</b>
+				../../test/DataSource.php<br>
+				<b>Example:</b>
+				$dsn = new Milko\PHPLib\Datasource( 'protocol://user:pass@host:9090/dir/file?arg=val#frag' );<br>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.DataSource.html#19-747" title="Go to source code">PHPLib/DataSource.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#157-225" title="Go to source code">__construct</a>( <span>string <var>$theConnection</var></span> )</code>
+
+		<div class="description short">
+			<h4>Instantiate class.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Instantiate class.</h4>
+
+<p>The object must be instantiated from a data source name, if the provided connection
+string is invalid, the method will raise an exception.</p>
+
+<p>The method will raise an exception if the provided URL is not parsable, or if either
+the scheme or the host are missing.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theConnection</var></dt>
+					<dd>Data source name.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+				</div>
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#_Protocol">Milko\PHPLib\DataSource::Protocol()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataSource.html#_Host">Milko\PHPLib\DataSource::Host()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataSource.html#_Port">Milko\PHPLib\DataSource::Port()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataSource.html#_User">Milko\PHPLib\DataSource::User()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataSource.html#_Password">Milko\PHPLib\DataSource::Password()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataSource.html#_Query">Milko\PHPLib\DataSource::Query()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataSource.html#_Fragment">Milko\PHPLib\DataSource::Fragment()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						$dsn = new DataSource( 'html://user:pass@host:8080/dir/file?arg=val#frag' );<br>
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-ArrayObject.html#___construct">ArrayObject::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__toString" id="___toString">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___toString">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#232-325" title="Go to source code">__toString</a>( )</code>
+
+		<div class="description short">
+			<h4>Return data source name</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Return data source name</h4>
+
+<p>In this class we consider the data source name as the global identifier; here we
+return it as is, in derived classes you should be careful to shadow sensitive data.</p>
+
+<p>Note that this method cannot return the <tt>NULL</tt> value, which means that it
+cannot be used until there is a data source name for the object.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="offsetSet" id="_offsetSet">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_offsetSet">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#341-376" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
+
+		<div class="description short">
+			<h4>Set a value at a given offset.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Set a value at a given offset.</h4>
+
+<p>We overload this method to assert whether the port value is numeric.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOffset</var></dt>
+					<dd>Offset.</dd>
+					<dt><var>$theValue</var></dt>
+					<dd>Value to set at offset.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+				</div>
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Milko.PHPLib.Container.html#_offsetSet">Milko\PHPLib\Container::offsetSet()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="offsetUnset" id="_offsetUnset">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_offsetUnset">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#383-413" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
+
+		<div class="description short">
+			<h4>Reset a value at a given offset.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Reset a value at a given offset.</h4>
+
+<p>We overload this method to prevent warnings when a non-existing offset is provided,
+in that case we do nothing.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOffset</var></dt>
+					<dd>Offset.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-BadMethodCallException.html">BadMethodCallException</a></code>
+				</div>
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Milko.PHPLib.Container.html#_offsetUnset">Milko\PHPLib\Container::offsetUnset()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Protocol" id="_Protocol">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Protocol">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#429-451" title="Go to source code">Protocol</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Manage data source protocol.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Manage data source protocol.</h4>
+
+<p>This method will manage the data source protocol, provide <tt>NULL</tt> to retrieve
+the current value, or any other type to set it. The protocol is required, so providing
+<tt>FALSE</tt> will result in an exception.</p>
+
+<p>The method will return the current value.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theValue</var></dt>
+					<dd>Value or operation.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#PROT">Milko\PHPLib\DataSource::<b>PROT</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#___construct">Milko\PHPLib\DataSource::__construct()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->Protocol( 'html' );   // Set protocol to <tt>html</tt>.<br/>
+$test = $dsn->Protocol(); // Retrieve current protocol.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Host" id="_Host">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Host">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#458-480" title="Go to source code">Host</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Manage data source host.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Manage data source host.</h4>
+
+<p>This method will manage the data source host, provide <tt>NULL</tt> to retrieve the
+current value, or any other type to set it. The host is required, so providing
+<tt>FALSE</tt> will result in an exception.</p>
+
+<p>The method will return the current value.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theValue</var></dt>
+					<dd>Value or operation.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#HOST">Milko\PHPLib\DataSource::<b>HOST</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#___construct">Milko\PHPLib\DataSource::__construct()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->Host( 'example.net' );    // Set host.<br/>
+$test = $dsn->Host(); // Retrieve current host.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Port" id="_Port">
+
+		<td class="attributes"><code>
+			 public 
+
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Port">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#487-513" title="Go to source code">Port</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Manage data source port.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Manage data source port.</h4>
+
+<p>This method will manage the data source port, provide <tt>NULL</tt> to retrieve
+the current value, <tt>FALSE</tt> to delete the host, or any other type to set it.</p>
+
+<p>When setting a new value you must provide an integer value, or an exception will be
+thrown.</p>
+
+<p>The method will return the old value when deleting and the current value in all other
+cases.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theValue</var></dt>
+					<dd>Value or operation.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					integer
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#PORT">Milko\PHPLib\DataSource::<b>PORT</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#___construct">Milko\PHPLib\DataSource::__construct()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->Port( 8080 ); // Set port.<br/>
+$test = $dsn->Port(); // Retrieve current port.
+$test = $dsn->Port( FALSE ); // Remove port, returns old value.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="User" id="_User">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_User">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#520-545" title="Go to source code">User</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Manage data source user name.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Manage data source user name.</h4>
+
+<p>This method will manage the data source user name, provide <tt>NULL</tt> to retrieve
+the current value, <tt>FALSE</tt> to delete the user, or any other type to set it.</p>
+
+<p>If you delete the user, also the eventual password will be deleted.</p>
+
+<p>The method will return the old value when deleting and the current value in all other
+cases.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theValue</var></dt>
+					<dd>Value or operation.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#USER">Milko\PHPLib\DataSource::<b>USER</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#___construct">Milko\PHPLib\DataSource::__construct()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->User( 'admin' );  // Set user name.<br/>
+$test = $dsn->User(); // Retrieve current user name.
+$test = $dsn->User( FALSE ); // Remove user and password, returns old user name.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Password" id="_Password">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Password">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#552-576" title="Go to source code">Password</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Manage data source user password.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Manage data source user password.</h4>
+
+<p>This method will manage the data source user password, provide <tt>NULL</tt> to
+retrieve the current value, <tt>FALSE</tt> to delete the password, or any other type
+to set it.</p>
+
+<p>The method will return the old value when deleting and the current value in all other
+cases.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theValue</var></dt>
+					<dd>Value or operation.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#PASS">Milko\PHPLib\DataSource::<b>PASS</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#___construct">Milko\PHPLib\DataSource::__construct()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->Password( 'secret' ); // Set user password.<br/>
+$test = $dsn->Password(); // Retrieve current user password.
+$test = $dsn->Password( FALSE ); // Remove user password, returns old value.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Path" id="_Path">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Path">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#583-619" title="Go to source code">Path</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span>, <span>boolean <var>$asArray</var>,…</span> )</code>
+
+		<div class="description short">
+			<h4>Manage data source path.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Manage data source path.</h4>
+
+<p>This method will manage the data source path, provide <tt>NULL</tt> to retrieve the
+current value, <tt>FALSE</tt> to delete the path, or any other type to
+set it.</p>
+
+<p>This method features a second parameter that can be used to retrieve the path value
+as an array featuring the different elements of the path:</p>
+
+<ul> <li><tt>NULL</tt>: The method will return the path string. <li><tt>TRUE</tt>: The method will split the path using the DIRECTORY_SEPARATOR token. <li><em>other</em>: The provided value will be converted to a string and the method will split the path using the provided token.
+</ul>
+
+<p>The method will return the old value when deleting and the current value in all other
+cases.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theValue</var></dt>
+					<dd>Value or operation.</dd>
+					<dt><var>$asArray</var>,…</dt>
+					<dd><tt>TRUE</tt> return as array.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#PATH">Milko\PHPLib\DataSource::<b>PATH</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->Path( 'directory/file' ); // Set path.<br/>
+$test = $dsn->Path(); // Retrieve current path.
+$test = $dsn->Path( FALSE ); // Remove path, returns old value.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Query" id="_Query">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Query">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#626-713" title="Go to source code">Query</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Manage data source query.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Manage data source query.</h4>
+
+<p>This method will manage the data source query, provide <tt>NULL</tt> to retrieve the
+current value, <tt>FALSE</tt> to delete the query, or an associative array to set it;
+if you provide any other type, this will be interpreted as a string and it will be
+parsed and converted to an array before setting it.</p>
+
+<p>The method will return the old value when deleting and the current value in all other
+cases.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theValue</var></dt>
+					<dd>Value or operation.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#QUERY">Milko\PHPLib\DataSource::<b>QUERY</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#___construct">Milko\PHPLib\DataSource::__construct()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->Query( [ 'arg' => 'val' ] ); // Set query by array.<br/>
+$test = $dsn->Query( 'arg=val' ); // Set query by string.<br/>
+$test = $dsn->Path(); // Retrieve current query.
+$test = $dsn->Query( FALSE ); // Remove query, returns old value.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Fragment" id="_Fragment">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Fragment">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#720-743" title="Go to source code">Fragment</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Manage data source fragment.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Manage data source fragment.</h4>
+
+<p>This method will manage the data source fragment, provide <tt>NULL</tt> to retrieve
+the current value, <tt>FALSE</tt> to delete the fragment, or any other type to set it.</p>
+
+<p>The method will return the old value when deleting and the current value in all other
+cases.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theValue</var></dt>
+					<dd>Value or operation.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#FRAG">Milko\PHPLib\DataSource::<b>FRAG</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#___construct">Milko\PHPLib\DataSource::__construct()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->Fragment( 'frag' ); // Set fragment.<br/>
+$test = $dsn->Fragment(); // Retrieve current fragment.
+$test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Milko.PHPLib.Container.html#methods">Milko\PHPLib\Container</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.Container.html#_arrayKeys">arrayKeys()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_arrayValues">arrayValues()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_convertToArray">convertToArray()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_manageAttribute">manageAttribute()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_manageProperty">manageProperty()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_offsetGet">offsetGet()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_toArray">toArray()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-ArrayObject.html#methods">ArrayObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ArrayObject.html#_append">append()</a>, 
+			<a href="class-ArrayObject.html#_asort">asort()</a>, 
+			<a href="class-ArrayObject.html#_count">count()</a>, 
+			<a href="class-ArrayObject.html#_exchangeArray">exchangeArray()</a>, 
+			<a href="class-ArrayObject.html#_getArrayCopy">getArrayCopy()</a>, 
+			<a href="class-ArrayObject.html#_getFlags">getFlags()</a>, 
+			<a href="class-ArrayObject.html#_getIterator">getIterator()</a>, 
+			<a href="class-ArrayObject.html#_getIteratorClass">getIteratorClass()</a>, 
+			<a href="class-ArrayObject.html#_ksort">ksort()</a>, 
+			<a href="class-ArrayObject.html#_natcasesort">natcasesort()</a>, 
+			<a href="class-ArrayObject.html#_natsort">natsort()</a>, 
+			<a href="class-ArrayObject.html#_offsetExists">offsetExists()</a>, 
+			<a href="class-ArrayObject.html#_serialize">serialize()</a>, 
+			<a href="class-ArrayObject.html#_setFlags">setFlags()</a>, 
+			<a href="class-ArrayObject.html#_setIteratorClass">setIteratorClass()</a>, 
+			<a href="class-ArrayObject.html#_uasort">uasort()</a>, 
+			<a href="class-ArrayObject.html#_uksort">uksort()</a>, 
+			<a href="class-ArrayObject.html#_unserialize">unserialize()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="PROT" id="PROT">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.DataSource.html#71-78" title="Go to source code"><b>PROT</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Protocol.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Protocol.</p>
+
+<p>This offset constant refers to the data source scheme or protocol.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#PROT" class="anchor">#</a>
+				<code><span class="php-quote">'scheme'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="HOST" id="HOST">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.DataSource.html#80-87" title="Go to source code"><b>HOST</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Host.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Host.</p>
+
+<p>This offset constant refers to the data source host name.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#HOST" class="anchor">#</a>
+				<code><span class="php-quote">'host'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="PORT" id="PORT">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.DataSource.html#89-96" title="Go to source code"><b>PORT</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Port.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Port.</p>
+
+<p>This offset constant refers to the data source port.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#PORT" class="anchor">#</a>
+				<code><span class="php-quote">'port'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="USER" id="USER">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.DataSource.html#98-105" title="Go to source code"><b>USER</b></a>
+			</code>
+
+			<div class="description short">
+				<p>User.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>User.</p>
+
+<p>This offset constant refers to the data source user name.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#USER" class="anchor">#</a>
+				<code><span class="php-quote">'user'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="PASS" id="PASS">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.DataSource.html#107-114" title="Go to source code"><b>PASS</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Password.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Password.</p>
+
+<p>This offset constant refers to the data source user password.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#PASS" class="anchor">#</a>
+				<code><span class="php-quote">'pass'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="PATH" id="PATH">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.DataSource.html#116-123" title="Go to source code"><b>PATH</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Path.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Path.</p>
+
+<p>This offset constant refers to the data source path.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#PATH" class="anchor">#</a>
+				<code><span class="php-quote">'path'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="QUERY" id="QUERY">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.DataSource.html#125-132" title="Go to source code"><b>QUERY</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Query.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Query.</p>
+
+<p>This offset constant refers to the data source query parameters.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#QUERY" class="anchor">#</a>
+				<code><span class="php-quote">'query'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="FRAG" id="FRAG">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.DataSource.html#134-141" title="Go to source code"><b>FRAG</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Fragment.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Fragment.</p>
+
+<p>This offset constant refers to the parameter provided after the hashmark <tt>#</tt>..</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#FRAG" class="anchor">#</a>
+				<code><span class="php-quote">'fragment'</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-ArrayObject.html#constants">ArrayObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ArrayObject.html#ARRAY_AS_PROPS"><b>ARRAY_AS_PROPS</b></a>, 
+			<a href="class-ArrayObject.html#STD_PROP_LIST"><b>STD_PROP_LIST</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		milkolib reference documentation API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

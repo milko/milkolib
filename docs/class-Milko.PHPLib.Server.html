@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Milko\PHPLib\Server | milkolib reference documentation</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-Milko.html">
+						Milko<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-Milko.PHPLib.html">
+						PHPLib					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-PHP.html">
+						PHP					</a>
+
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Milko.PHPLib.Container.html">Container</a></li>
+				<li><a href="class-Milko.PHPLib.DatabaseServer.html">DatabaseServer</a></li>
+				<li><a href="class-Milko.PHPLib.DataSource.html">DataSource</a></li>
+				<li class="active"><a href="class-Milko.PHPLib.Server.html">Server</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Milko.PHPLib.html" title="Summary of Milko\PHPLib"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+				<li>
+					<a href="annotation-group-todo.html" title="List of elements with todo annotation">
+						<span>Todo</span>
+					</a>
+				</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="-API-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+			</li>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Server</h1>
+
+
+	<div class="description">
+	<h4>Base server abstract object.</h4>
+
+<p>This <em>abstract</em> class is the ancestor of all classes representing server
+instances.</p>
+
+<p>This class is derived from the <code><a href="class-Milko.PHPLib.DataSource.html">Milko\PHPLib\DataSource</a></code> class, it uses its constructor and
+features its functionality.</p>
+
+<p>The class features an attribute, <code><a href="class-Milko.PHPLib.Server.html#$mConnection">Milko\PHPLib\Server::<var>$mConnection</var></a></code>, that represents the server native
+connection object, this is instantiated when the server connects.</p>
+
+<p>The class implements the public interface that takes care of connecting, disconnecting,
+sleeping and waking the object, the implementation of the connection workflow is
+delegated to a protected interface which is virtual: this is why this class is declared
+abstract. To create a server one must derive from this class and implement the protected
+interface.</p>
+
+<p>The sleep and wake workflow ensures that the connection is closed before the object
+goes to sleep and opened when it wakes, this is to handle native connection objects that
+cannot be serialised in the session.</p>
+
+<p>When a connection is open, none of the inherited <code><a href="class-Milko.PHPLib.DataSource.html">Milko\PHPLib\DataSource</a></code> properties can be
+modified, attempting to do so will trigger an exception.</p>
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-ArrayObject.html"><span>ArrayObject</span></a>
+			
+			 implements 
+				<a href="class-IteratorAggregate.html"><span>IteratorAggregate</span></a>, 
+			
+				<a href="class-Traversable.html"><span>Traversable</span></a>, 
+			
+				<a href="class-ArrayAccess.html"><span>ArrayAccess</span></a>, 
+			
+				<a href="class-Serializable.html"><span>Serializable</span></a>, 
+			
+				<a href="class-Countable.html"><span>Countable</span></a>
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-Milko.PHPLib.Container.html"><span>Milko\PHPLib\Container</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-Milko.PHPLib.DataSource.html"><span>Milko\PHPLib\DataSource</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:90px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Milko\PHPLib\Server</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Milko.PHPLib.DatabaseServer.html">Milko\PHPLib\DatabaseServer</a>
+	</div>
+
+
+
+
+
+
+	<div class="info">
+		<b>Abstract</b><br>
+		
+		<b>Namespace:</b> <a href="namespace-Milko.html">Milko</a>\<a href="namespace-Milko.PHPLib.html">PHPLib</a><br>
+		<b>Package:</b> Core<br>
+
+				<b>Author:</b>
+				Milko A. Škofič <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;">&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;</a><br>
+				<b>Version:</b>
+				1.00<br>
+				<b>Since:</b>
+				06/02/2016<br>
+				<b>Example:</b>
+				../../test/Server.php<br>
+				<b>Example:</b>
+				<p>$server = new Milko\PHPLib\Server( 'protocol://user:pass@host:9090' );<br/>
+$connection = $server->Connect();</p><br>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Server.html#19-549" title="Go to source code">PHPLib/Server.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__destruct" id="___destruct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___destruct">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#122-136" title="Go to source code">__destruct</a>( )</code>
+
+		<div class="description short">
+			<h4>Destruct instance.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Destruct instance.</h4>
+
+<p>In this class we close any open connection before disposing of the object.</p>
+
+
+
+
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_Disconnect">Milko\PHPLib\Server::Disconnect()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__sleep" id="___sleep">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___sleep">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#143-165" title="Go to source code">__sleep</a>( )</code>
+
+		<div class="description short">
+			<h4>Put the object to sleep.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Put the object to sleep.</h4>
+
+<p>This method will close the connection and replace the connection resource with
+<tt>TRUE</tt> if the connection was open, this will be used by the <code><a href="class-Milko.PHPLib.Server.html#___wakeup">Milko\PHPLib\Server::__wakeup()</a></code>
+method to re-open the connection.</p>
+
+
+
+
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_Disconnect">Milko\PHPLib\Server::Disconnect()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__wakeup" id="___wakeup">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___wakeup">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#172-188" title="Go to source code">__wakeup</a>( )</code>
+
+		<div class="description short">
+			<h4>Wake the object from sleep.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Wake the object from sleep.</h4>
+
+<p>This method will re-open the connection if it was closed by the <code><a href="class-Milko.PHPLib.Server.html#___sleep">Milko\PHPLib\Server::__sleep()</a></code>
+method.</p>
+
+
+
+
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_Connect">Milko\PHPLib\Server::Connect()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="offsetSet" id="_offsetSet">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_offsetSet">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#204-233" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
+
+		<div class="description short">
+			<h4>Set a value at a given offset.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Set a value at a given offset.</h4>
+
+<p>We overload this method to prevent any modification of data source properties while
+there is an open connection.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOffset</var></dt>
+					<dd>Offset.</dd>
+					<dt><var>$theValue</var></dt>
+					<dd>Value to set at offset.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-BadMethodCallException.html">BadMethodCallException</a></code>
+				</div>
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_isLockedProperty">Milko\PHPLib\Server::isLockedProperty()</a></code><br>
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Milko.PHPLib.DataSource.html#_offsetSet">Milko\PHPLib\DataSource::offsetSet()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="offsetUnset" id="_offsetUnset">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_offsetUnset">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#240-268" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
+
+		<div class="description short">
+			<h4>Reset a value at a given offset.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Reset a value at a given offset.</h4>
+
+<p>We overload this method to prevent any modification of data source properties while
+there is an open connection.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOffset</var></dt>
+					<dd>Offset.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-BadMethodCallException.html">BadMethodCallException</a></code>
+				</div>
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_isLockedProperty">Milko\PHPLib\Server::isLockedProperty()</a></code><br>
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Milko.PHPLib.DataSource.html#_offsetUnset">Milko\PHPLib\DataSource::offsetUnset()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Connection" id="_Connection">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Connection">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#284-302" title="Go to source code">Connection</a>( )</code>
+
+		<div class="description short">
+			<h4>Return native connection object.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Return native connection object.</h4>
+
+<p>This method will return the native connection object, if a connection is open, or
+<tt>NULL</tt> if not.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed<br>Native connection object or <tt>NULL</tt>.
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isConnected" id="_isConnected">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isConnected">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#318-364" title="Go to source code">isConnected</a>( <span>string <var>$theFlags</var> = self::kFLAG_DEFAULT </span> )</code>
+
+		<div class="description short">
+			<h4>Check if connection is open.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Check if connection is open.</h4>
+
+<p>This method returns a boolean flag indicating whether the connection is open or not.</p>
+
+<p>The provided bitfield parameter provides the following options:</p>
+
+<p>&lt;ul~ <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></tt>: If set, the server will be connected if that is not yetthe case. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_ASSERT">Milko\PHPLib\Server::<b>kFLAG_ASSERT</b></a></code></tt>: If the <tt>kFLAG_CONNECT</tt> flag is not set and the server is not connected, the method will raise a <code><a href="class-RuntimeException.html">RuntimeException</a></code>.
+</ul></p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theFlags</var></dt>
+					<dd>Flags bitfield.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean<br><tt>TRUE</tt> is connected.
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+				</div>
+
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#___sleep">Milko\PHPLib\Server::__sleep()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_offsetSet">Milko\PHPLib\Server::offsetSet()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_offsetUnset">Milko\PHPLib\Server::offsetUnset()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_Connect">Milko\PHPLib\Server::Connect()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_Disconnect">Milko\PHPLib\Server::Disconnect()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Connect" id="_Connect">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Connect">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#371-395" title="Go to source code">Connect</a>( )</code>
+
+		<div class="description short">
+			<h4>Open server connection.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Open server connection.</h4>
+
+<p>This method can be used to create and open the server connection, if the connection
+is already open, the method will do nothing.</p>
+
+<p>The method will return the native connection object, or raise an exception if unable
+to open the connection.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed<br>Native connection object.
+				</div>
+
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_connectionCreate">Milko\PHPLib\Server::connectionCreate()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#___wakeup">Milko\PHPLib\Server::__wakeup()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Disconnect" id="_Disconnect">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Disconnect">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#402-437" title="Go to source code">Disconnect</a>( )</code>
+
+		<div class="description short">
+			<h4>Close server connection.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Close server connection.</h4>
+
+<p>This method can be used to close and destruct the server connection, if no connection
+was open, the method will do nothing.</p>
+
+<p>The method will return <tt>TRUE</tt> if it closed a connection</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean<br><tt>TRUE</tt> was connected, <tt>FALSE</tt> wasn't.
+				</div>
+
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						connectionDelete()<br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#___destruct">Milko\PHPLib\Server::__destruct()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#___sleep">Milko\PHPLib\Server::__sleep()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="connectionCreate" id="_connectionCreate">
+
+		<td class="attributes"><code>
+			abstract protected 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_connectionCreate">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#453-470" title="Go to source code">connectionCreate</a>( )</code>
+
+		<div class="description short">
+			<p>Open connection.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Open connection.</p>
+
+<p>This method should create the actual connection and return the native connection
+object; in this class the method is virtual, it is the responsibility of concrete
+classes to implement this method.</p>
+
+<p>This method assumes the caller has checked whether the connection was already open,
+it should not take care of closing previously opened connections.</p>
+
+<p>All the options required for the connection should have been provided via the data
+source connection query parameters.</p>
+
+<p>If the operation fails, the method should raise an exception.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed<br>The native connection.
+				</div>
+
+
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_Connect">Milko\PHPLib\Server::Connect()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="connectionDestruct" id="_connectionDestruct">
+
+		<td class="attributes"><code>
+			abstract protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_connectionDestruct">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#477-491" title="Go to source code">connectionDestruct</a>( )</code>
+
+		<div class="description short">
+			<p>Close connection.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Close connection.</p>
+
+<p>This method should close the open connection, in this class the method is virtual, it
+is the responsibility of concrete classes to implement this method.</p>
+
+<p>This method assumes the caller has checked whether a connection is open, it should
+assume the <code><a href="class-Milko.PHPLib.Server.html#$mConnection">Milko\PHPLib\Server::<var>$mConnection</var></a></code> attribute holds a valid native connection object.</p>
+
+<p>All the options required for the connection should have been provided via the data
+source connection query parameters.</p>
+
+<p>If the operation fails, the method should raise an exception.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isLockedProperty" id="_isLockedProperty">
+
+		<td class="attributes"><code>
+			 protected 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isLockedProperty">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#507-522" title="Go to source code">isLockedProperty</a>( <span>string <var>$theOffset</var></span> )</code>
+
+		<div class="description short">
+			<h4>Check if provided property is locked.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Check if provided property is locked.</h4>
+
+<p>This method is called whenever an object property is being modified or deleted: it
+will check whether the property is among those which should not be modified while a
+connection is open, if that is the case the method will return <tt>TRUE</tt>, if not
+<tt>FALSE</tt>.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOffset</var></dt>
+					<dd>Property offset.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean<br><tt>TRUE</tt> is open.
+				</div>
+
+
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_offsetSet">Milko\PHPLib\Server::offsetSet()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_offsetUnset">Milko\PHPLib\Server::offsetUnset()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="lockedProperties" id="_lockedProperties">
+
+		<td class="attributes"><code>
+			 protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_lockedProperties">#</a>
+		<code><a href="source-class-Milko.PHPLib.Server.html#529-545" title="Go to source code">lockedProperties</a>( )</code>
+
+		<div class="description short">
+			<h4>Return locked properties.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Return locked properties.</h4>
+
+<p>This method should return the list of locked properties, this list will be used to
+filter the properties that cannot be modified if the server is connected.</p>
+
+<p>By default we consider all properties of the parent object, this method should be
+overloaded by derived concrete instances to filter local properties.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array<br>The list of property offsets to be locked.
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Milko.PHPLib.DataSource.html#methods">Milko\PHPLib\DataSource</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.DataSource.html#_Fragment">Fragment()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Host">Host()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Password">Password()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Path">Path()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Port">Port()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Protocol">Protocol()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Query">Query()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_User">User()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#___construct">__construct()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#___toString">__toString()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Milko.PHPLib.Container.html#methods">Milko\PHPLib\Container</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.Container.html#_arrayKeys">arrayKeys()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_arrayValues">arrayValues()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_convertToArray">convertToArray()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_manageAttribute">manageAttribute()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_manageProperty">manageProperty()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_offsetGet">offsetGet()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_toArray">toArray()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-ArrayObject.html#methods">ArrayObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ArrayObject.html#_append">append()</a>, 
+			<a href="class-ArrayObject.html#_asort">asort()</a>, 
+			<a href="class-ArrayObject.html#_count">count()</a>, 
+			<a href="class-ArrayObject.html#_exchangeArray">exchangeArray()</a>, 
+			<a href="class-ArrayObject.html#_getArrayCopy">getArrayCopy()</a>, 
+			<a href="class-ArrayObject.html#_getFlags">getFlags()</a>, 
+			<a href="class-ArrayObject.html#_getIterator">getIterator()</a>, 
+			<a href="class-ArrayObject.html#_getIteratorClass">getIteratorClass()</a>, 
+			<a href="class-ArrayObject.html#_ksort">ksort()</a>, 
+			<a href="class-ArrayObject.html#_natcasesort">natcasesort()</a>, 
+			<a href="class-ArrayObject.html#_natsort">natsort()</a>, 
+			<a href="class-ArrayObject.html#_offsetExists">offsetExists()</a>, 
+			<a href="class-ArrayObject.html#_serialize">serialize()</a>, 
+			<a href="class-ArrayObject.html#_setFlags">setFlags()</a>, 
+			<a href="class-ArrayObject.html#_setIteratorClass">setIteratorClass()</a>, 
+			<a href="class-ArrayObject.html#_uasort">uasort()</a>, 
+			<a href="class-ArrayObject.html#_uksort">uksort()</a>, 
+			<a href="class-ArrayObject.html#_unserialize">unserialize()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="kFLAG_DEFAULT" id="kFLAG_DEFAULT">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.Server.html#71-78" title="Go to source code"><b>kFLAG_DEFAULT</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Default flags set.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Default flags set.</p>
+
+<p>This represents the default set of flags.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#kFLAG_DEFAULT" class="anchor">#</a>
+				<code><span class="php-num">0x00000000</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="kFLAG_ASSERT" id="kFLAG_ASSERT">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.Server.html#80-87" title="Go to source code"><b>kFLAG_ASSERT</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Assert.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Assert.</p>
+
+<p>If this flag is set, a missing connection will trigger an exception.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#kFLAG_ASSERT" class="anchor">#</a>
+				<code><span class="php-num">0x00000001</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="kFLAG_CONNECT" id="kFLAG_CONNECT">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.Server.html#89-96" title="Go to source code"><b>kFLAG_CONNECT</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Connect if necessary.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Connect if necessary.</p>
+
+<p>If this flag is set, the server connection will be opened if necessary.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#kFLAG_CONNECT" class="anchor">#</a>
+				<code><span class="php-num">0x00000002</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="kFLAG_NATIVE" id="kFLAG_NATIVE">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Milko.PHPLib.Server.html#98-105" title="Go to source code"><b>kFLAG_NATIVE</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Return native object.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Return native object.</p>
+
+<p>If this flag is set, operations will return database native objects.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#kFLAG_NATIVE" class="anchor">#</a>
+				<code><span class="php-num">0x00000004</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-Milko.PHPLib.DataSource.html#constants">Milko\PHPLib\DataSource</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.DataSource.html#FRAG"><b>FRAG</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#HOST"><b>HOST</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#PASS"><b>PASS</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#PATH"><b>PATH</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#PORT"><b>PORT</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#PROT"><b>PROT</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#QUERY"><b>QUERY</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#USER"><b>USER</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-ArrayObject.html#constants">ArrayObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ArrayObject.html#ARRAY_AS_PROPS"><b>ARRAY_AS_PROPS</b></a>, 
+			<a href="class-ArrayObject.html#STD_PROP_LIST"><b>STD_PROP_LIST</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="mConnection" id="$mConnection">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Milko.PHPLib.Server.html#57-69" title="Go to source code"><var>$mConnection</var></a>
+
+			<div class="description short">
+				<h4>Server connection object.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Server connection object.</h4>
+
+<p>This data member holds the <i>server connection object</i>, it is the native object
+representing the server connection.</p>
+
+<p>Before the object goes to sleep, this attribute will be set to <tt>TRUE</tt> if a
+connection was open and to <tt>NULL</tt> if not: this determines whether a
+connection should be restored when the object is waken.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$mConnection" class="anchor">#</a>
+				<code><span class="php-keyword1">NULL</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		milkolib reference documentation API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
