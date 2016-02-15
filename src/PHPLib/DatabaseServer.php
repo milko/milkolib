@@ -66,11 +66,11 @@ abstract class DatabaseServer extends Server
 {
 
 
-	/*=======================================================================================
-	 *																						*
-	 *							PUBLIC CONNECTION MANAGEMENT INTERFACE						*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *							PUBLIC CONNECTION MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -88,7 +88,10 @@ abstract class DatabaseServer extends Server
 	 *	<li><b>$theFlags</b>: A bitfield providing the following options:
 	 *	 <ul>
 	 * 		<li><tt>{@link kFLAG_CONNECT}: If set, the server will connect if necessary, if
-	 * 			not set and the server is not connected, the method will raise an exception.
+	 * 			not set and the server is not connected, the method will return an empty
+	 * 			array.
+	 * 		<li><tt>{@link kFLAG_ASSERT}: If set and the server is not connected, an
+	 * 			exception will be raised.
 	 * 		<li><tt>{@link kFLAG_NATIVE}: If not set, the method will return an array of
 	 * 			database names, if set, the method will return the result from the native
 	 * 			driver.
@@ -128,27 +131,32 @@ abstract class DatabaseServer extends Server
 	 * features the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theDatabase</b>: The database name or <tt>NULL</tt> for the default database
-	 *		collections list.
-	 *	<li><b>$doConnect</b>: If <tt>TRUE</tt> the method will attempt to connect to the
-	 *		server if not already connected.
-	 *	<li><b>$doNative</b>: If <tt>TRUE</tt> the method will return the native result
-	 *		returned by the server, if not, the method will return a list of names as an
-	 *		array. If set to false and the server is not connected, the method will raise
-	 *		an exception.
+	 *	<li><b>$theDatabase</b>: The database name for which we want the collections list.
+	 *	<li><b>$theFlags</b>: A bitfield providing the following options:
+	 *	 <ul>
+	 * 		<li><tt>{@link kFLAG_CONNECT}: If set, the server will connect if necessary, if
+	 * 			not set and the server is not connected, the method will return an empty
+	 * 			array.
+	 * 		<li><tt>{@link kFLAG_ASSERT}: If set and the server is not connected, an
+	 * 			exception will be raised.
+	 * 		<li><tt>{@link kFLAG_NATIVE}: If not set, the method will return an array of
+	 * 			collection names, if set, the method will return the result from the native
+	 * 			driver.
+	 * 	 </ul>
+	 *	<li><b>$theOptions</b>: An optional list of options to be provided to the native
+	 * 		driver.
 	 * </ul>
 	 *
-	 * @param string				$theDatabase		Collections database name or NULL.
-	 * @param boolean				$doConnect			<tt>TRUE</tt> connect if necessary.
-	 * @param boolean				$doNative			<tt>TRUE</tt> return native result.
+	 * @param string				$theDatabase		Collections database name.
+	 * @param string				$theFlags			Flags bitfield.
+	 * @param array					$theOptions			Options for the driver.
 	 * @return mixed				List of collection names or native result.
 	 *
 	 * @uses GetDatabase()
 	 * @uses collectionsList()
 	 */
-	public function ListCollections( $theDatabase = NULL,
-									 $doConnect = FALSE,
-									 $doNative = FALSE )
+	public function ListCollections( $theDatabase, $theFlags = self::kFLAG_DEFAULT,
+									 			   $theOptions = NULL )
 	{
 		//
 		// Get database.

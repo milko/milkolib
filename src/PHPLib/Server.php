@@ -22,8 +22,8 @@ use Milko\PHPLib\DataSource;
  * This <em>abstract</em> class is the ancestor of all classes representing server
  * instances.
  *
- * This class is derived from the {@link DataSource} class, it uses its constructor and
- * features its functionality.
+ * This class is derived from the {@link DataSource} class, it uses its inherited connection
+ * string to provide server's connection parameters.
  *
  * The class features an attribute, {@link $mConnection}, that represents the server native
  * connection object, this is instantiated when the server connects.
@@ -255,7 +255,7 @@ abstract class Server extends DataSource
 		// Handle open connection.
 		//
 		if( $this->isConnected()
-			&& $this->isLockedProperty( $theOffset ) )
+		 && $this->isLockedProperty( $theOffset ) )
 			throw new \BadMethodCallException (
 				"The object properties cannot be deleted "
 				."while there is an open connection." );						// !@! ==>
@@ -309,59 +309,6 @@ abstract class Server extends DataSource
  *																						*
  *======================================================================================*/
 
-
-
-	/*===================================================================================
-	 *	isConnected																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Check if connection is open.</h4>
-	 *
-	 * This method returns a boolean flag indicating whether the connection is open or not.
-	 *
-	 * The provided bitfield parameter provides the following options:
-	 *
-	 * <ul~
-	 * 	<li><tt>{@link kFLAG_CONNECT}</tt>: If set, the server will be connected if that is
-	 * 		not yetthe case.
-	 * 	<li><tt>{@link kFLAG_ASSERT}</tt>: If the <tt>kFLAG_CONNECT</tt> flag is not set and
-	 * 		the server is not connected, the method will raise a {@link \RuntimeException}.
-	 * </ul>
-	 *
-	 * @param string				$theFlags			Flags bitfield.
-	 * @return boolean				<tt>TRUE</tt> is connected.
-	 * @throws \RuntimeException
-	 */
-	public function isConnected( $theFlags = self::kFLAG_DEFAULT )
-	{
-		//
-		// Check if connected.
-		//
-		if( ($this->mConnection !== NULL)
-		 && ($this->mConnection !== TRUE) )
-			return TRUE;															// ==>
-		
-		//
-		// Connect.
-		//
-		if( $theFlags & self::kFLAG_CONNECT )
-		{
-			$this->Connect();
-
-			return TRUE;															// ==>
-		}
-
-		//
-		// Assert.
-		//
-		if( $theFlags & self::kFLAG_ASSERT )
-			throw new \RuntimeException (
-				"Server connection was not opened." );							// !@! ==>
-
-		return FALSE;																// ==>
-
-	} // isConnected.
 
 
 	/*===================================================================================
@@ -435,7 +382,64 @@ abstract class Server extends DataSource
 		return FALSE;																// ==>
 
 	} // Disconnect.
-	
+
+
+	/*===================================================================================
+	 *	isConnected																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Check if connection is open.</h4>
+	 *
+	 * This method returns a boolean flag indicating whether the connection is open or not.
+	 *
+	 * The provided bitfield parameter provides the following options:
+	 *
+	 * <ul~
+	 * 	<li><tt>{@link kFLAG_CONNECT}</tt>: If set, the server will be connected if that is
+	 * 		not yet the case.
+	 * 	<li><tt>{@link kFLAG_ASSERT}</tt>: If the <tt>kFLAG_CONNECT</tt> flag is not set and
+	 * 		the server is not connected, the method will raise a {@link \RuntimeException}.
+	 * </ul>
+	 *
+	 * This method will be used by derived classes to ensure a connection is open before
+	 * performing ceretain operations, the reason for providing the flags parameter is to
+	 * allow automatic connection, doing so in this class makes it easier.
+	 *
+	 * @param string				$theFlags			Flags bitfield.
+	 * @return boolean				<tt>TRUE</tt> is connected.
+	 * @throws \RuntimeException
+	 */
+	public function isConnected( $theFlags = self::kFLAG_DEFAULT )
+	{
+		//
+		// Check if connected.
+		//
+		if( ($this->mConnection !== NULL)
+			&& ($this->mConnection !== TRUE) )
+			return TRUE;															// ==>
+
+		//
+		// Connect.
+		//
+		if( $theFlags & self::kFLAG_CONNECT )
+		{
+			$this->Connect();
+
+			return TRUE;															// ==>
+		}
+
+		//
+		// Assert.
+		//
+		if( $theFlags & self::kFLAG_ASSERT )
+			throw new \RuntimeException (
+				"Server connection was not opened." );							// !@! ==>
+
+		return FALSE;																// ==>
+
+	} // isConnected.
+
 	
 	
 /*=======================================================================================
@@ -492,11 +496,11 @@ abstract class Server extends DataSource
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *								PROTECTED PROPERTY INTERFACE							*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *								PROTECTED PROPERTY INTERFACE							*
+ *																						*
+ *======================================================================================*/
 
 
 
