@@ -100,7 +100,7 @@ echo( "\n=======================================================================
 //
 echo( "Change protocol:\n" );
 echo( '$test->Protocol( "Someotherprotocol" );' . "\n" );
-$test->Protocol( "Someotherprotocol" );;
+$test->Protocol( "Someotherprotocol" );
 echo( "==> $test\n" );
 
 echo( "\n" );

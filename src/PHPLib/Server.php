@@ -95,15 +95,6 @@ abstract class Server extends DataSource
 	 */
 	const kFLAG_CONNECT = 0x00000002;
 
-	/**
-	 * Return native object.
-	 *
-	 * If this flag is set, operations will return database native objects.
-	 *
-	 * @var string
-	 */
-	const kFLAG_NATIVE = 0x00000004;
-
 
 
 
@@ -287,14 +278,23 @@ abstract class Server extends DataSource
 	 * This method will return the native connection object, if a connection is open, or
 	 * <tt>NULL</tt> if not.
 	 *
+	 * The provided bitfield parameter provides the following options:
+	 *
+	 * <ul~
+	 * 	<li><tt>{@link kFLAG_CONNECT}</tt>: If set, the server will be connected if that is
+	 * 		not yet the case.
+	 * 	<li><tt>{@link kFLAG_ASSERT}</tt>: If the <tt>kFLAG_CONNECT</tt> flag is not set and
+	 * 		the server is not connected, the method will raise a {@link \RuntimeException}.
+	 * </ul>
+	 *
 	 * @return mixed				Native connection object or <tt>NULL</tt>.
 	 */
-	public function Connection()
+	public function Connection( $theFlags = self::kFLAG_DEFAULT )
 	{
 		//
 		// Check if connected.
 		//
-		if( $this->isConnected() )
+		if( $this->isConnected( $theFlags ) )
 			return $this->mConnection;												// ==>
 
 		return NULL;																// ==>

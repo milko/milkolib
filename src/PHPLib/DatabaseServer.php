@@ -9,6 +9,7 @@
 namespace Milko\PHPLib;
 
 use Milko\PHPLib\Server;
+use Milko\PHPLib\Database;
 
 /*=======================================================================================
  *																						*
@@ -26,24 +27,43 @@ use Milko\PHPLib\Server;
  * implements a public standard interface to handle database specific operations and
  * resources.
  *
- * As with its ancestor, the actual implementation of the database operations is delegated
- * to a protected interface that must be implemented by derived concrete classes, this is
- * why this class is declared abstract.
+ * All operations concerning a specific database feature a parameter that represents the
+ * name of the database to handle: if a path is provided to the constructor, the first
+ * element of that path will be considered the default database, in this case the database
+ * name parameter may be omitted and the default database will be used in its place.
  *
- * When instantiating this class a default database and collection can be provided in the
- * {@link DataSource::Path()} part of the connection string, these will be added to the
- * server and all operations will use these unless explicitly indicated.
+ * These methods also feature a bitfield parameter that provide a workflow in the event
+ * that the connection was not already open and in the case the indicated database does not
+ * exist:
+ * *
+ * <ul>
+ * 	<li><tt>{@link kFLAG_CONNECT}</tt>: If set, the server connection will be opened if not
+ * 		already so.
+ * 	<li><tt>{@link kFLAG_ASSERT}</tt>: If set, an exception will be raised if the connection
+ * 		is not open and the {@link kFLAG_CONNECT} switch is off, and if the indicated
+ * 		database cannot be found.
+ * </ul>
  *
- * This class features a generalised public interface for communicating with the server:
+ * This class features a generalised public interface which represents the common interface:
  *
  * <ul>
- * 	<li><b>{@link Databases()}</b>: Return the list of databases on server.
- * 	<li><b>{@link Database()}</b>: Set, retrieve or reset database object.
- * 	<li><b>{@link DropDatabase()}</b>: Drop a database.
+ * 	<li><b>{@link ListDatabases()}</b>: Return the list of databases on the server.
+ * 	<li><b>{@link GetDatabase()}</b>: Retrieve a database object.
+ * 	<li><b>{@link DropDatabase()}</b>: Drop database object.
  * </ul>
  *
  * The above public methods do not implement the actual operations, this is delegated to a
- * protected virtual interface which must be implemented by derived concrete classes.
+ * protected virtual interface which must be implemented by derived concrete classes:
+ *
+ * <ul>
+ * 	<li><b>{@link databaseList()}</b>: Return the list of database names.
+ * 	<li><b>{@link databaseCreate()}</b>: Create and return a {@link Database} object
+ * 		corresponding to the provided name.
+ * 	<li><b>{@link databaseGet()}</b>: Return a {@link Database} object corresponding to the
+ * 		provided name.
+ * 	<li><b>{@link databaseDrop()}</b>: Drop the {@link Database} object corresponding to the
+ * 		provided name.
+ * </ul>
  *
  *	@package	Core
  *
@@ -54,16 +74,97 @@ use Milko\PHPLib\Server;
  *	@example	../../test/DatabaseServer.php
  *	@example
  * $server = new Milko\PHPLib\Server( 'protocol://user:pass@host:9090' );<br/>
- * $connection = $server->Connect();
- * $database = $this->Database( "test" );
- * // Work with that database...
- *	@example
- * $connection = $server->Connect();
- * $database = $this->Database();
- * // Work with the database...
+ * $connection = $server->Connect();<br/>
+ * $databases = $connection->DatabaseList();<br/>
+ * $database = $connection->DatabaseGet( $databases[ 0 ] );<br/>
+ * // Work with that database...<br/>
+ * $connection->DatabaseDrop( $databases[ 0 ] );<br/>
+ * // Dropped the database.
  */
 abstract class DatabaseServer extends Server
 {
+	/**
+	 * <h4>Default database object.</h4>
+	 *
+	 * This data member holds the <i>default database object</i>, this data member will be
+	 * automatically filled from the inherited {@link Path()} information: the first element
+	 * represents the database, the eventual remaining element represents the default
+	 * collection.
+	 *
+	 * This data member will be used whenever database specific methods will be called
+	 * without indicating a specific database.
+	 *
+	 * @var Database
+	 */
+	protected $mDefaultDatabase = NULL;
+
+	/**
+	 * Create resource if it doesn't exist.
+	 *
+	 * If this flag is set, the resource will be created if necessary.
+	 *
+	 * @var string
+	 */
+	const kFLAG_CREATE = 0x00000004;
+
+
+
+
+/*=======================================================================================
+ *																						*
+ *										MAGIC											*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	__construct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Instantiate class.</h4>
+	 *
+	 * We overload the constructor to parse the connection string's path: if it was
+	 * provided, the first element of the path will be used as the default database. By
+	 * default the connection will be opened and the database created if it doesn't exist.
+	 *
+	 * @param string			$theConnection		Data source name.
+	 *
+	 * @uses Path()
+	 * @uses GetDatabase()
+	 *
+	 * @example
+	 * $dsn = new DataSource( 'driver://user:pass@host:8989/database' );<br/>
+	 */
+	public function __construct( $theConnection )
+	{
+		//
+		// Call parent constructor.
+		//
+		parent::__construct( $theConnection );
+
+		//
+		// Handle path.
+		//
+		$path = $this->Path();
+		if( $path !== NULL )
+		{
+			//
+			// Parse path.
+			// Note that we skip the first path element:
+			// that is because the path begins with the separator.
+			//
+			$parts = explode( '/', $path );
+			if( count( $parts ) > 1 )
+				$this->mDefaultDatabase
+					= $this->GetDatabase(
+						$parts[ 1 ], self::kFLAG_CONNECT + self::kFLAG_CREATE );
+
+		} // Has path.
+
+	} // Constructor.
+
 
 
 /*=======================================================================================
@@ -75,14 +176,14 @@ abstract class DatabaseServer extends Server
 
 
 	/*===================================================================================
-	 *	Databases																		*
+	 *	ListDatabases																	*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Return server databases list.</h4>
 	 *
-	 * This method can be used to retrieve the list of server databases, the method features
-	 * the following parameters:
+	 * This method can be used to retrieve the list of server database names, the method
+	 * features the following parameters:
 	 *
 	 * <ul>
 	 *	<li><b>$theFlags</b>: A bitfield providing the following options:
@@ -92,28 +193,24 @@ abstract class DatabaseServer extends Server
 	 * 			array.
 	 * 		<li><tt>{@link kFLAG_ASSERT}: If set and the server is not connected, an
 	 * 			exception will be raised.
-	 * 		<li><tt>{@link kFLAG_NATIVE}: If not set, the method will return an array of
-	 * 			database names, if set, the method will return the result from the native
-	 * 			driver.
 	 * 	 </ul>
-	 *	<li><b>$theOptions</b>: An optional list of options to be provided to the native
-	 * 		driver.
 	 * </ul>
 	 *
+	 * The {@link kFLAG_CONNECT} flag is set by default to ensure the server is connected.
+	 *
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param array					$theOptions			Options for the driver.
-	 * @return mixed				List of database names or native result.
+	 * @return mixed				List of database names.
 	 *
 	 * @uses isConnected()
 	 * @uses databasesList()
 	 */
-	public function Databases( $theFlags = self::kFLAG_DEFAULT, $theOptions = NULL )
+	public function ListDatabases( $theFlags = self::kFLAG_CONNECT )
 	{
 		//
 		// Assert connection.
 		//
-		if( $this->isConnected( $doConnect, TRUE ) )
-			return $this->databasesList( $doNative );								// ==>
+		if( $this->isConnected( $theFlags ) )
+			return $this->databaseList();											// ==>
 		
 		return [];																	// ==>
 
@@ -121,253 +218,94 @@ abstract class DatabaseServer extends Server
 
 
 	/*===================================================================================
-	 *	ListCollections																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>List database collections.</h4>
-	 *
-	 * This method can be used to retrieve the list of database collections, the method
-	 * features the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theDatabase</b>: The database name for which we want the collections list.
-	 *	<li><b>$theFlags</b>: A bitfield providing the following options:
-	 *	 <ul>
-	 * 		<li><tt>{@link kFLAG_CONNECT}: If set, the server will connect if necessary, if
-	 * 			not set and the server is not connected, the method will return an empty
-	 * 			array.
-	 * 		<li><tt>{@link kFLAG_ASSERT}: If set and the server is not connected, an
-	 * 			exception will be raised.
-	 * 		<li><tt>{@link kFLAG_NATIVE}: If not set, the method will return an array of
-	 * 			collection names, if set, the method will return the result from the native
-	 * 			driver.
-	 * 	 </ul>
-	 *	<li><b>$theOptions</b>: An optional list of options to be provided to the native
-	 * 		driver.
-	 * </ul>
-	 *
-	 * @param string				$theDatabase		Collections database name.
-	 * @param string				$theFlags			Flags bitfield.
-	 * @param array					$theOptions			Options for the driver.
-	 * @return mixed				List of collection names or native result.
-	 *
-	 * @uses GetDatabase()
-	 * @uses collectionsList()
-	 */
-	public function ListCollections( $theDatabase, $theFlags = self::kFLAG_DEFAULT,
-									 			   $theOptions = NULL )
-	{
-		//
-		// Get database.
-		//
-		$database = $this->GetDatabase( $theDatabase, $doConnect );
-		if( $database !== NULL )
-			return $this->collectionsList( $database, $doNative );					// ==>
-		
-		return [];																	// ==>
-
-	} // ListCollections.
-
-
-	/*===================================================================================
-	 *	DefaultDatabase																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Manage default database.</h4>
-	 *
-	 * This method can be used to set, retrieve or reset the default server database, the
-	 * method features the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theValue</b>: The database name or the operation:
-	 *	 <ul>
-	 *		<li><tt>NULL</tt>: Retrieve the current default server database.
-	 *		<li><tt>FALSE</tt>: Reset the current default server database, will reset also
-	 *			the default collection, if set.
-	 *		<li><tt>string</tt>: Set the default database by name.
-	 *	 </ul>
-	 *	<li><b>$doConnect</b>: Assert server connection (only relevant if setting or
-	 *		resetting):
-	 *	 <ul>
-	 *		<li><tt>TRUE</tt>: Connect if necessary.
-	 *		<li><tt>FALSE</tt>: Raise exception if not connected.
-	 *	 </ul>
-	 * </ul>
-	 *
-	 * @param mixed					$theValue			Database or operation.
-	 * @param boolean				$doConnect			Assert connection.
-	 * @return mixed				Default database.
-	 *
-	 * @uses collectionClose()
-	 * @uses databaseClose()
-	 * @uses isConnected()
-	 * @uses databaseGet()
-	 */
-	public function DefaultDatabase( $theValue = NULL, $doConnect = FALSE )
-	{
-		//
-		// Return current value.
-		//
-		if( $theValue === NULL )
-			return $this->mDefaultDatabase;											// ==>
-		
-		//
-		// Close default database.
-		//
-		if( $this->mDefaultDatabase !== NULL )
-		{
-			//
-			// Close and reset default collection.
-			//
-			if( $this->mDefaultCollection !== NULL )
-			{
-				$this->collectionClose( $this->mDefaultCollection );
-				$this->mDefaultCollection = NULL;
-			}
-	
-			//
-			// Close and reset default database.
-			//
-			$this->databaseClose( $this->mDefaultDatabase );
-			$this->mDefaultDatabase = NULL;
-		
-		} // Has default database.
-	
-		//
-		// Set new default database.
-		// Will raise an exception if not connected.
-		//
-		if( ($theValue !== FALSE)
-		 && $this->isConnected( $doConnect, TRUE ) )
-			$this->mDefaultDatabase = $this->databaseGet( (string) $theValue );
-			
-		return $this->mDefaultDatabase;												// ==>
-
-	} // DefaultDatabase.
-
-
-	/*===================================================================================
-	 *	DefaultCollection																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Manage default database.</h4>
-	 *
-	 * This method can be used to set, retrieve or reset the default server collection, the
-	 * method features the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theDatabase</b>: The database name or <tt>NULL</tt> to use the default
-	 *	 <ul>
-	 *		<li><tt>NULL</tt>: Use the default database.
-	 *		<li><tt>string</tt>: Use the database of the provided name; this database will
-	 *			bevome the default database.
-	 *	 </ul>
-	 *	<li><b>$theValue</b>: The collection name or the operation:
-	 *	 <ul>
-	 *		<li><tt>NULL</tt>: Retrieve the current default server collection.
-	 *		<li><tt>FALSE</tt>: Reset the current default server collection.
-	 *		<li><tt>string</tt>: Set the default collection by name.
-	 *	 </ul>
-	 *	<li><b>$doConnect</b>: Assert server connection (only relevant if setting or
-	 *		resetting):
-	 *	 <ul>
-	 *		<li><tt>TRUE</tt>: Connect if necessary.
-	 *		<li><tt>FALSE</tt>: Raise exception if not connected.
-	 *	 </ul>
-	 * </ul>
-	 *
-	 * @param mixed					$theDatabase		Database name or <tt>NULL</tt>.
-	 * @param mixed					$theValue			Collection name or operation.
-	 * @param boolean				$doConnect			Assert connection.
-	 * @return mixed				Default collection.
-	 * @throws \RuntimeException
-	 *
-	 * @uses collectionClose()
-	 * @uses GetCollection()
-	 * @uses DefaultDatabase()
-	 */
-	public function DefaultCollection( $theDatabase = NULL,
-									   $theValue = NULL,
-									   $doConnect = FALSE )
-	{
-		//
-		// Return current value.
-		//
-		if( $theValue === NULL )
-			return $this->mDefaultCollection;										// ==>
-		
-		//
-		// Close and reset default collection.
-		//
-		if( $this->mDefaultCollection !== NULL )
-		{
-			$this->collectionClose( $this->mDefaultCollection );
-			$this->mDefaultCollection = NULL;
-		}
-		
-		//
-		// Handle new value.
-		//
-		if( $theValue !== FALSE )
-		{
-			//
-			// Set new collection.
-			//
-			$this->mDefaultCollection
-				= $this->GetCollection(
-					$theDatabase, $theValue, $doConnect );
-			
-			//
-			// Set new default database.
-			//
-			if( $theDatabase !== NULL )
-				$this->DefaultDatabase( $theDatabase, $doConnect );
-		
-		} // Not deleting.
-			
-		return $this->mDefaultCollection;											// ==>
-
-	} // DefaultCollection.
-
-
-	/*===================================================================================
 	 *	GetDatabase																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return a native database object.</h4>
+	 * <h4>Return a database object.</h4>
 	 *
-	 * This method can be used to retrieve a database native object, the method features
-	 * the following parameters:
+	 * This method can be used to retrieve a database object, it features the following
+	 * parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theDatabase</b>: The database name or <tt>NULL</tt> for the default
-	 *		database.
-	 *	<li><b>$doConnect</b>: If <tt>TRUE</tt> the method will attempt to connect to the
-	 *		server if not already connected.
+	 *	<li><b>$theDatabase</b>: The database name; if omitted or <tt>NULL</tt>, the
+	 * 		the default database will be used if it was provided in the constructor.
+	 *	<li><b>$theFlags</b>: A bitfield providing the following options:
+	 *	 <ul>
+	 * 		<li><tt>{@link kFLAG_CONNECT}: If set, the server will connect if necessary, if
+	 * 			not set and the server is not connected, the method will return
+	 * 			<tt>NULL</tt>.
+	 * 		<li><tt>{@link kFLAG_ASSERT}: If set, the method will raise an exception if the
+	 * 			server is not connected or if the database cannot be found.
+	 * 		<li><tt>{@link kFLAG_CREATE}: If set, the method will create the database if it
+	 * 			doesn't already exist.
+	 * 	 </ul>
 	 * </ul>
 	 *
-	 * @param string				$theValue			Database name or <tt>NULL</tt>.
-	 * @param boolean				$doConnect			<tt>TRUE</tt> connect if necessary.
-	 * @return mixed				Database native object.
+	 * The method will either return a database object, or <tt>NULL</tt> if the server is
+	 * not connected or if the database was not found.
+	 *
+	 * The {@link kFLAG_CONNECT} and {@link kFLAG_CREATE} flags are set by default to ensure
+	 * the connection is open and that the indicated database is created if necessary.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param string				$theFlags			Flags bitfield.
+	 * @return Database				Database object or <tt>NULL</tt>.
+	 * @throws \RuntimeException
 	 *
 	 * @uses isConnected()
 	 * @uses databaseGet()
 	 */
-	public function GetDatabase( $theValue = NULL, $doConnect = FALSE )
+	public function GetDatabase( $theDatabase = NULL,
+								 $theFlags = self::kFLAG_CONNECT + self::kFLAG_CREATE )
 	{
 		//
-		// Handle non default database.
-		// If not connected and value is not NULL raise exception.
+		// Handle default database.
 		//
-		if( ($theValue !== NULL)
-		 && $this->isConnected( $doConnect, TRUE ) )
-			return $this->databaseGet( (string) $theValue );						// ==>
-		
-		return $this->mDefaultDatabase;												// ==>
+		if( $theDatabase === NULL )
+		{
+			//
+			// Return database.
+			//
+			if( $this->mDefaultDatabase !== NULL )
+				return $this->mDefaultDatabase;										// ==>
+
+			//
+			// Assert database.
+			//
+			if( $theFlags & self::kFLAG_ASSERT )
+				throw new \RuntimeException (
+					"There is no default database." );							// !@! ==>
+
+			return NULL;															// ==>
+
+		} // Use default database.
+
+		//
+		// Check if connected.
+		//
+		if( $this->isConnected( $theFlags ) )
+		{
+			//
+			// Get database.
+			//
+			$database = ( $theFlags & self::kFLAG_CREATE )
+					  ? $this->databaseCreate( (string) $theDatabase )
+					  : $this->databaseGet( (string) $theDatabase );
+
+			//
+			// Assert.
+			//
+			if( ($theFlags & self::kFLAG_ASSERT)
+			 && (! ($database instanceof Database)) )
+				throw new \RuntimeException (
+					"Unknown database ($theDatabase)." );						// !@! ==>
+
+			return $database;														// ==>
+
+		} // Connected.
+
+		return NULL;																// ==>
 
 	} // GetDatabase.
 
@@ -379,153 +317,49 @@ abstract class DatabaseServer extends Server
 	/**
 	 * <h4>Drop a database.</h4>
 	 *
-	 * This method can be used to drop a database, the method features the following
-	 * parameters:
+	 * This method can be used to drop a database, it features the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theDatabase</b>: The database name or <tt>NULL</tt> for the default
-	 *		database; in the latter case the default database will be reset.
-	 *	<li><b>$doConnect</b>: If <tt>TRUE</tt> the method will attempt to connect to the
-	 *		server if not already connected.
+	 *	<li><b>$theDatabase</b>: The database name, if omitted or <tt>NULL</tt>, the
+	 * 		the default database will be used if it was provided in the constructor.
+	 *	<li><b>$theFlags</b>: A bitfield providing the following options:
+	 *	 <ul>
+	 * 		<li><tt>{@link kFLAG_CONNECT}: If set, the server will connect if necessary, if
+	 * 			not set and the server is not connected, the method will return
+	 * 			<tt>NULL</tt>.
+	 * 		<li><tt>{@link kFLAG_ASSERT}: If set, the method will raise an exception if the
+	 * 			server is not connected or if the database cannot be found.
+	 * 	 </ul>
 	 * </ul>
 	 *
-	 * @param string				$theValue			Database name or <tt>NULL</tt>.
-	 * @param boolean				$doConnect			<tt>TRUE</tt> connect if necessary.
+	 * The method will attempt to drop the database if this was found; if the database is
+	 * unknown, the method will do nothing, except if the {@link kFLAG_ASSERT} was set.
 	 *
-	 * @uses databaseDrop()
-	 * @uses DefaultDatabase()
+	 * The {@link kFLAG_CONNECT} flag is set by default to ensure the connection is open;
+	 * if the database doesn't exists (or was already dropped), the method will do nothing.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param string				$theFlags			Flags bitfield.
+	 *
 	 * @uses GetDatabase()
 	 */
-	public function DropDatabase( $theValue = NULL, $doConnect = FALSE )
+	public function DropDatabase( $theDatabase = NULL,
+								  $theFlags = self::kFLAG_CONNECT )
 	{
-		// Handle existing default database.
 		//
-		if( ($theValue === NULL)
-		 && ($this->mDefaultDatabase !== NULL) )
-		{
-			//
-			// Drop database.
-			//
-			$this->databaseDrop( $this->mDefaultDatabase );
-			
-			//
-			// Reset default database.
-			//
-			$this->DefaultDatabase( FALSE, $doConnect );
-		
-		} // Existing default database.
-		
+		// Handle database.
 		//
-		// Handle other database.
+		$database = $this->GetDatabase( $theDatabase, $theFlags );
+		if( $database instanceof Database )
+			$this->databaseDrop( $database );
+
 		//
-		else
-			$this->databaseDrop( $this->GetDatabase( $theValue, $doConnect ) );
+		// Reset default database.
+		//
+		if( $theDatabase === NULL )
+			$this->mDefaultDatabase = NULL;
 
 	} // DropDatabase.
-
-
-	/*===================================================================================
-	 *	GetCollection																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a native collection object.</h4>
-	 *
-	 * This method can be used to retrieve a colection native object, the method features
-	 * the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theDatabase</b>: The database name or <tt>NULL</tt> for the default
-	 *		database.
-	 *	<li><b>$theValue</b>: The collection name or <tt>NULL</tt> for the default
-	 *		collection; note that in this case we ignore the database.
-	 *	<li><b>$doConnect</b>: If <tt>TRUE</tt> the method will attempt to connect to the
-	 *		server if not already connected.
-	 * </ul>
-	 *
-	 * @param string				$theDatabase		Database name or <tt>NULL</tt>.
-	 * @param string				$theValue			Collection name or <tt>NULL</tt>.
-	 * @param boolean				$doConnect			<tt>TRUE</tt> connect if necessary.
-	 * @return mixed				Database native object.
-	 * @throws \RuntimeException
-	 *
-	 * @uses GetDatabase()
-	 * @uses collectionGet()
-	 */
-	public function GetCollection( $theDatabase = NULL,
-								   $theValue = NULL,
-								   $doConnect = FALSE )
-	{
-		//
-		// Return  default collection.
-		//
-		if( $theValue === NULL )
-			return $this->mDefaultCollection;										// ==>
-		
-		//
-		// Resolve database.
-		//
-		$database = $this->GetDatabase( $theDatabase, $doConnect );
-		if( $database !== NULL )
-			return $this->collectionGet( $database, (string) $theValue );			// ==>
-		
-		throw new \RuntimeException (
-			"Unable to get collection: missing database." );					// !@! ==>
-
-	} // GetCollection.
-
-
-	/*===================================================================================
-	 *	DropCollection																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Drop a database.</h4>
-	 *
-	 * This method can be used to drop a database, the method features the following
-	 * parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theDatabase</b>: The database name or <tt>NULL</tt> for the default
-	 *		database.
-	 *	<li><b>$theCollection</b>: The collection name or <tt>NULL</tt> for the default
-	 *		collection; in the latter case the default database will be reset.
-	 *	<li><b>$doConnect</b>: If <tt>TRUE</tt> the method will attempt to connect to the
-	 *		server if not already connected.
-	 * </ul>
-	 *
-	 * @param string				$theDatabase		Database name or <tt>NULL</tt>.
-	 * @param string				$theCollection		Collection name or <tt>NULL</tt>.
-	 * @param boolean				$doConnect			<tt>TRUE</tt> connect if necessary.
-	 *
-	 * @uses GetCollection()
-	 * @uses collectionDrop()
-	 * @uses DefaultCollection()
-	 */
-	public function DropCollection( $theDatabase = NULL,
-									$theCollection = NULL,
-									$doConnect = FALSE )
-	{
-		//
-		// Get collection.
-		//
-		$collection = $this->GetCollection( $theDatabase, $theCollection, $doConnect );
-		if( $collection !== NULL )
-		{
-			//
-			// Drop collection.
-			//
-			$this->collectionDrop( $collection );
-			
-			//
-			// Reset default collection.
-			//
-			if( $theCollection === NULL )
-				$this->DefaultCollection( $theDatabase, FALSE, $doConnect );
-		
-		} // Collection exists.
-
-	} // DropCollection.
 
 
 
@@ -538,47 +372,7 @@ abstract class DatabaseServer extends Server
 
 
 	/*===================================================================================
-	 *	databaseClose																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Cleanup database before disposing of it.</h4>
-	 *
-	 * This method should dispose of resources before a database is closed, in this class
-	 * we do nothing.
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method should be implemented by derived concrete classes if there is the need.
-	 *
-	 * @param mixed					$theDatabase		Database native object.
-	 */
-	protected function databaseClose( $theDatabase )									   {}
-
-
-	/*===================================================================================
-	 *	collectionClose																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Cleanup collection before disposing of it.</h4>
-	 *
-	 * This method should dispose of resources before a collection is closed, in this class
-	 * we do nothing.
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method should be implemented by derived concrete classes if there is the need.
-	 *
-	 * @param mixed					$theCollection		Collection native object.
-	 */
-	protected function collectionClose( $theCollection )								   {}
-
-
-	/*===================================================================================
-	 *	databasesList																	*
+	 *	databaseList																	*
 	 *==================================================================================*/
 
 	/**
@@ -593,33 +387,27 @@ abstract class DatabaseServer extends Server
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param boolean				$doNative			<tt>TRUE</tt> return native result.
-	 * @return mixed				Array or native server's result.
+	 * @return array				List of database names.
 	 */
-	abstract protected function databasesList( $doNative );
+	abstract protected function databaseList();
 
 
 	/*===================================================================================
-	 *	collectionsList																	*
+	 *	databaseCreate																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>List server databases.</h4>
+	 * <h4>Create server databases.</h4>
 	 *
-	 * This method should return the list of server databases, if the provided parameter is
-	 * <tt>TRUE</tt>, the method will return the result in the server's native format; if
-	 * not, it will return an array of database names.
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
+	 * This method should return a {@link Database} object corresponding to the provided
+	 * name, if the database doesn't already exist, the method should create it.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theDatabase		Collections database native object.
-	 * @param boolean				$doNative			<tt>TRUE</tt> return native result.
-	 * @return mixed				Array or native server's result.
+	 * @param string				$theDatabase		Database name.
+	 * @return Database				Database object.
 	 */
-	abstract protected function collectionsList( $theDatabase, $doNative );
+	abstract protected function databaseCreate( $theDatabase );
 
 
 	/*===================================================================================
@@ -627,42 +415,21 @@ abstract class DatabaseServer extends Server
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return a database native object.</h4>
+	 * <h4>Return a database object.</h4>
 	 *
-	 * This method should return a server native database object corresponding to the
-	 * provided name.
+	 * This method should return a {@link Database} object corresponding to the provided
+	 * name, or <tt>NULL</tt> if the provided name does not correspond to any database in
+	 * the server.
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
+	 * The method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param string				$theValue			Database name.
-	 * @return mixed				Database native object.
+	 * @param string				$theDatabase		Database name.
+	 * @return Database				Database object or <tt>NULL</tt>.
 	 */
-	abstract protected function databaseGet( $theValue );
-
-
-	/*===================================================================================
-	 *	collectionGet																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a collection native object.</h4>
-	 *
-	 * This method should return a server native collection object corresponding to the
-	 * provided database native object and collection name.
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param mixed					$theDatabase		Collections database name or object.
-	 * @param string				$theValue			Collection name.
-	 * @return mixed				Collection native object.
-	 */
-	abstract protected function collectionGet( $theDatabase, $theValue );
+	abstract protected function databaseGet( $theDatabase );
 
 
 	/*===================================================================================
@@ -670,43 +437,22 @@ abstract class DatabaseServer extends Server
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Drop database.</h4>
+	 * <h4>Drop a database.</h4>
 	 *
-	 * This method should drop the database corresponding to the provided database native
-	 * object.
+	 * This method should drop the provided database.
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
+	 * The method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theDatabase		Database native object.
+	 * @param Database				$theDatabase		Database object.
 	 */
-	abstract protected function databaseDrop( $theDatabase );
-
-
-	/*===================================================================================
-	 *	collectionDrop																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Drop collection.</h4>
-	 *
-	 * This method should drop the collection corresponding to the provided database native
-	 * object.
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param mixed					$theCollection		Collection native object.
-	 */
-	abstract protected function collectionDrop( $theCollection );
+	abstract protected function databaseDrop( Database $theDatabase );
 
 
 
-} // class Server.
+} // class DatabaseServer.
 
 
 ?>
