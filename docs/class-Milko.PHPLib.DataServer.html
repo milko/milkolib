@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Milko\PHPLib\DataServer | milkolib reference documentation</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-Milko.html">
+						Milko<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-Milko.PHPLib.html">
+						PHPLib					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-PHP.html">
+						PHP					</a>
+
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Milko.PHPLib.Container.html">Container</a></li>
+				<li><a href="class-Milko.PHPLib.Database.html">Database</a></li>
+				<li class="active"><a href="class-Milko.PHPLib.DataServer.html">DataServer</a></li>
+				<li><a href="class-Milko.PHPLib.DataSource.html">DataSource</a></li>
+				<li><a href="class-Milko.PHPLib.Server.html">Server</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Milko.PHPLib.html" title="Summary of Milko\PHPLib"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+				<li>
+					<a href="annotation-group-todo.html" title="List of elements with todo annotation">
+						<span>Todo</span>
+					</a>
+				</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="-API-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+			</li>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class DataServer</h1>
+
+
+	<div class="description">
+	<h4>Data server ancestor object.</h4>
+
+<p>This <em>abstract</em> class is the ancestor of all classes representing data server
+instances.</p>
+
+<p>A data server is essentially a database server, it is divided into <em>databases</em>,
+which in turn are divided into <em>collections</em> that contain data <em>records</em>.</p>
+
+<p>This class uses its inherited <code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code> class to handle the server connection and
+implements a public standard interface to handle database operations and resources.</p>
+
+<p>The class implements a common public interface that manages <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> objects:</p>
+
+<ul> <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_ListDatabases">Milko\PHPLib\DataServer::ListDatabases()</a></code></b>: Return the list of database names on the server. <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_ListDatabases">Milko\PHPLib\DataServer::ListDatabases()</a></code></b>: Return the list of database names on the server. <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_WorkingDatabases">Milko\PHPLib\DataServer::WorkingDatabases()</a></code></b>: Return the list of working database names. <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_RetrieveDatabase">Milko\PHPLib\DataServer::RetrieveDatabase()</a></code></b>: Create or retrieve a database object. <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_ForgetDatabase">Milko\PHPLib\DataServer::ForgetDatabase()</a></code></b>: Clear or dispose of a database object. <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_DropDatabase">Milko\PHPLib\DataServer::DropDatabase()</a></code></b>: Drop a database.
+</ul>
+
+<p>Most of the above methods feature a bitfield parameter that determines the actions to
+take in the event a database is not found or the connection to the server is not open:</p>
+
+<ul> <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></tt>: If set, the server connection will be automatically opened if necessary. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CREATE">Milko\PHPLib\Server::<b>kFLAG_CREATE</b></a></code></tt>: If set and the indicated database was not found, the database will be created in the process. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_ASSERT">Milko\PHPLib\Server::<b>kFLAG_ASSERT</b></a></code></tt>: If set, an exception will be raised if the connection is not open and the <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code> switch is off and if the indicated database cannot be found and the <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CREATE">Milko\PHPLib\Server::<b>kFLAG_CREATE</b></a></code> flag is not set.
+</ul>
+
+<p>The public methods do not implement the actual operations, this is delegated to a
+protected virtual interface which must be implemented by derived concrete classes:</p>
+
+<ul> <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_databaseList">Milko\PHPLib\DataServer::databaseList()</a></code></b>: Return the list of server database names. <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_databaseCreate">Milko\PHPLib\DataServer::databaseCreate()</a></code></b>: Create and return a <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_databaseRetrieve">Milko\PHPLib\DataServer::databaseRetrieve()</a></code></b>: Return a <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.DataServer.html#_databaseDrop">Milko\PHPLib\DataServer::databaseDrop()</a></code></b>: Drop the provided <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> object.
+</ul>
+
+<p>Each time a database object is retrieved, the object will store it in the
+<code><a href="class-Milko.PHPLib.DataServer.html#$mDatabases">Milko\PHPLib\DataServer::<var>$mDatabases</var></a></code> data member for fast subsequent retrievals.</p>
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-ArrayObject.html"><span>ArrayObject</span></a>
+			
+			 implements 
+				<a href="class-IteratorAggregate.html"><span>IteratorAggregate</span></a>, 
+			
+				<a href="class-Traversable.html"><span>Traversable</span></a>, 
+			
+				<a href="class-ArrayAccess.html"><span>ArrayAccess</span></a>, 
+			
+				<a href="class-Serializable.html"><span>Serializable</span></a>, 
+			
+				<a href="class-Countable.html"><span>Countable</span></a>
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-Milko.PHPLib.Container.html"><span>Milko\PHPLib\Container</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-Milko.PHPLib.DataSource.html"><span>Milko\PHPLib\DataSource</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:90px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-Milko.PHPLib.Server.html"><span>Milko\PHPLib\Server</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:120px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Milko\PHPLib\DataServer</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		<b>Abstract</b><br>
+		
+		<b>Namespace:</b> <a href="namespace-Milko.html">Milko</a>\<a href="namespace-Milko.PHPLib.html">PHPLib</a><br>
+		<b>Package:</b> Core<br>
+
+				<b>Author:</b>
+				Milko A. Škofič <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;">&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;</a><br>
+				<b>Version:</b>
+				1.00<br>
+				<b>Since:</b>
+				07/02/2016<br>
+				<b>Example:</b>
+				../../test/DataServer.php<br>
+				<b>Example:</b>
+				<p>$server = new Milko\PHPLib\DataServer( 'protocol://user:pass@host:9090' );<br/>
+$server->Connect();<br/>
+$databases = $server->ListDatabases();<br/>
+$database = $server->RetrieveDatabase( $databases[ 0 ], self::kFLAG_CREATE );<br/>
+// Work with that database...<br/>
+$server->DatabaseDrop( $databases[ 0 ] );<br/>
+// Dropped the database.</p><br>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.DataServer.html#19-574" title="Go to source code">PHPLib/DataServer.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#115-156" title="Go to source code">__construct</a>( <span>string <var>$theConnection</var></span> )</code>
+
+		<div class="description short">
+			<h4>Instantiate class.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Instantiate class.</h4>
+
+<p>We overload the constructor to parse the connection string's path: if it was
+provided, the first element of the path will be considered as a database name and
+added or created to the working databases list.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theConnection</var></dt>
+					<dd>Data source name.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+				</div>
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#_Path">Milko\PHPLib\DataSource::Path()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataServer.html#_RetrieveDatabase">Milko\PHPLib\DataServer::RetrieveDatabase()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						$server = new DataServer( 'driver://user:pass@host:8989/database' );<br>
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Milko.PHPLib.DataSource.html#___construct">Milko\PHPLib\DataSource::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ListDatabases" id="_ListDatabases">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ListDatabases">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#172-211" title="Go to source code">ListDatabases</a>( <span>string <var>$theFlags</var> = self::kFLAG_CONNECT </span> )</code>
+
+		<div class="description short">
+			<h4>Return the server list of databases.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Return the server list of databases.</h4>
+
+<p>This method can be used to retrieve the list of database names present on the server,
+the method features the following parameters:</p>
+
+<ul>
+<li><b>$theFlags</b>: A bitfield providing the following options: <ul> <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></tt>: If set, the server will connect if necessary, if not set and the server is not connected, the method will return an emptyarray. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_ASSERT">Milko\PHPLib\Server::<b>kFLAG_ASSERT</b></a></code></tt>: If set and the server is not connected, an exception will be raised. </ul>
+</ul>
+
+<p>The <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code> flag is set by default to ensure the server is connected.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theFlags</var></dt>
+					<dd>Flags bitfield.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array<br>List of database names.
+				</div>
+
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataServer.html#_databaseList">Milko\PHPLib\DataServer::databaseList()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+$list = $server->ListDatabases();</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="WorkingDatabases" id="_WorkingDatabases">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_WorkingDatabases">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#218-229" title="Go to source code">WorkingDatabases</a>( )</code>
+
+		<div class="description short">
+			<h4>Return the working list of databases.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Return the working list of databases.</h4>
+
+<p>This method can be used to retrieve the list of working database names.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array<br>List of working database names.
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						<p>$server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
+$list = $server->WorkingDatabases();</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="RetrieveDatabase" id="_RetrieveDatabase">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_RetrieveDatabase">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#236-322" title="Go to source code">RetrieveDatabase</a>( <span>string <var>$theDatabase</var></span>, <span>string <var>$theFlags</var> = self::kFLAG_CONNECT + self::kFLAG_CREATE</span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Return a database object.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Return a database object.</h4>
+
+<p>This method can be used to create or retrieve a database object, it features the
+following parameters:</p>
+
+<ul>
+<li><b>$theDatabase</b>: The database name.
+<li><b>$theFlags</b>: A bitfield providing the following options: <ul> <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></tt>: If set, the server will connect if necessary, if not set and the server is not connected, the method will return <tt>NULL</tt>. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CREATE">Milko\PHPLib\Server::<b>kFLAG_CREATE</b></a></code></tt>: If set, the method will create the database if it doesn't already exist. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_ASSERT">Milko\PHPLib\Server::<b>kFLAG_ASSERT</b></a></code></tt>: If set, the method will raise an exception if the server is not connected or if the database cannot be found. </ul>
+<li><b>$theOptions</b>: An array of options representing driver native options.
+</ul>
+
+<p>The method will either return a <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> object, or <tt>NULL</tt> if the
+server is not connected or if the database was not found.</p>
+
+<p>The <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code> and <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CREATE">Milko\PHPLib\Server::<b>kFLAG_CREATE</b></a></code> flags are set by default to ensure
+the connection is open and that the indicated database is created if necessary.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theDatabase</var></dt>
+					<dd>Database name.</dd>
+					<dt><var>$theFlags</var></dt>
+					<dd>Flags bitfield.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Database native options.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code><br>Database object or <tt>NULL</tt>.
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+				</div>
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataServer.html#_databaseRetrieve">Milko\PHPLib\DataServer::databaseRetrieve()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataServer.html#_databaseCreate">Milko\PHPLib\DataServer::databaseCreate()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataServer.html#___construct">Milko\PHPLib\DataServer::__construct()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
+$db = $server->RetrieveDatabase( "database" );</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ForgetDatabase" id="_ForgetDatabase">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ForgetDatabase">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#329-375" title="Go to source code">ForgetDatabase</a>( <span>string <var>$theDatabase</var></span> )</code>
+
+		<div class="description short">
+			<h4>Dispose of a database object.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Dispose of a database object.</h4>
+
+<p>This method can be used to dispose of a database object contained in the working
+databases collection.</p>
+
+<p>If the provided database name doesn't match any entries among the working databases,
+the method will return <tt>NULL</tt>, if it does, the method will return the related
+<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> object.</p>
+
+<p>The method features a single parameter representing the database name.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theDatabase</var></dt>
+					<dd>Database name.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code><br>Database object or <tt>NULL</tt>.
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						<p>$server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
+$db = $server->ForgetDatabase( "database" );</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="DropDatabase" id="_DropDatabase">
+
+		<td class="attributes"><code>
+			 public 
+
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_DropDatabase">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#382-474" title="Go to source code">DropDatabase</a>( <span>string <var>$theDatabase</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Drop a database.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Drop a database.</h4>
+
+<p>This method can be used to drop a database, it features the following parameters:</p>
+
+<ul>
+<li><b>$theDatabase</b>: The database name.
+<li><b>$theFlags</b>: A bitfield providing the following options: <ul> <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></tt>: If set, the server will connect if necessary, if not set and the server is not connected, the method will return <tt>NULL</tt>. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_ASSERT">Milko\PHPLib\Server::<b>kFLAG_ASSERT</b></a></code></tt>: If set, the method will raise an exception if the server is not connected or if the database cannot be found. </ul>
+<li><b>$theOptions</b>: An array of options representing driver native options.
+</ul>
+
+<p>The method will return <tt>TRUE</tt> if the database was found or <tt>NULL</tt> if
+not.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theDatabase</var></dt>
+					<dd>Database name.</dd>
+					<dt><var>$theFlags</var></dt>
+					<dd>Flags bitfield.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Database native options.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					boolean<br><tt>TRUE</tt> dropped, <tt>FALSE</tt> not found.
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+				</div>
+
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataServer.html#_databaseDrop">Milko\PHPLib\DataServer::databaseDrop()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataServer.html#_databaseRetrieve">Milko\PHPLib\DataServer::databaseRetrieve()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
+$done = $server->DropDatabase( "database" );</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="databaseList" id="_databaseList">
+
+		<td class="attributes"><code>
+			abstract protected 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_databaseList">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#490-502" title="Go to source code">databaseList</a>( )</code>
+
+		<div class="description short">
+			<h4>List server databases.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>List server databases.</h4>
+
+<p>This method should return the list of server database names.</p>
+
+<p>This method assumes that the server is connected, it is the responsibility of the
+caller to ensure this.</p>
+
+<p>This method must be implemented by derived concrete classes.</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array<br>List of database names.
+				</div>
+
+
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataServer.html#_ListDatabases">Milko\PHPLib\DataServer::ListDatabases()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="databaseCreate" id="_databaseCreate">
+
+		<td class="attributes"><code>
+			abstract protected 
+
+			<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_databaseCreate">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#509-527" title="Go to source code">databaseCreate</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+
+		<div class="description short">
+			<h4>Create database.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Create database.</h4>
+
+<p>This method should create and return a <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> object corresponding to the
+provided name, if the operation fails, the method should raise an exception.</p>
+
+<p>This method assumes that the server is connected, it is the responsibility of the
+caller to ensure this.</p>
+
+<p>The method should not be concerned if the database already exists, it is the
+responsibility of the caller to check it.</p>
+
+<p>This method must be implemented by derived concrete classes.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theDatabase</var></dt>
+					<dd>Database name.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Database native options.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code><br>Database object.
+				</div>
+
+
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataServer.html#_RetrieveDatabase">Milko\PHPLib\DataServer::RetrieveDatabase()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="databaseRetrieve" id="_databaseRetrieve">
+
+		<td class="attributes"><code>
+			abstract protected 
+
+			<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_databaseRetrieve">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#534-550" title="Go to source code">databaseRetrieve</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+
+		<div class="description short">
+			<h4>Return a database object.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Return a database object.</h4>
+
+<p>This method should return a <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> object corresponding to the provided
+name, or <tt>NULL</tt> if the provided name does not correspond to any database in
+the server.</p>
+
+<p>The method assumes that the server is connected, it is the responsibility of the
+caller to ensure this.</p>
+
+<p>This method must be implemented by derived concrete classes.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theDatabase</var></dt>
+					<dd>Database name.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Database native options.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code><br>Database object or <tt>NULL</tt> if not found.
+				</div>
+
+
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataServer.html#_RetrieveDatabase">Milko\PHPLib\DataServer::RetrieveDatabase()</a></code><br>
+						<code><a href="class-Milko.PHPLib.DataServer.html#_DropDatabase">Milko\PHPLib\DataServer::DropDatabase()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="databaseDrop" id="_databaseDrop">
+
+		<td class="attributes"><code>
+			abstract protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_databaseDrop">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#557-570" title="Go to source code">databaseDrop</a>( <span><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+
+		<div class="description short">
+			<h4>Drop a database.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Drop a database.</h4>
+
+<p>This method should drop the provided database.</p>
+
+<p>The method assumes that the server is connected, it is the responsibility of the
+caller to ensure this.</p>
+
+<p>This method must be implemented by derived concrete classes.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theDatabase</var></dt>
+					<dd>Database object.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Database native options.</dd>
+				</dl></div>
+
+
+
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataServer.html#_DropDatabase">Milko\PHPLib\DataServer::DropDatabase()</a></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Milko.PHPLib.Server.html#methods">Milko\PHPLib\Server</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.Server.html#_Connect">Connect()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_Connection">Connection()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_Disconnect">Disconnect()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#___destruct">__destruct()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#___sleep">__sleep()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#___wakeup">__wakeup()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_connectionCreate">connectionCreate()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_connectionDestruct">connectionDestruct()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_isConnected">isConnected()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_isLockedProperty">isLockedProperty()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_lockedProperties">lockedProperties()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_offsetSet">offsetSet()</a>, 
+			<a href="class-Milko.PHPLib.Server.html#_offsetUnset">offsetUnset()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Milko.PHPLib.DataSource.html#methods">Milko\PHPLib\DataSource</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.DataSource.html#_Fragment">Fragment()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Host">Host()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Password">Password()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Path">Path()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Port">Port()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Protocol">Protocol()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_Query">Query()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_User">User()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#___toString">__toString()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Milko.PHPLib.Container.html#methods">Milko\PHPLib\Container</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.Container.html#_arrayKeys">arrayKeys()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_arrayValues">arrayValues()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_convertToArray">convertToArray()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_manageAttribute">manageAttribute()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_manageProperty">manageProperty()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_offsetGet">offsetGet()</a>, 
+			<a href="class-Milko.PHPLib.Container.html#_toArray">toArray()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-ArrayObject.html#methods">ArrayObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ArrayObject.html#_append">append()</a>, 
+			<a href="class-ArrayObject.html#_asort">asort()</a>, 
+			<a href="class-ArrayObject.html#_count">count()</a>, 
+			<a href="class-ArrayObject.html#_exchangeArray">exchangeArray()</a>, 
+			<a href="class-ArrayObject.html#_getArrayCopy">getArrayCopy()</a>, 
+			<a href="class-ArrayObject.html#_getFlags">getFlags()</a>, 
+			<a href="class-ArrayObject.html#_getIterator">getIterator()</a>, 
+			<a href="class-ArrayObject.html#_getIteratorClass">getIteratorClass()</a>, 
+			<a href="class-ArrayObject.html#_ksort">ksort()</a>, 
+			<a href="class-ArrayObject.html#_natcasesort">natcasesort()</a>, 
+			<a href="class-ArrayObject.html#_natsort">natsort()</a>, 
+			<a href="class-ArrayObject.html#_offsetExists">offsetExists()</a>, 
+			<a href="class-ArrayObject.html#_serialize">serialize()</a>, 
+			<a href="class-ArrayObject.html#_setFlags">setFlags()</a>, 
+			<a href="class-ArrayObject.html#_setIteratorClass">setIteratorClass()</a>, 
+			<a href="class-ArrayObject.html#_uasort">uasort()</a>, 
+			<a href="class-ArrayObject.html#_uksort">uksort()</a>, 
+			<a href="class-ArrayObject.html#_unserialize">unserialize()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-Milko.PHPLib.Server.html#constants">Milko\PHPLib\Server</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.Server.html#kFLAG_ASSERT"><b>kFLAG_ASSERT</b></a>, 
+			<a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT"><b>kFLAG_CONNECT</b></a>, 
+			<a href="class-Milko.PHPLib.Server.html#kFLAG_CREATE"><b>kFLAG_CREATE</b></a>, 
+			<a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT"><b>kFLAG_DEFAULT</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-Milko.PHPLib.DataSource.html#constants">Milko\PHPLib\DataSource</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.DataSource.html#FRAG"><b>FRAG</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#HOST"><b>HOST</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#PASS"><b>PASS</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#PATH"><b>PATH</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#PORT"><b>PORT</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#PROT"><b>PROT</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#QUERY"><b>QUERY</b></a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#USER"><b>USER</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-ArrayObject.html#constants">ArrayObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ArrayObject.html#ARRAY_AS_PROPS"><b>ARRAY_AS_PROPS</b></a>, 
+			<a href="class-ArrayObject.html#STD_PROP_LIST"><b>STD_PROP_LIST</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="mDatabases" id="$mDatabases">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Milko.PHPLib.DataServer.html#88-98" title="Go to source code"><var>$mDatabases</var></a>
+
+			<div class="description short">
+				<h4>Working databases.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Working databases.</h4>
+
+<p>This data member holds the <i>working list of database objects</i>, it is an array
+indexed by the database name with the relative <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> objects as value.</p>
+
+<p>Each time a database is requested this list will be searched first by default.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$mDatabases" class="anchor">#</a>
+				<code>[]</code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Milko.PHPLib.Server.html#properties">Milko\PHPLib\Server</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Milko.PHPLib.Server.html#$mConnection"><var>$mConnection</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		milkolib reference documentation API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

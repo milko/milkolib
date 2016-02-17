@@ -95,6 +95,15 @@ abstract class Server extends DataSource
 	 */
 	const kFLAG_CONNECT = 0x00000002;
 
+	/**
+	 * Create resource if it doesn't exist.
+	 *
+	 * If this flag is set, the resource will be created if necessary.
+	 *
+	 * @var string
+	 */
+	const kFLAG_CREATE = 0x00000004;
+
 
 
 
@@ -287,9 +296,11 @@ abstract class Server extends DataSource
 	 * 		the server is not connected, the method will raise a {@link \RuntimeException}.
 	 * </ul>
 	 *
+	 * By default we set the {@link kFLAG_CONNECT} flag to automatically connect if needed.
+	 *
 	 * @return mixed				Native connection object or <tt>NULL</tt>.
 	 */
-	public function Connection( $theFlags = self::kFLAG_DEFAULT )
+	public function Connection( $theFlags = self::kFLAG_CONNECT )
 	{
 		//
 		// Check if connected.
