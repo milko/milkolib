@@ -44,6 +44,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Milko.PHPLib.Collection.html">Collection</a></li>
 				<li><a href="class-Milko.PHPLib.Container.html">Container</a></li>
 				<li class="active"><a href="class-Milko.PHPLib.Database.html">Database</a></li>
 				<li><a href="class-Milko.PHPLib.DataServer.html">DataServer</a></li>
@@ -118,7 +119,7 @@ concrete classes:</p>
 </ul>
 
 <p>The object's inherited array will be populated with collections as they are used, the
-offsets represent the collection name and the values will be Collection objects.</p>
+offsets represent the collection name and the values will be <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> objects.</p>
 
 <p>Most of the above methods feature a bitfield parameter that determines the actions to
 take in the event a collection is not found:</p>
@@ -129,7 +130,7 @@ take in the event a collection is not found:</p>
 <p>The public methods do not implement the actual operations, this is delegated to a
 protected virtual interface which must be implemented by derived concrete classes:</p>
 
-<ul> <li><b><code><a href="class-Milko.PHPLib.Database.html#_newDatabase">Milko\PHPLib\Database::newDatabase()</a></code></b>: Instantiate a driver native database instance. <li><b><code><a href="class-Milko.PHPLib.Database.html#_databaseName">Milko\PHPLib\Database::databaseName()</a></code></b>: Return the database name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionList">Milko\PHPLib\Database::collectionList()</a></code></b>: Return the list of database collection names. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionCreate">Milko\PHPLib\Database::collectionCreate()</a></code></b>: Create and return a Collection object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionRetrieve">Milko\PHPLib\Database::collectionRetrieve()</a></code></b>: Return a Collection object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionEmpty">Milko\PHPLib\Database::collectionEmpty()</a></code></b>: Clear the contents of the provided Collection object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionDrop">Milko\PHPLib\Database::collectionDrop()</a></code></b>: Drop the provided Collection object.
+<ul> <li><b><code><a href="class-Milko.PHPLib.Database.html#_newDatabase">Milko\PHPLib\Database::newDatabase()</a></code></b>: Instantiate a driver native database instance. <li><b><code><a href="class-Milko.PHPLib.Database.html#_databaseName">Milko\PHPLib\Database::databaseName()</a></code></b>: Return the database name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionList">Milko\PHPLib\Database::collectionList()</a></code></b>: Return the list of database collection names. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionCreate">Milko\PHPLib\Database::collectionCreate()</a></code></b>: Create and return a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionRetrieve">Milko\PHPLib\Database::collectionRetrieve()</a></code></b>: Return a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionEmpty">Milko\PHPLib\Database::collectionEmpty()</a></code></b>: Clear the contents of the provided <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionDrop">Milko\PHPLib\Database::collectionDrop()</a></code></b>: Drop the provided <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object.
 </ul>
 
 <p>Each time a collection object is retrieved, the object will store it in the
@@ -228,7 +229,7 @@ $database->CollectionDrop( $collections[ 0 ] );<br/>
 		<div class="description detailed hidden">
 			<h4>Instantiate class.</h4>
 
-<p>A database in instantiated by providing the <code><a href="class-Milko.PHPLib.DataServer.html">Milko\PHPLib\DataServer</a></code> instance to which the
+<p>A database is instantiated by providing the <code><a href="class-Milko.PHPLib.DataServer.html">Milko\PHPLib\DataServer</a></code> instance to which the
 database belongs, the database name and a set of native database driver options.</p>
 
 
@@ -491,7 +492,7 @@ $list = $database->WorkingCollections();</p><br>
 		<td class="attributes"><code>
 			 public 
 
-			Collection
+			<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code>
 			
 			</code>
 		</td>
@@ -516,7 +517,7 @@ following parameters:</p>
 <li><b>$theOptions</b>: An array of options representing driver native options.
 </ul>
 
-<p>The method will either return a Collection object, or <tt>NULL</tt> if the
+<p>The method will either return a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object, or <tt>NULL</tt> if the
 collection was not found.</p>
 
 <p>The kFLAG_CREATE flag is set by default to ensure the indicated collection is
@@ -537,7 +538,7 @@ created if necessary.</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					Collection<br>Collection object or <tt>NULL</tt>.
+					<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code><br>Collection object or <tt>NULL</tt>.
 				</div>
 
 				<h4>Throws</h4>
@@ -571,7 +572,7 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 		<td class="attributes"><code>
 			 public 
 
-			Collection
+			<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code>
 			
 			</code>
 		</td>
@@ -592,7 +593,7 @@ collections collection.</p>
 
 <p>If the provided collection name doesn't match any entries among the working list,
 the method will return <tt>NULL</tt>, if it does, the method will return the related
-Collection object.</p>
+<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object.</p>
 
 <p>The method features a single parameter representing the collection name.</p>
 
@@ -605,7 +606,7 @@ Collection object.</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					Collection<br>Collection object or <tt>NULL</tt>.
+					<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code><br>Collection object or <tt>NULL</tt>.
 				</div>
 
 
@@ -1014,7 +1015,7 @@ caller to ensure this.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionEmpty">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#689-702" title="Go to source code">collectionEmpty</a>( <span>Milko\PHPLib\Collection <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#689-702" title="Go to source code">collectionEmpty</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
 
 		<div class="description short">
 			<h4>Clear a collection.</h4>
@@ -1062,7 +1063,7 @@ caller to ensure this.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionDrop">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#709-722" title="Go to source code">collectionDrop</a>( <span>Milko\PHPLib\Collection <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#709-722" title="Go to source code">collectionDrop</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
 
 		<div class="description short">
 			<h4>Drop a collection.</h4>

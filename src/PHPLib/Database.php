@@ -131,7 +131,7 @@ abstract class Database extends Container
 	/**
 	 * <h4>Instantiate class.</h4>
 	 *
-	 * A database in instantiated by providing the {@link DataServer} instance to which the
+	 * A database is instantiated by providing the {@link DataServer} instance to which the
 	 * database belongs, the database name and a set of native database driver options.
 	 *
 	 * @param DataServer			$theServer			Data server.
