@@ -145,23 +145,13 @@ abstract class DataServer extends Server
 			// Parse path.
 			// Note that we skip the first path element:
 			// that is because the path begins with the separator.
+			// Also note that it is the responsibility of the database
+			// to instantiate the eventual default collection.
 			//
 			$parts = explode( '/', $path );
 			if( count( $parts ) > 1 )
-			{
-				//
-				// Instantiate default database.
-				//
-				$database = $this->RetrieveDatabase(
+				$this->RetrieveDatabase(
 					$parts[ 1 ], self::kFLAG_CONNECT + self::kFLAG_CREATE );
-
-				//
-				// Instantiate default collection.
-				//
-				if( count( $parts ) > 2 )
-					$database->RetrieveCollection( $parts[ 2 ], self::kFLAG_CREATE );
-
-			} // Path not empty.
 
 		} // Has path.
 

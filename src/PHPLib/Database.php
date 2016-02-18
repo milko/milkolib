@@ -167,6 +167,23 @@ abstract class Database extends Container
 		//
 		$this->mNativeObject = $this->newDatabase( $theDatabase, $theOptions );
 
+		//
+		// Handle connection path.
+		//
+		$path = $this->Server()->Path();
+		if( $path !== NULL )
+		{
+			//
+			// Parse path.
+			// Note that we skip the first path element:
+			// that is because the path begins with the separator.
+			//
+			$parts = explode( '/', $path );
+			if( count( $parts ) > 2 )
+				$this->RetrieveCollection( $parts[ 2 ], Server::kFLAG_CREATE );
+
+		} // Has path.
+
 	} // Constructor.
 
 
@@ -337,7 +354,7 @@ abstract class Database extends Container
 	 * @uses collectionCreate()
 	 */
 	public function RetrieveCollection( $theCollection,
-										$theFlags = DataServer::kFLAG_CREATE,
+										$theFlags = Server::kFLAG_CREATE,
 										$theOptions = NULL )
 	{
 		//
@@ -348,36 +365,36 @@ abstract class Database extends Container
 		//
 		// Match working collections.
 		//
-		$collection = $this->offsetGet( $theCollection );
-		if( $collection instanceof Collection )
-			return $collection;														// ==>
+		if( $this->offsetExists( $theCollection ) )
+			return $this->offsetGet( $theCollection );								// ==>
 
 		//
 		// Retrieve existing collection.
 		//
 		$collection = $this->collectionRetrieve( $theCollection, $theOptions );
-		if( $collection instanceof Collection )
-			return $collection;														// ==>
-
-		//
-		// Create collection.
-		//
-		if( $theFlags & DataServer::kFLAG_CREATE )
+		if( $collection === NULL )
 		{
-			$collection = $this->collectionCreate( $theCollection, $theOptions );
-			$this->offsetSet( $theCollection, $collection );
+			//
+			// Create collection.
+			//
+			if( $theFlags & Server::kFLAG_CREATE )
+				$collection = $this->collectionCreate( $theCollection, $theOptions );
 
-			return $collection;														// ==>
+			//
+			// Assert collection.
+			//
+			elseif( $theFlags & Server::kFLAG_ASSERT )
+				throw new \RuntimeException (
+					"Unknown collection [$theCollection]." );					// !@! ==>
 		}
 
 		//
-		// Assert collection.
+		// Add collection.
 		//
-		if( $theFlags & DataServer::kFLAG_ASSERT )
-			throw new \RuntimeException (
-				"Unknown collection [$theCollection]." );						// !@! ==>
+		if( $collection instanceof Collection )
+			$this->offsetSet( $theCollection, $collection );
 
-		return NULL;																// ==>
+		return $collection;															// ==>
 
 	} // RetrieveCollection.
 
@@ -462,7 +479,7 @@ abstract class Database extends Container
 	 * @uses collectionEmpty()
 	 */
 	public function EmptyCollection( $theCollection,
-									 $theFlags = DataServer::kFLAG_DEFAULT,
+									 $theFlags = Server::kFLAG_DEFAULT,
 									 $theOptions = NULL )
 	{
 		//
@@ -525,7 +542,7 @@ abstract class Database extends Container
 	 * @uses collectionDrop()
 	 */
 	public function DropCollection( $theCollection,
-									$theFlags = DataServer::kFLAG_DEFAULT,
+									$theFlags = Server::kFLAG_DEFAULT,
 									$theOptions = NULL )
 	{
 		//

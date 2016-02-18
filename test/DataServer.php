@@ -62,7 +62,7 @@ class test_Database extends Milko\PHPLib\Database
 	protected function databaseName() {
 		return $this->mNativeObject;	}
 	protected function collectionList() {
-		return $this->arrayKeys();	}
+		return array_merge( ["cl1", "cl2", "cl3" ], $this->WorkingCollections() );	}
 	protected function collectionCreate( $theCollection, $theOptions ) {
 		return new test_Collection( $this, $theCollection, $theOptions );	}
 	protected function collectionRetrieve( $theCollection, $theOptions ) {
@@ -255,4 +255,3 @@ print_r( $list );
 
 
 ?>
-
