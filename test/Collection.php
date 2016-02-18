@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Database object test suite.
+ * Collection object test suite.
  *
  * This test suite will use a ficticious test class, to perform more in depth test use the
  * concrete classes derived from Database.
@@ -24,7 +24,7 @@ require_once( "functions.php" );
 //
 // Reference class.
 //
-use Milko\PHPLib\Database;
+use Milko\PHPLib\Collection;
 
 //
 // DataServer test class.
@@ -97,42 +97,46 @@ class test_Collection extends Milko\PHPLib\Collection
 }
 
 //
-// Instantiate data server.
+// Instantiate data server, database and collection.
 //
-echo( "Instantiate data server:\n" );
+echo( "Instantiate data server, database and collection:\n" );
 echo( '$url = "protocol://user:pass@host:9090/db0/col0";' . "\n" );
 $url = "protocol://user:pass@host:9090/db0/col0";
 echo( '$server = new test_DataServer( $url' . " );\n" );
 $server = new test_DataServer( $url );
+echo( "$server\n" );
+echo( '$db = $server->RetrieveDatabase( "db0" );' . "\n" );
+$db = $server->RetrieveDatabase( "db0" );
+echo( '$name = (string)$db;' . "\n" );
 
 echo( "\n" );
 
 //
-// Instantiate database.
+// Instantiate collection.
 //
-echo( "Instantiate database:\n" );
-echo( '$db = new test_Database( $server, "db" );' . "\n" );
-$db = new test_Database( $server, "db" );
-echo( '$name = (string)$db;' . "\n" );
-$name = (string)$db;
+echo( "Instantiate collection:\n" );
+echo( '$test = new test_Collection( $db, "pippo" );' . "\n" );
+$test = new test_Collection( $db, "pippo" );
+echo( '$name = (string)$test;' . "\n" );
+$name = (string)$test;
 echo( "$name\n" );
-echo( '$list = $server->WorkingDatabases();' . "\n" );
-$list = $server->WorkingDatabases();
+echo( '$list = $db->WorkingCollections();' . "\n" );
+$list = $db->WorkingCollections();
 print_r( $list );
 
 echo( "\n" );
 
 //
-// Instantiate database from server.
+// Instantiate collection from database.
 //
-echo( "Instantiate database from server:\n" );
-echo( '$db = $server->RetrieveDatabase( "db0" );' . "\n" );
-$db = $server->RetrieveDatabase( "db0" );
-echo( '$name = (string)$db;' . "\n" );
-$name = (string)$db;
+echo( "Instantiate collection from database:\n" );
+echo( '$test = $db->RetrieveCollection( "pippo" );' . "\n" );
+$test = $db->RetrieveCollection( "pippo" );
+echo( '$name = (string)$test;' . "\n" );
+$name = (string)$test;
 echo( "$name\n" );
-echo( '$list = $server->WorkingDatabases();' . "\n" );
-$list = $server->WorkingDatabases();
+echo( '$list = $db->WorkingCollections();' . "\n" );
+$list = $db->WorkingCollections();
 print_r( $list );
 
 echo( "\n====================================================================================\n\n" );
@@ -141,9 +145,19 @@ echo( "\n=======================================================================
 // Get server.
 //
 echo( "Get server:\n" );
-echo( '$x = $db->Server();' . "\n" );
-$x = $db->Server();
-print_r( $x );
+echo( '$x = $test->Server();' . "\n" );
+$x = $test->Server();
+echo( "$x\n" );
+
+echo( "\n" );
+
+//
+// Get database.
+//
+echo( "Get database:\n" );
+echo( '$x = $test->Database();' . "\n" );
+$x = $test->Database();
+echo( "$x\n" );
 
 echo( "\n" );
 
@@ -151,75 +165,13 @@ echo( "\n" );
 // Get connection.
 //
 echo( "Get connection:\n" );
-echo( '$x = $db->Connection();' . "\n" );
-$x = $db->Connection();
-var_dump( $x );
+echo( '$x = $test->Connection();' . "\n" );
+$x = $test->Connection();
+echo( "$x\n" );
 
 echo( "\n" );
 
-//
-// List database collections.
-//
-echo( "List database collections:\n" );
-echo( '$list = $db->ListCollections();' . "\n" );
-$list = $db->ListCollections();
-print_r( $list );
-
-echo( "\n" );
-
-//
-// List working collections.
-//
-echo( "List working collections:\n" );
-echo( '$list = $db->WorkingCollections();' . "\n" );
-$list = $db->WorkingCollections();
-print_r( $list );
-
-echo( "\n" );
-
-//
-// Retrieve collection.
-//
-echo( "Retrieve collection:\n" );
-echo( '$col = $db->RetrieveCollection( "col0" );' . "\n" );
-$col = $db->RetrieveCollection( "col0" );
-print_r( $col );
-
-echo( "\n" );
-
-//
-// Create collection.
-//
-echo( "Create collection:\n" );
-echo( '$col = $db->RetrieveCollection( "NewCol" );' . "\n" );
-$col = $db->RetrieveCollection( "NewCol" );
-echo( '$list = $db->WorkingCollections();' . "\n" );
-$list = $db->WorkingCollections();
-print_r( $list );
-
-echo( "\n" );
-
-//
-// Forget collection.
-//
-echo( "Forget collection:\n" );
-echo( '$col = $db->ForgetCollection( "NewCol" );' . "\n" );
-$col = $db->ForgetCollection( "NewCol" );
-echo( '$list = $db->WorkingCollections();' . "\n" );
-$list = $db->WorkingCollections();
-print_r( $list );
-
-echo( "\n" );
-
-//
-// Drop collection.
-//
-echo( "Drop collection:\n" );
-echo( '$col = $db->DropCollection( "col0" );' . "\n" );
-$col = $db->DropCollection( "col0" );
-echo( '$list = $db->WorkingCollections();' . "\n" );
-$list = $db->WorkingCollections();
-print_r( $list );
+echo( "For testing data management try concrete collection classes.\n\n" );
 
 
 ?>

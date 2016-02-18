@@ -575,21 +575,21 @@ abstract class Collection extends Container
 	
 	
 	/*===================================================================================
-	 *	databaseName																	*
+	 *	collectionName																	*
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Return the database name.</h4>
+	 * <h4>Return the collection name.</h4>
 	 *
-	 * This method should return the current database name.
+	 * This method should return the current collection name.
 	 *
 	 * Note that this method <em>must</em> return a non empty string.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @return string				The database name.
+	 * @return string				The collection name.
 	 */
-	abstract protected function databaseName();
+	abstract protected function collectionName();
 	
 	
 	
