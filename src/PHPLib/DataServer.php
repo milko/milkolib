@@ -9,6 +9,7 @@
 namespace Milko\PHPLib;
 
 use Milko\PHPLib\Server;
+use Milko\PHPLib\Database;
 
 /*=======================================================================================
  *																						*
@@ -135,7 +136,7 @@ abstract class DataServer extends Server
 		parent::__construct( $theConnection );
 		
 		//
-		// Handle path.
+		// Handle connection path.
 		//
 		$path = $this->Path();
 		if( $path !== NULL )
@@ -147,12 +148,23 @@ abstract class DataServer extends Server
 			//
 			$parts = explode( '/', $path );
 			if( count( $parts ) > 1 )
-				$this->mDefaultDatabase
-					= $this->RetrieveDatabase(
+			{
+				//
+				// Instantiate default database.
+				//
+				$database = $this->RetrieveDatabase(
 					$parts[ 1 ], self::kFLAG_CONNECT + self::kFLAG_CREATE );
-			
+
+				//
+				// Instantiate default collection.
+				//
+				if( count( $parts ) > 2 )
+					$database->RetrieveCollection( $parts[ 2 ], self::kFLAG_CREATE );
+
+			} // Path not empty.
+
 		} // Has path.
-		
+
 	} // Constructor.
 	
 	
@@ -299,7 +311,8 @@ abstract class DataServer extends Server
 			//
 			$database = $this->databaseRetrieve( $theDatabase, $theOptions );
 			if( $database instanceof Database )
-				return $this->mDatabases[ $theDatabase ] = $database;				// ==>
+				return $this->mDatabases[ $theDatabase ]
+					= $database;													// ==>
 
 			//
 			// Create database.

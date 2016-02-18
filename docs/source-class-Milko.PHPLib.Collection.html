@@ -159,7 +159,7 @@
 </span></span><span id="40" class="l"><a href="#40"> 40: </a><span class="php-comment"> *  &lt;li&gt;&lt;b&gt;{@link ReplaceOne()}&lt;/b&gt;: Replace one record.
 </span></span><span id="41" class="l"><a href="#41"> 41: </a><span class="php-comment"> *  &lt;li&gt;&lt;b&gt;{@link FindOne()}&lt;/b&gt;: Find one record.
 </span></span><span id="42" class="l"><a href="#42"> 42: </a><span class="php-comment"> *  &lt;li&gt;&lt;b&gt;{@link FindMany()}&lt;/b&gt;: Find many records.
-</span></span><span id="43" class="l"><a href="#43"> 43: </a><span class="php-comment"> *  &lt;li&gt;&lt;b&gt;{@link Query()}&lt;/b&gt;: Perform a query.
+</span></span><span id="43" class="l"><a href="#43"> 43: </a><span class="php-comment"> *  &lt;li&gt;&lt;b&gt;{@link QueryCollection()}&lt;/b&gt;: Perform a query.
 </span></span><span id="44" class="l"><a href="#44"> 44: </a><span class="php-comment"> *  &lt;li&gt;&lt;b&gt;{@link DeleteOne()}&lt;/b&gt;: Delete one record.
 </span></span><span id="45" class="l"><a href="#45"> 45: </a><span class="php-comment"> *  &lt;li&gt;&lt;b&gt;{@link DeleteMany()}&lt;/b&gt;: Delete many records.
 </span></span><span id="46" class="l"><a href="#46"> 46: </a><span class="php-comment"> * &lt;/ul&gt;
@@ -576,7 +576,7 @@
 </span><span id="457" class="l"><a href="#457">457: </a>
 </span><span id="458" class="l"><a href="#458">458: </a>
 </span><span id="459" class="l"><a href="#459">459: </a>    <span class="php-comment">/*===================================================================================
-</span></span><span id="460" class="l"><a href="#460">460: </a><span class="php-comment">     *  Query                                                                           *
+</span></span><span id="460" class="l"><a href="#460">460: </a><span class="php-comment">     *  QueryCollection                                                                 *
 </span></span><span id="461" class="l"><a href="#461">461: </a><span class="php-comment">     *==================================================================================*/</span>
 </span><span id="462" class="l"><a href="#462">462: </a>
 </span><span id="463" class="l"><a href="#463">463: </a>    <span class="php-comment">/**
@@ -598,11 +598,11 @@
 </span></span><span id="479" class="l"><a href="#479">479: </a><span class="php-comment">     *
 </span></span><span id="480" class="l"><a href="#480">480: </a><span class="php-comment">     * @uses query()
 </span></span><span id="481" class="l"><a href="#481">481: </a><span class="php-comment">     */</span>
-</span><span id="482" class="l"><a href="#482">482: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> Query( <span class="php-var">$theQuery</span>, <span class="php-var">$theOptions</span> = <span class="php-keyword1">NULL</span> )
+</span><span id="482" class="l"><a href="#482">482: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> QueryCollection( <span class="php-var">$theQuery</span>, <span class="php-var">$theOptions</span> = <span class="php-keyword1">NULL</span> )
 </span><span id="483" class="l"><a href="#483">483: </a>    {
 </span><span id="484" class="l"><a href="#484">484: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;query( <span class="php-var">$theQuery</span>, <span class="php-var">$theOptions</span> );                              <span class="php-comment">// ==&gt;</span>
 </span><span id="485" class="l"><a href="#485">485: </a>
-</span><span id="486" class="l"><a href="#486">486: </a>    } <span class="php-comment">// Query.</span>
+</span><span id="486" class="l"><a href="#486">486: </a>    } <span class="php-comment">// QueryCollection.</span>
 </span><span id="487" class="l"><a href="#487">487: </a>
 </span><span id="488" class="l"><a href="#488">488: </a>
 </span><span id="489" class="l"><a href="#489">489: </a>    <span class="php-comment">/*===================================================================================
@@ -677,9 +677,9 @@
 </span></span><span id="558" class="l"><a href="#558">558: </a><span class="php-comment">     *==================================================================================*/</span>
 </span><span id="559" class="l"><a href="#559">559: </a>    
 </span><span id="560" class="l"><a href="#560">560: </a>    <span class="php-comment">/**
-</span></span><span id="561" class="l"><a href="#561">561: </a><span class="php-comment">     * &lt;h4&gt;Return a native database object.&lt;/h4&gt;
+</span></span><span id="561" class="l"><a href="#561">561: </a><span class="php-comment">     * &lt;h4&gt;Return a native collection object.&lt;/h4&gt;
 </span></span><span id="562" class="l"><a href="#562">562: </a><span class="php-comment">     *
-</span></span><span id="563" class="l"><a href="#563">563: </a><span class="php-comment">     * This method should instantiate and return a native driver database object.
+</span></span><span id="563" class="l"><a href="#563">563: </a><span class="php-comment">     * This method should instantiate and return a native driver collection object.
 </span></span><span id="564" class="l"><a href="#564">564: </a><span class="php-comment">     *
 </span></span><span id="565" class="l"><a href="#565">565: </a><span class="php-comment">     * This method assumes that the server is connected and that the {@link Server()} was
 </span></span><span id="566" class="l"><a href="#566">566: </a><span class="php-comment">     * set.
@@ -688,7 +688,7 @@
 </span></span><span id="569" class="l"><a href="#569">569: </a><span class="php-comment">     *
 </span></span><span id="570" class="l"><a href="#570">570: </a><span class="php-comment">     * @param string                $theCollection      Collection name.
 </span></span><span id="571" class="l"><a href="#571">571: </a><span class="php-comment">     * @param mixed                 $theOptions         Native driver options.
-</span></span><span id="572" class="l"><a href="#572">572: </a><span class="php-comment">     * @return mixed                Native database object.
+</span></span><span id="572" class="l"><a href="#572">572: </a><span class="php-comment">     * @return mixed                Native collection object.
 </span></span><span id="573" class="l"><a href="#573">573: </a><span class="php-comment">     */</span>
 </span><span id="574" class="l"><a href="#574">574: </a>    <span class="php-keyword1">abstract</span> <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> newCollection( <span class="php-var">$theCollection</span>, <span class="php-var">$theOptions</span> );
 </span><span id="575" class="l"><a href="#575">575: </a>    

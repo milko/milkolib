@@ -40,7 +40,7 @@ use Milko\PHPLib\Container;
  * 	<li><b>{@link ReplaceOne()}</b>: Replace one record.
  * 	<li><b>{@link FindOne()}</b>: Find one record.
  * 	<li><b>{@link FindMany()}</b>: Find many records.
- * 	<li><b>{@link Query()}</b>: Perform a query.
+ * 	<li><b>{@link QueryCollection()}</b>: Perform a query.
  * 	<li><b>{@link DeleteOne()}</b>: Delete one record.
  * 	<li><b>{@link DeleteMany()}</b>: Delete many records.
  * </ul>
@@ -457,7 +457,7 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	Query																			*
+	 *	QueryCollection																	*
 	 *==================================================================================*/
 
 	/**
@@ -479,11 +479,11 @@ abstract class Collection extends Container
 	 *
 	 * @uses query()
 	 */
-	public function Query( $theQuery, $theOptions = NULL )
+	public function QueryCollection( $theQuery, $theOptions = NULL )
 	{
 		return $this->query( $theQuery, $theOptions );								// ==>
 
-	} // Query.
+	} // QueryCollection.
 
 
 	/*===================================================================================
@@ -558,9 +558,9 @@ abstract class Collection extends Container
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Return a native database object.</h4>
+	 * <h4>Return a native collection object.</h4>
 	 *
-	 * This method should instantiate and return a native driver database object.
+	 * This method should instantiate and return a native driver collection object.
 	 *
 	 * This method assumes that the server is connected and that the {@link Server()} was
 	 * set.
@@ -569,7 +569,7 @@ abstract class Collection extends Container
 	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param mixed					$theOptions			Native driver options.
-	 * @return mixed				Native database object.
+	 * @return mixed				Native collection object.
 	 */
 	abstract protected function newCollection( $theCollection, $theOptions );
 	

@@ -210,7 +210,7 @@ $database = $server->RetrieveDatabase( $databases[ 0 ], self::kFLAG_CREATE );<br
 // Work with that database...<br/>
 $server->DatabaseDrop( $databases[ 0 ] );<br/>
 // Dropped the database.</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.DataServer.html#19-574" title="Go to source code">PHPLib/DataServer.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.DataServer.html#20-587" title="Go to source code">PHPLib/DataServer.php</a>
 		<br>
 	</div>
 
@@ -230,7 +230,7 @@ $server->DatabaseDrop( $databases[ 0 ] );<br/>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#115-156" title="Go to source code">__construct</a>( <span>string <var>$theConnection</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#116-168" title="Go to source code">__construct</a>( <span>string <var>$theConnection</var></span> )</code>
 
 		<div class="description short">
 			<h4>Instantiate class.</h4>
@@ -284,7 +284,7 @@ added or created to the working databases list.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ListDatabases">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#172-211" title="Go to source code">ListDatabases</a>( <span>string <var>$theFlags</var> = self::kFLAG_CONNECT </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#184-223" title="Go to source code">ListDatabases</a>( <span>string <var>$theFlags</var> = self::kFLAG_CONNECT </span> )</code>
 
 		<div class="description short">
 			<h4>Return the server list of databases.</h4>
@@ -342,7 +342,7 @@ $list = $server->ListDatabases();</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_WorkingDatabases">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#218-229" title="Go to source code">WorkingDatabases</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#230-241" title="Go to source code">WorkingDatabases</a>( )</code>
 
 		<div class="description short">
 			<h4>Return the working list of databases.</h4>
@@ -383,7 +383,7 @@ $list = $server->WorkingDatabases();</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_RetrieveDatabase">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#236-322" title="Go to source code">RetrieveDatabase</a>( <span>string <var>$theDatabase</var></span>, <span>string <var>$theFlags</var> = self::kFLAG_CONNECT + self::kFLAG_CREATE</span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#248-335" title="Go to source code">RetrieveDatabase</a>( <span>string <var>$theDatabase</var></span>, <span>string <var>$theFlags</var> = self::kFLAG_CONNECT + self::kFLAG_CREATE</span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return a database object.</h4>
@@ -460,7 +460,7 @@ $db = $server->RetrieveDatabase( "database" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ForgetDatabase">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#329-375" title="Go to source code">ForgetDatabase</a>( <span>string <var>$theDatabase</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#342-388" title="Go to source code">ForgetDatabase</a>( <span>string <var>$theDatabase</var></span> )</code>
 
 		<div class="description short">
 			<h4>Dispose of a database object.</h4>
@@ -513,7 +513,7 @@ $db = $server->ForgetDatabase( "database" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_DropDatabase">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#382-474" title="Go to source code">DropDatabase</a>( <span>string <var>$theDatabase</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#395-487" title="Go to source code">DropDatabase</a>( <span>string <var>$theDatabase</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Drop a database.</h4>
@@ -582,7 +582,7 @@ $done = $server->DropDatabase( "database" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_databaseList">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#490-502" title="Go to source code">databaseList</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#503-515" title="Go to source code">databaseList</a>( )</code>
 
 		<div class="description short">
 			<h4>List server databases.</h4>
@@ -627,7 +627,7 @@ caller to ensure this.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_databaseCreate">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#509-527" title="Go to source code">databaseCreate</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#522-540" title="Go to source code">databaseCreate</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
 
 		<div class="description short">
 			<h4>Create database.</h4>
@@ -683,7 +683,7 @@ responsibility of the caller to check it.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_databaseRetrieve">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#534-550" title="Go to source code">databaseRetrieve</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#547-563" title="Go to source code">databaseRetrieve</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
 
 		<div class="description short">
 			<h4>Return a database object.</h4>
@@ -738,7 +738,7 @@ caller to ensure this.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_databaseDrop">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataServer.html#557-570" title="Go to source code">databaseDrop</a>( <span><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataServer.html#570-583" title="Go to source code">databaseDrop</a>( <span><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
 
 		<div class="description short">
 			<h4>Drop a database.</h4>
@@ -906,7 +906,7 @@ caller to ensure this.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Milko.PHPLib.DataServer.html#88-98" title="Go to source code"><var>$mDatabases</var></a>
+				<a href="source-class-Milko.PHPLib.DataServer.html#89-99" title="Go to source code"><var>$mDatabases</var></a>
 
 			<div class="description short">
 				<h4>Working databases.</h4>

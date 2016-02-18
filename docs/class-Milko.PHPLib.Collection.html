@@ -115,7 +115,7 @@ driver's collection object.</p>
 <p>The class implements a public interface that deploys the common interface of derived
 concrete classes:</p>
 
-<ul> <li><b><code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code></b>: Return the database server object. <li><b><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code></b>: Return the database object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code></b>: Return the collection native driver object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_InsertOne">Milko\PHPLib\Collection::InsertOne()</a></code></b>: Insert one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_InsertMany">Milko\PHPLib\Collection::InsertMany()</a></code></b>: Insert many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_UpdateOne">Milko\PHPLib\Collection::UpdateOne()</a></code></b>: Update one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_UpdateMany">Milko\PHPLib\Collection::UpdateMany()</a></code></b>: Update many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ReplaceOne">Milko\PHPLib\Collection::ReplaceOne()</a></code></b>: Replace one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindOne">Milko\PHPLib\Collection::FindOne()</a></code></b>: Find one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindMany">Milko\PHPLib\Collection::FindMany()</a></code></b>: Find many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Query">Milko\PHPLib\Collection::Query()</a></code></b>: Perform a query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_DeleteOne">Milko\PHPLib\Collection::DeleteOne()</a></code></b>: Delete one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_DeleteMany">Milko\PHPLib\Collection::DeleteMany()</a></code></b>: Delete many records.
+<ul> <li><b><code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code></b>: Return the database server object. <li><b><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code></b>: Return the database object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code></b>: Return the collection native driver object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_InsertOne">Milko\PHPLib\Collection::InsertOne()</a></code></b>: Insert one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_InsertMany">Milko\PHPLib\Collection::InsertMany()</a></code></b>: Insert many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_UpdateOne">Milko\PHPLib\Collection::UpdateOne()</a></code></b>: Update one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_UpdateMany">Milko\PHPLib\Collection::UpdateMany()</a></code></b>: Update many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ReplaceOne">Milko\PHPLib\Collection::ReplaceOne()</a></code></b>: Replace one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindOne">Milko\PHPLib\Collection::FindOne()</a></code></b>: Find one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindMany">Milko\PHPLib\Collection::FindMany()</a></code></b>: Find many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_QueryCollection">Milko\PHPLib\Collection::QueryCollection()</a></code></b>: Perform a query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_DeleteOne">Milko\PHPLib\Collection::DeleteOne()</a></code></b>: Delete one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_DeleteMany">Milko\PHPLib\Collection::DeleteMany()</a></code></b>: Delete many records.
 </ul>
 
 <p>The public methods do not implement the actual operations, this is delegated to a
@@ -798,7 +798,7 @@ expects the following parameters:</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="Query" id="_Query">
+	<tr data-order="QueryCollection" id="_QueryCollection">
 
 		<td class="attributes"><code>
 			 public 
@@ -809,8 +809,8 @@ expects the following parameters:</p>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_Query">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#463-486" title="Go to source code">Query</a>( <span>mixed <var>$theQuery</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<a class="anchor" href="#_QueryCollection">#</a>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#463-486" title="Go to source code">QueryCollection</a>( <span>mixed <var>$theQuery</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Query the collection.</h4>
@@ -970,13 +970,13 @@ expects the following parameters:</p>
 		<code><a href="source-class-Milko.PHPLib.Collection.html#560-574" title="Go to source code">newCollection</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
 
 		<div class="description short">
-			<h4>Return a native database object.</h4>
+			<h4>Return a native collection object.</h4>
 		</div>
 
 		<div class="description detailed hidden">
-			<h4>Return a native database object.</h4>
+			<h4>Return a native collection object.</h4>
 
-<p>This method should instantiate and return a native driver database object.</p>
+<p>This method should instantiate and return a native driver collection object.</p>
 
 <p>This method assumes that the server is connected and that the <code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code> was
 set.</p>
@@ -994,7 +994,7 @@ set.</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					mixed<br>Native database object.
+					mixed<br>Native collection object.
 				</div>
 
 
@@ -1340,7 +1340,7 @@ caller to ensure this.</p>
 
 				<h4>Used by</h4>
 				<div class="list">
-						<code><a href="class-Milko.PHPLib.Collection.html#_Query">Milko\PHPLib\Collection::Query()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Collection.html#_QueryCollection">Milko\PHPLib\Collection::QueryCollection()</a></code><br>
 				</div>
 
 

@@ -9,6 +9,7 @@
 namespace Milko\PHPLib;
 
 use Milko\PHPLib\Container;
+use Milko\PHPLib\Collection;
 
 /*=======================================================================================
  *																						*
@@ -146,7 +147,7 @@ abstract class Database extends Container
 	 *
 	 * @example
 	 * // In general you will use this form:
-	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+	 * $server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
 	 * $database = $server->RetrieveDatabase( "database" );
 	 */
 	public function __construct( DataServer $theServer, $theDatabase, $theOptions = NULL )
@@ -639,24 +640,24 @@ abstract class Database extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Create database.</h4>
+	 * <h4>Create collection.</h4>
 	 *
-	 * This method should create and return a {@link Database} object corresponding to the
+	 * This method should create and return a {@link Collection} object corresponding to the
 	 * provided name, if the operation fails, the method should raise an exception.
 	 *
 	 * This method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
-	 * The method should not be concerned if the database already exists, it is the
+	 * The method should not be concerned if the collection already exists, it is the
 	 * responsibility of the caller to check it.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Database native options.
-	 * @return Database				Database object.
+	 * @param string				$theCollection		Collection name.
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return Collection			Collection object.
 	 */
-	abstract protected function collectionCreate( $theDatabase, $theOptions );
+	abstract protected function collectionCreate( $theCollection, $theOptions );
 
 
 	/*===================================================================================
@@ -664,22 +665,22 @@ abstract class Database extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return a database object.</h4>
+	 * <h4>Return a collection object.</h4>
 	 *
-	 * This method should return a {@link Database} object corresponding to the provided
-	 * name, or <tt>NULL</tt> if the provided name does not correspond to any database in
-	 * the server.
+	 * This method should return a {@link Collection} object corresponding to the provided
+	 * name, or <tt>NULL</tt> if the provided name does not correspond to any collection in
+	 * the database.
 	 *
 	 * The method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Database native options.
-	 * @return Database				Database object or <tt>NULL</tt> if not found.
+	 * @param string				$theCollection		Collection name.
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 */
-	abstract protected function collectionRetrieve( $theDatabase, $theOptions );
+	abstract protected function collectionRetrieve( $theCollection, $theOptions );
 
 
 	/*===================================================================================
