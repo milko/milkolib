@@ -30,7 +30,8 @@ use Milko\PHPLib\MongoDB\DataServer;
 echo( '$test = new \Milko\PHPLib\MongoDB\DataServer();' . "\n" );
 $test = new \Milko\PHPLib\MongoDB\DataServer();
 echo( '$result = (string)$test;' . "\n" );
-echo( (string)$test . "\n" );
+echo( (string)$test . ' ==> ' );
+echo( ( "$test" == kMONGO_OPTS_CLIENT_DEFAULT ) ? "OK\n" : "FALIED\n" );
 
 echo( "\n" );
 
@@ -42,7 +43,8 @@ $url = "mongodb://localhost:27017/test_milkolib/test_collection";
 echo( '$test = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
 $test = new \Milko\PHPLib\MongoDB\DataServer( $url );
 echo( '$result = (string)$test;' . "\n" );
-echo( (string)$test . "\n" );
+echo( (string)$test . " ==> " );
+echo( ( "$test" == $url ) ? "OK\n" : "FALIED\n" );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -64,17 +66,29 @@ echo( '$list = $test->WorkingDatabases();' . "\n" );
 $list = $test->WorkingDatabases();
 print_r( $list );
 
-echo( "\n" );
+echo( "\n====================================================================================\n\n" );
 
 //
 // Retrieve database.
 //
 echo( "Retrieve database:\n" );
-echo( '$db = $test->RetrieveDatabase( "test_milkolib" );' . "\n" );
-$db = $test->RetrieveDatabase( "test_milkolib" );
-echo( "$db\n" );
+echo( '$db = $test->RetrieveDatabase( "test_milkolib", \Milko\PHPLib\Server::kFLAG_DEFAULT );' . "\n" );
+$db = $test->RetrieveDatabase( "test_milkolib", \Milko\PHPLib\Server::kFLAG_DEFAULT );
+echo( "$db ==> " );
+echo( ( "$db" == "test_milkolib" ) ? "OK\n" : "FALIED\n" );
 
 echo( "\n" );
+
+//
+// Retrieve non existing database.
+//
+echo( "Retrieve non existing database:\n" );
+echo( '$db = $test->RetrieveDatabase( "UNKNOWN", \Milko\PHPLib\Server::kFLAG_DEFAULT );' . "\n" );
+$db = $test->RetrieveDatabase( "UNKNOWN", \Milko\PHPLib\Server::kFLAG_DEFAULT );
+echo( "$db ==> " );
+echo( ( $db === NULL ) ? "OK\n" : "FALIED\n" );
+
+echo( "\n====================================================================================\n\n" );
 
 //
 // Create database.

@@ -26,10 +26,16 @@
 						<ul>
 				<li class="active">
 					<a href="namespace-Milko.PHPLib.html">
-						PHPLib					</a>
+						PHPLib<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Milko.PHPLib.MongoDB.html">
+						MongoDB					</a>
 
 						</li>
-							</ul></li>
+							</ul></li></ul></li>
 				<li>
 					<a href="namespace-PHP.html">
 						PHP					</a>
@@ -183,7 +189,8 @@ caller: to ensure the URL is valid instantiate a new object.</p>
 
 	<div>
 		<h4>Indirect known subclasses</h4>
-			<a href="class-Milko.PHPLib.DataServer.html">Milko\PHPLib\DataServer</a>
+			<a href="class-Milko.PHPLib.DataServer.html">Milko\PHPLib\DataServer</a>, 
+			<a href="class-Milko.PHPLib.MongoDB.DataServer.html">Milko\PHPLib\MongoDB\DataServer</a>
 	</div>
 
 
@@ -206,7 +213,9 @@ caller: to ensure the URL is valid instantiate a new object.</p>
 				../../test/DataSource.php<br>
 				<b>Example:</b>
 				$dsn = new Milko\PHPLib\Datasource( 'protocol://user:pass@host:9090/dir/file?arg=val#frag' );<br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.DataSource.html#19-747" title="Go to source code">PHPLib/DataSource.php</a>
+				<b>Example:</b>
+				$dsn = new Milko\PHPLib\Datasource( 'protocol://user:pass@host1:9090,host2,host3:8080/dir/file?arg=val#frag' );<br>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.DataSource.html#19-893" title="Go to source code">PHPLib/DataSource.php</a>
 		<br>
 	</div>
 
@@ -226,7 +235,7 @@ caller: to ensure the URL is valid instantiate a new object.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#157-225" title="Go to source code">__construct</a>( <span>string <var>$theConnection</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#159-260" title="Go to source code">__construct</a>( <span>string <var>$theConnection</var></span> )</code>
 
 		<div class="description short">
 			<h4>Instantiate class.</h4>
@@ -287,7 +296,7 @@ the scheme or the host are missing.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___toString">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#232-325" title="Go to source code">__toString</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#267-280" title="Go to source code">__toString</a>( )</code>
 
 		<div class="description short">
 			<h4>Return data source name</h4>
@@ -310,6 +319,10 @@ cannot be used until there is a data source name for the object.</p>
 				</div>
 
 
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#_toURL">Milko\PHPLib\DataSource::toURL()</a></code><br>
+				</div>
 
 
 		</div>
@@ -327,7 +340,7 @@ cannot be used until there is a data source name for the object.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_offsetSet">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#341-376" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#296-338" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
 
 		<div class="description short">
 			<h4>Set a value at a given offset.</h4>
@@ -336,7 +349,8 @@ cannot be used until there is a data source name for the object.</p>
 		<div class="description detailed hidden">
 			<h4>Set a value at a given offset.</h4>
 
-<p>We overload this method to assert whether the port value is numeric.</p>
+<p>We overload this method to check the port value: it can either be an array or an
+integer, if that is not the case, an exception will be raised.</p>
 
 
 				<h4>Parameters</h4>
@@ -372,7 +386,7 @@ cannot be used until there is a data source name for the object.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_offsetUnset">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#383-413" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#345-375" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
 
 		<div class="description short">
 			<h4>Reset a value at a given offset.</h4>
@@ -381,8 +395,8 @@ cannot be used until there is a data source name for the object.</p>
 		<div class="description detailed hidden">
 			<h4>Reset a value at a given offset.</h4>
 
-<p>We overload this method to prevent warnings when a non-existing offset is provided,
-in that case we do nothing.</p>
+<p>We overload this method to prevent deleting the host and protocol.
+We also delete the password when deleting the user.</p>
 
 
 				<h4>Parameters</h4>
@@ -416,7 +430,7 @@ in that case we do nothing.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Protocol">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#429-451" title="Go to source code">Protocol</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#391-415" title="Go to source code">Protocol</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage data source protocol.</h4>
@@ -471,14 +485,14 @@ $test = $dsn->Protocol(); // Retrieve current protocol.</p><br>
 		<td class="attributes"><code>
 			 public 
 
-			string
+			string|array
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Host">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#458-480" title="Go to source code">Host</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#422-449" title="Go to source code">Host</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage data source host.</h4>
@@ -491,6 +505,9 @@ $test = $dsn->Protocol(); // Retrieve current protocol.</p><br>
 current value, or any other type to set it. The host is required, so providing
 <tt>FALSE</tt> will result in an exception.</p>
 
+<p>The host can be provided either as a string, for a single host, or as an array for
+multiple hosts.</p>
+
 <p>The method will return the current value.</p>
 
 
@@ -502,7 +519,7 @@ current value, or any other type to set it. The host is required, so providing
 
 				<h4>Returns</h4>
 				<div class="list">
-					string
+					string|array
 				</div>
 
 
@@ -540,7 +557,7 @@ $test = $dsn->Host(); // Retrieve current host.</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Port">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#487-513" title="Go to source code">Port</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#456-485" title="Go to source code">Port</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage data source port.</h4>
@@ -552,8 +569,9 @@ $test = $dsn->Host(); // Retrieve current host.</p><br>
 <p>This method will manage the data source port, provide <tt>NULL</tt> to retrieve
 the current value, <tt>FALSE</tt> to delete the host, or any other type to set it.</p>
 
-<p>When setting a new value you must provide an integer value, or an exception will be
-thrown.</p>
+<p>The host can be provided either as an integer, for a single port, or as an array for
+multiple ports; a single port must be provided as an integer value, or an exception
+will be thrown.</p>
 
 <p>The method will return the old value when deleting and the current value in all other
 cases.</p>
@@ -606,7 +624,7 @@ $test = $dsn->Port( FALSE ); // Remove port, returns old value.</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_User">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#520-545" title="Go to source code">User</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#492-519" title="Go to source code">User</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage data source user name.</h4>
@@ -671,7 +689,7 @@ $test = $dsn->User( FALSE ); // Remove user and password, returns old user name.
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Password">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#552-576" title="Go to source code">Password</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#526-552" title="Go to source code">Password</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage data source user password.</h4>
@@ -735,7 +753,7 @@ $test = $dsn->Password( FALSE ); // Remove user password, returns old value.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Path">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#583-619" title="Go to source code">Path</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span>, <span>boolean <var>$asArray</var>,…</span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#559-597" title="Go to source code">Path</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span>, <span>boolean <var>$asArray</var>,…</span> )</code>
 
 		<div class="description short">
 			<h4>Manage data source path.</h4>
@@ -803,7 +821,7 @@ $test = $dsn->Path( FALSE ); // Remove path, returns old value.</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Query">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#626-713" title="Go to source code">Query</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#604-693" title="Go to source code">Query</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage data source query.</h4>
@@ -873,7 +891,7 @@ $test = $dsn->Query( FALSE ); // Remove query, returns old value.</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Fragment">#</a>
-		<code><a href="source-class-Milko.PHPLib.DataSource.html#720-743" title="Go to source code">Fragment</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#700-725" title="Go to source code">Fragment</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage data source fragment.</h4>
@@ -918,6 +936,65 @@ cases.</p>
 						<p>$test = $dsn->Fragment( 'frag' ); // Set fragment.<br/>
 $test = $dsn->Fragment(); // Retrieve current fragment.
 $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="toURL" id="_toURL">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_toURL">#</a>
+		<code><a href="source-class-Milko.PHPLib.DataSource.html#741-889" title="Go to source code">toURL</a>( <span>array <var>$theExcluded</var> = [] </span> )</code>
+
+		<div class="description short">
+			<h4>Return the data source URL.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Return the data source URL.</h4>
+
+<p>This method can be used to return an URL from the current data source, it accepts an
+array parameter containing the URL offsets <em>to be excluded</em>.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theExcluded</var></dt>
+					<dd>List of excluded offsets.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#PROT">Milko\PHPLib\DataSource::<b>PROT</b></a></code><br>
+				</div>
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">Milko\PHPLib\Container::manageProperty()</a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#___toString">Milko\PHPLib\DataSource::__toString()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test = $dsn->toURL();  // Return full URL.<br/>
+$test = $dsn->toURL( [ self::PATH ] );  // Return URL without path.</p><br>
 				</div>
 
 
@@ -979,7 +1056,7 @@ $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-Milko.PHPLib.DataSource.html#71-78" title="Go to source code"><b>PROT</b></a>
+				<a href="source-class-Milko.PHPLib.DataSource.html#73-80" title="Go to source code"><b>PROT</b></a>
 			</code>
 
 			<div class="description short">
@@ -1005,7 +1082,7 @@ $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-Milko.PHPLib.DataSource.html#80-87" title="Go to source code"><b>HOST</b></a>
+				<a href="source-class-Milko.PHPLib.DataSource.html#82-89" title="Go to source code"><b>HOST</b></a>
 			</code>
 
 			<div class="description short">
@@ -1031,7 +1108,7 @@ $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-Milko.PHPLib.DataSource.html#89-96" title="Go to source code"><b>PORT</b></a>
+				<a href="source-class-Milko.PHPLib.DataSource.html#91-98" title="Go to source code"><b>PORT</b></a>
 			</code>
 
 			<div class="description short">
@@ -1057,7 +1134,7 @@ $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-Milko.PHPLib.DataSource.html#98-105" title="Go to source code"><b>USER</b></a>
+				<a href="source-class-Milko.PHPLib.DataSource.html#100-107" title="Go to source code"><b>USER</b></a>
 			</code>
 
 			<div class="description short">
@@ -1083,7 +1160,7 @@ $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-Milko.PHPLib.DataSource.html#107-114" title="Go to source code"><b>PASS</b></a>
+				<a href="source-class-Milko.PHPLib.DataSource.html#109-116" title="Go to source code"><b>PASS</b></a>
 			</code>
 
 			<div class="description short">
@@ -1109,7 +1186,7 @@ $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-Milko.PHPLib.DataSource.html#116-123" title="Go to source code"><b>PATH</b></a>
+				<a href="source-class-Milko.PHPLib.DataSource.html#118-125" title="Go to source code"><b>PATH</b></a>
 			</code>
 
 			<div class="description short">
@@ -1135,7 +1212,7 @@ $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-Milko.PHPLib.DataSource.html#125-132" title="Go to source code"><b>QUERY</b></a>
+				<a href="source-class-Milko.PHPLib.DataSource.html#127-134" title="Go to source code"><b>QUERY</b></a>
 			</code>
 
 			<div class="description short">
@@ -1161,7 +1238,7 @@ $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.</p><br>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-Milko.PHPLib.DataSource.html#134-141" title="Go to source code"><b>FRAG</b></a>
+				<a href="source-class-Milko.PHPLib.DataSource.html#136-143" title="Go to source code"><b>FRAG</b></a>
 			</code>
 
 			<div class="description short">

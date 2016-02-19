@@ -143,10 +143,11 @@ abstract class Database extends Container
 	 *
 	 * @example
 	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+	 * $server->Connect();<br/>
 	 * $database = new Database( $server, "database" );
 	 *
 	 * @example
-	 * // In general you will use this form:
+	 * // In general you will use this form:<br/>
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
 	 * $database = $server->RetrieveDatabase( "database" );
 	 */
@@ -304,12 +305,12 @@ abstract class Database extends Container
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return array				List of collection names.
 	 *
+	 * @uses collectionList()
+	 *
 	 * @example
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
 	 * $database = $server->RetrieveDatabase( "database" );<br/>
 	 * $list = $database->ListCollections();
-	 *
-	 * @uses collectionList()
 	 */
 	public function ListCollections( $theOptions = NULL )
 	{
@@ -364,9 +365,6 @@ abstract class Database extends Container
 	 * The method will either return a {@link Collection} object, or <tt>NULL</tt> if the
 	 * collection was not found.
 	 *
-	 * The {@link kFLAG_CREATE} flag is set by default to ensure the indicated collection is
-	 * created if necessary.
-	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param string				$theCollection		Collection name.
@@ -375,16 +373,22 @@ abstract class Database extends Container
 	 * @return Collection			Collection object or <tt>NULL</tt>.
 	 * @throws \RuntimeException
 	 *
+	 * @uses collectionCreate()
+	 * @uses collectionRetrieve()
+	 *
 	 * @example
+	 * // Retrieve an existing collection.<br/>
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
 	 * $database = $server->RetrieveDatabase( "database" );<br/>
 	 * $collection = $database->RetrieveCollection( "collection" );
-	 *
-	 * @uses collectionCreate()
-	 * @uses collectionRetrieve()
+	 * @example
+	 * // Create a new collection.<br/>
+	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+	 * $database = $server->RetrieveDatabase( "database", kFLAG_CREATE );<br/>
+	 * $collection = $database->RetrieveCollection( "collection", kFLAG_CREATE );
 	 */
 	public function RetrieveCollection( $theCollection,
-										$theFlags = Server::kFLAG_CREATE,
+										$theFlags = Server::kFLAG_DEFAULT,
 										$theOptions = NULL )
 	{
 		//
@@ -506,7 +510,7 @@ abstract class Database extends Container
 	 * @example
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
 	 * $database = $server->RetrieveDatabase( "database" );<br/>
-	 * $done = $database->DropCollection( "collection" );
+	 * $done = $database->EmptyCollection( "collection" );
 	 *
 	 * @uses RetrieveCollection()
 	 */
@@ -528,7 +532,7 @@ abstract class Database extends Container
 			//
 			// Clear collection.
 			//
-			$collection->Empty( $theOptions );
+			$collection->Clear( $theOptions );
 
 			return TRUE;															// ==>
 		}

@@ -295,16 +295,22 @@ abstract class Server extends DataSource
 	 * 		the server is not connected, the method will raise a {@link \RuntimeException}.
 	 * </ul>
 	 *
-	 * By default we set the {@link kFLAG_CONNECT} flag to automatically connect if needed.
-	 *
 	 * The second parameter represents eventual native driver options to be used when
 	 * opening the connection.
 	 *
 	 * @param string				$theFlags			Flags bitfield.
 	 * @param mixed					$theOptions			Connection native options.
 	 * @return mixed				Native connection object or <tt>NULL</tt>.
+	 *
+	 * @example
+	 * // Will return connection or NULL if not connected.<br/>
+	 * $connection = $server->Connection();<br/>
+	 * // Will raise an exception if not connected.<br/>
+	 * $connection = $server->Connection(self::kFLAG_ASSERT);
+	 * // Will connect if not connected.<br/>
+	 * $connection = $server->Connection(self::kFLAG_CONNECT);
 	 */
-	public function Connection( $theFlags = self::kFLAG_CONNECT, $theOptions = NULL )
+	public function Connection( $theFlags = self::kFLAG_DEFAULT, $theOptions = NULL )
 	{
 		//
 		// Check if connected.
@@ -431,6 +437,14 @@ abstract class Server extends DataSource
 	 * @throws \RuntimeException
 	 *
 	 * @uses Connect()
+	 *
+	 * @example
+	 * // Will return TRUE if connected or FALSE.<br/>
+	 * $connection = $server->isConnected();<br/>
+	 * // Will return TRUE or raise an exception.<br/>
+	 * $connection = $server->isConnected(self::kFLAG_ASSERT);
+	 * // Will return TRUE and connect if not connected.<br/>
+	 * $connection = $server->isConnected(self::kFLAG_CONNECT);
 	 */
 	public function isConnected( $theFlags = self::kFLAG_DEFAULT, $theOptions = NULL )
 	{
@@ -578,6 +592,10 @@ abstract class Server extends DataSource
 	 * @return array				The list of property offsets to be locked.
 	 *
 	 * @see PROT, HOST, PORT, USER, PASS, PATH, FRAG, QUERY
+	 *
+	 * @example
+	 * // In derived classes you could implement the method as follows:<br/>
+	 * return array_merge( parent::lockedProperties(), [ your values ] );
 	 */
 	protected function lockedProperties()
 	{

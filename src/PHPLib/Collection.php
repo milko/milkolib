@@ -42,7 +42,7 @@ use Milko\PHPLib\Container;
  * 	<li><b>{@link FindMany()}</b>: Find many records.
  * 	<li><b>{@link DeleteOne()}</b>: Delete one record.
  * 	<li><b>{@link DeleteMany()}</b>: Delete many records.
- * 	<li><b>{@link Empty()}</b>: Clear collection contents; this method is virtual.
+ * 	<li><b>{@link Clear()}</b>: Clear collection contents; this method is virtual.
  * 	<li><b>{@link Drop()}</b>: Drop current collection; this method is virtual.
  * </ul>
  *
@@ -68,10 +68,10 @@ use Milko\PHPLib\Container;
  *	@example	../../test/Collection.php
  *	@example
  * $server = new Milko\PHPLib\DataServer( 'protocol://user:pass@host:9090/database/collection' );<br/>
- * $server->Connect();<br/>
- * $database = $server->RetrieveCollection( "database" );<br/>
+ * $database = $server->RetrieveDatabase( "database" );<br/>
  * $collection = $database->RetrieveCollection( "collection" );<br/>
  * // Work with that collection...<br/>
+ * $collection->Drop(); // Drop collection.
  */
 abstract class Collection extends Container
 {
@@ -130,7 +130,7 @@ abstract class Collection extends Container
 	 * @example
 	 * // In general you will use this form:
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
-	 * $database = $server->RetrieveCollection( "database" );<br/>
+	 * $database = $server->RetrieveDatabase( "database" );<br/>
 	 * $collection = $database->RetrieveCollection( "collection" );
 	 */
 	public function __construct( Database $theDatabase, $theCollection, $theOptions = NULL )
@@ -244,7 +244,7 @@ abstract class Collection extends Container
 	
 	
 	/*===================================================================================
-	 *	Empty																			*
+	 *	Clear																			*
 	 *==================================================================================*/
 	
 	/**
@@ -265,7 +265,7 @@ abstract class Collection extends Container
 	 *
 	 * @param mixed					$theOptions			Collection native options.
 	 */
-	abstract public function Empty( $theOptions = NULL );
+	abstract public function Clear( $theOptions = NULL );
 
 
 	/*===================================================================================

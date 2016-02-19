@@ -26,10 +26,16 @@
 						<ul>
 				<li class="active">
 					<a href="namespace-Milko.PHPLib.html">
-						PHPLib					</a>
+						PHPLib<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Milko.PHPLib.MongoDB.html">
+						MongoDB					</a>
 
 						</li>
-							</ul></li>
+							</ul></li></ul></li>
 				<li>
 					<a href="namespace-PHP.html">
 						PHP					</a>
@@ -115,13 +121,13 @@ driver's collection object.</p>
 <p>The class implements a public interface that deploys the common interface of derived
 concrete classes:</p>
 
-<ul> <li><b><code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code></b>: Return the database server object. <li><b><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code></b>: Return the database object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code></b>: Return the collection native driver object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_InsertOne">Milko\PHPLib\Collection::InsertOne()</a></code></b>: Insert one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_InsertMany">Milko\PHPLib\Collection::InsertMany()</a></code></b>: Insert many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_UpdateOne">Milko\PHPLib\Collection::UpdateOne()</a></code></b>: Update one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_UpdateMany">Milko\PHPLib\Collection::UpdateMany()</a></code></b>: Update many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ReplaceOne">Milko\PHPLib\Collection::ReplaceOne()</a></code></b>: Replace one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindOne">Milko\PHPLib\Collection::FindOne()</a></code></b>: Find one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindMany">Milko\PHPLib\Collection::FindMany()</a></code></b>: Find many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_QueryCollection">Milko\PHPLib\Collection::QueryCollection()</a></code></b>: Perform a query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_DeleteOne">Milko\PHPLib\Collection::DeleteOne()</a></code></b>: Delete one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_DeleteMany">Milko\PHPLib\Collection::DeleteMany()</a></code></b>: Delete many records.
+<ul> <li><b><code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code></b>: Return the database server object. <li><b><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code></b>: Return the database object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code></b>: Return the collection native driver object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_InsertOne">Milko\PHPLib\Collection::InsertOne()</a></code></b>: Insert one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_InsertMany">Milko\PHPLib\Collection::InsertMany()</a></code></b>: Insert many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_UpdateOne">Milko\PHPLib\Collection::UpdateOne()</a></code></b>: Update one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_UpdateMany">Milko\PHPLib\Collection::UpdateMany()</a></code></b>: Update many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ReplaceOne">Milko\PHPLib\Collection::ReplaceOne()</a></code></b>: Replace one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindOne">Milko\PHPLib\Collection::FindOne()</a></code></b>: Find one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindMany">Milko\PHPLib\Collection::FindMany()</a></code></b>: Find many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_DeleteOne">Milko\PHPLib\Collection::DeleteOne()</a></code></b>: Delete one record. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_DeleteMany">Milko\PHPLib\Collection::DeleteMany()</a></code></b>: Delete many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Clear">Milko\PHPLib\Collection::Clear()</a></code></b>: Clear collection contents; this method is virtual. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Drop">Milko\PHPLib\Collection::Drop()</a></code></b>: Drop current collection; this method is virtual.
 </ul>
 
 <p>The public methods do not implement the actual operations, this is delegated to a
 protected virtual interface which must be implemented by derived concrete classes:</p>
 
-<ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_newCollection">Milko\PHPLib\Collection::newCollection()</a></code></b>: Instantiate a driver native database instance. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_collectionName">Milko\PHPLib\Collection::collectionName()</a></code></b>: Return the collection name. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_insert">Milko\PHPLib\Collection::insert()</a></code></b>: Insert one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_update">Milko\PHPLib\Collection::update()</a></code></b>: Update one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_replace">Milko\PHPLib\Collection::replace()</a></code></b>: Replace one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_find">Milko\PHPLib\Collection::find()</a></code></b>: Find one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_query">Milko\PHPLib\Collection::query()</a></code></b>: Query records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_delete">Milko\PHPLib\Collection::delete()</a></code></b>: Delete one or many records.
+<ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_collectionNew">Milko\PHPLib\Collection::collectionNew()</a></code></b>: Instantiate a driver native database instance. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_collectionName">Milko\PHPLib\Collection::collectionName()</a></code></b>: Return the collection name. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_insert">Milko\PHPLib\Collection::insert()</a></code></b>: Insert one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_update">Milko\PHPLib\Collection::update()</a></code></b>: Update one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_replace">Milko\PHPLib\Collection::replace()</a></code></b>: Replace one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_find">Milko\PHPLib\Collection::find()</a></code></b>: Find one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_delete">Milko\PHPLib\Collection::delete()</a></code></b>: Delete one or many records.
 </ul>
 	</div>
 
@@ -158,6 +164,10 @@ protected virtual interface which must be implemented by derived concrete classe
 	</dl>
 
 
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Milko.PHPLib.MongoDB.Collection.html">Milko\PHPLib\MongoDB\Collection</a>
+	</div>
 
 
 
@@ -180,11 +190,11 @@ protected virtual interface which must be implemented by derived concrete classe
 				../../test/Collection.php<br>
 				<b>Example:</b>
 				<p>$server = new Milko\PHPLib\DataServer( 'protocol://user:pass@host:9090/database/collection' );<br/>
-$server->Connect();<br/>
-$database = $server->RetrieveCollection( "database" );<br/>
+$database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
-// Work with that collection...<br/></p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Collection.html#19-780" title="Go to source code">PHPLib/Collection.php</a>
+// Work with that collection...<br/>
+$collection->Drop(); // Drop collection.</p><br>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Collection.html#19-836" title="Go to source code">PHPLib/Collection.php</a>
 		<br>
 	</div>
 
@@ -231,7 +241,7 @@ collection belongs, the collection name and a set of native database driver opti
 
 				<h4>Uses</h4>
 				<div class="list">
-						<code><a href="class-Milko.PHPLib.Collection.html#_newCollection">Milko\PHPLib\Collection::newCollection()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Collection.html#_collectionNew">Milko\PHPLib\Collection::collectionNew()</a></code><br>
 				</div>
 				<h4>Example</h4>
 				<div class="list">
@@ -240,7 +250,7 @@ $database = new Database( $server, "database" );<br/>
 $collection = new Collection( $database, "collection" );</p><br>
 						<p>// In general you will use this form:
 $server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
-$database = $server->RetrieveCollection( "database" );<br/>
+$database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );</p><br>
 				</div>
 
@@ -416,6 +426,102 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="Clear" id="_Clear">
+
+		<td class="attributes"><code>
+			abstract public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Clear">#</a>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#250-268" title="Go to source code">Clear</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Clear the collection contents.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Clear the collection contents.</h4>
+
+<p>This method can be used to erase the contents of the collection, the method expects a
+single parameter that represents driver native options.</p>
+
+<p>It is the responsibility of the caller to ensure the server is connected.</p>
+
+<p>The provided parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
+<p>Derived concrete classes must implement this method.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Collection native options.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="Drop" id="_Drop">
+
+		<td class="attributes"><code>
+			abstract public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Drop">#</a>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#275-293" title="Go to source code">Drop</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Drop the current collection.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Drop the current collection.</h4>
+
+<p>This method can be used to the current collection, the method expects a single
+parameter that represents driver native options.</p>
+
+<p>It is the responsibility of the caller to ensure the server is connected.</p>
+
+<p>The provided parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
+<p>Derived concrete classes must implement this method.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Collection native options.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="InsertOne" id="_InsertOne">
 
 		<td class="attributes"><code>
@@ -428,7 +534,7 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_InsertOne">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#250-273" title="Go to source code">InsertOne</a>( <span>array <var>$theRecord</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#309-332" title="Go to source code">InsertOne</a>( <span>array|object <var>$theRecord</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Insert a single record.</h4>
@@ -483,7 +589,7 @@ following parameters:</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_InsertMany">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#280-303" title="Go to source code">InsertMany</a>( <span>array <var>$theRecords</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#339-362" title="Go to source code">InsertMany</a>( <span>array <var>$theRecords</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Insert a set of records.</h4>
@@ -531,14 +637,14 @@ expects the following parameters:</p>
 		<td class="attributes"><code>
 			 public 
 
-			
+			integer
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_UpdateOne">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#310-334" title="Go to source code">UpdateOne</a>( <span>array <var>$theCriteria</var></span>, <span>array <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#369-394" title="Go to source code">UpdateOne</a>( <span>array <var>$theCriteria</var></span>, <span>array <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Update a single record.</h4>
@@ -569,6 +675,10 @@ method expects the following parameters:</p>
 					<dd>Collection native options.</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					integer<br>The number of modified records.
+				</div>
 
 
 				<h4>Uses</h4>
@@ -585,14 +695,14 @@ method expects the following parameters:</p>
 		<td class="attributes"><code>
 			 public 
 
-			
+			integer
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_UpdateMany">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#341-365" title="Go to source code">UpdateMany</a>( <span>array <var>$theCriteria</var></span>, <span>array <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#401-426" title="Go to source code">UpdateMany</a>( <span>array <var>$theCriteria</var></span>, <span>array <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Update a set of records.</h4>
@@ -623,6 +733,10 @@ expects the following parameters:</p>
 					<dd>Collection native options.</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					integer<br>The number of modified records.
+				</div>
 
 
 				<h4>Uses</h4>
@@ -639,14 +753,14 @@ expects the following parameters:</p>
 		<td class="attributes"><code>
 			 public 
 
-			
+			integer
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ReplaceOne">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#372-396" title="Go to source code">ReplaceOne</a>( <span>array <var>$theRecord</var></span>, <span>array <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#433-458" title="Go to source code">ReplaceOne</a>( <span>array <var>$theRecord</var></span>, <span>array <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Replace a record.</h4>
@@ -677,6 +791,10 @@ method expects the following parameters:</p>
 					<dd>Collection native options.</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					integer<br>The number of modified records.
+				</div>
 
 
 				<h4>Uses</h4>
@@ -693,14 +811,14 @@ method expects the following parameters:</p>
 		<td class="attributes"><code>
 			 public 
 
-			array
+			mixed
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_FindOne">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#403-426" title="Go to source code">FindOne</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#465-488" title="Go to source code">FindOne</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Find a single record.</h4>
@@ -730,7 +848,7 @@ method expects the following parameters:</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					array<br>The found record.
+					mixed<br>The found record.
 				</div>
 
 
@@ -748,14 +866,14 @@ method expects the following parameters:</p>
 		<td class="attributes"><code>
 			 public 
 
-			array
+			<code><a href="class-Iterator.html">Iterator</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_FindMany">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#433-456" title="Go to source code">FindMany</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#495-518" title="Go to source code">FindMany</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Find a set of records.</h4>
@@ -785,7 +903,7 @@ expects the following parameters:</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					array<br>The found records.
+					<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
 				</div>
 
 
@@ -798,74 +916,19 @@ expects the following parameters:</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="QueryCollection" id="_QueryCollection">
-
-		<td class="attributes"><code>
-			 public 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_QueryCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#463-486" title="Go to source code">QueryCollection</a>( <span>mixed <var>$theQuery</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
-
-		<div class="description short">
-			<h4>Query the collection.</h4>
-		</div>
-
-		<div class="description detailed hidden">
-			<h4>Query the collection.</h4>
-
-<p>This method can be used to query the collection, the method expects the following
-parameters:</p>
-
-<ul>
-<li><b>$theQuery</b>: The driver native query.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>It is the responsibility of the caller to ensure the server is connected.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$theQuery</var></dt>
-					<dd>The search query.</dd>
-					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					array<br>The found records.
-				</div>
-
-
-				<h4>Uses</h4>
-				<div class="list">
-						<code><a href="class-Milko.PHPLib.Collection.html#_query">Milko\PHPLib\Collection::query()</a></code><br>
-				</div>
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="DeleteOne" id="_DeleteOne">
 
 		<td class="attributes"><code>
 			 public 
 
-			
+			integer
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_DeleteOne">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#493-515" title="Go to source code">DeleteOne</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#525-548" title="Go to source code">DeleteOne</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Delete a single record.</h4>
@@ -893,6 +956,10 @@ method expects the following parameters:</p>
 					<dd>Collection native options.</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					integer<br>The number of deleted records.
+				</div>
 
 
 				<h4>Uses</h4>
@@ -909,14 +976,14 @@ method expects the following parameters:</p>
 		<td class="attributes"><code>
 			 public 
 
-			
+			integer
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_DeleteMany">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#522-544" title="Go to source code">DeleteMany</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#555-578" title="Go to source code">DeleteMany</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Delete a set of records.</h4>
@@ -944,6 +1011,10 @@ expects the following parameters:</p>
 					<dd>Collection native options.</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					integer<br>The number of deleted records.
+				</div>
 
 
 				<h4>Uses</h4>
@@ -955,7 +1026,7 @@ expects the following parameters:</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="newCollection" id="_newCollection">
+	<tr data-order="collectionNew" id="_collectionNew">
 
 		<td class="attributes"><code>
 			abstract protected 
@@ -966,8 +1037,8 @@ expects the following parameters:</p>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_newCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#560-574" title="Go to source code">newCollection</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<a class="anchor" href="#_collectionNew">#</a>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#594-614" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return a native collection object.</h4>
@@ -980,6 +1051,12 @@ expects the following parameters:</p>
 
 <p>This method assumes that the server is connected and that the <code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code> was
 set.</p>
+
+<p>The options parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
 
 <p>This method must be implemented by derived concrete classes.</p>
 
@@ -1019,7 +1096,7 @@ set.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionName">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#581-592" title="Go to source code">collectionName</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#621-639" title="Go to source code">collectionName</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return the collection name.</h4>
@@ -1032,9 +1109,20 @@ set.</p>
 
 <p>Note that this method <em>must</em> return a non empty string.</p>
 
+<p>The provided parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
 <p>This method must be implemented by derived concrete classes.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Native driver options.</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -1056,14 +1144,14 @@ set.</p>
 		<td class="attributes"><code>
 			abstract protected 
 
-			array
+			mixed|array
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_insert">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#608-631" title="Go to source code">insert</a>( <span>array <var>$theRecord</var></span>, <span>mixed <var>$theOptions</var></span>, <span>boolean <var>$doMany</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#655-684" title="Go to source code">insert</a>( <span>array|object <var>$theRecord</var></span>, <span>boolean <var>$doMany</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Insert one or more records.</h4>
@@ -1077,12 +1165,18 @@ following parameters:</p>
 
 <ul>
 <li><b>$theRecord</b>: The record to be inserted.
-<li><b>$theOptions</b>: An array of options representing driver native options.
 <li><b>$doMany</b>: <tt>TRUE</tt> provided many records, <tt>FALSE</tt> provided one record.
+<li><b>$theOptions</b>: An array of options representing driver native options.
 </ul>
 
 <p>This method assumes that the server is connected, it is the responsibility of the
 caller to ensure this.</p>
+
+<p>The options parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
 
 <p>This method must be implemented by derived concrete classes.</p>
 
@@ -1091,15 +1185,15 @@ caller to ensure this.</p>
 				<div class="list"><dl>
 					<dt><var>$theRecord</var></dt>
 					<dd>The record to be inserted.</dd>
-					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
 					<dt><var>$doMany</var></dt>
 					<dd>Single or multiple records flag.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Collection native options.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					array<br>The record's unique identifier(s).
+					mixed|array<br>The record's unique identifier(s).
 				</div>
 
 
@@ -1118,14 +1212,14 @@ caller to ensure this.</p>
 		<td class="attributes"><code>
 			abstract protected 
 
-			
+			integer
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_update">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#638-662" title="Go to source code">update</a>( <span>array <var>$theCriteria</var></span>, <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var></span>, <span>boolean <var>$doMany</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#691-725" title="Go to source code">update</a>( <span>array <var>$theCriteria</var></span>, <span>array <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Update one or more records.</h4>
@@ -1140,12 +1234,18 @@ criteria, the method expects the following parameters:</p>
 <ul>
 <li><b>$theCriteria</b>: The modification criteria.
 <li><b>$theFilter</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
 <li><b>$doMany</b>: <tt>TRUE</tt> update all records, <tt>FALSE</tt> update one record.
+<li><b>$theOptions</b>: An array of options representing driver native options.
 </ul>
 
 <p>This method assumes that the server is connected, it is the responsibility of the
 caller to ensure this.</p>
+
+<p>The options parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
 
 <p>This method must be implemented by derived concrete classes.</p>
 
@@ -1156,12 +1256,16 @@ caller to ensure this.</p>
 					<dd>The modification criteria.</dd>
 					<dt><var>$theFilter</var></dt>
 					<dd>The selection criteria.</dd>
-					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
 					<dt><var>$doMany</var></dt>
 					<dd>Single or multiple records flag.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Collection native options.</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					integer<br>The number of modified records.
+				</div>
 
 
 				<h4>Used by</h4>
@@ -1179,14 +1283,14 @@ caller to ensure this.</p>
 		<td class="attributes"><code>
 			abstract protected 
 
-			
+			integer
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_replace">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#669-690" title="Go to source code">replace</a>( <span>array <var>$theRecord</var></span>, <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#732-760" title="Go to source code">replace</a>( <span>array <var>$theRecord</var></span>, <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Replace a record.</h4>
@@ -1207,6 +1311,12 @@ following parameters:</p>
 <p>This method assumes that the server is connected, it is the responsibility of the
 caller to ensure this.</p>
 
+<p>The options parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
 <p>This method must be implemented by derived concrete classes.</p>
 
 
@@ -1220,6 +1330,10 @@ caller to ensure this.</p>
 					<dd>Collection native options.</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					integer<br>The number of modified records.
+				</div>
 
 
 				<h4>Used by</h4>
@@ -1236,14 +1350,14 @@ caller to ensure this.</p>
 		<td class="attributes"><code>
 			abstract protected 
 
-			array
+			<code><a href="class-Iterator.html">Iterator</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_find">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#697-720" title="Go to source code">find</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var></span>, <span>boolean <var>$doMany</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#767-796" title="Go to source code">find</a>( <span>array <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Find the first or all records.</h4>
@@ -1264,6 +1378,12 @@ criteria, the method expects the following parameters:</p>
 <p>This method assumes that the server is connected, it is the responsibility of the
 caller to ensure this.</p>
 
+<p>The options parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
 <p>This method must be implemented by derived concrete classes.</p>
 
 
@@ -1271,15 +1391,15 @@ caller to ensure this.</p>
 				<div class="list"><dl>
 					<dt><var>$theFilter</var></dt>
 					<dd>The selection criteria.</dd>
-					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
 					<dt><var>$doMany</var></dt>
 					<dd>Single or multiple records flag.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Collection native options.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					array<br>The found record or records.
+					<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
 				</div>
 
 
@@ -1293,77 +1413,19 @@ caller to ensure this.</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="query" id="_query">
-
-		<td class="attributes"><code>
-			abstract protected 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_query">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#727-747" title="Go to source code">query</a>( <span>mixed <var>$theQuery</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
-
-		<div class="description short">
-			<h4>Query the collection.</h4>
-		</div>
-
-		<div class="description detailed hidden">
-			<h4>Query the collection.</h4>
-
-<p>This method can be used to query the collection using a driver native selection
-criteria, the method expects the following parameters:</p>
-
-<ul>
-<li><b>$theQuery</b>: The driver native query.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>This method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$theQuery</var></dt>
-					<dd>The search query.</dd>
-					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					array<br>The found records.
-				</div>
-
-
-				<h4>Used by</h4>
-				<div class="list">
-						<code><a href="class-Milko.PHPLib.Collection.html#_QueryCollection">Milko\PHPLib\Collection::QueryCollection()</a></code><br>
-				</div>
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="delete" id="_delete">
 
 		<td class="attributes"><code>
 			abstract protected 
 
-			
+			integer
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_delete">#</a>
-		<code><a href="source-class-Milko.PHPLib.Collection.html#754-776" title="Go to source code">delete</a>( <span>array <var>$theFilter</var></span>, <span>mixed <var>$theOptions</var></span>, <span>boolean <var>$doMany</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Collection.html#803-832" title="Go to source code">delete</a>( <span>array <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Delete the first or all records.</h4>
@@ -1384,6 +1446,12 @@ criteria, the method expects the following parameters:</p>
 <p>This method assumes that the server is connected, it is the responsibility of the
 caller to ensure this.</p>
 
+<p>The options parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
 <p>This method must be implemented by derived concrete classes.</p>
 
 
@@ -1391,12 +1459,16 @@ caller to ensure this.</p>
 				<div class="list"><dl>
 					<dt><var>$theFilter</var></dt>
 					<dd>The selection criteria.</dd>
-					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
 					<dt><var>$doMany</var></dt>
 					<dd>Single or multiple records flag.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Collection native options.</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					integer<br>The number of deleted records.
+				</div>
 
 
 				<h4>Used by</h4>

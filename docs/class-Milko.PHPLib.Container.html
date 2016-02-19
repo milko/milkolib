@@ -26,10 +26,16 @@
 						<ul>
 				<li class="active">
 					<a href="namespace-Milko.PHPLib.html">
-						PHPLib					</a>
+						PHPLib<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Milko.PHPLib.MongoDB.html">
+						MongoDB					</a>
 
 						</li>
-							</ul></li>
+							</ul></li></ul></li>
 				<li>
 					<a href="namespace-PHP.html">
 						PHP					</a>
@@ -163,6 +169,9 @@ are managed:</p>
 	<div>
 		<h4>Indirect known subclasses</h4>
 			<a href="class-Milko.PHPLib.DataServer.html">Milko\PHPLib\DataServer</a>, 
+			<a href="class-Milko.PHPLib.MongoDB.Collection.html">Milko\PHPLib\MongoDB\Collection</a>, 
+			<a href="class-Milko.PHPLib.MongoDB.Database.html">Milko\PHPLib\MongoDB\Database</a>, 
+			<a href="class-Milko.PHPLib.MongoDB.DataServer.html">Milko\PHPLib\MongoDB\DataServer</a>, 
 			<a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a>
 	</div>
 
@@ -187,7 +196,11 @@ are managed:</p>
 				<b>Example:</b>
 				<p>$test1 = new Milko\PHPLib\Container();<br/>
 $test2 = new Milko\PHPLib\Container( ['property' => 'value'] );</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Container.html#17-436" title="Go to source code">PHPLib/Container.php</a>
+				<b>Example:</b>
+				<p>$test1 = new Milko\PHPLib\Container();<br/>
+$test1[ "property" ] = "value"; // Set a value.<br/>
+$test1[ "property" ] = NULL;    // Delete value.</p><br>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Container.html#17-454" title="Go to source code">PHPLib/Container.php</a>
 		<br>
 	</div>
 
@@ -207,7 +220,7 @@ $test2 = new Milko\PHPLib\Container( ['property' => 'value'] );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_offsetGet">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#85-104" title="Go to source code">offsetGet</a>( <span>mixed <var>$theOffset</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#89-108" title="Go to source code">offsetGet</a>( <span>mixed <var>$theOffset</var></span> )</code>
 
 		<div class="description short">
 			<h4>Return a value at a given offset.</h4>
@@ -251,7 +264,7 @@ that is the case we return <tt>NULL</tt> instead of issuing a warning.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_offsetSet">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#111-137" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#115-145" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
 
 		<div class="description short">
 			<h4>Set a value at a given offset.</h4>
@@ -275,6 +288,12 @@ nothing.</p>
 
 
 
+				<h4>Example</h4>
+				<div class="list">
+						<p>$test->offsetSet( "offset", "value" );  // Will set a value in that offset.<br/>
+$test->offsetSet( "offset", NULL ); // Will unset that offset.<br/>
+$test->offsetSet( "UNKNOWN", "value" ); // Will not generate a warning.</p><br>
+				</div>
 
 				<h4>Overrides</h4>
 				<div class="list"><code><a href="class-ArrayObject.html#_offsetSet">ArrayObject::offsetSet()</a></code></div>
@@ -294,7 +313,7 @@ nothing.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_offsetUnset">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#144-161" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#152-169" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
 
 		<div class="description short">
 			<h4>Reset a value at a given offset.</h4>
@@ -334,7 +353,7 @@ in that case we do nothing.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_arrayKeys">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#177-185" title="Go to source code">arrayKeys</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#185-193" title="Go to source code">arrayKeys</a>( )</code>
 
 		<div class="description short">
 			<h4>Return object's offsets.</h4>
@@ -371,7 +390,7 @@ return all the object's offset keys as an array.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_arrayValues">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#192-200" title="Go to source code">arrayValues</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#200-208" title="Go to source code">arrayValues</a>( )</code>
 
 		<div class="description short">
 			<h4>Return object's offset values.</h4>
@@ -408,7 +427,7 @@ will return all the object's offset values as an array.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_toArray">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#207-231" title="Go to source code">toArray</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#215-239" title="Go to source code">toArray</a>( )</code>
 
 		<div class="description short">
 			<h4>Return the object properties as an aray.</h4>
@@ -449,7 +468,7 @@ take care of converting embedded objects deriving from this class.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_manageAttribute">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#247-299" title="Go to source code">manageAttribute</a>( <span>mixed <var>&amp; $theMember</var></span>, <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#255-312" title="Go to source code">manageAttribute</a>( <span>mixed <var>&amp; $theMember</var></span>, <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage an attribute</h4>
@@ -482,6 +501,12 @@ implements this interface:</p>
 				</div>
 
 
+				<h4>Example</h4>
+				<div class="list">
+						<p>$this->manageAttribute( $member, "value" ); // Will set a value in that member.<br/>
+$this->manageAttribute( $member, NULL );    // Will return the member's current value.<br/>
+$this->manageAttribute( $member, FALSE );   // Will set the member's value to NULL.</p><br>
+				</div>
 
 
 		</div>
@@ -499,7 +524,7 @@ implements this interface:</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_manageProperty">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#306-359" title="Go to source code">manageProperty</a>( <span>mixed <var>$theProperty</var></span>, <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#319-377" title="Go to source code">manageProperty</a>( <span>mixed <var>$theProperty</var></span>, <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Manage a property</h4>
@@ -534,6 +559,12 @@ a consistent interface when deploying member accessor methods that manage proper
 				</div>
 
 
+				<h4>Example</h4>
+				<div class="list">
+						<p>$this->manageProperty( $offset, "value" );  // Will set a value in that offset.<br/>
+$this->manageProperty( $offset, NULL ); // Will return the value at that offset.<br/>
+$this->manageProperty( $offset, FALSE );    // Will delete that offset.</p><br>
+				</div>
 
 
 		</div>
@@ -551,7 +582,7 @@ a consistent interface when deploying member accessor methods that manage proper
 
 		<td class="name"><div>
 		<a class="anchor" href="#_convertToArray">#</a>
-		<code><a href="source-class-Milko.PHPLib.Container.html#375-432" title="Go to source code">convertToArray</a>( <span>array <var>$theSource</var></span>, <span>array <var>&amp; $theDestination</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Container.html#393-450" title="Go to source code">convertToArray</a>( <span>array <var>$theSource</var></span>, <span>array <var>&amp; $theDestination</var></span> )</code>
 
 		<div class="description short">
 			<h4>Convert embedded objects to array.</h4>

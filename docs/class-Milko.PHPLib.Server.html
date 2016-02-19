@@ -26,10 +26,16 @@
 						<ul>
 				<li class="active">
 					<a href="namespace-Milko.PHPLib.html">
-						PHPLib					</a>
+						PHPLib<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Milko.PHPLib.MongoDB.html">
+						MongoDB					</a>
 
 						</li>
-							</ul></li>
+							</ul></li></ul></li>
 				<li>
 					<a href="namespace-PHP.html">
 						PHP					</a>
@@ -173,6 +179,10 @@ modified, attempting to do so will trigger an exception.</p>
 			<a href="class-Milko.PHPLib.DataServer.html">Milko\PHPLib\DataServer</a>
 	</div>
 
+	<div>
+		<h4>Indirect known subclasses</h4>
+			<a href="class-Milko.PHPLib.MongoDB.DataServer.html">Milko\PHPLib\MongoDB\DataServer</a>
+	</div>
 
 
 
@@ -190,12 +200,14 @@ modified, attempting to do so will trigger an exception.</p>
 				1.00<br>
 				<b>Since:</b>
 				06/02/2016<br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.Database.html#___construct">Milko\PHPLib\Database::__construct()</a></code><br>
 				<b>Example:</b>
 				../../test/Server.php<br>
 				<b>Example:</b>
 				<p>$server = new Milko\PHPLib\Server( 'protocol://user:pass@host:9090' );<br/>
 $connection = $server->Connect();</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Server.html#19-564" title="Go to source code">PHPLib/Server.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Server.html#19-609" title="Go to source code">PHPLib/Server.php</a>
 		<br>
 	</div>
 
@@ -251,7 +263,7 @@ $connection = $server->Connect();</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___sleep">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#143-165" title="Go to source code">__sleep</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#143-164" title="Go to source code">__sleep</a>( )</code>
 
 		<div class="description short">
 			<h4>Put the object to sleep.</h4>
@@ -270,7 +282,6 @@ method to re-open the connection.</p>
 
 				<h4>Uses</h4>
 				<div class="list">
-						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
 						<code><a href="class-Milko.PHPLib.Server.html#_Disconnect">Milko\PHPLib\Server::Disconnect()</a></code><br>
 				</div>
 
@@ -290,7 +301,7 @@ method to re-open the connection.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___wakeup">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#172-188" title="Go to source code">__wakeup</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#171-187" title="Go to source code">__wakeup</a>( )</code>
 
 		<div class="description short">
 			<h4>Wake the object from sleep.</h4>
@@ -327,7 +338,7 @@ method.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_offsetSet">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#204-233" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#203-232" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
 
 		<div class="description short">
 			<h4>Set a value at a given offset.</h4>
@@ -378,7 +389,7 @@ there is an open connection.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_offsetUnset">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#240-268" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#239-267" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
 
 		<div class="description short">
 			<h4>Reset a value at a given offset.</h4>
@@ -427,7 +438,7 @@ there is an open connection.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Connection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#284-313" title="Go to source code">Connection</a>( <span> <var>$theFlags</var> = self::kFLAG_CONNECT </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#283-323" title="Go to source code">Connection</a>( <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return native connection object.</h4>
@@ -444,9 +455,17 @@ there is an open connection.</p>
 <p>&lt;ul~ <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></tt>: If set, the server will be connected if that is not yet the case. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_ASSERT">Milko\PHPLib\Server::<b>kFLAG_ASSERT</b></a></code></tt>: If the <tt>kFLAG_CONNECT</tt> flag is not set and the server is not connected, the method will raise a <code><a href="class-RuntimeException.html">RuntimeException</a></code>.
 </ul></p>
 
-<p>By default we set the <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code> flag to automatically connect if needed.</p>
+<p>The second parameter represents eventual native driver options to be used when
+opening the connection.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theFlags</var></dt>
+					<dd>Flags bitfield.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Connection native options.</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -454,6 +473,15 @@ there is an open connection.</p>
 				</div>
 
 
+				<h4>Example</h4>
+				<div class="list">
+						<p>// Will return connection or NULL if not connected.<br/>
+$connection = $server->Connection();<br/>
+// Will raise an exception if not connected.<br/>
+$connection = $server->Connection(self::kFLAG_ASSERT);
+// Will connect if not connected.<br/>
+$connection = $server->Connection(self::kFLAG_CONNECT);</p><br>
+				</div>
 
 
 		</div>
@@ -471,7 +499,7 @@ there is an open connection.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Connect">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#329-353" title="Go to source code">Connect</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#339-364" title="Go to source code">Connect</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Open server connection.</h4>
@@ -487,6 +515,11 @@ is already open, the method will do nothing.</p>
 to open the connection.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Connection native options.</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -496,12 +529,13 @@ to open the connection.</p>
 
 				<h4>Uses</h4>
 				<div class="list">
-						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
+						isConnected( )<br>
 						<code><a href="class-Milko.PHPLib.Server.html#_connectionCreate">Milko\PHPLib\Server::connectionCreate()</a></code><br>
 				</div>
 				<h4>Used by</h4>
 				<div class="list">
 						<code><a href="class-Milko.PHPLib.Server.html#___wakeup">Milko\PHPLib\Server::__wakeup()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
 				</div>
 
 
@@ -520,7 +554,7 @@ to open the connection.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Disconnect">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#360-395" title="Go to source code">Disconnect</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#371-407" title="Go to source code">Disconnect</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Close server connection.</h4>
@@ -535,6 +569,11 @@ was open, the method will do nothing.</p>
 <p>The method will return <tt>TRUE</tt> if it closed a connection</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Connection native options.</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -545,7 +584,7 @@ was open, the method will do nothing.</p>
 				<h4>Uses</h4>
 				<div class="list">
 						<code><a href="class-Milko.PHPLib.Server.html#_isConnected">Milko\PHPLib\Server::isConnected()</a></code><br>
-						connectionDelete()<br>
+						<code><a href="class-Milko.PHPLib.Server.html#_connectionDestruct">Milko\PHPLib\Server::connectionDestruct()</a></code><br>
 				</div>
 				<h4>Used by</h4>
 				<div class="list">
@@ -569,7 +608,7 @@ was open, the method will do nothing.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_isConnected">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#402-452" title="Go to source code">isConnected</a>( <span>string <var>$theFlags</var> = self::kFLAG_DEFAULT </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#414-477" title="Go to source code">isConnected</a>( <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Check if connection is open.</h4>
@@ -585,6 +624,8 @@ was open, the method will do nothing.</p>
 <p>&lt;ul~ <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_CONNECT">Milko\PHPLib\Server::<b>kFLAG_CONNECT</b></a></code></tt>: If set, the server will be connected if that is not yet the case. <li><tt><code><a href="class-Milko.PHPLib.Server.html#kFLAG_ASSERT">Milko\PHPLib\Server::<b>kFLAG_ASSERT</b></a></code></tt>: If the <tt>kFLAG_CONNECT</tt> flag is not set and the server is not connected, the method will raise a <code><a href="class-RuntimeException.html">RuntimeException</a></code>.
 </ul></p>
 
+<p>The second parameter represents a set of options to be provided to the native driver.</p>
+
 <p>This method will be used by derived classes to ensure a connection is open before
 performing ceretain operations, the reason for providing the flags parameter is to
 allow automatic connection, doing so in this class makes it easier.</p>
@@ -594,6 +635,8 @@ allow automatic connection, doing so in this class makes it easier.</p>
 				<div class="list"><dl>
 					<dt><var>$theFlags</var></dt>
 					<dd>Flags bitfield.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Connection native options.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -606,13 +649,24 @@ allow automatic connection, doing so in this class makes it easier.</p>
 					<code><a href="class-RuntimeException.html">RuntimeException</a></code>
 				</div>
 
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_Connect">Milko\PHPLib\Server::Connect()</a></code><br>
+				</div>
 				<h4>Used by</h4>
 				<div class="list">
-						<code><a href="class-Milko.PHPLib.Server.html#___sleep">Milko\PHPLib\Server::__sleep()</a></code><br>
 						<code><a href="class-Milko.PHPLib.Server.html#_offsetSet">Milko\PHPLib\Server::offsetSet()</a></code><br>
 						<code><a href="class-Milko.PHPLib.Server.html#_offsetUnset">Milko\PHPLib\Server::offsetUnset()</a></code><br>
-						<code><a href="class-Milko.PHPLib.Server.html#_Connect">Milko\PHPLib\Server::Connect()</a></code><br>
 						<code><a href="class-Milko.PHPLib.Server.html#_Disconnect">Milko\PHPLib\Server::Disconnect()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>// Will return TRUE if connected or FALSE.<br/>
+$connection = $server->isConnected();<br/>
+// Will return TRUE or raise an exception.<br/>
+$connection = $server->isConnected(self::kFLAG_ASSERT);
+// Will return TRUE and connect if not connected.<br/>
+$connection = $server->isConnected(self::kFLAG_CONNECT);</p><br>
 				</div>
 
 
@@ -631,7 +685,7 @@ allow automatic connection, doing so in this class makes it easier.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_connectionCreate">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#468-485" title="Go to source code">connectionCreate</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#493-518" title="Go to source code">connectionCreate</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<p>Open connection.</p>
@@ -648,11 +702,23 @@ classes to implement this method.</p>
 it should not take care of closing previously opened connections.</p>
 
 <p>All the options required for the connection should have been provided via the data
-source connection query parameters.</p>
+source connection query parameters. The provided parameter represents the default or
+additional set of options provided to the driver: if needed, in derived concrete
+classes you should define globally a set of options and subtitute a <tt>NULL</tt>
+value with them in this method, this will guarantee that special options will
+always be set.</p>
+
+<p>The provided parameter represents a set of default options for creating the
+connection</p>
 
 <p>If the operation fails, the method should raise an exception.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Connection native options.</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -681,7 +747,7 @@ source connection query parameters.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_connectionDestruct">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#492-506" title="Go to source code">connectionDestruct</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#525-543" title="Go to source code">connectionDestruct</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<p>Close connection.</p>
@@ -696,15 +762,26 @@ is the responsibility of concrete classes to implement this method.</p>
 <p>This method assumes the caller has checked whether a connection is open, it should
 assume the <code><a href="class-Milko.PHPLib.Server.html#$mConnection">Milko\PHPLib\Server::<var>$mConnection</var></a></code> attribute holds a valid native connection object.</p>
 
-<p>All the options required for the connection should have been provided via the data
-source connection query parameters.</p>
+<p>The provided parameter represents the default or additional set of options provided
+to the driver when closing the connection: if needed, in derived concrete classes you
+should define globally a set of options and subtitute a <tt>NULL</tt> value with them
+in this method, this will guarantee that special options will always be set.</p>
 
 <p>If the operation fails, the method should raise an exception.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Connection native options.</dd>
+				</dl></div>
 
 
 
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_Disconnect">Milko\PHPLib\Server::Disconnect()</a></code><br>
+				</div>
 
 
 		</div>
@@ -722,7 +799,7 @@ source connection query parameters.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_isLockedProperty">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#522-537" title="Go to source code">isLockedProperty</a>( <span>string <var>$theOffset</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#559-576" title="Go to source code">isLockedProperty</a>( <span>string <var>$theOffset</var></span> )</code>
 
 		<div class="description short">
 			<h4>Check if provided property is locked.</h4>
@@ -749,6 +826,10 @@ connection is open, if that is the case the method will return <tt>TRUE</tt>, if
 				</div>
 
 
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_lockedProperties">Milko\PHPLib\Server::lockedProperties()</a></code><br>
+				</div>
 				<h4>Used by</h4>
 				<div class="list">
 						<code><a href="class-Milko.PHPLib.Server.html#_offsetSet">Milko\PHPLib\Server::offsetSet()</a></code><br>
@@ -771,7 +852,7 @@ connection is open, if that is the case the method will return <tt>TRUE</tt>, if
 
 		<td class="name"><div>
 		<a class="anchor" href="#_lockedProperties">#</a>
-		<code><a href="source-class-Milko.PHPLib.Server.html#544-560" title="Go to source code">lockedProperties</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Server.html#583-605" title="Go to source code">lockedProperties</a>( )</code>
 
 		<div class="description short">
 			<h4>Return locked properties.</h4>
@@ -794,6 +875,19 @@ overloaded by derived concrete instances to filter local properties.</p>
 				</div>
 
 
+				<h4>See</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.DataSource.html#PROT">Milko\PHPLib\DataSource::<b>PROT</b></a></code>, <code><a href="class-Milko.PHPLib.DataSource.html#HOST">Milko\PHPLib\DataSource::<b>HOST</b></a></code>, <code><a href="class-Milko.PHPLib.DataSource.html#PORT">Milko\PHPLib\DataSource::<b>PORT</b></a></code>, <code><a href="class-Milko.PHPLib.DataSource.html#USER">Milko\PHPLib\DataSource::<b>USER</b></a></code>, <code><a href="class-Milko.PHPLib.DataSource.html#PASS">Milko\PHPLib\DataSource::<b>PASS</b></a></code>, <code><a href="class-Milko.PHPLib.DataSource.html#PATH">Milko\PHPLib\DataSource::<b>PATH</b></a></code>, <code><a href="class-Milko.PHPLib.DataSource.html#FRAG">Milko\PHPLib\DataSource::<b>FRAG</b></a></code>, <code><a href="class-Milko.PHPLib.DataSource.html#QUERY">Milko\PHPLib\DataSource::<b>QUERY</b></a></code><br>
+				</div>
+				<h4>Used by</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Server.html#_isLockedProperty">Milko\PHPLib\Server::isLockedProperty()</a></code><br>
+				</div>
+				<h4>Example</h4>
+				<div class="list">
+						<p>// In derived classes you could implement the method as follows:<br/>
+return array_merge( parent::lockedProperties(), [ your values ] );</p><br>
+				</div>
 
 
 		</div>
@@ -814,7 +908,8 @@ overloaded by derived concrete instances to filter local properties.</p>
 			<a href="class-Milko.PHPLib.DataSource.html#_Query">Query()</a>, 
 			<a href="class-Milko.PHPLib.DataSource.html#_User">User()</a>, 
 			<a href="class-Milko.PHPLib.DataSource.html#___construct">__construct()</a>, 
-			<a href="class-Milko.PHPLib.DataSource.html#___toString">__toString()</a>
+			<a href="class-Milko.PHPLib.DataSource.html#___toString">__toString()</a>, 
+			<a href="class-Milko.PHPLib.DataSource.html#_toURL">toURL()</a>
 		</code></td>
 	</tr>
 	</table>

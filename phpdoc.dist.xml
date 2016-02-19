@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+    <title>${PROJECT_NAME}</title>
+    <parser>
+        <target>docs</target>
+        <extensions>
+            <extension>module</extension>
+            <extension>inc</extension>
+            <extension>php</extension>
+        </extensions>
+    </parser>
+    <transformer>
+        <target>docs</target>
+    </transformer>
+    <files>
+        <file>includes.local.php</file>
+        <directory>src</directory>
+    </files>
+    <template name="responsive"/>
+</phpdoc>

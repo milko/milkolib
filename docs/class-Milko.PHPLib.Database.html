@@ -26,10 +26,16 @@
 						<ul>
 				<li class="active">
 					<a href="namespace-Milko.PHPLib.html">
-						PHPLib					</a>
+						PHPLib<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Milko.PHPLib.MongoDB.html">
+						MongoDB					</a>
 
 						</li>
-							</ul></li>
+							</ul></li></ul></li>
 				<li>
 					<a href="namespace-PHP.html">
 						PHP					</a>
@@ -115,7 +121,7 @@ database object.</p>
 <p>The class implements a public interface that deploys the common interface of derived
 concrete classes:</p>
 
-<ul> <li><b><code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code></b>: Return the database server object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_Connection">Milko\PHPLib\Database::Connection()</a></code></b>: Return the database native driver object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_ListCollections">Milko\PHPLib\Database::ListCollections()</a></code></b>: Return the list of collection names on the database. <li><b><code><a href="class-Milko.PHPLib.Database.html#_WorkingCollections">Milko\PHPLib\Database::WorkingCollections()</a></code></b>: Return the list of working collection names. <li><b><code><a href="class-Milko.PHPLib.Database.html#_RetrieveCollection">Milko\PHPLib\Database::RetrieveCollection()</a></code></b>: Create or retrieve a collection object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_ForgetCollection">Milko\PHPLib\Database::ForgetCollection()</a></code></b>: Clear or dispose of a collection object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_EmptyCollection">Milko\PHPLib\Database::EmptyCollection()</a></code></b>: Empty a collection. <li><b><code><a href="class-Milko.PHPLib.Database.html#_DropCollection">Milko\PHPLib\Database::DropCollection()</a></code></b>: Drop a collection.
+<ul> <li><b><code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code></b>: Return the database server object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_Connection">Milko\PHPLib\Database::Connection()</a></code></b>: Return the database native driver object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_Drop">Milko\PHPLib\Database::Drop()</a></code></b>: Drop the database; this method is virtual. <li><b><code><a href="class-Milko.PHPLib.Database.html#_ListCollections">Milko\PHPLib\Database::ListCollections()</a></code></b>: Return the list of collection names on the database. <li><b><code><a href="class-Milko.PHPLib.Database.html#_WorkingCollections">Milko\PHPLib\Database::WorkingCollections()</a></code></b>: Return the list of working collection names. <li><b><code><a href="class-Milko.PHPLib.Database.html#_RetrieveCollection">Milko\PHPLib\Database::RetrieveCollection()</a></code></b>: Create or retrieve a collection object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_ForgetCollection">Milko\PHPLib\Database::ForgetCollection()</a></code></b>: Clear or dispose of a collection object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_EmptyCollection">Milko\PHPLib\Database::EmptyCollection()</a></code></b>: Empty a collection. <li><b><code><a href="class-Milko.PHPLib.Database.html#_DropCollection">Milko\PHPLib\Database::DropCollection()</a></code></b>: Drop a collection.
 </ul>
 
 <p>The object's inherited array will be populated with collections as they are used, the
@@ -130,7 +136,7 @@ take in the event a collection is not found:</p>
 <p>The public methods do not implement the actual operations, this is delegated to a
 protected virtual interface which must be implemented by derived concrete classes:</p>
 
-<ul> <li><b><code><a href="class-Milko.PHPLib.Database.html#_newDatabase">Milko\PHPLib\Database::newDatabase()</a></code></b>: Instantiate a driver native database instance. <li><b><code><a href="class-Milko.PHPLib.Database.html#_databaseName">Milko\PHPLib\Database::databaseName()</a></code></b>: Return the database name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionList">Milko\PHPLib\Database::collectionList()</a></code></b>: Return the list of database collection names. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionCreate">Milko\PHPLib\Database::collectionCreate()</a></code></b>: Create and return a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionRetrieve">Milko\PHPLib\Database::collectionRetrieve()</a></code></b>: Return a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionEmpty">Milko\PHPLib\Database::collectionEmpty()</a></code></b>: Clear the contents of the provided <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionDrop">Milko\PHPLib\Database::collectionDrop()</a></code></b>: Drop the provided <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object.
+<ul> <li><b><code><a href="class-Milko.PHPLib.Database.html#_databaseNew">Milko\PHPLib\Database::databaseNew()</a></code></b>: Instantiate a driver native database instance. <li><b><code><a href="class-Milko.PHPLib.Database.html#_databaseName">Milko\PHPLib\Database::databaseName()</a></code></b>: Return the database name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionList">Milko\PHPLib\Database::collectionList()</a></code></b>: Return the list of database collection names. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionCreate">Milko\PHPLib\Database::collectionCreate()</a></code></b>: Create and return a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object corresponding to the provided name. <li><b><code><a href="class-Milko.PHPLib.Database.html#_collectionRetrieve">Milko\PHPLib\Database::collectionRetrieve()</a></code></b>: Create and/or return a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object corresponding to the provided name.
 </ul>
 
 <p>Each time a collection object is retrieved, the object will store it in the
@@ -170,6 +176,10 @@ mCollections data member for fast subsequent retrievals.</p>
 	</dl>
 
 
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Milko.PHPLib.MongoDB.Database.html">Milko\PHPLib\MongoDB\Database</a>
+	</div>
 
 
 
@@ -200,7 +210,7 @@ $collection = $database->RetrieveCollection( $collections[ 0 ], self::kFLAG_CREA
 // Work with that collection...<br/>
 $database->CollectionDrop( $collections[ 0 ] );<br/>
 // Dropped the collection.</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Database.html#20-744" title="Go to source code">PHPLib/Database.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Database.html#20-768" title="Go to source code">PHPLib/Database.php</a>
 		<br>
 	</div>
 
@@ -220,7 +230,7 @@ $database->CollectionDrop( $collections[ 0 ] );<br/>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#132-187" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.DataServer.html">Milko\PHPLib\DataServer</a></code> <var>$theServer</var></span>, <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#130-188" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.DataServer.html">Milko\PHPLib\DataServer</a></code> <var>$theServer</var></span>, <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Instantiate class.</h4>
@@ -247,13 +257,16 @@ database belongs, the database name and a set of native database driver options.
 
 				<h4>Uses</h4>
 				<div class="list">
-						<code><a href="class-Milko.PHPLib.Database.html#_newDatabase">Milko\PHPLib\Database::newDatabase()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code><br>
+						<code><a href="class-Milko.PHPLib.Database.html#_RetrieveCollection">Milko\PHPLib\Database::RetrieveCollection()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Database.html#_databaseNew">Milko\PHPLib\Database::databaseNew()</a></code><br>
 				</div>
 				<h4>Example</h4>
 				<div class="list">
 						<p>$server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+$server->Connect();<br/>
 $database = new Database( $server, "database" );</p><br>
-						<p>// In general you will use this form:
+						<p>// In general you will use this form:<br/>
 $server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
 $database = $server->RetrieveDatabase( "database" );</p><br>
 				</div>
@@ -276,7 +289,7 @@ $database = $server->RetrieveDatabase( "database" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___toString">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#194-208" title="Go to source code">__toString</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#195-209" title="Go to source code">__toString</a>( )</code>
 
 		<div class="description short">
 			<h4>Return database name</h4>
@@ -322,7 +335,7 @@ $database = $server->RetrieveDatabase( "database" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Server">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#224-234" title="Go to source code">Server</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#225-235" title="Go to source code">Server</a>( )</code>
 
 		<div class="description short">
 			<h4>Return the database server.</h4>
@@ -362,7 +375,7 @@ $database = $server->RetrieveDatabase( "database" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_Connection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#241-251" title="Go to source code">Connection</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#242-252" title="Go to source code">Connection</a>( )</code>
 
 		<div class="description short">
 			<h4>Return the database native driver object.</h4>
@@ -390,6 +403,48 @@ $database = $server->RetrieveDatabase( "database" );</p><br>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="Drop" id="_Drop">
+
+		<td class="attributes"><code>
+			abstract public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_Drop">#</a>
+		<code><a href="source-class-Milko.PHPLib.Database.html#268-280" title="Go to source code">Drop</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+		<div class="description short">
+			<h4>Drop the current database.</h4>
+		</div>
+
+		<div class="description detailed hidden">
+			<h4>Drop the current database.</h4>
+
+<p>This method can be used to drop the current database, the provided parameter
+represents driver native options.</p>
+
+<p>It is the responsibility of the caller to ensure the server is connected.</p>
+
+<p>The method must be implemented by derived concrete classes.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Native driver options.</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="ListCollections" id="_ListCollections">
 
 		<td class="attributes"><code>
@@ -402,7 +457,7 @@ $database = $server->RetrieveDatabase( "database" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ListCollections">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#267-290" title="Go to source code">ListCollections</a>( <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#296-319" title="Go to source code">ListCollections</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return the database list of collections.</h4>
@@ -412,16 +467,16 @@ $database = $server->RetrieveDatabase( "database" );</p><br>
 			<h4>Return the database list of collections.</h4>
 
 <p>This method can be used to retrieve the list of collection names present on the
-database, the method accepts a single parameter that represents a filter to select
-specific collections, the format of the filter is driver dependent.</p>
+database, the method accepts a single parameter that represents a driver dependent
+set of options.</p>
 
 <p>It is the responsibility of the caller to ensure the server is connected.</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$theFilter</var></dt>
-					<dd>Collections selection filter.</dd>
+					<dt><var>$theOptions</var></dt>
+					<dd>Collection native options.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -457,7 +512,7 @@ $list = $database->ListCollections();</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_WorkingCollections">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#297-309" title="Go to source code">WorkingCollections</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#326-340" title="Go to source code">WorkingCollections</a>( )</code>
 
 		<div class="description short">
 			<h4>Return the working list of collections.</h4>
@@ -476,6 +531,10 @@ $list = $database->ListCollections();</p><br>
 				</div>
 
 
+				<h4>Uses</h4>
+				<div class="list">
+						<code><a href="class-Milko.PHPLib.Container.html#_arrayKeys">Milko\PHPLib\Container::arrayKeys()</a></code><br>
+				</div>
 				<h4>Example</h4>
 				<div class="list">
 						<p>$server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
@@ -499,7 +558,7 @@ $list = $database->WorkingCollections();</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_RetrieveCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#316-399" title="Go to source code">RetrieveCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CREATE">Milko\PHPLib\Server::<b>kFLAG_CREATE</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#347-439" title="Go to source code">RetrieveCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CREATE">Milko\PHPLib\Server::<b>kFLAG_CREATE</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return a collection object.</h4>
@@ -548,19 +607,25 @@ created if necessary.</p>
 
 				<h4>Uses</h4>
 				<div class="list">
-						<code><a href="class-Milko.PHPLib.Database.html#_collectionRetrieve">Milko\PHPLib\Database::collectionRetrieve()</a></code><br>
 						<code><a href="class-Milko.PHPLib.Database.html#_collectionCreate">Milko\PHPLib\Database::collectionCreate()</a></code><br>
+						<code><a href="class-Milko.PHPLib.Database.html#_collectionRetrieve">Milko\PHPLib\Database::collectionRetrieve()</a></code><br>
 				</div>
 				<h4>Used by</h4>
 				<div class="list">
+						<code><a href="class-Milko.PHPLib.Database.html#___construct">Milko\PHPLib\Database::__construct()</a></code><br>
 						<code><a href="class-Milko.PHPLib.Database.html#_EmptyCollection">Milko\PHPLib\Database::EmptyCollection()</a></code><br>
 						<code><a href="class-Milko.PHPLib.Database.html#_DropCollection">Milko\PHPLib\Database::DropCollection()</a></code><br>
 				</div>
 				<h4>Example</h4>
 				<div class="list">
-						<p>$server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
+						<p>// Retrieve an existing collection.<br/>
+$server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
 $database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );</p><br>
+						<p>// Create a new collection.<br/>
+$server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+$database = $server->RetrieveDatabase( "database", kFLAG_CREATE );<br/>
+$collection = $database->RetrieveCollection( "collection", kFLAG_CREATE );</p><br>
 				</div>
 
 
@@ -579,7 +644,7 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ForgetCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#406-442" title="Go to source code">ForgetCollection</a>( <span>string <var>$theCollection</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#446-482" title="Go to source code">ForgetCollection</a>( <span>string <var>$theCollection</var></span> )</code>
 
 		<div class="description short">
 			<h4>Dispose of a collection object.</h4>
@@ -633,7 +698,7 @@ $collection = $database->ForgetCollection( "collection" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_EmptyCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#449-506" title="Go to source code">EmptyCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#489-545" title="Go to source code">EmptyCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Clear a collection.</h4>
@@ -674,13 +739,12 @@ not.</p>
 				<h4>Uses</h4>
 				<div class="list">
 						<code><a href="class-Milko.PHPLib.Database.html#_RetrieveCollection">Milko\PHPLib\Database::RetrieveCollection()</a></code><br>
-						<code><a href="class-Milko.PHPLib.Database.html#_collectionEmpty">Milko\PHPLib\Database::collectionEmpty()</a></code><br>
 				</div>
 				<h4>Example</h4>
 				<div class="list">
 						<p>$server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
 $database = $server->RetrieveDatabase( "database" );<br/>
-$done = $database->DropCollection( "collection" );</p><br>
+$done = $database->EmptyCollection( "collection" );</p><br>
 				</div>
 
 
@@ -699,7 +763,7 @@ $done = $database->DropCollection( "collection" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_DropCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#513-576" title="Go to source code">DropCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#552-608" title="Go to source code">DropCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Drop a collection.</h4>
@@ -739,7 +803,6 @@ not.</p>
 				<h4>Uses</h4>
 				<div class="list">
 						<code><a href="class-Milko.PHPLib.Database.html#_RetrieveCollection">Milko\PHPLib\Database::RetrieveCollection()</a></code><br>
-						<code><a href="class-Milko.PHPLib.Database.html#_collectionDrop">Milko\PHPLib\Database::collectionDrop()</a></code><br>
 				</div>
 				<h4>Example</h4>
 				<div class="list">
@@ -752,7 +815,7 @@ $done = $database->DropCollection( "collection" );</p><br>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="newDatabase" id="_newDatabase">
+	<tr data-order="databaseNew" id="_databaseNew">
 
 		<td class="attributes"><code>
 			abstract protected 
@@ -763,8 +826,8 @@ $done = $database->DropCollection( "collection" );</p><br>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_newDatabase">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#592-606" title="Go to source code">newDatabase</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<a class="anchor" href="#_databaseNew">#</a>
+		<code><a href="source-class-Milko.PHPLib.Database.html#624-644" title="Go to source code">databaseNew</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return a native database object.</h4>
@@ -777,6 +840,12 @@ $done = $database->DropCollection( "collection" );</p><br>
 
 <p>This method assumes that the server is connected and that the <code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code> was
 set.</p>
+
+<p>The provided parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
 
 <p>This method must be implemented by derived concrete classes.</p>
 
@@ -816,7 +885,7 @@ set.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_databaseName">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#613-624" title="Go to source code">databaseName</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#651-669" title="Go to source code">databaseName</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return the database name.</h4>
@@ -829,9 +898,20 @@ set.</p>
 
 <p>Note that this method <em>must</em> return a non empty string.</p>
 
+<p>The provided parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
 <p>This method must be implemented by derived concrete classes.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Native driver options.</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -860,7 +940,7 @@ set.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionList">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#640-652" title="Go to source code">collectionList</a>( )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#685-704" title="Go to source code">collectionList</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>List server databases.</h4>
@@ -874,9 +954,20 @@ set.</p>
 <p>This method assumes that the server is connected, it is the responsibility of the
 caller to ensure this.</p>
 
+<p>The provided parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
 <p>This method must be implemented by derived concrete classes.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$theOptions</var></dt>
+					<dd>Native driver options.</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -905,7 +996,7 @@ caller to ensure this.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionCreate">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#659-677" title="Go to source code">collectionCreate</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#711-735" title="Go to source code">collectionCreate</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Create collection.</h4>
@@ -923,6 +1014,12 @@ caller to ensure this.</p>
 <p>The method should not be concerned if the collection already exists, it is the
 responsibility of the caller to check it.</p>
 
+<p>The provided parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
 <p>This method must be implemented by derived concrete classes.</p>
 
 
@@ -931,7 +1028,7 @@ responsibility of the caller to check it.</p>
 					<dt><var>$theCollection</var></dt>
 					<dd>Collection name.</dd>
 					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
+					<dd>Native driver options.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -961,7 +1058,7 @@ responsibility of the caller to check it.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionRetrieve">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#684-700" title="Go to source code">collectionRetrieve</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#742-764" title="Go to source code">collectionRetrieve</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return a collection object.</h4>
@@ -977,6 +1074,12 @@ the database.</p>
 <p>The method assumes that the server is connected, it is the responsibility of the
 caller to ensure this.</p>
 
+<p>The provided parameter represents a set of native options provided to the driver for
+performing the operation: if needed, in derived concrete classes you should define
+globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+method, this will guarantee that the options will always be used when performing this
+operation.</p>
+
 <p>This method must be implemented by derived concrete classes.</p>
 
 
@@ -985,7 +1088,7 @@ caller to ensure this.</p>
 					<dt><var>$theCollection</var></dt>
 					<dd>Collection name.</dd>
 					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
+					<dd>Native driver options.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -997,102 +1100,6 @@ caller to ensure this.</p>
 				<h4>Used by</h4>
 				<div class="list">
 						<code><a href="class-Milko.PHPLib.Database.html#_RetrieveCollection">Milko\PHPLib\Database::RetrieveCollection()</a></code><br>
-				</div>
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="collectionEmpty" id="_collectionEmpty">
-
-		<td class="attributes"><code>
-			abstract protected 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_collectionEmpty">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#707-720" title="Go to source code">collectionEmpty</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
-
-		<div class="description short">
-			<h4>Clear a collection.</h4>
-		</div>
-
-		<div class="description detailed hidden">
-			<h4>Clear a collection.</h4>
-
-<p>This method should clear the contents of the provided collection.</p>
-
-<p>The method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$theCollection</var></dt>
-					<dd>Collection object.</dd>
-					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
-				</dl></div>
-
-
-
-				<h4>Used by</h4>
-				<div class="list">
-						<code><a href="class-Milko.PHPLib.Database.html#_EmptyCollection">Milko\PHPLib\Database::EmptyCollection()</a></code><br>
-				</div>
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="collectionDrop" id="_collectionDrop">
-
-		<td class="attributes"><code>
-			abstract protected 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_collectionDrop">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#727-740" title="Go to source code">collectionDrop</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var></span> )</code>
-
-		<div class="description short">
-			<h4>Drop a collection.</h4>
-		</div>
-
-		<div class="description detailed hidden">
-			<h4>Drop a collection.</h4>
-
-<p>This method should drop the provided collection.</p>
-
-<p>The method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$theCollection</var></dt>
-					<dd>Collection object.</dd>
-					<dt><var>$theOptions</var></dt>
-					<dd>Collection native options.</dd>
-				</dl></div>
-
-
-
-				<h4>Used by</h4>
-				<div class="list">
-						<code><a href="class-Milko.PHPLib.Database.html#_DropCollection">Milko\PHPLib\Database::DropCollection()</a></code><br>
 				</div>
 
 
@@ -1171,7 +1178,7 @@ caller to ensure this.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Milko.PHPLib.Database.html#97-105" title="Go to source code"><var>$mServer</var></a>
+				<a href="source-class-Milko.PHPLib.Database.html#95-103" title="Go to source code"><var>$mServer</var></a>
 
 			<div class="description short">
 				<h4>Database server object.</h4>
@@ -1199,7 +1206,7 @@ instantiated the current database.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Milko.PHPLib.Database.html#107-115" title="Go to source code"><var>$mNativeObject</var></a>
+				<a href="source-class-Milko.PHPLib.Database.html#105-113" title="Go to source code"><var>$mNativeObject</var></a>
 
 			<div class="description short">
 				<h4>Database native object.</h4>

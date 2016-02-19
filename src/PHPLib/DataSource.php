@@ -632,8 +632,8 @@ class DataSource extends Container
 		// Compile query.
 		//
 		if( ($theValue !== NULL)
-			&& ($theValue !== FALSE)
-			&& (! is_array( $theValue )) )
+		 && ($theValue !== FALSE)
+		 && (! is_array( $theValue )) )
 		{
 			//
 			// Split parameter groups.

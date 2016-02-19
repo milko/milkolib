@@ -65,6 +65,10 @@ namespace Milko\PHPLib;
  *	@example
  * $test1 = new Milko\PHPLib\Container();<br/>
  * $test2 = new Milko\PHPLib\Container( ['property' => 'value'] );
+ *	@example
+ * $test1 = new Milko\PHPLib\Container();<br/>
+ * $test1[ "property" ] = "value";	// Set a value.<br/>
+ * $test1[ "property" ] = NULL;	// Delete value.
  */
 class Container extends \ArrayObject
 {
@@ -118,6 +122,11 @@ class Container extends \ArrayObject
 	 * @param string				$theOffset			Offset.
 	 * @param mixed					$theValue			Value to set at offset.
 	 * @return void
+	 *
+	 * @example
+	 * $test->offsetSet( "offset", "value" );	// Will set a value in that offset.<br/>
+	 * $test->offsetSet( "offset", NULL );	// Will unset that offset.<br/>
+	 * $test->offsetSet( "UNKNOWN", "value" );	// Will not generate a warning.
 	 */
 	public function offsetSet( $theOffset, $theValue )
 	{
@@ -264,6 +273,11 @@ class Container extends \ArrayObject
 	 * @param mixed				   &$theMember			Reference to the data member.
 	 * @param mixed					$theValue			Value or operation.
 	 * @return mixed				Old or current attribute value.
+	 *
+	 * @example
+	 * $this->manageAttribute( $member, "value" );	// Will set a value in that member.<br/>
+	 * $this->manageAttribute( $member, NULL );	// Will return the member's current value.<br/>
+	 * $this->manageAttribute( $member, FALSE );	// Will set the member's value to NULL.
 	 */
 	protected function manageAttribute( &$theMember, $theValue = NULL )
 	{
@@ -324,6 +338,11 @@ class Container extends \ArrayObject
 	 * @param mixed					$theProperty		Property offset.
 	 * @param mixed					$theValue			Value or operation.
 	 * @return mixed				Old or current property value.
+	 *
+	 * @example
+	 * $this->manageProperty( $offset, "value" );	// Will set a value in that offset.<br/>
+	 * $this->manageProperty( $offset, NULL );	// Will return the value at that offset.<br/>
+	 * $this->manageProperty( $offset, FALSE );	// Will delete that offset.
 	 */
 	protected function manageProperty( $theProperty, $theValue = NULL )
 	{

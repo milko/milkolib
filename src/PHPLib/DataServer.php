@@ -199,20 +199,19 @@ abstract class DataServer extends Server
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The {@link kFLAG_CONNECT} flag is set by default to ensure the server is connected.
-	 *
 	 * @param string				$theFlags			Flags bitfield.
 	 * @param mixed					$theOptions			Database native options.
 	 * @return array				List of database names.
 	 *
-	 * @example
-	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
-	 * $list = $server->ListDatabases();
-	 *
 	 * @uses isConnected()
 	 * @uses databaseList()
+	 *
+	 * @example
+	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+	 * $server->Connect();<br/>
+	 * $list = $server->ListDatabases();
 	 */
-	public function ListDatabases( $theFlags = self::kFLAG_CONNECT, $theOptions = NULL )
+	public function ListDatabases( $theFlags = self::kFLAG_DEFAULT, $theOptions = NULL )
 	{
 		//
 		// Assert connection.
@@ -271,25 +270,27 @@ abstract class DataServer extends Server
 	 * The method will either return a {@link Database} object, or <tt>NULL</tt> if the
 	 * server is not connected or if the database was not found.
 	 *
-	 * The {@link kFLAG_CONNECT} and {@link kFLAG_CREATE} flags are set by default to ensure
-	 * the connection is open and that the indicated database is created if necessary.
-	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param string				$theFlags			Flags bitfield.
 	 * @param mixed					$theOptions			Database native options.
 	 * @return Database				Database object or <tt>NULL</tt>.
 	 * @throws \RuntimeException
 	 *
-	 * @example
-	 * $server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
-	 * $db = $server->RetrieveDatabase( "database" );
-	 *
 	 * @uses isConnected()
 	 * @uses databaseCreate()
 	 * @uses databaseRetrieve()
+	 *
+	 * @example
+	 * // Retrieve an existing database.
+	 * $server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
+	 * $db = $server->RetrieveDatabase( "database" );
+	 * @example
+	 * // Create a new database.
+	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+	 * $db = $server->RetrieveDatabase( "database", kFLAG_CONNECT | kFLAG_CREATE );
 	 */
 	public function RetrieveDatabase( $theDatabase,
-									  $theFlags = self::kFLAG_CONNECT + self::kFLAG_CREATE,
+									  $theFlags = self::kFLAG_DEFAULT,
 									  $theOptions = NULL )
 	{
 		//

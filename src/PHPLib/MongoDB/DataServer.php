@@ -32,7 +32,7 @@ use \MongoDB\Client;
  *	@example	../../test/MongoDataServer.php
  *	@example
  * $server = new Milko\PHPLib\DataServer();<br/>
- * $databases = $server->ListDatabases();<br/>
+ * $databases = $server->ListDatabases( kFLAG_CONNECT );<br/>
  * $database = $server->RetrieveDatabase( $databases[ 0 ] );<br/>
  * // Work with that database...<br/>
  * $server->DatabaseDrop( $databases[ 0 ] );<br/>

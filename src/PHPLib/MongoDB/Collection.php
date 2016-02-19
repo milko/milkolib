@@ -32,7 +32,7 @@ namespace Milko\PHPLib\MongoDB;
  * $server->Connect();<br/>
  * $database = $server->RetrieveCollection( "database" );<br/>
  * $collection = $database->RetrieveCollection( "collection" );<br/>
- * // Work with that collection...<br/>
+ * // Work with that collection...
  */
 class Collection extends \Milko\PHPLib\Collection
 {
@@ -68,7 +68,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	Empty																			*
+	 *	Clear																			*
 	 *==================================================================================*/
 
 	/**
@@ -83,7 +83,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @see kMONGO_OPTS_CL_EMPTY
 	 */
-	public function Empty( $theOptions = NULL )
+	public function Clear( $theOptions = NULL )
 	{
 		//
 		// Init local storage.
@@ -96,7 +96,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$this->Connection()->deleteMany( [], $theOptions );
 
-	} // Empty.
+	} // Clear.
 
 
 	/*===================================================================================
@@ -243,6 +243,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::insertMany()
 	 *
 	 * @see kMONGO_OPTS_CL_INSERT
+	 *
+	 * @example
+	 * // Insert one record.
+	 * $collection->insert( $record, FALSE );<br/>
+	 * // Insert many records.
+	 * $collection->insert( $records, TRUE );
 	 */
 	protected function insert( $theRecord, $doMany, $theOptions = NULL )
 	{
@@ -304,6 +310,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::updateMany()
 	 *
 	 * @see kMONGO_OPTS_CL_UPDATE
+	 *
+	 * @example
+	 * // Update one record.
+	 * $collection->update( $criteria, $query, FALSE );<br/>
+	 * // Insert many records.
+	 * $collection->update( $criteria, $query, TRUE );
 	 */
 	protected function update( $theCriteria,
 							   $theFilter,
@@ -358,6 +370,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::replaceOne()
 	 *
 	 * @see kMONGO_OPTS_CL_REPLACE
+	 *
+	 * @example
+	 * // Update one record.
+	 * $collection->replace( $record, $query, FALSE );<br/>
+	 * // Insert many records.
+	 * $collection->replace( $record, $query, TRUE );
 	 */
 	protected function replace( $theRecord, $theFilter, $theOptions = NULL )
 	{
@@ -405,10 +423,16 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return Iterator				The found records.
 	 *
 	 * @uses Connection()
+	 * @uses \MongoDB\Collection::find()
 	 * @uses \MongoDB\Collection::findOne()
-	 * @uses \MongoDB\Collection::findMany()
 	 *
 	 * @see kMONGO_OPTS_CL_FIND
+	 *
+	 * @example
+	 * // Find first record.
+	 * $collection->find( $query, FALSE );<br/>
+	 * // Find all records.
+	 * $collection->find( $query, TRUE );
 	 */
 	protected function find( $theFilter, $doMany, $theOptions = NULL )
 	{
@@ -422,7 +446,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Insert one or more records.
 		//
 		return ( $doMany )
-			 ? $this->Connection()->findMany( $theFilter, $theOptions )				// ==>
+			 ? $this->Connection()->find( $theFilter, $theOptions )					// ==>
 			 : $this->Connection()->findOne( $theFilter, $theOptions );				// ==>
 	
 	} // find.
@@ -460,6 +484,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::deleteMany()
 	 *
 	 * @see kMONGO_OPTS_CL_DELETE
+	 *
+	 * @example
+	 * // Delete first record.
+	 * $collection->delete( $query, FALSE );<br/>
+	 * // Delete all records.
+	 * $collection->delete( $query, TRUE );
 	 */
 	protected function delete( $theFilter, $doMany, $theOptions = NULL )
 	{
