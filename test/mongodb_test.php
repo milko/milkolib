@@ -19,13 +19,23 @@ require_once( dirname( __DIR__ ) . "/vendor/autoload.php" );
  *==================================================================================*/
 
 $client = new MongoDB\Client("mongodb://localhost:27017");
-$databases = $client->listDatabases();
-print_r( $databases );
+$database = $client->selectDatabase( 'test_milkolib' );
+$database->drop();
+echo( "Database: " . $database->getDatabaseName() . "\n" );
+$collection = $database->selectCollection( 'test_collection' );
+echo( "Collection: " . $collection->getCollectionName() . "\n" );
 
-$database = $client->selectDatabase( 'PGRDG' );
-$collections = $database->listCollections();
-$list = iterator_to_array( $collections );
-print_r( (array) $collections );
+$result = $collection->insertOne( [ "_id" => "ID01", "data" => "This is the first data" ] );
+var_dump( $result->getInsertedId() );
+
+$result = $collection->insertOne( [ "data" => "This is the second data" ] );
+var_dump( $result->getInsertedId() );
+
+$result = $collection->insertMany( [
+	[ "_id" => "pippo", "data" => "Stuff" ],
+	[ "property" => 25 ],
+	[ "baba" => "bibi" ] ] );
+var_dump( $result->getInsertedIds() );
 
 exit;
 

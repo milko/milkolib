@@ -25,142 +25,24 @@ require_once( "functions.php" );
 use Milko\PHPLib\MongoDB\DataServer;
 
 //
-// Database test class.
+// Instantiate default object.
 //
-class test_Database extends Milko\PHPLib\Database
-{
-	//
-	// Implement Database virtual interface.
-	//
-	protected function databaseNew( $theDatabase, $theOptions )	{
-		return (string)$theDatabase;	}
-	protected function databaseName() {
-		return $this->mNativeObject;	}
-	protected function collectionList() {
-		return array_merge( ["cl1", "cl2", "cl3" ], $this->WorkingCollections() );	}
-	protected function collectionCreate( $theCollection, $theOptions ) {
-		return new test_Collection( $this, $theCollection, $theOptions );	}
-	protected function collectionRetrieve( $theCollection, $theOptions ) {
-		return new test_Collection( $this, $theCollection, $theOptions );	}
-	protected function collectionEmpty( Milko\PHPLib\Collection $theCollection, $theOptions ) {}
-	protected function collectionDrop( Milko\PHPLib\Collection $theCollection, $theOptions ) {}
-}
+echo( '$test = new \Milko\PHPLib\MongoDB\DataServer();' . "\n" );
+$test = new \Milko\PHPLib\MongoDB\DataServer();
+echo( '$result = (string)$test;' . "\n" );
+echo( (string)$test . "\n" );
 
-//
-// Collection test class.
-//
-class test_Collection extends Milko\PHPLib\Collection
-{
-	//
-	// Implement Collection virtual interface.
-	//
-	protected function newCollection( $theCollection, $theOptions ) {
-		return (string)$theCollection;	}
-	protected function collectionName() {
-		return $this->mNativeObject;	}
-
-	//
-	// Declare record management interface,
-	// will not be tested here.
-	//
-	protected function insert( $theRecord, $theOptions, $doMany ) {}
-	protected function update( $theCriteria, $theFilter, $theOptions, $doMany ) {}
-	protected function replace( $theRecord, $theFilter, $theOptions ) {}
-	protected function find( $theFilter, $theOptions, $doMany ) {}
-	protected function query( $theQuery, $theOptions ) {}
-	protected function delete( $theFilter, $theOptions, $doMany ) {}
-}
+echo( "\n" );
 
 //
 // Instantiate object.
 //
-echo( '$url = "protocol://user:pass@host:9090/db0/col0";' . "\n" );
-$url = "protocol://user:pass@host:9090/db0/col0";
-echo( '$test = new test_DataServer( $url' . " );\n" );
-$test = new test_DataServer( $url );
-
-echo( "\n" );
-
-//
-// Display object contents.
-//
-echo( "Display object contents:\n" );
-print_r( $test );
-
-echo( "\n" );
-
-//
-// Retrieve connection.
-//
-echo( "Retrieve connection:\n" );
-echo( '$result = $test->isConnected();' . "\n" );
-$result = dumpValue( $test->isConnected() );
-echo( "Result: $result\n" );
-echo( '$result = $test->Connection();' . "\n" );
-$result = dumpValue( $test->Connection() );
-echo( "Result: $result\n" );
-
-echo( "\n" );
-
-//
-// Connect.
-//
-echo( "Connect:\n" );
-echo( '$result = $test->Connect();' . "\n" );
-$result = dumpValue( $test->Connect() );
-echo( "Result: $result\n" );
-echo( '$result = $test->isConnected();' . "\n" );
-$result = dumpValue( $test->isConnected() );
-echo( "Result: $result\n" );
-
-echo( "\n" );
-
-//
-// Disconnect.
-//
-echo( "Disconnect:\n" );
-echo( '$result = $test->Disconnect();' . "\n" );
-$result = dumpValue( $test->Disconnect() );
-echo( "Result: $result\n" );
-echo( '$result = $test->isConnected();' . "\n" );
-$result = dumpValue( $test->isConnected() );
-echo( "Result: $result\n" );
-echo( '$result = $test->Disconnect();' . "\n" );
-$result = dumpValue( $test->Disconnect() );
-echo( "Result: $result\n" );
-
-echo( "\n" );
-
-//
-// Change protocol.
-//
-echo( "Change protocol:\n" );
-echo( '$test->Protocol( "Someotherprotocol" );' . "\n" );
-$test->Protocol( "Someotherprotocol" );
-echo( "==> $test\n" );
-
-echo( "\n" );
-
-//
-// Reconnect.
-//
-echo( "Reconnect:\n" );
-echo( '$result = $test->Connect();' . "\n" );
-$result = dumpValue( $test->Connect() );
-echo( "Result: $result\n" );
-
-echo( "\n" );
-
-//
-// Change protocol.
-//
-echo( "Change protocol, should raise an exception:\n" );
-echo( '$test->Protocol( "html" );' . "\n" );
-try{ $test->Protocol( "html" ); echo( "Failed!\n" ); }
-catch( Exception $error ){ echo( $error->getMessage() . "\n" ); }
-echo( '$test[ Milko\PHPLib\Server::PROT ] = "HTML";' . "\n" );
-try{ $test[ Milko\PHPLib\Server::PROT ] = "HTML"; echo( "Failed!\n" ); }
-catch( Exception $error ){ echo( $error->getMessage() . "\n" ); }
+echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
+$url = "mongodb://localhost:27017/test_milkolib/test_collection";
+echo( '$test = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
+$test = new \Milko\PHPLib\MongoDB\DataServer( $url );
+echo( '$result = (string)$test;' . "\n" );
+echo( (string)$test . "\n" );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -188,9 +70,9 @@ echo( "\n" );
 // Retrieve database.
 //
 echo( "Retrieve database:\n" );
-echo( '$db = $test->RetrieveDatabase( "db0" );' . "\n" );
-$db = $test->RetrieveDatabase( "db0" );
-print_r( $db );
+echo( '$db = $test->RetrieveDatabase( "test_milkolib" );' . "\n" );
+$db = $test->RetrieveDatabase( "test_milkolib" );
+echo( "$db\n" );
 
 echo( "\n" );
 
@@ -200,6 +82,9 @@ echo( "\n" );
 echo( "Create database:\n" );
 echo( '$db = $test->RetrieveDatabase( "NewDB" );' . "\n" );
 $db = $test->RetrieveDatabase( "NewDB" );
+echo( '$list = $test->ListDatabases();' . "\n" );
+$list = $test->ListDatabases();
+print_r( $list );
 echo( '$list = $test->WorkingDatabases();' . "\n" );
 $list = $test->WorkingDatabases();
 print_r( $list );
@@ -212,6 +97,9 @@ echo( "\n" );
 echo( "Forget database:\n" );
 echo( '$db = $test->ForgetDatabase( "NewDB" );' . "\n" );
 $db = $test->ForgetDatabase( "NewDB" );
+echo( '$list = $test->ListDatabases();' . "\n" );
+$list = $test->ListDatabases();
+print_r( $list );
 echo( '$list = $test->WorkingDatabases();' . "\n" );
 $list = $test->WorkingDatabases();
 print_r( $list );
@@ -222,8 +110,11 @@ echo( "\n" );
 // Drop database.
 //
 echo( "Drop database:\n" );
-echo( '$db = $test->DropDatabase( "db0" );' . "\n" );
-$db = $test->DropDatabase( "db0" );
+echo( '$db = $test->DropDatabase( "test_milkolib" );' . "\n" );
+$db = $test->DropDatabase( "test_milkolib" );
+echo( '$list = $test->ListDatabases();' . "\n" );
+$list = $test->ListDatabases();
+print_r( $list );
 echo( '$list = $test->WorkingDatabases();' . "\n" );
 $list = $test->WorkingDatabases();
 print_r( $list );

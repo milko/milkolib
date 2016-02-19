@@ -29,20 +29,12 @@ use Milko\PHPLib\Server;
 class test_Server extends Milko\PHPLib\Server
 {
 	//
-	// Implement connection creation.
+	// Implement virtual interface.
 	//
-	function connectionCreate()
-	{
-		return "I am open!";
-	}
-
-	//
-	// Implement connection destruction.
-	//
-	function connectionDestruct()
-	{
-		$this->mConnection = "I am closed.";
-	}
+	function connectionCreate( $theOptions = NULL ) {
+		return "I am open!";	}
+	function connectionDestruct( $theOptions = NULL ) {
+		$this->mConnection = "I am closed."; }
 }
 
 //

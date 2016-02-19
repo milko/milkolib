@@ -84,6 +84,9 @@ class Database extends \Milko\PHPLib\Database
 	 * @param mixed					$theOptions			Native driver options.
 	 *
 	 * @uses Connection()
+	 * @uses \MongoDB\Database::drop()
+	 *
+	 * @see kMONGO_OPTS_DB_DROP
 	 */
 	public function Drop( $theOptions = NULL )
 	{
@@ -91,7 +94,7 @@ class Database extends \Milko\PHPLib\Database
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = [];
+			$theOptions = kMONGO_OPTS_DB_DROP;
 
 		//
 		// Call native method.
@@ -124,16 +127,22 @@ class Database extends \Milko\PHPLib\Database
 	 * @return mixed				Native database object.
 	 *
 	 * @uses Server()
+	 * @uses \MongoDB\Client::selectDatabase()
+	 *
+	 * @see kMONGO_OPTS_DB_CREATE
 	 */
-	protected function databaseNew( $theDatabase, $theOptions )
+	protected function databaseNew( $theDatabase, $theOptions = NULL )
 	{
 		//
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = [];
+			$theOptions = kMONGO_OPTS_DB_CREATE;
 
-		return $this->Server()->Connection()->selectDatabase( $theOptions );		// ==>
+		return
+			$this->Server()
+				->Connection()
+					->selectDatabase( $theDatabase, $theOptions );					// ==>
 
 	} // databaseNew.
 
@@ -147,13 +156,15 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * We overload this method to use the native object.
 	 *
+	 * @param mixed					$theOptions			Native driver options.
 	 * @return string				The database name.
 	 *
 	 * @uses Server()
+	 * @uses \MongoDB\Database::getDatabaseName()
 	 */
-	protected function databaseName()
+	protected function databaseName( $theOptions = NULL )
 	{
-		return $this->Server()->Connection()->getDatabaseName();					// ==>
+		return $this->Connection()->getDatabaseName();								// ==>
 
 	} // databaseName.
 
@@ -174,10 +185,16 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>List server databases.</h4>
 	 *
-	 * We overload this method to use the native driver object.
+	 * We overload this method to use the native driver object, we only consider the
+	 * collection names in the returned value.
 	 *
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return array				List of database names.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Database::listCollections()
+	 *
+	 * @see kMONGO_OPTS_DB_CLLIST
 	 */
 	protected function collectionList( $theOptions = NULL )
 	{
@@ -186,14 +203,14 @@ class Database extends \Milko\PHPLib\Database
 		//
 		$collections = [];
 		if( $theOptions === NULL )
-			$theOptions = [];
+			$theOptions = kMONGO_OPTS_DB_CLLIST;
 
 		//
 		// Ask database for list.
 		//
 		$list = $this->Connection()->listCollections( $theOptions );
 		foreach( $list as $element )
-			$collections[] = $element[ 'name' ];
+			$collections[] = $element->getName();
 
 		return $collections;														// ==>
 	}
@@ -206,23 +223,23 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>Create collection.</h4>
 	 *
-	 * This method should create and return a {@link Collection} object corresponding to the
-	 * provided name, if the operation fails, the method should raise an exception.
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * The method should not be concerned if the collection already exists, it is the
-	 * responsibility of the caller to check it.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * We overload this method to instantiate a MongoDB version of the {@link Collection}
+	 * class.
 	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return Collection			Collection object.
+	 *
+	 * @see kMONGO_OPTS_DB_CLCREATE
 	 */
-	protected function collectionCreate( $theCollection, $theOptions )
+	protected function collectionCreate( $theCollection, $theOptions = NULL )
 	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_DB_CLCREATE;
+
 		return new Collection( $this, $theCollection, $theOptions );				// ==>
 	}
 
@@ -234,26 +251,33 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>Return a collection object.</h4>
 	 *
-	 * This method should return a {@link Collection} object corresponding to the provided
-	 * name, or <tt>NULL</tt> if the provided name does not correspond to any collection in
-	 * the database.
-	 *
-	 * The method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * We overload this method to check whether the collection exists and to instantiate a
+	 * MongoDB version of the {@link Collection} class.
 	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
+	 *
+	 * @uses collectionList()
+	 *
+	 * @see kMONGO_OPTS_DB_CLRETRIEVE
 	 */
-	protected function collectionRetrieve( $theCollection, $theOptions )
+	protected function collectionRetrieve( $theCollection, $theOptions = NULL )
 	{
 		//
 		// Check if collection exists.
 		//
 		if( in_array( $theCollection, $this->collectionList() ) )
+		{
+			//
+			// Init local storage.
+			//
+			if( $theOptions === NULL )
+				$theOptions = kMONGO_OPTS_DB_CLRETRIEVE;
+			
 			return new Collection( $this, $theCollection, $theOptions );			// ==>
+		
+		} // Collection exists.
 
 		return NULL;																// ==>
 	}

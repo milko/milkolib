@@ -147,7 +147,6 @@ abstract class Server extends DataSource
 	 * <tt>TRUE</tt> if the connection was open, this will be used by the {@link __wakeup()}
 	 * method to re-open the connection.
 	 *
-	 * @uses isConnected()
 	 * @uses Disconnect()
 	 */
 	public function __sleep()
@@ -298,14 +297,19 @@ abstract class Server extends DataSource
 	 *
 	 * By default we set the {@link kFLAG_CONNECT} flag to automatically connect if needed.
 	 *
+	 * The second parameter represents eventual native driver options to be used when
+	 * opening the connection.
+	 *
+	 * @param string				$theFlags			Flags bitfield.
+	 * @param mixed					$theOptions			Connection native options.
 	 * @return mixed				Native connection object or <tt>NULL</tt>.
 	 */
-	public function Connection( $theFlags = self::kFLAG_CONNECT )
+	public function Connection( $theFlags = self::kFLAG_CONNECT, $theOptions = NULL )
 	{
 		//
 		// Check if connected.
 		//
-		if( $this->isConnected( $theFlags ) )
+		if( $this->isConnected( $theFlags, $theOptions ) )
 			return $this->mConnection;												// ==>
 
 		return NULL;																// ==>
@@ -335,18 +339,19 @@ abstract class Server extends DataSource
 	 * The method will return the native connection object, or raise an exception if unable
 	 * to open the connection.
 	 *
+	 * @param mixed					$theOptions			Connection native options.
 	 * @return mixed				Native connection object.
 	 *
-	 * @uses isConnected()
+	 * @uses isConnected( )
 	 * @uses connectionCreate()
 	 */
-	public function Connect()
+	public function Connect( $theOptions = NULL )
 	{
 		//
 		// Check if connected.
 		//
 		if( ! $this->isConnected() )
-			$this->mConnection = $this->connectionCreate();
+			$this->mConnection = $this->connectionCreate( $theOptions );
 
 		return $this->mConnection;													// ==>
 
@@ -365,12 +370,13 @@ abstract class Server extends DataSource
 	 *
 	 * The method will return <tt>TRUE</tt> if it closed a connection
 	 *
+	 * @param mixed					$theOptions			Connection native options.
 	 * @return boolean				<tt>TRUE</tt> was connected, <tt>FALSE</tt> wasn't.
 	 *
 	 * @uses isConnected()
-	 * @uses connectionDelete()
+	 * @uses connectionDestruct()
 	 */
-	public function Disconnect()
+	public function Disconnect( $theOptions = NULL )
 	{
 		//
 		// Check if connected.
@@ -380,7 +386,7 @@ abstract class Server extends DataSource
 			//
 			// Destruct connection.
 			//
-			$this->connectionDestruct();
+			$this->connectionDestruct( $theOptions );
 
 			//
 			// Reset native connection attribute.
@@ -413,15 +419,20 @@ abstract class Server extends DataSource
 	 * 		the server is not connected, the method will raise a {@link \RuntimeException}.
 	 * </ul>
 	 *
+	 * The second parameter represents a set of options to be provided to the native driver.
+	 *
 	 * This method will be used by derived classes to ensure a connection is open before
 	 * performing ceretain operations, the reason for providing the flags parameter is to
 	 * allow automatic connection, doing so in this class makes it easier.
 	 *
 	 * @param string				$theFlags			Flags bitfield.
+	 * @param mixed					$theOptions			Connection native options.
 	 * @return boolean				<tt>TRUE</tt> is connected.
 	 * @throws \RuntimeException
+	 *
+	 * @uses Connect()
 	 */
-	public function isConnected( $theFlags = self::kFLAG_DEFAULT )
+	public function isConnected( $theFlags = self::kFLAG_DEFAULT, $theOptions = NULL )
 	{
 		//
 		// Check if connected.
@@ -435,7 +446,7 @@ abstract class Server extends DataSource
 		//
 		if( $theFlags & self::kFLAG_CONNECT )
 		{
-			$this->Connect();
+			$this->Connect( $theOptions );
 
 			return TRUE;															// ==>
 		}
@@ -476,13 +487,21 @@ abstract class Server extends DataSource
 	 * it should not take care of closing previously opened connections.
 	 *
 	 * All the options required for the connection should have been provided via the data
-	 * source connection query parameters.
+	 * source connection query parameters. The provided parameter represents the default or
+	 * additional set of options provided to the driver: if needed, in derived concrete
+	 * classes you should define globally a set of options and subtitute a <tt>NULL</tt>
+	 * value with them in this method, this will guarantee that special options will
+	 * always be set.
+	 *
+	 * The provided parameter represents a set of default options for creating the
+	 * connection
 	 *
 	 * If the operation fails, the method should raise an exception.
 	 *
+	 * @param mixed					$theOptions			Connection native options.
 	 * @return mixed				The native connection.
 	 */
-	abstract protected function connectionCreate();
+	abstract protected function connectionCreate( $theOptions = NULL );
 	
 	
 	/*===================================================================================
@@ -498,12 +517,16 @@ abstract class Server extends DataSource
 	 * This method assumes the caller has checked whether a connection is open, it should
 	 * assume the {@link $mConnection} attribute holds a valid native connection object.
 	 *
-	 * All the options required for the connection should have been provided via the data
-	 * source connection query parameters.
+	 * The provided parameter represents the default or additional set of options provided
+	 * to the driver when closing the connection: if needed, in derived concrete classes you
+	 * should define globally a set of options and subtitute a <tt>NULL</tt> value with them
+	 * in this method, this will guarantee that special options will always be set.
 	 *
 	 * If the operation fails, the method should raise an exception.
+	 *
+	 * @param mixed					$theOptions			Connection native options.
 	 */
-	abstract protected function connectionDestruct();
+	abstract protected function connectionDestruct( $theOptions = NULL );
 
 
 
@@ -529,6 +552,8 @@ abstract class Server extends DataSource
 	 *
 	 * @param string				$theOffset			Property offset.
 	 * @return boolean				<tt>TRUE</tt> is open.
+	 *
+	 * @uses lockedProperties()
 	 */
 	protected function isLockedProperty( $theOffset )
 	{
@@ -551,6 +576,8 @@ abstract class Server extends DataSource
 	 * overloaded by derived concrete instances to filter local properties.
 	 *
 	 * @return array				The list of property offsets to be locked.
+	 *
+	 * @see PROT, HOST, PORT, USER, PASS, PATH, FRAG, QUERY
 	 */
 	protected function lockedProperties()
 	{

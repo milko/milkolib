@@ -118,7 +118,6 @@ class Container extends \ArrayObject
 	 * @param string				$theOffset			Offset.
 	 * @param mixed					$theValue			Value to set at offset.
 	 * @return void
-	 *
 	 */
 	public function offsetSet( $theOffset, $theValue )
 	{

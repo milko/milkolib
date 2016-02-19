@@ -33,7 +33,6 @@ use Milko\PHPLib\Database;
  *
  * <ul>
  * 	<li><b>{@link ListDatabases()}</b>: Return the list of database names on the server.
- * 	<li><b>{@link ListDatabases()}</b>: Return the list of database names on the server.
  * 	<li><b>{@link WorkingDatabases()}</b>: Return the list of working database names.
  * 	<li><b>{@link RetrieveDatabase()}</b>: Create or retrieve a database object.
  * 	<li><b>{@link ForgetDatabase()}</b>: Clear or dispose of a database object.
@@ -58,10 +57,8 @@ use Milko\PHPLib\Database;
  *
  * <ul>
  * 	<li><b>{@link databaseList()}</b>: Return the list of server database names.
- * 	<li><b>{@link databaseCreate()}</b>: Create and return a {@link Database} object
- * 		corresponding to the provided name.
- * 	<li><b>{@link databaseRetrieve()}</b>: Return a {@link Database} object corresponding to
- * 		the provided name.
+ * 	<li><b>{@link databaseCreate()}</b>: Create and return a {@link Database} object.
+ * 	<li><b>{@link databaseRetrieve()}</b>: Return a {@link Database} object.
  * </ul>
  *
  * Each time a database object is retrieved, the object will store it in the
@@ -122,7 +119,9 @@ abstract class DataServer extends Server
 	 * @param string				$theConnection		Data source name.
 	 *
 	 * @uses Path()
-	 * @uses RetrieveDatabase()
+	 * @uses Connect()
+	 * @uses databaseCreate()
+	 * @uses databaseRetrieve()
 	 *
 	 * @example
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database' );
@@ -142,15 +141,28 @@ abstract class DataServer extends Server
 		{
 			//
 			// Parse path.
-			// Note that we skip the first path element:
+			// We skip the first path element:
 			// that is because the path begins with the separator.
 			// Also note that it is the responsibility of the database
 			// to instantiate the eventual default collection.
 			//
 			$parts = explode( '/', $path );
 			if( count( $parts ) > 1 )
-				$this->RetrieveDatabase(
-					$parts[ 1 ], self::kFLAG_CONNECT + self::kFLAG_CREATE );
+			{
+				//
+				// Retrieve or create database.
+				//
+				$this->Connect();
+				$database = $this->databaseRetrieve( $parts[ 1 ] );
+				if( $database === NULL )
+					$database = $this->databaseCreate( $parts[ 1 ] );
+
+				//
+				// Store in working databases list.
+				//
+				$this->mDatabases[ $parts[ 1 ] ] = $database;
+
+			} // Has at least directory.
 
 		} // Has path.
 
@@ -273,8 +285,8 @@ abstract class DataServer extends Server
 	 * $db = $server->RetrieveDatabase( "database" );
 	 *
 	 * @uses isConnected()
-	 * @uses databaseRetrieve()
 	 * @uses databaseCreate()
+	 * @uses databaseRetrieve()
 	 */
 	public function RetrieveDatabase( $theDatabase,
 									  $theFlags = self::kFLAG_CONNECT + self::kFLAG_CREATE,
@@ -445,7 +457,7 @@ abstract class DataServer extends Server
 		//
 		if( $theFlags & self::kFLAG_ASSERT )
 			throw new \RuntimeException (
-				"Unknown database [$theDatabase]." );						// !@! ==>
+				"Unknown database [$theDatabase]." );							// !@! ==>
 
 		return FALSE;																// ==>
 
@@ -473,12 +485,18 @@ abstract class DataServer extends Server
 	 * This method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param mixed					$theOptions			Database native options.
 	 * @return array				List of database names.
 	 */
-	abstract protected function databaseList( $theOptions );
+	abstract protected function databaseList( $theOptions = NULL );
 	
 	
 	/*===================================================================================
@@ -499,13 +517,19 @@ abstract class DataServer extends Server
 	 *
 	 * This method exists to allow instantiating the relevant derived concrete class.
 	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
 	 * @return Database				Database object.
 	 */
-	abstract protected function databaseCreate( $theDatabase, $theOptions );
+	abstract protected function databaseCreate( $theDatabase, $theOptions = NULL );
 	
 	
 	/*===================================================================================
@@ -524,13 +548,19 @@ abstract class DataServer extends Server
 	 *
 	 * This method exists to allow instantiating the relevant derived concrete class.
 	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
 	 * @return Database				Database object or <tt>NULL</tt> if not found.
 	 */
-	abstract protected function databaseRetrieve( $theDatabase, $theOptions );
+	abstract protected function databaseRetrieve( $theDatabase, $theOptions = NULL );
 
 	
 	

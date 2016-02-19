@@ -44,5 +44,145 @@ define( 'kPATH_LIBRARY_ROOT', __DIR__ . DIRECTORY_SEPARATOR . 'src' );
  */
 require_once( __DIR__ . DIRECTORY_SEPARATOR . 'vendor/autoload.php' );
 
+/*=======================================================================================
+ *	MONGODB																				*
+ * Modify this section to customise MongoDB defaults.									*
+ *======================================================================================*/
+
+/**
+ * <h4>Default connection string.</h4>
+ *
+ * This definition should contain the default MongoDB connection URI.
+ */
+define( "kMONGO_OPTS_CLIENT_DEFAULT", 'mongodb://localhost:27017' );
+
+/**
+ * <h4>Connection creation options.</h4>
+ *
+ * This definition should contain the default options for creating a MongoDB client, it
+ * refers to the driver options, the URI options should be provided in the connection
+ * string.
+ */
+define( "kMONGO_OPTS_CLIENT_CREATE", [] );
+
+/**
+ * <h4>Connection destruction options.</h4>
+ *
+ * This definition should contain the default options for destructing a MongoDB client, by
+ * default there is no destructor.
+ */
+define( "kMONGO_OPTS_CLIENT_DESTRUCT", NULL );
+
+/**
+ * <h4>Databases list options.</h4>
+ *
+ * This definition should contain the default options for returning a list of databases from
+ * a MongoDB client.
+ */
+define( "kMONGO_OPTS_CLIENT_DBLIST", [] );
+
+/**
+ * <h4>Databases creation options.</h4>
+ *
+ * This definition should contain the default options for creating a database for a MongoDB
+ * client.
+ */
+define( "kMONGO_OPTS_CLIENT_DBCREATE", [] );
+
+/**
+ * <h4>Databases retrieval options.</h4>
+ *
+ * This definition should contain the default options for retrieving a database for a
+ * MongoDB client.
+ */
+define( "kMONGO_OPTS_CLIENT_DBRETRIEVE", [] );
+
+/**
+ * <h4>Databases creation options.</h4>
+ *
+ * This definition should contain the default options for creating a database.
+ */
+define( "kMONGO_OPTS_DB_CREATE", [] );
+
+/**
+ * <h4>Databases drop options.</h4>
+ *
+ * This definition should contain the default options for dropping a database.
+ */
+define( "kMONGO_OPTS_DB_DROP", [] );
+
+/**
+ * <h4>Collections list options.</h4>
+ *
+ * This definition should contain the default options for returning a list of collections
+ * from a MongoDB database.
+ */
+define( "kMONGO_OPTS_DB_CLLIST", [] );
+
+/**
+ * <h4>Collections creation options.</h4>
+ *
+ * This definition should contain the default options for creating a collection from a
+ * MongoDB database.
+ */
+define( "kMONGO_OPTS_DB_CLCREATE", [] );
+
+/**
+ * <h4>Collections retrieval options.</h4>
+ *
+ * This definition should contain the default options for retrieving a collection from a
+ * MongoDB database.
+ */
+define( "kMONGO_OPTS_DB_CLRETRIEVE", [] );
+
+/**
+ * <h4>Collections empty options.</h4>
+ *
+ * This definition should contain the default options for emptying a collection.
+ */
+define( "kMONGO_OPTS_CL_EMPTY", [] );
+
+/**
+ * <h4>Collections drop options.</h4>
+ *
+ * This definition should contain the default options for dropping a collection.
+ */
+define( "kMONGO_OPTS_CL_DROP", [] );
+
+/**
+ * <h4>Collections insert options.</h4>
+ *
+ * This definition should contain the default options for inserting a record.
+ */
+define( "kMONGO_OPTS_CL_INSERT", [] );
+
+/**
+ * <h4>Collections update options.</h4>
+ *
+ * This definition should contain the default options for updating a record.
+ */
+define( "kMONGO_OPTS_CL_UPDATE", [] );
+
+/**
+ * <h4>Collections replace options.</h4>
+ *
+ * This definition should contain the default options for replacing a record.
+ */
+define( "kMONGO_OPTS_CL_REPLACE", [] );
+
+/**
+ * <h4>Collections find options.</h4>
+ *
+ * This definition should contain the default options for finding a record.
+ */
+define( "kMONGO_OPTS_CL_FIND", [] );
+
+/**
+ * <h4>Collections delete options.</h4>
+ *
+ * This definition should contain the default options for deleting a record.
+ */
+define( "kMONGO_OPTS_CL_DELETE", [] );
+
 
 ?>

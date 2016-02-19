@@ -137,7 +137,9 @@ abstract class Database extends Container
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Native driver options.
 	 *
-	 * @uses newDatabase()
+	 * @uses Server()
+	 * @uses RetrieveCollection()
+	 * @uses databaseNew()
 	 *
 	 * @example
 	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
@@ -173,7 +175,7 @@ abstract class Database extends Container
 		{
 			//
 			// Parse path.
-			// Note that we skip the first path element:
+			// We skip the first path element:
 			// that is because the path begins with the separator.
 			//
 			$parts = explode( '/', $path );
@@ -273,8 +275,6 @@ abstract class Database extends Container
 	 * The method must be implemented by derived concrete classes.
 	 *
 	 * @param mixed					$theOptions			Native driver options.
-	 *
-	 * @uses databaseDrop()
 	 */
 	abstract public function Drop( $theOptions = NULL );
 
@@ -329,6 +329,8 @@ abstract class Database extends Container
 	 *
 	 * @return array				List of working collection names.
 	 *
+	 * @uses arrayKeys()
+	 *
 	 * @example
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
 	 * $database = $server->RetrieveDatabase( "database" );<br/>
@@ -378,8 +380,8 @@ abstract class Database extends Container
 	 * $database = $server->RetrieveDatabase( "database" );<br/>
 	 * $collection = $database->RetrieveCollection( "collection" );
 	 *
-	 * @uses collectionRetrieve()
 	 * @uses collectionCreate()
+	 * @uses collectionRetrieve()
 	 */
 	public function RetrieveCollection( $theCollection,
 										$theFlags = Server::kFLAG_CREATE,
@@ -408,7 +410,15 @@ abstract class Database extends Container
 		// Return collection.
 		//
 		if( $collection instanceof Collection )
+		{
+			//
+			// Add collection.
+			//
+			$this->offsetSet( $theCollection, $collection );
+			
 			return $collection;														// ==>
+		
+		} // Created or retrieved.
 
 		//
 		// Assert collection.
@@ -612,13 +622,19 @@ abstract class Database extends Container
 	 * This method assumes that the server is connected and that the {@link Server()} was
 	 * set.
 	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Native driver options.
 	 * @return mixed				Native database object.
 	 */
-	abstract protected function databaseNew( $theDatabase, $theOptions );
+	abstract protected function databaseNew( $theDatabase, $theOptions = NULL );
 
 
 	/*===================================================================================
@@ -632,11 +648,18 @@ abstract class Database extends Container
 	 *
 	 * Note that this method <em>must</em> return a non empty string.
 	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
+	 * @param mixed					$theOptions			Native driver options.
 	 * @return string				The database name.
 	 */
-	abstract protected function databaseName();
+	abstract protected function databaseName( $theOptions = NULL );
 
 
 
@@ -660,12 +683,18 @@ abstract class Database extends Container
 	 * This method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param mixed					$theOptions			Native driver options.
 	 * @return array				List of database names.
 	 */
-	abstract protected function collectionList( $theOptions );
+	abstract protected function collectionList( $theOptions = NULL );
 
 
 	/*===================================================================================
@@ -684,13 +713,19 @@ abstract class Database extends Container
 	 * The method should not be concerned if the collection already exists, it is the
 	 * responsibility of the caller to check it.
 	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param mixed					$theOptions			Native driver options.
 	 * @return Collection			Collection object.
 	 */
-	abstract protected function collectionCreate( $theCollection, $theOptions );
+	abstract protected function collectionCreate( $theCollection, $theOptions = NULL );
 
 
 	/*===================================================================================
@@ -707,13 +742,19 @@ abstract class Database extends Container
 	 * The method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param mixed					$theOptions			Native driver options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 */
-	abstract protected function collectionRetrieve( $theCollection, $theOptions );
+	abstract protected function collectionRetrieve( $theCollection, $theOptions = NULL );
 
 
 

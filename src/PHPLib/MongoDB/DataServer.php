@@ -31,10 +31,9 @@ use \MongoDB\Client;
  *
  *	@example	../../test/MongoDataServer.php
  *	@example
- * $server = new Milko\PHPLib\DataServer( 'protocol://user:pass@host:9090' );<br/>
- * $server->Connect();<br/>
+ * $server = new Milko\PHPLib\DataServer();<br/>
  * $databases = $server->ListDatabases();<br/>
- * $database = $server->RetrieveDatabase( $databases[ 0 ], self::kFLAG_CREATE );<br/>
+ * $database = $server->RetrieveDatabase( $databases[ 0 ] );<br/>
  * // Work with that database...<br/>
  * $server->DatabaseDrop( $databases[ 0 ] );<br/>
  * // Dropped the database.
@@ -61,13 +60,21 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 *
 	 * We override the constructor to provide a default connection URL.
 	 *
-	 * @param string			$theConnection		Data source name.
+	 * @param string				$theConnection		Data source name.
+	 *
+	 * @see kMONGO_OPTS_CLIENT_DEFAULT
 	 *
 	 * @example
-	 * $dsn = new DataSource( 'html://user:pass@host:8080/dir/file?arg=val#frag' );
+	 * $dsn = new DataSource( 'mongodb://user:pass@host:27017/database/collection' );
 	 */
-	public function __construct( $theConnection = 'mongodb://localhost:27017' )
+	public function __construct( $theConnection = NULL )
 	{
+		//
+		// Init local storage.
+		//
+		if( $theConnection === NULL )
+			$theConnection = kMONGO_OPTS_CLIENT_DEFAULT;
+		
 		//
 		// Call parent constructor.
 		//
@@ -95,13 +102,26 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * We overload this method to return a MongoDB client object; we also remove the path
 	 * from the data source URL.
 	 *
+	 * @param mixed					$theOptions			Connection native options.
 	 * @return Client				The native connection.
 	 *
 	 * @uses toURL()
+	 *
+	  @see kMONGO_OPTS_CLIENT_CREATE
 	 */
-	protected function connectionCreate()
+	protected function connectionCreate( $theOptions = NULL )
 	{
-		return new Client( $this->toURL( [ \Milko\PHPLib\DataSource::PATH ] ) );	// ==>
+		//
+		// Init local storage.
+		//
+		$uri_opts = [];
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_CLIENT_CREATE;
+		
+		return new Client(
+			$this->toURL( [ \Milko\PHPLib\DataSource::PATH ] ),
+			$uri_opts,
+			$theOptions );															// ==>
 
 	} // connectionCreate.
 
@@ -113,9 +133,9 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * Close connection.
 	 *
-	 * In this class there is no need to close the connection.
+	 * The MongoDB client does not have a destructor, this method does nothing.
 	 */
-	protected function connectionDestruct()												   {}
+	protected function connectionDestruct( $theOptions = NULL ) {}
 
 
 
@@ -141,6 +161,9 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
+	 * @uses \MongoDB\Client::listDatabases()
+	 *
+	 * @see kMONGO_OPTS_CLIENT_DBLIST
 	 */
 	protected function databaseList( $theOptions = NULL )
 	{
@@ -149,14 +172,14 @@ class DataServer extends \Milko\PHPLib\DataServer
 		//
 		$databases = [];
 		if( $theOptions === NULL )
-			$theOptions = [];
+			$theOptions = kMONGO_OPTS_CLIENT_DBLIST;
 
 		//
 		// Ask client for list.
 		//
 		$list = $this->Connection()->listDatabases( $theOptions );
 		foreach( $list as $element )
-			$databases[] = $element[ 'name' ];
+			$databases[] = $element->getName();
 
 		return $databases;															// ==>
 
@@ -175,9 +198,17 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
 	 * @return Database				Database object.
+	 *
+	 * @see kMONGO_OPTS_CLIENT_DBCREATE
 	 */
-	protected function databaseCreate( $theDatabase, $theOptions )
+	protected function databaseCreate( $theDatabase, $theOptions = NULL )
 	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_CLIENT_DBCREATE;
+
 		return new Database( $this, $theDatabase, $theOptions );					// ==>
 
 	} // databaseCreate.
@@ -198,14 +229,25 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * @return Database				Database object or <tt>NULL</tt> if not found.
 	 *
 	 * @uses databaseList()
+	 *
+	 * @see kMONGO_OPTS_CLIENT_DBRETRIEVE
 	 */
-	protected function databaseRetrieve( $theDatabase, $theOptions )
+	protected function databaseRetrieve( $theDatabase, $theOptions = NULL )
 	{
 		//
 		// Check if database exists.
 		//
 		if( in_array( $theDatabase, $this->databaseList() ) )
+		{
+			//
+			// Init local storage.
+			//
+			if( $theOptions === NULL )
+				$theOptions = kMONGO_OPTS_CLIENT_DBRETRIEVE;
+			
 			return new Database( $this, $theDatabase, $theOptions );				// ==>
+		
+		} // Among server databases.
 
 		return NULL;																// ==>
 

@@ -8,8 +8,6 @@
 
 namespace Milko\PHPLib\MongoDB;
 
-use \MongoDB\Collection;
-
 /*=======================================================================================
  *																						*
  *									Collection.php										*
@@ -79,33 +77,24 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to call the native object's method.
 	 *
 	 * @param mixed					$theOptions			Collection native options.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::deleteMany()
+	 *
+	 * @see kMONGO_OPTS_CL_EMPTY
 	 */
 	public function Empty( $theOptions = NULL )
 	{
 		//
-		// Save collection name.
-		//
-		$name = $this->Connection()->getCollectionName();
-
-		//
-		// Drop collection.
-		//
-		$this->Drop();
-
-		//
-		// Re-create collection.
-		//
-		$this->mNativeObject =
-		//
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = [];
-
+			$theOptions = kMONGO_OPTS_CL_EMPTY;
+		
 		//
-		// Call native method.
+		// Empty collection.
 		//
-		$this->Connection()->drop( $theOptions );
+		$this->Connection()->deleteMany( [], $theOptions );
 
 	} // Empty.
 
@@ -120,6 +109,11 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to call the native object's method.
 	 *
 	 * @param mixed					$theOptions			Collection native options.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::drop()
+	 *
+	 * @see kMONGO_OPTS_CL_DROP
 	 */
 	public function Drop( $theOptions = NULL )
 	{
@@ -127,7 +121,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = [];
+			$theOptions = kMONGO_OPTS_CL_DROP;
 
 		//
 		// Call native method.
@@ -138,321 +132,11 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *							PUBLIC RECORD MANAGEMENT INTERFACE							*
-	 *																						*
-	 *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	InsertOne																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a single record.</h4>
-	 *
-	 * This method can be used to insert a record in the collection, the method expects the
-	 * following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theRecord</b>: The record to be inserted.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theRecord			The record to be inserted.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return mixed				The record's unique identifier.
-	 *
-	 * @uses insert()
-	 */
-	public function InsertOne( $theRecord, $theOptions = NULL )
-	{
-		return $this->insert( $theRecord, FALSE, $theOptions );						// ==>
-
-	} // InsertOne.
-
-
-	/*===================================================================================
-	 *	InsertMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a set of records.</h4>
-	 *
-	 * This method can be used to insert a set of records in the collection, the method
-	 * expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theRecords</b>: The records to be inserted.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theRecords			The records to be inserted.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return array				The list of record's unique identifiers in order.
-	 *
-	 * @uses insert()
-	 */
-	public function InsertMany( $theRecords, $theOptions = NULL )
-	{
-		return $this->insert( $theRecords, TRUE, $theOptions );						// ==>
-
-	} // InsertMany.
-
-
-	/*===================================================================================
-	 *	UpdateOne																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Update a single record.</h4>
-	 *
-	 * This method can be used to update the first selected record in a collection, the
-	 * method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theCriteria</b>: The modification criteria.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theCriteria		The modification criteria.
-	 * @param array					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 *
-	 * @uses update()
-	 */
-	public function UpdateOne( $theCriteria, $theFilter = NULL, $theOptions = NULL )
-	{
-		$this->update( $theCriteria, $theFilter, FALSE, $theOptions );
-
-	} // UpdateOne.
-
-
-	/*===================================================================================
-	 *	UpdateMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Update a set of records.</h4>
-	 *
-	 * This method can be used to update a set of records in the collection, the method
-	 * expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theCriteria</b>: The modification criteria.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theCriteria		The modification criteria.
-	 * @param array					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 *
-	 * @uses update()
-	 */
-	public function UpdateMany( $theCriteria, $theFilter = NULL, $theOptions = NULL )
-	{
-		$this->update( $theCriteria, $theFilter, TRUE, $theOptions );
-
-	} // UpdateMany.
-
-
-	/*===================================================================================
-	 *	ReplaceOne																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Replace a record.</h4>
-	 *
-	 * This method can be used to replace the first selected record in a collection, the
-	 * method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theRecord</b>: The replacement record.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theRecord			The replacement record.
-	 * @param array					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 *
-	 * @uses replace()
-	 */
-	public function ReplaceOne( $theRecord, $theFilter = NULL, $theOptions = NULL )
-	{
-		$this->replace( $theRecord, $theFilter, $theOptions );
-
-	} // ReplaceOne.
-
-
-	/*===================================================================================
-	 *	FindOne																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Find a single record.</h4>
-	 *
-	 * This method can be used to find the first selected record in a collection, the
-	 * method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The search criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theFilter			The search criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return array				The found record.
-	 *
-	 * @uses find()
-	 */
-	public function FindOne( $theFilter, $theOptions = NULL )
-	{
-		return $this->find( $theFilter, FALSE, $theOptions );						// ==>
-
-	} // FindOne.
-
-
-	/*===================================================================================
-	 *	FindMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Find a set of records.</h4>
-	 *
-	 * This method can be used to find a set of records in the collection, the method
-	 * expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The search criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theFilter			The search criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return array				The found records.
-	 *
-	 * @uses find()
-	 */
-	public function FindMany( $theFilter, $theOptions = NULL )
-	{
-		return $this->find( $theFilter, TRUE, $theOptions );						// ==>
-
-	} // FindMany.
-
-
-	/*===================================================================================
-	 *	QueryCollection																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Query the collection.</h4>
-	 *
-	 * This method can be used to query the collection, the method expects the following
-	 * parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theQuery</b>: The driver native query.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param mixed					$theQuery			The search query.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return array				The found records.
-	 *
-	 * @uses query()
-	 */
-	public function QueryCollection( $theQuery, $theOptions = NULL )
-	{
-		return $this->query( $theQuery, $theOptions );								// ==>
-
-	} // QueryCollection.
-
-
-	/*===================================================================================
-	 *	DeleteOne																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete a single record.</h4>
-	 *
-	 * This method can be used to delete the first selected record in a collection, the
-	 * method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theFilter			The deletion criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 *
-	 * @uses delete()
-	 */
-	public function DeleteOne( $theFilter, $theOptions = NULL )
-	{
-		$this->delete( $theFilter, FALSE, $theOptions );
-
-	} // DeleteOne.
-
-
-	/*===================================================================================
-	 *	DeleteMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete a set of records.</h4>
-	 *
-	 * This method can be used to delete a set of records in the collection, the method
-	 * expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theCriteria</b>: The deletion criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theFilter			The deletion criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 *
-	 * @uses delete()
-	 */
-	public function DeleteMany( $theFilter, $theOptions = NULL )
-	{
-		$this->delete( $theFilter, TRUE, $theOptions );
-
-	} // DeleteMany.
-
-
-
-	/*=======================================================================================
-	 *																						*
-	 *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -473,8 +157,24 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param string				$theCollection		Collection name.
 	 * @param mixed					$theOptions			Native driver options.
 	 * @return mixed				Native collection object.
+	 *
+	 * @uses Database()
+	 * @uses \MongoDB\Database::selectCollection()
+	 *
+	 * @see kMONGO_OPTS_DB_CLCREATE
 	 */
-	abstract protected function collectionNew( $theCollection, $theOptions );
+	protected function collectionNew( $theCollection, $theOptions = NULL )
+	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_DB_CLCREATE;
+
+		return $this->Database()->Connection()->selectCollection(
+				(string)$theCollection, $theOptions );								// ==>
+
+	} // collectionNew.
 
 
 	/*===================================================================================
@@ -491,8 +191,15 @@ class Collection extends \Milko\PHPLib\Collection
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @return string				The collection name.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::getCollectionName()
 	 */
-	abstract protected function collectionName();
+	protected function collectionName( $theOptions = NULL )
+	{
+		return $this->Connection()->getCollectionName();							// ==>
+	
+	} // collectionName.
 
 
 
@@ -526,12 +233,41 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theRecord			The record to be inserted.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array|object			$theRecord			The record to be inserted.
 	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @return array				The record's unique identifier(s).
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return mixed|array			The record's unique identifier(s).
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::insertOne()
+	 * @uses \MongoDB\Collection::insertMany()
+	 *
+	 * @see kMONGO_OPTS_CL_INSERT
 	 */
-	abstract protected function insert( $theRecord, $theOptions, $doMany );
+	protected function insert( $theRecord, $doMany, $theOptions = NULL )
+	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_CL_INSERT;
+		
+		//
+		// Normalise container.
+		//
+		if( $theRecord instanceof \Milko\PHPLib\Container )
+			$theRecord = $theRecord->toArray();
+
+		//
+		// Insert one or more records.
+		//
+		$result = ( $doMany ) ? $this->Connection()->insertMany( $theRecord, $theOptions )
+							  : $this->Connection()->insertOne( $theRecord, $theOptions );
+
+		return ( $doMany ) ? $result->getInsertedIds()								// ==>
+						   : $result->getInsertedId();								// ==>
+
+	} // insert.
 
 
 	/*===================================================================================
@@ -545,11 +281,11 @@ class Collection extends \Milko\PHPLib\Collection
 	 * criteria, the method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theCriteria</b>: The modification criteria.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> update all records, <tt>FALSE</tt> update one
-	 * 		record.
+	 *    <li><b>$theCriteria</b>: The modification criteria.
+	 *    <li><b>$theFilter</b>: The selection criteria.
+	 *    <li><b>$doMany</b>: <tt>TRUE</tt> update all records, <tt>FALSE</tt> update one
+	 *        record.
+	 *    <li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
 	 * This method assumes that the server is connected, it is the responsibility of the
@@ -559,10 +295,37 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param array					$theCriteria		The modification criteria.
 	 * @param array					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
 	 * @param boolean				$doMany				Single or multiple records flag.
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return int					The number of modified records.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::updateOne()
+	 * @uses \MongoDB\Collection::updateMany()
+	 *
+	 * @see kMONGO_OPTS_CL_UPDATE
 	 */
-	abstract protected function update( $theCriteria, $theFilter, $theOptions, $doMany );
+	protected function update( $theCriteria,
+							   $theFilter,
+							   $doMany,
+							   $theOptions = NULL )
+	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_CL_UPDATE;
+
+		//
+		// Insert one or more records.
+		//
+		$result = ( $doMany )
+				? $this->Connection()->updateMany( $theFilter, $theCriteria, $theOptions )
+				: $this->Connection()->updateOne( $theFilter, $theCriteria, $theOptions );
+
+		return $result->getModifiedCount();											// ==>
+	
+	} // update.
 
 
 	/*===================================================================================
@@ -589,8 +352,29 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theRecord			The replacement record.
 	 * @param array					$theFilter			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
+	 * @return int					The number of modified records.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::replaceOne()
+	 *
+	 * @see kMONGO_OPTS_CL_REPLACE
 	 */
-	abstract protected function replace( $theRecord, $theFilter, $theOptions );
+	protected function replace( $theRecord, $theFilter, $theOptions = NULL )
+	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_CL_REPLACE;
+
+		//
+		// Replace a record.
+		//
+		$result = $this->Connection()->replaceOne( $theFilter, $theRecord, $theOptions );
+
+		return $result->getModifiedCount();											// ==>
+	
+	} // replace.
 
 
 	/*===================================================================================
@@ -616,38 +400,32 @@ class Collection extends \Milko\PHPLib\Collection
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
 	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @return array				The found record or records.
-	 */
-	abstract protected function find( $theFilter, $theOptions, $doMany );
-
-
-	/*===================================================================================
-	 *	query																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Query the collection.</h4>
-	 *
-	 * This method can be used to query the collection using a driver native selection
-	 * criteria, the method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theQuery</b>: The driver native query.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param mixed					$theQuery			The search query.
 	 * @param mixed					$theOptions			Collection native options.
-	 * @return array				The found records.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::findOne()
+	 * @uses \MongoDB\Collection::findMany()
+	 *
+	 * @see kMONGO_OPTS_CL_FIND
 	 */
-	abstract protected function query( $theQuery, $theOptions );
+	protected function find( $theFilter, $doMany, $theOptions = NULL )
+	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_CL_FIND;
+
+		//
+		// Insert one or more records.
+		//
+		return ( $doMany )
+			 ? $this->Connection()->findMany( $theFilter, $theOptions )				// ==>
+			 : $this->Connection()->findOne( $theFilter, $theOptions );				// ==>
+	
+	} // find.
 
 
 	/*===================================================================================
@@ -673,11 +451,34 @@ class Collection extends \Milko\PHPLib\Collection
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
 	 * @param boolean				$doMany				Single or multiple records flag.
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::deleteOne()
+	 * @uses \MongoDB\Collection::deleteMany()
+	 *
+	 * @see kMONGO_OPTS_CL_DELETE
 	 */
-	abstract protected function delete( $theFilter, $theOptions, $doMany );
+	protected function delete( $theFilter, $doMany, $theOptions = NULL )
+	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = kMONGO_OPTS_CL_DELETE;
 
+		//
+		// Delete one or more records.
+		//
+		$result = ( $doMany )
+				? $this->Connection()->deleteMany( $theFilter, $theOptions )
+				: $this->Connection()->deleteOne( $theFilter, $theOptions );
+
+		return $result->getDeletedCount();											// ==>
+	
+	} // delete.
 
 
 } // class Collection.

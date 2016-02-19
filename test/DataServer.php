@@ -34,18 +34,21 @@ class test_DataServer extends Milko\PHPLib\DataServer
 	//
 	// Implement Server virtual interface.
 	//
-	protected function connectionCreate()	{	return "I am open!";	}
-	protected function connectionDestruct()	{	$this->mConnection = "I am closed.";	}
+	protected function connectionCreate( $theOptions = NULL ) {
+		return "I am open!";	}
+	protected function connectionDestruct( $theOptions = NULL ) {
+		$this->mConnection = "I am closed.";	}
 
 	//
 	// Implement DataServer virtual interface.
 	//
-	protected function databaseList( $theOptions ) {
+	protected function databaseList( $theOptions = NULL ) {
 		return array_merge( ["db1", "db2", "db3" ], $this->WorkingDatabases() );	}
-	protected function databaseCreate( $theDatabase, $theOptions ) {
+	protected function databaseCreate( $theDatabase, $theOptions = NULL ) {
 		return new test_Database( $this, (string)$theDatabase, $theOptions );	}
-	protected function databaseRetrieve( $theDatabase, $theOptions ) {
-		return (string) $theDatabase;	}
+	protected function databaseRetrieve( $theDatabase, $theOptions = NULL ) {
+		if( in_array( $theDatabase, $this->databaseList() ) )
+			return new test_Database( $this, $theDatabase, $theOptions );	}
 }
 
 //

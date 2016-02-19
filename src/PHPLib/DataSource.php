@@ -65,6 +65,8 @@ use Milko\PHPLib\Container;
  *	@example	../../test/DataSource.php
  *	@example
  * $dsn = new Milko\PHPLib\Datasource( 'protocol://user:pass@host:9090/dir/file?arg=val#frag' );
+ *	@example
+ * $dsn = new Milko\PHPLib\Datasource( 'protocol://user:pass@host1:9090,host2,host3:8080/dir/file?arg=val#frag' );
  */
 class DataSource extends Container
 {
@@ -294,7 +296,8 @@ class DataSource extends Container
 	/**
 	 * <h4>Set a value at a given offset.</h4>
 	 *
-	 * We overload this method to assert whether the port value is numeric, if not an array.
+	 * We overload this method to check the port value: it can either be an array or an
+	 * integer, if that is not the case, an exception will be raised.
 	 *
 	 * @param string				$theOffset			Offset.
 	 * @param mixed					$theValue			Value to set at offset.
@@ -342,8 +345,8 @@ class DataSource extends Container
 	/**
 	 * <h4>Reset a value at a given offset.</h4>
 	 *
-	 * We overload this method to prevent warnings when a non-existing offset is provided,
-	 * in that case we do nothing.
+	 * We overload this method to prevent deleting the host and protocol.
+	 * We also delete the password when deleting the user.
 	 *
 	 * @param string				$theOffset			Offset.
 	 * @throws \BadMethodCallException
@@ -397,15 +400,17 @@ class DataSource extends Container
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string
 	 *
-	 * @see PROT
 	 * @uses manageProperty()
+	 *
+	 * @see PROT
+	 *
 	 * @example
 	 * $test = $dsn->Protocol( 'html' );	// Set protocol to <tt>html</tt>.<br/>
 	 * $test = $dsn->Protocol(); // Retrieve current protocol.
 	 */
 	public function Protocol( $theValue = NULL )
 	{
-		return $this->manageProperty( self::PROT, $theValue );					// ==>
+		return $this->manageProperty( self::PROT, $theValue );						// ==>
 
 	} // Protocol.
 
@@ -429,8 +434,10 @@ class DataSource extends Container
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string|array
 	 *
-	 * @see HOST
 	 * @uses manageProperty()
+	 *
+	 * @see HOST
+	 *
 	 * @example
 	 * $test = $dsn->Host( 'example.net' );	// Set host.<br/>
 	 * $test = $dsn->Host(); // Retrieve current host.
@@ -462,8 +469,10 @@ class DataSource extends Container
 	 * @param mixed				$theValue			Value or operation.
 	 * @return int
 	 *
-	 * @see PORT
 	 * @uses manageProperty()
+	 *
+	 * @see PORT
+	 *
 	 * @example
 	 * $test = $dsn->Port( 8080 );	// Set port.<br/>
 	 * $test = $dsn->Port(); // Retrieve current port.
@@ -494,8 +503,10 @@ class DataSource extends Container
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string
 	 *
-	 * @see USER
 	 * @uses manageProperty()
+	 *
+	 * @see USER
+	 *
 	 * @example
 	 * $test = $dsn->User( 'admin' );	// Set user name.<br/>
 	 * $test = $dsn->User(); // Retrieve current user name.
@@ -525,8 +536,10 @@ class DataSource extends Container
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string
 	 *
-	 * @see PASS
 	 * @uses manageProperty()
+	 *
+	 * @see PASS
+	 *
 	 * @example
 	 * $test = $dsn->Password( 'secret' );	// Set user password.<br/>
 	 * $test = $dsn->Password(); // Retrieve current user password.
@@ -568,8 +581,10 @@ class DataSource extends Container
 	 * @param boolean			$asArray			<tt>TRUE</tt> return as array.
 	 * @return string
 	 *
-	 * @see PATH
 	 * @uses manageProperty()
+	 *
+	 * @see PATH
+	 *
 	 * @example
 	 * $test = $dsn->Path( 'directory/file' );	// Set path.<br/>
 	 * $test = $dsn->Path(); // Retrieve current path.
@@ -601,8 +616,10 @@ class DataSource extends Container
 	 * @return array
 	 * @throws \InvalidArgumentException
 	 *
-	 * @see QUERY
 	 * @uses manageProperty()
+	 *
+	 * @see QUERY
+	 *
 	 * @example
 	 * $test = $dsn->Query( [ 'arg' => 'val' ] ); // Set query by array.<br/>
 	 * $test = $dsn->Query( 'arg=val' ); // Set query by string.<br/>
@@ -692,8 +709,10 @@ class DataSource extends Container
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string
 	 *
-	 * @see FRAG
 	 * @uses manageProperty()
+	 *
+	 * @see FRAG
+	 *
 	 * @example
 	 * $test = $dsn->Fragment( 'frag' ); // Set fragment.<br/>
 	 * $test = $dsn->Fragment(); // Retrieve current fragment.
@@ -728,11 +747,13 @@ class DataSource extends Container
 	 * @param array				$theExcluded		List of excluded offsets.
 	 * @return string
 	 *
-	 * @see PROT
 	 * @uses manageProperty()
+	 *
+	 * @see PROT
+	 *
 	 * @example
-	 * $test = $dsn->Protocol( 'html' );	// Set protocol to <tt>html</tt>.<br/>
-	 * $test = $dsn->Protocol(); // Retrieve current protocol.
+	 * $test = $dsn->toURL();	// Return full URL.<br/>
+	 * $test = $dsn->toURL( [ self::PATH ] );	// Return URL without path.
 	 */
 	public function toURL( $theExcluded = [] )
 	{
@@ -745,14 +766,14 @@ class DataSource extends Container
 		// Set protocol.
 		//
 		if( (! in_array( self::PROT, $theExcluded ))
-			&& (($tmp = $this->offsetGet( self::PROT )) !== NULL) )
+		 && (($tmp = $this->offsetGet( self::PROT )) !== NULL) )
 			$dsn .= ($tmp.'://');
 
 		//
 		// Handle credentials.
 		//
 		if( (! in_array( self::USER, $theExcluded ))
-			&& (($tmp = $this->offsetGet( self::USER )) !== NULL) )
+		 && (($tmp = $this->offsetGet( self::USER )) !== NULL) )
 		{
 			//
 			// Set user.
@@ -763,7 +784,7 @@ class DataSource extends Container
 			// Set password.
 			//
 			if( (! in_array( self::PASS, $theExcluded ))
-				&& (($tmp = $this->offsetGet( self::PASS )) !== NULL) )
+			 && (($tmp = $this->offsetGet( self::PASS )) !== NULL) )
 				$dsn .= ":$tmp";
 
 			//
@@ -777,7 +798,7 @@ class DataSource extends Container
 		// Add host and port.
 		//
 		if( (! in_array( self::HOST, $theExcluded ))
-			&& (($tmp = $this->offsetGet( self::HOST )) !== NULL) )
+		 && (($tmp = $this->offsetGet( self::HOST )) !== NULL) )
 		{
 			//
 			// Init local storage.
@@ -817,18 +838,18 @@ class DataSource extends Container
 				// Add port.
 				//
 				if( $do_port
-					&& (($tmp = $this->offsetGet( self::PORT )) !== NULL) )
+				 && (($tmp = $this->offsetGet( self::PORT )) !== NULL) )
 					$dsn .= ":$tmp";
 			}
 		}
 
 		//
 		// Handle path.
-		// Note that we add a leading slash
+		// We add a leading slash
 		// if the parameter does not start with one.
 		//
 		if( (! in_array( self::PATH, $theExcluded ))
-			&& (($tmp = $this->offsetGet( self::PATH )) !== NULL) )
+		 && (($tmp = $this->offsetGet( self::PATH )) !== NULL) )
 		{
 			if( ! (substr( $tmp, 0, 1 ) == '/') )
 				$dsn .= '/';
@@ -839,7 +860,7 @@ class DataSource extends Container
 		// Set options.
 		//
 		if( (! in_array( self::QUERY, $theExcluded ))
-			&& (($tmp = $this->offsetGet( self::QUERY )) !== NULL) )
+		 && (($tmp = $this->offsetGet( self::QUERY )) !== NULL) )
 		{
 			//
 			// Format query.
@@ -860,7 +881,7 @@ class DataSource extends Container
 		// Set fragment.
 		//
 		if( (! in_array( self::FRAG, $theExcluded ))
-			&& (($tmp = $this->offsetGet( self::FRAG )) !== NULL) )
+		 && (($tmp = $this->offsetGet( self::FRAG )) !== NULL) )
 			$dsn .= "#$tmp";
 
 		return $dsn;																// ==>
