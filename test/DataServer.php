@@ -40,13 +40,12 @@ class test_DataServer extends Milko\PHPLib\DataServer
 	//
 	// Implement DataServer virtual interface.
 	//
-	protected function databaseList() {
+	protected function databaseList( $theOptions ) {
 		return array_merge( ["db1", "db2", "db3" ], $this->WorkingDatabases() );	}
 	protected function databaseCreate( $theDatabase, $theOptions ) {
 		return new test_Database( $this, (string)$theDatabase, $theOptions );	}
 	protected function databaseRetrieve( $theDatabase, $theOptions ) {
 		return (string) $theDatabase;	}
-	protected function databaseDrop( Milko\PHPLib\Database $theDatabase, $theOptions ) {}
 }
 
 //
@@ -57,11 +56,12 @@ class test_Database extends Milko\PHPLib\Database
 	//
 	// Implement Database virtual interface.
 	//
-	protected function newDatabase( $theDatabase, $theOptions )	{
+	public function Drop( $theOptions = NULL ) {}
+	protected function databaseNew( $theDatabase, $theOptions )	{
 		return (string)$theDatabase;	}
 	protected function databaseName() {
 		return $this->mNativeObject;	}
-	protected function collectionList() {
+	protected function collectionList( $theOptions ) {
 		return array_merge( ["cl1", "cl2", "cl3" ], $this->WorkingCollections() );	}
 	protected function collectionCreate( $theCollection, $theOptions ) {
 		return new test_Collection( $this, $theCollection, $theOptions );	}
@@ -79,7 +79,9 @@ class test_Collection extends Milko\PHPLib\Collection
 	//
 	// Implement Collection virtual interface.
 	//
-	protected function newCollection( $theCollection, $theOptions ) {
+	public function Drop( $theOptions = NULL ) {}
+	public function Empty( $theOptions = NULL ) {}
+	protected function collectionNew( $theCollection, $theOptions ) {
 		return (string)$theCollection;	}
 	protected function collectionName() {
 		return $this->mNativeObject;	}

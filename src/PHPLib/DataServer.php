@@ -62,7 +62,6 @@ use Milko\PHPLib\Database;
  * 		corresponding to the provided name.
  * 	<li><b>{@link databaseRetrieve()}</b>: Return a {@link Database} object corresponding to
  * 		the provided name.
- * 	<li><b>{@link databaseDrop()}</b>: Drop the provided {@link Database} object.
  * </ul>
  *
  * Each time a database object is retrieved, the object will store it in the
@@ -191,6 +190,7 @@ abstract class DataServer extends Server
 	 * The {@link kFLAG_CONNECT} flag is set by default to ensure the server is connected.
 	 *
 	 * @param string				$theFlags			Flags bitfield.
+	 * @param mixed					$theOptions			Database native options.
 	 * @return array				List of database names.
 	 *
 	 * @example
@@ -200,13 +200,13 @@ abstract class DataServer extends Server
 	 * @uses isConnected()
 	 * @uses databaseList()
 	 */
-	public function ListDatabases( $theFlags = self::kFLAG_CONNECT )
+	public function ListDatabases( $theFlags = self::kFLAG_CONNECT, $theOptions = NULL )
 	{
 		//
 		// Assert connection.
 		//
 		if( $this->isConnected( $theFlags ) )
-			return $this->databaseList();											// ==>
+			return $this->databaseList( $theOptions );								// ==>
 		
 		return [];																	// ==>
 		
@@ -413,9 +413,7 @@ abstract class DataServer extends Server
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database' );<br/>
 	 * $done = $server->DropDatabase( "database" );
 	 *
-	 * @uses databaseDrop()
-	 * @uses isConnected()
-	 * @uses databaseRetrieve()
+	 * @uses RetrieveDatabase()
 	 */
 	public function DropDatabase( $theDatabase,
 								  $theFlags = self::kFLAG_CONNECT,
@@ -427,50 +425,27 @@ abstract class DataServer extends Server
 		$theDatabase = (string)$theDatabase;
 
 		//
-		// Match working databases.
+		// Retrieve database.
 		//
-		if( array_key_exists( $theDatabase, $this->mDatabases ) )
+		$database = $this->RetrieveDatabase( $theDatabase, $theFlags, $theOptions );
+		if( $database instanceof Database )
 		{
 			//
-			// Drop database.
+			// Drop and forget database.
 			//
-			$this->databaseDrop( $this->mDatabases[ $theDatabase ], $theOptions );
-
-			//
-			// Clear working database entry.
-			//
+			$database->Drop( $theOptions );
 			unset( $this->mDatabases[ $theDatabase ] );
 
 			return TRUE;															// ==>
-		}
+
+		} // Found database.
 
 		//
-		// Assert connection.
+		// Assert database.
 		//
-		if( $this->isConnected( $theFlags ) )
-		{
-			//
-			// Retrieve existing database.
-			//
-			$database = $this->databaseRetrieve( $theDatabase, $theOptions );
-			if( $database instanceof Database )
-			{
-				//
-				// Drop database.
-				//
-				$this->databaseDrop( $database, $theOptions );
-
-				return TRUE;														// ==>
-			}
-
-			//
-			// Assert database.
-			//
-			if( $theFlags & self::kFLAG_ASSERT )
-				throw new \RuntimeException (
-					"Unknown database [$theDatabase]." );						// !@! ==>
-
-		} // Server is connected.
+		if( $theFlags & self::kFLAG_ASSERT )
+			throw new \RuntimeException (
+				"Unknown database [$theDatabase]." );						// !@! ==>
 
 		return FALSE;																// ==>
 
@@ -500,9 +475,10 @@ abstract class DataServer extends Server
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
+	 * @param mixed					$theOptions			Database native options.
 	 * @return array				List of database names.
 	 */
-	abstract protected function databaseList();
+	abstract protected function databaseList( $theOptions );
 	
 	
 	/*===================================================================================
@@ -520,6 +496,8 @@ abstract class DataServer extends Server
 	 *
 	 * The method should not be concerned if the database already exists, it is the
 	 * responsibility of the caller to check it.
+	 *
+	 * This method exists to allow instantiating the relevant derived concrete class.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
@@ -544,6 +522,8 @@ abstract class DataServer extends Server
 	 * The method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
+	 * This method exists to allow instantiating the relevant derived concrete class.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theDatabase		Database name.
@@ -551,27 +531,7 @@ abstract class DataServer extends Server
 	 * @return Database				Database object or <tt>NULL</tt> if not found.
 	 */
 	abstract protected function databaseRetrieve( $theDatabase, $theOptions );
-	
-	
-	/*===================================================================================
-	 *	databaseDrop																	*
-	 *==================================================================================*/
-	
-	/**
-	 * <h4>Drop a database.</h4>
-	 *
-	 * This method should drop the provided database.
-	 *
-	 * The method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param Database				$theDatabase		Database object.
-	 * @param mixed					$theOptions			Database native options.
-	 */
-	abstract protected function databaseDrop( Database $theDatabase, $theOptions );
-	
+
 	
 	
 } // class DataServer.

@@ -149,7 +149,7 @@ class DataSource extends Container
  *======================================================================================*/
 
 
-	 
+
 	/*===================================================================================
 	 *	__construct																		*
 	 *==================================================================================*/
@@ -213,8 +213,41 @@ class DataSource extends Container
 			$this->Query( parse_url( $theConnection, PHP_URL_QUERY ) );
 			$this->Fragment( parse_url( $theConnection, PHP_URL_FRAGMENT ) );
 
+			//
+			// Handle multiple hosts.
+			//
+			if( strpos( ($list = $this->Host()), ',' ) !== FALSE )
+			{
+				//
+				// Split hosts.
+				//
+				$hosts = $ports = [];
+				$parts = explode( ',', $list );
+				foreach( $parts as $part )
+				{
+					$sub = explode( ':', $part );
+					$hosts[] = trim( $sub[ 0 ] );
+					$ports[] = ( count( $sub ) > 1 )
+						? (int)$sub[ 1 ]
+						: NULL;
+				}
+
+				//
+				// Split last port.
+				//
+				if( ($tmp = $this->Port()) !== NULL )
+					$ports[ count( $ports ) - 1 ] = (int)$tmp;
+
+				//
+				// Set hosts and ports.
+				//
+				$this->Host( $hosts );
+				$this->Port( $ports );
+
+			} // Has multiple hosts.
+
 		} // Data source name is not empty.
-		
+
 		//
 		// Handle empty connection string.
 		//
@@ -239,90 +272,10 @@ class DataSource extends Container
 	 * cannot be used until there is a data source name for the object.
 	 *
 	 * @return string
+	 *
+	 * @uses toURL()
 	 */
-	public function __toString()
-	{
-		//
-		// Set protocol.
-		//
-		$dsn = $this->offsetGet( self::PROT ).'://';
-
-		//
-		// Handle credentials.
-		//
-		if( ($tmp = $this->offsetGet( self::USER )) !== NULL )
-		{
-			//
-			// Set user.
-			//
-			$dsn .= $tmp;
-
-			//
-			// Set password.
-			//
-			if( ($tmp = $this->offsetGet( self::PASS )) !== NULL )
-				$dsn .= ":$tmp";
-
-			//
-			// Close credentials.
-			//
-			$dsn .= '@';
-
-		} // Has user.
-
-		//
-		// Add host.
-		//
-		if( ($tmp = $this->offsetGet( self::HOST )) !== NULL )
-			$dsn .= $tmp;
-
-		//
-		// Add port.
-		//
-		if( ($tmp = $this->offsetGet( self::PORT )) !== NULL )
-			$dsn .= $tmp;
-
-		//
-		// Handle path.
-		// Note that we add a leading slash
-		// if the parameter does not start with one.
-		//
-		if( ($tmp = $this->offsetGet( self::PATH )) !== NULL )
-		{
-			if( ! (substr( $tmp, 0, 1 ) == '/') )
-				$dsn .= '/';
-			$dsn .= $tmp;
-		}
-
-		//
-		// Set options.
-		//
-		if( ($tmp = $this->offsetGet( self::QUERY )) !== NULL )
-		{
-			//
-			// Format query.
-			//
-			$query = [];
-			foreach( $tmp as $key => $value )
-				$query[] = ( $value !== NULL )
-						 ? "$key=$value"
-						 : $key;
-
-			//
-			// Set query.
-			//
-			$dsn .= ('?'.implode( '&', $query ));
-		}
-
-		//
-		// Set fragment.
-		//
-		if( ($tmp = $this->offsetGet( self::FRAG )) !== NULL )
-			$dsn .= "#$tmp";
-
-		return $dsn;																// ==>
-
-	} // __toString.
+	public function __toString()								{	return $this->toURL();	}
 
 
 
@@ -341,7 +294,7 @@ class DataSource extends Container
 	/**
 	 * <h4>Set a value at a given offset.</h4>
 	 *
-	 * We overload this method to assert whether the port value is numeric.
+	 * We overload this method to assert whether the port value is numeric, if not an array.
 	 *
 	 * @param string				$theOffset			Offset.
 	 * @param mixed					$theValue			Value to set at offset.
@@ -357,14 +310,20 @@ class DataSource extends Container
 			//
 			// Assert numeric value.
 			//
-			if( ! is_numeric( $theValue ) )
-				throw new \InvalidArgumentException (
-					"The data source port must be a numeric value." );			// !@! ==>
+			if( ! is_array( $theValue ) )
+			{
+				//
+				// Throw.
+				//
+				if( ! is_numeric( $theValue ) )
+					throw new \InvalidArgumentException (
+						"The data source port must be a numeric value." );		// !@! ==>
 
-			//
-			// Cast value.
-			//
-			$theValue = (int)$theValue;
+				//
+				// Cast value.
+				//
+				$theValue = (int)$theValue;
+			}
 
 		} // Setting port.
 
@@ -395,7 +354,7 @@ class DataSource extends Container
 		// Prevent deleting protocol and host.
 		//
 		if( ($theOffset == self::HOST)
-		 || ($theOffset == self::PROT) )
+			|| ($theOffset == self::PROT) )
 			throw new \BadMethodCallException(
 				"The data source protocol and host are required." );			// !@! ==>
 
@@ -421,7 +380,7 @@ class DataSource extends Container
  *======================================================================================*/
 
 
-	 
+
 	/*===================================================================================
 	 *	Protocol																		*
 	 *==================================================================================*/
@@ -462,10 +421,13 @@ class DataSource extends Container
 	 * current value, or any other type to set it. The host is required, so providing
 	 * <tt>FALSE</tt> will result in an exception.
 	 *
+	 * The host can be provided either as a string, for a single host, or as an array for
+	 * multiple hosts.
+	 *
 	 * The method will return the current value.
 	 *
 	 * @param mixed				$theValue			Value or operation.
-	 * @return string
+	 * @return string|array
 	 *
 	 * @see HOST
 	 * @uses manageProperty()
@@ -490,8 +452,9 @@ class DataSource extends Container
 	 * This method will manage the data source port, provide <tt>NULL</tt> to retrieve
 	 * the current value, <tt>FALSE</tt> to delete the host, or any other type to set it.
 	 *
-	 * When setting a new value you must provide an integer value, or an exception will be
-	 * thrown.
+	 * The host can be provided either as an integer, for a single port, or as an array for
+	 * multiple ports; a single port must be provided as an integer value, or an exception
+	 * will be thrown.
 	 *
 	 * The method will return the old value when deleting and the current value in all other
 	 * cases.
@@ -652,8 +615,8 @@ class DataSource extends Container
 		// Compile query.
 		//
 		if( ($theValue !== NULL)
-		 && ($theValue !== FALSE)
-		 && (! is_array( $theValue )) )
+			&& ($theValue !== FALSE)
+			&& (! is_array( $theValue )) )
 		{
 			//
 			// Split parameter groups.
@@ -681,14 +644,14 @@ class DataSource extends Container
 					//
 					if( ! strlen( $name = trim( $elements[ 0 ] ) ) )
 						throw new \InvalidArgumentException(
-								"Invalid data source query." );					// !@! ==>
+							"Invalid data source query." );					// !@! ==>
 
 					//
 					// Check parameter value.
 					//
 					$value = ( count( $elements ) > 1 )
-							? $elements[ 1 ]
-							: NULL;
+						? $elements[ 1 ]
+						: NULL;
 
 					//
 					// Set parameter.
@@ -701,8 +664,8 @@ class DataSource extends Container
 				// Set converted value.
 				//
 				$theValue = ( count( $list ) )
-						  ? $list
-						  : NULL;
+					? $list
+					: NULL;
 
 			} // Has parameters.
 
@@ -742,7 +705,169 @@ class DataSource extends Container
 
 	} // Fragment.
 
-	 
+
+
+/*=======================================================================================
+ *																						*
+ *									PROTECTED URI UTILITIES								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	toURL																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the data source URL.</h4>
+	 *
+	 * This method can be used to return an URL from the current data source, it accepts an
+	 * array parameter containing the URL offsets <em>to be excluded</em>.
+	 *
+	 * @param array				$theExcluded		List of excluded offsets.
+	 * @return string
+	 *
+	 * @see PROT
+	 * @uses manageProperty()
+	 * @example
+	 * $test = $dsn->Protocol( 'html' );	// Set protocol to <tt>html</tt>.<br/>
+	 * $test = $dsn->Protocol(); // Retrieve current protocol.
+	 */
+	public function toURL( $theExcluded = [] )
+	{
+		//
+		// Init local storage.
+		//
+		$dsn = '';
+
+		//
+		// Set protocol.
+		//
+		if( (! in_array( self::PROT, $theExcluded ))
+			&& (($tmp = $this->offsetGet( self::PROT )) !== NULL) )
+			$dsn .= ($tmp.'://');
+
+		//
+		// Handle credentials.
+		//
+		if( (! in_array( self::USER, $theExcluded ))
+			&& (($tmp = $this->offsetGet( self::USER )) !== NULL) )
+		{
+			//
+			// Set user.
+			//
+			$dsn .= $tmp;
+
+			//
+			// Set password.
+			//
+			if( (! in_array( self::PASS, $theExcluded ))
+				&& (($tmp = $this->offsetGet( self::PASS )) !== NULL) )
+				$dsn .= ":$tmp";
+
+			//
+			// Close credentials.
+			//
+			$dsn .= '@';
+
+		} // Has user.
+
+		//
+		// Add host and port.
+		//
+		if( (! in_array( self::HOST, $theExcluded ))
+			&& (($tmp = $this->offsetGet( self::HOST )) !== NULL) )
+		{
+			//
+			// Init local storage.
+			//
+			$do_port = ! in_array( self::PORT, $theExcluded );
+
+			//
+			// Add hosts.
+			//
+			if( is_array( $tmp ) )
+			{
+				//
+				// Add hosts and ports.
+				//
+				$list = [];
+				$ports = $this->Port();
+				foreach( $tmp as $key => $value )
+				{
+					if( $do_port )
+						$list[] = ( $ports[ $key ] !== NULL )
+							? ($tmp[ $key ] . ':' . $ports[ $key ])
+							: $tmp[ $key ];
+					else
+						$list[] = $tmp[ $key ];
+				}
+
+				$dsn .= implode( ',', $list );
+			}
+			else
+			{
+				//
+				// Add host.
+				//
+				$dsn .= $tmp;
+
+				//
+				// Add port.
+				//
+				if( $do_port
+					&& (($tmp = $this->offsetGet( self::PORT )) !== NULL) )
+					$dsn .= ":$tmp";
+			}
+		}
+
+		//
+		// Handle path.
+		// Note that we add a leading slash
+		// if the parameter does not start with one.
+		//
+		if( (! in_array( self::PATH, $theExcluded ))
+			&& (($tmp = $this->offsetGet( self::PATH )) !== NULL) )
+		{
+			if( ! (substr( $tmp, 0, 1 ) == '/') )
+				$dsn .= '/';
+			$dsn .= $tmp;
+		}
+
+		//
+		// Set options.
+		//
+		if( (! in_array( self::QUERY, $theExcluded ))
+			&& (($tmp = $this->offsetGet( self::QUERY )) !== NULL) )
+		{
+			//
+			// Format query.
+			//
+			$query = [];
+			foreach( $tmp as $key => $value )
+				$query[] = ( $value !== NULL )
+					? "$key=$value"
+					: $key;
+
+			//
+			// Set query.
+			//
+			$dsn .= ('?'.implode( '&', $query ));
+		}
+
+		//
+		// Set fragment.
+		//
+		if( (! in_array( self::FRAG, $theExcluded ))
+			&& (($tmp = $this->offsetGet( self::FRAG )) !== NULL) )
+			$dsn .= "#$tmp";
+
+		return $dsn;																// ==>
+
+	} // toURL.
+
+
 
 } // class DataSource.
 

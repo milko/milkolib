@@ -213,5 +213,25 @@ echo( '$result = $test->Port( "9090" );' . "\n" );
 try{ $result = $test->Port( "9090" ); echo( "This is supported!\n" ); }
 catch( Exception $error ){ echo( $error->getMessage() . "\nFailed!\n" ); }
 
-?>
+echo( "\n====================================================================================\n\n" );
 
+//
+// Multiple hosts.
+//
+echo( '$url = "protocol://user:password@host1:9090,host2,host3:9191/dir/file";' . "\n" );
+$url = "protocol://user:password@host1:9090,host2,host3:9191/dir/file";
+echo( '$test = new Milko\PHPLib\DataSource( $url' . " );\n" );
+$test = new Milko\PHPLib\DataSource( $url );
+echo( "$test\n" );
+echo( '$result = $test[ Milko\PHPLib\DataSource::PROT ];' . "\n" );
+$result = dumpValue( $test[ Milko\PHPLib\DataSource::PROT ] );
+echo( "Result: $result\n" );
+echo( '$result = $test[ Milko\PHPLib\DataSource::HOST ];' . "\n" );
+print_r( $test[ Milko\PHPLib\DataSource::HOST ] );
+echo( '$result = $test[ Milko\PHPLib\DataSource::PORT ];' . "\n" );
+print_r( $test[ Milko\PHPLib\DataSource::PORT ] );
+echo( '$result = (string)$test;' . "\n" );
+$result = (string)$test;
+echo( "$result\n" );
+
+?>

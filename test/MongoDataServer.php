@@ -32,7 +32,7 @@ class test_Database extends Milko\PHPLib\Database
 	//
 	// Implement Database virtual interface.
 	//
-	protected function newDatabase( $theDatabase, $theOptions )	{
+	protected function databaseNew( $theDatabase, $theOptions )	{
 		return (string)$theDatabase;	}
 	protected function databaseName() {
 		return $this->mNativeObject;	}

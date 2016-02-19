@@ -6,9 +6,9 @@
  * This file contains the definition of the {@link Collection} class.
  */
 
-namespace Milko\PHPLib;
+namespace Milko\PHPLib\MongoDB;
 
-use Milko\PHPLib\Container;
+use \MongoDB\Collection;
 
 /*=======================================================================================
  *																						*
@@ -19,53 +19,14 @@ use Milko\PHPLib\Container;
 /**
  * <h4>Collection ancestor object.</h4>
  *
- * This <em>abstract</em> class is the ancestor of all classes representing collection
- * instances.
+ * This <em>concrete</em> class is the implementation of a MongoDB collection, it implements
+ * the inherited virtual interface to provide an object that can manage MongoDB collections.
  *
- * This class features a data member that holds the {@link Database} object that
- * instantiated the current collection and another data member that holds the native
- * driver's collection object.
- *
- * The class implements a public interface that deploys the common interface of derived
- * concrete classes:
- *
- * <ul>
- * 	<li><b>{@link Server()}</b>: Return the database server object.
- * 	<li><b>{@link Database()}</b>: Return the database object.
- * 	<li><b>{@link Connection()}</b>: Return the collection native driver object.
- * 	<li><b>{@link InsertOne()}</b>: Insert one record.
- * 	<li><b>{@link InsertMany()}</b>: Insert many records.
- * 	<li><b>{@link UpdateOne()}</b>: Update one record.
- * 	<li><b>{@link UpdateMany()}</b>: Update many records.
- * 	<li><b>{@link ReplaceOne()}</b>: Replace one record.
- * 	<li><b>{@link FindOne()}</b>: Find one record.
- * 	<li><b>{@link FindMany()}</b>: Find many records.
- * 	<li><b>{@link QueryCollection()}</b>: Perform a query.
- * 	<li><b>{@link DeleteOne()}</b>: Delete one record.
- * 	<li><b>{@link DeleteMany()}</b>: Delete many records.
- * 	<li><b>{@link Empty()}</b>: Clear collection contents; this method is virtual.
- * 	<li><b>{@link Drop()}</b>: Drop current collection; this method is virtual.
- * </ul>
- *
- * The public methods do not implement the actual operations, this is delegated to a
- * protected virtual interface which must be implemented by derived concrete classes:
- *
- * <ul>
- * 	<li><b>{@link collectionNew()}</b>: Instantiate a driver native database instance.
- * 	<li><b>{@link collectionName()}</b>: Return the collection name.
- * 	<li><b>{@link insert()}</b>: Insert one or many records.
- * 	<li><b>{@link update()}</b>: Update one or many records.
- * 	<li><b>{@link replace()}</b>: Replace one or many records.
- * 	<li><b>{@link find()}</b>: Find one or many records.
- * 	<li><b>{@link query()}</b>: Query records.
- * 	<li><b>{@link delete()}</b>: Delete one or many records.
- * </ul>
- *
- *	@package	Core
+ *	@package	Data
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
- *	@since		17/02/2016
+ *	@since		19/02/2016
  *
  *	@example	../../test/Collection.php
  *	@example
@@ -75,7 +36,7 @@ use Milko\PHPLib\Container;
  * $collection = $database->RetrieveCollection( "collection" );<br/>
  * // Work with that collection...<br/>
  */
-abstract class Collection extends Container
+class Collection extends \Milko\PHPLib\Collection
 {
 	/**
 	 * <h4>Database object.</h4>
@@ -86,7 +47,7 @@ abstract class Collection extends Container
 	 * @var Database
 	 */
 	protected $mDatabase = NULL;
-	
+
 	/**
 	 * <h4>Collection native object.</h4>
 	 *
@@ -96,172 +57,57 @@ abstract class Collection extends Container
 	 * @var mixed
 	 */
 	protected $mNativeObject = NULL;
-	
-	
-	
-	
-/*=======================================================================================
- *																						*
- *										MAGIC											*
- *																						*
- *======================================================================================*/
-	
-	
-	
-	/*===================================================================================
-	 *	__construct																		*
-	 *==================================================================================*/
-	
-	/**
-	 * <h4>Instantiate class.</h4>
-	 *
-	 * A database is instantiated by providing the {@link Database} instance to which the
-	 * collection belongs, the collection name and a set of native database driver options.
-	 *
-	 * @param Database				$theDatabase		Database.
-	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Native driver options.
-	 *
-	 * @uses collectionNew()
-	 *
-	 * @example
-	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
-	 * $database = new Database( $server, "database" );<br/>
-	 * $collection = new Collection( $database, "collection" );
-	 *
-	 * @example
-	 * // In general you will use this form:
-	 * $server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
-	 * $database = $server->RetrieveCollection( "database" );<br/>
-	 * $collection = $database->RetrieveCollection( "collection" );
-	 */
-	public function __construct( Database $theDatabase, $theCollection, $theOptions = NULL )
-	{
-		//
-		// Call parent constructor.
-		//
-		parent::__construct();
-		
-		//
-		// Store server instance.
-		//
-		$this->mDatabase = $theDatabase;
-		
-		//
-		// Store the driver instance.
-		//
-		$this->mNativeObject = $this->collectionNew( $theCollection, $theOptions );
-		
-	} // Constructor.
-	
-	
-	/*===================================================================================
-	 *	__toString																		*
-	 *==================================================================================*/
-	
-	/**
-	 * <h4>Return collection name</h4>
-	 *
-	 * Objects of this class should return the collection name when cast to string.
-	 *
-	 * The method will use the protected {@link collectionName()} method.
-	 *
-	 * @return string
-	 *
-	 * @uses collectionName()
-	 *
-	 * @example
-	 * $name = (string) $collection;
-	 */
-	public function __toString()						{	return $this->collectionName();	}
-	
-	
-	
-/*=======================================================================================
- *																						*
- *							PUBLIC MEMBER MANAGEMENT INTERFACE							*
- *																						*
- *======================================================================================*/
-	
-	
-	
-	/*===================================================================================
-	 *	Server																			*
-	 *==================================================================================*/
-	
-	/**
-	 * <h4>Return the database server.</h4>
-	 *
-	 * This method can be used to retrieve the database server object.
-	 *
-	 * @return DataServer			Collection server object.
-	 *
-	 * @example
-	 * $server = $this->Server();
-	 */
-	public function Server()						{	return $this->mDatabase->Server();	}
 
 
-	/*===================================================================================
-	 *	Database																		*
-	 *==================================================================================*/
 
-	/**
-	 * <h4>Return the database object.</h4>
-	 *
-	 * This method can be used to retrieve the database object.
-	 *
-	 * @return Database				Database object.
-	 *
-	 * @example
-	 * $database = $this->Database();
-	 */
-	public function Database()								{	return $this->mDatabase;	}
 
-	
-	/*===================================================================================
-	 *	Connection																		*
-	 *==================================================================================*/
-	
-	/**
-	 * <h4>Return the collection native driver object.</h4>
-	 *
-	 * This method can be used to retrieve the collection native driver object.
-	 *
-	 * @return mixed				Collection native driver object.
-	 *
-	 * @example
-	 * $col = $this->Connection();
-	 */
-	public function Connection()						{	return $this->mNativeObject;	}
-	
-	
-	
 /*=======================================================================================
  *																						*
  *							PUBLIC COLLECTION MANAGEMENT INTERFACE						*
  *																						*
  *======================================================================================*/
-	
-	
-	
+
+
+
 	/*===================================================================================
 	 *	Empty																			*
 	 *==================================================================================*/
-	
+
 	/**
 	 * <h4>Clear the collection contents.</h4>
 	 *
-	 * This method can be used to erase the contents of the collection, the method expects a
-	 * single parameter that represents driver native options.
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * Derived concrete classes must implement this method.
+	 * We overload this method to call the native object's method.
 	 *
 	 * @param mixed					$theOptions			Collection native options.
 	 */
-	abstract public function Empty( $theOptions = NULL );
+	public function Empty( $theOptions = NULL )
+	{
+		//
+		// Save collection name.
+		//
+		$name = $this->Connection()->getCollectionName();
+
+		//
+		// Drop collection.
+		//
+		$this->Drop();
+
+		//
+		// Re-create collection.
+		//
+		$this->mNativeObject =
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		//
+		// Call native method.
+		//
+		$this->Connection()->drop( $theOptions );
+
+	} // Empty.
 
 
 	/*===================================================================================
@@ -271,24 +117,32 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Drop the current collection.</h4>
 	 *
-	 * This method can be used to the current collection, the method expects a single
-	 * parameter that represents driver native options.
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * Derived concrete classes must implement this method.
+	 * We overload this method to call the native object's method.
 	 *
 	 * @param mixed					$theOptions			Collection native options.
 	 */
-	abstract public function Drop( $theOptions = NULL );
+	public function Drop( $theOptions = NULL )
+	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		//
+		// Call native method.
+		//
+		$this->Connection()->drop( $theOptions );
+
+	} // Drop.
 
 
 
-/*=======================================================================================
- *																						*
- *							PUBLIC RECORD MANAGEMENT INTERFACE							*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *							PUBLIC RECORD MANAGEMENT INTERFACE							*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -321,7 +175,7 @@ abstract class Collection extends Container
 
 	} // InsertOne.
 
-	
+
 	/*===================================================================================
 	 *	InsertMany																		*
 	 *==================================================================================*/
@@ -592,20 +446,20 @@ abstract class Collection extends Container
 
 	} // DeleteMany.
 
-	
-	
-/*=======================================================================================
- *																						*
- *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
- *																						*
- *======================================================================================*/
-	
-	
-	
+
+
+	/*=======================================================================================
+	 *																						*
+	 *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
+	 *																						*
+	 *======================================================================================*/
+
+
+
 	/*===================================================================================
 	 *	collectionNew																	*
 	 *==================================================================================*/
-	
+
 	/**
 	 * <h4>Return a native collection object.</h4>
 	 *
@@ -621,12 +475,12 @@ abstract class Collection extends Container
 	 * @return mixed				Native collection object.
 	 */
 	abstract protected function collectionNew( $theCollection, $theOptions );
-	
-	
+
+
 	/*===================================================================================
 	 *	collectionName																	*
 	 *==================================================================================*/
-	
+
 	/**
 	 * <h4>Return the collection name.</h4>
 	 *
@@ -640,20 +494,20 @@ abstract class Collection extends Container
 	 */
 	abstract protected function collectionName();
 
-	
-	
-/*=======================================================================================
- *																						*
- *						PROTECTED RECORD MANAGEMENT INTERFACE							*
- *																						*
- *======================================================================================*/
-	
-	
-	
+
+
+	/*=======================================================================================
+	 *																						*
+	 *						PROTECTED RECORD MANAGEMENT INTERFACE							*
+	 *																						*
+	 *======================================================================================*/
+
+
+
 	/*===================================================================================
 	 *	insert																			*
 	 *==================================================================================*/
-	
+
 	/**
 	 * <h4>Insert one or more records.</h4>
 	 *
@@ -824,8 +678,8 @@ abstract class Collection extends Container
 	 */
 	abstract protected function delete( $theFilter, $theOptions, $doMany );
 
-	
-	
+
+
 } // class Collection.
 
 

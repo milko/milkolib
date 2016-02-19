@@ -33,6 +33,7 @@ use Milko\PHPLib\Collection;
  * <ul>
  * 	<li><b>{@link Server()}</b>: Return the database server object.
  * 	<li><b>{@link Connection()}</b>: Return the database native driver object.
+ * 	<li><b>{@link Drop()}</b>: Drop the database; this method is virtual.
  * 	<li><b>{@link ListCollections()}</b>: Return the list of collection names on the
  * 		database.
  * 	<li><b>{@link WorkingCollections()}</b>: Return the list of working collection names.
@@ -59,16 +60,13 @@ use Milko\PHPLib\Collection;
  * protected virtual interface which must be implemented by derived concrete classes:
  *
  * <ul>
- * 	<li><b>{@link newDatabase()}</b>: Instantiate a driver native database instance.
+ * 	<li><b>{@link databaseNew()}</b>: Instantiate a driver native database instance.
  * 	<li><b>{@link databaseName()}</b>: Return the database name.
  * 	<li><b>{@link collectionList()}</b>: Return the list of database collection names.
  * 	<li><b>{@link collectionCreate()}</b>: Create and return a {@link Collection} object
  * 		corresponding to the provided name.
- * 	<li><b>{@link collectionRetrieve()}</b>: Return a {@link Collection} object
- * 		corresponding to the provided name.
- * 	<li><b>{@link collectionEmpty()}</b>: Clear the contents of the provided
- * 		{@link Collection} object.
- * 	<li><b>{@link collectionDrop()}</b>: Drop the provided {@link Collection} object.
+ * 	<li><b>{@link collectionRetrieve()}</b>: Create and/or return a {@link Collection}
+ * 		object corresponding to the provided name.
  * </ul>
  *
  * Each time a collection object is retrieved, the object will store it in the
@@ -165,7 +163,7 @@ abstract class Database extends Container
 		//
 		// Store the driver instance.
 		//
-		$this->mNativeObject = $this->newDatabase( $theDatabase, $theOptions );
+		$this->mNativeObject = $this->databaseNew( $theDatabase, $theOptions );
 
 		//
 		// Handle connection path.
@@ -254,6 +252,36 @@ abstract class Database extends Container
 
 /*=======================================================================================
  *																						*
+ *							PUBLIC DATABASE MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Drop																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Drop the current database.</h4>
+	 *
+	 * This method can be used to drop the current database, the provided parameter
+	 * represents driver native options.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * The method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theOptions			Native driver options.
+	 *
+	 * @uses databaseDrop()
+	 */
+	abstract public function Drop( $theOptions = NULL );
+
+
+
+/*=======================================================================================
+ *																						*
  *							PUBLIC COLLECTION MANAGEMENT INTERFACE						*
  *																						*
  *======================================================================================*/
@@ -268,12 +296,12 @@ abstract class Database extends Container
 	 * <h4>Return the database list of collections.</h4>
 	 *
 	 * This method can be used to retrieve the list of collection names present on the
-	 * database, the method accepts a single parameter that represents a filter to select
-	 * specific collections, the format of the filter is driver dependent.
+	 * database, the method accepts a single parameter that represents a driver dependent
+	 * set of options.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param mixed					$theFilter			Collections selection filter.
+	 * @param mixed					$theOptions			Collection native options.
 	 * @return array				List of collection names.
 	 *
 	 * @example
@@ -283,9 +311,9 @@ abstract class Database extends Container
 	 *
 	 * @uses collectionList()
 	 */
-	public function ListCollections( $theFilter = NULL )
+	public function ListCollections( $theOptions = NULL )
 	{
-		return $this->collectionList( $theFilter );									// ==>
+		return $this->collectionList( $theOptions );								// ==>
 
 	} // ListCollections.
 
@@ -369,30 +397,25 @@ abstract class Database extends Container
 			return $this->offsetGet( $theCollection );								// ==>
 
 		//
-		// Retrieve existing collection.
+		// Create or retrieve collection.
 		//
 		$collection = $this->collectionRetrieve( $theCollection, $theOptions );
-		if( $collection === NULL )
-		{
-			//
-			// Create collection.
-			//
-			if( $theFlags & Server::kFLAG_CREATE )
-				$collection = $this->collectionCreate( $theCollection, $theOptions );
-
-			//
-			// Assert collection.
-			//
-			elseif( $theFlags & Server::kFLAG_ASSERT )
-				throw new \RuntimeException (
-					"Unknown collection [$theCollection]." );					// !@! ==>
-		}
+		if( ($collection === NULL)
+		 && ($theFlags & Server::kFLAG_CREATE) )
+			$collection = $this->collectionCreate( $theCollection, $theOptions );
 
 		//
-		// Add collection.
+		// Return collection.
 		//
 		if( $collection instanceof Collection )
-			$this->offsetSet( $theCollection, $collection );
+			return $collection;														// ==>
+
+		//
+		// Assert collection.
+		//
+		if( $theFlags & Server::kFLAG_ASSERT )
+			throw new \RuntimeException (
+				"Unknown collection [$theCollection]." );						// !@! ==>
 
 		return $collection;															// ==>
 
@@ -476,7 +499,6 @@ abstract class Database extends Container
 	 * $done = $database->DropCollection( "collection" );
 	 *
 	 * @uses RetrieveCollection()
-	 * @uses collectionEmpty()
 	 */
 	public function EmptyCollection( $theCollection,
 									 $theFlags = Server::kFLAG_DEFAULT,
@@ -486,17 +508,17 @@ abstract class Database extends Container
 		// Init local storage.
 		//
 		$theDatabase = (string)$theCollection;
-		$collection = $this->RetrieveCollection( $theCollection, $theFlags );
 
 		//
 		// Drop collection.
 		//
+		$collection = $this->RetrieveCollection( $theCollection, $theFlags );
 		if( $collection instanceof Collection )
 		{
 			//
 			// Clear collection.
 			//
-			$this->collectionEmpty( $collection, $theOptions );
+			$collection->Empty( $theOptions );
 
 			return TRUE;															// ==>
 		}
@@ -539,7 +561,6 @@ abstract class Database extends Container
 	 * $done = $database->DropCollection( "collection" );
 	 *
 	 * @uses RetrieveCollection()
-	 * @uses collectionDrop()
 	 */
 	public function DropCollection( $theCollection,
 									$theFlags = Server::kFLAG_DEFAULT,
@@ -549,23 +570,17 @@ abstract class Database extends Container
 		// Init local storage.
 		//
 		$theDatabase = (string)$theCollection;
-		$collection = $this->RetrieveCollection( $theCollection, $theFlags );
 
 		//
 		// Drop collection.
 		//
+		$collection = $this->RetrieveCollection( $theCollection, $theFlags );
 		if( $collection instanceof Collection )
 		{
 			//
-			// Drop collection.
+			// Drop and forget the collection.
 			//
-			$this->collectionDrop( $collection, $theOptions );
-
-			//
-			// Clear working collections entry.
-			// Note that unsetting a non existing offset
-			// will do nothing in the ancestor class.
-			//
+			$collection->Drop( $theOptions );
 			$this->offsetUnset( $theCollection );
 
 			return TRUE;															// ==>
@@ -586,7 +601,7 @@ abstract class Database extends Container
 
 
 	/*===================================================================================
-	 *	newDatabase																		*
+	 *	databaseNew																		*
 	 *==================================================================================*/
 
 	/**
@@ -603,7 +618,7 @@ abstract class Database extends Container
 	 * @param mixed					$theOptions			Native driver options.
 	 * @return mixed				Native database object.
 	 */
-	abstract protected function newDatabase( $theDatabase, $theOptions );
+	abstract protected function databaseNew( $theDatabase, $theOptions );
 
 
 	/*===================================================================================
@@ -647,9 +662,10 @@ abstract class Database extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
+	 * @param mixed					$theOptions			Collection native options.
 	 * @return array				List of database names.
 	 */
-	abstract protected function collectionList();
+	abstract protected function collectionList( $theOptions );
 
 
 	/*===================================================================================
@@ -698,46 +714,6 @@ abstract class Database extends Container
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 */
 	abstract protected function collectionRetrieve( $theCollection, $theOptions );
-
-
-	/*===================================================================================
-	 *	collectionEmpty																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Clear a collection.</h4>
-	 *
-	 * This method should clear the contents of the provided collection.
-	 *
-	 * The method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param Collection			$theCollection		Collection object.
-	 * @param mixed					$theOptions			Collection native options.
-	 */
-	abstract protected function collectionEmpty( Collection $theCollection, $theOptions );
-
-
-	/*===================================================================================
-	 *	collectionDrop																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Drop a collection.</h4>
-	 *
-	 * This method should drop the provided collection.
-	 *
-	 * The method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param Collection			$theCollection		Collection object.
-	 * @param mixed					$theOptions			Collection native options.
-	 */
-	abstract protected function collectionDrop( Collection $theCollection, $theOptions );
 
 
 

@@ -9,12 +9,6 @@
 namespace Milko\PHPLib\MongoDB;
 
 use \MongoDB\Client;
-use \MongoDB\Driver\ReadConcern;
-use \MongoDB\Driver\ReadPreference;
-use \MongoDB\Driver\WriteConcern;
-
-use \Milko\PHPLib\Server;
-use \Milko\PHPLib\Database;
 
 /*=======================================================================================
  *																						*
@@ -52,6 +46,39 @@ class DataServer extends \Milko\PHPLib\DataServer
 
 /*=======================================================================================
  *																						*
+ *										MAGIC											*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	__construct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Instantiate class.</h4>
+	 *
+	 * We override the constructor to provide a default connection URL.
+	 *
+	 * @param string			$theConnection		Data source name.
+	 *
+	 * @example
+	 * $dsn = new DataSource( 'html://user:pass@host:8080/dir/file?arg=val#frag' );
+	 */
+	public function __construct( $theConnection = 'mongodb://localhost:27017' )
+	{
+		//
+		// Call parent constructor.
+		//
+		parent::__construct( $theConnection );
+
+	} // Constructor.
+
+
+
+/*=======================================================================================
+ *																						*
  *								PROTECTED CONNECTION INTERFACE							*
  *																						*
  *======================================================================================*/
@@ -65,22 +92,16 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * Open connection.
 	 *
-	 * This method should create the actual connection and return the native connection
-	 * object; in this class the method is virtual, it is the responsibility of concrete
-	 * classes to implement this method.
+	 * We overload this method to return a MongoDB client object; we also remove the path
+	 * from the data source URL.
 	 *
-	 * This method assumes the caller has checked whether the connection was already open,
-	 * it should not take care of closing previously opened connections.
+	 * @return Client				The native connection.
 	 *
-	 * All the options required for the connection should have been provided via the data
-	 * source connection query parameters.
-	 *
-	 * If the operation fails, the method should raise an exception.
-	 *
-	 * @return mixed				The native connection.
+	 * @uses toURL()
 	 */
 	protected function connectionCreate()
 	{
+		return new Client( $this->toURL( [ \Milko\PHPLib\DataSource::PATH ] ) );	// ==>
 
 	} // connectionCreate.
 
@@ -92,29 +113,17 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * Close connection.
 	 *
-	 * This method should close the open connection, in this class the method is virtual, it
-	 * is the responsibility of concrete classes to implement this method.
-	 *
-	 * This method assumes the caller has checked whether a connection is open, it should
-	 * assume the {@link $mConnection} attribute holds a valid native connection object.
-	 *
-	 * All the options required for the connection should have been provided via the data
-	 * source connection query parameters.
-	 *
-	 * If the operation fails, the method should raise an exception.
+	 * In this class there is no need to close the connection.
 	 */
-	protected function connectionDestruct()
-	{
-
-	} // connectionDestruct.
+	protected function connectionDestruct()												   {}
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *						PROTECTED DATABASE MANAGEMENT INTERFACE							*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *						PROTECTED DATABASE MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -125,17 +134,31 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * <h4>List server databases.</h4>
 	 *
-	 * This method should return the list of server database names.
+	 * In this class we ask the Mongo client for the list of databases and extract their
+	 * names.
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
+	 * @param mixed					$theOptions			Database native options.
 	 * @return array				List of database names.
+	 *
+	 * @uses Connection()
 	 */
-	protected function databaseList()
+	protected function databaseList( $theOptions = NULL )
 	{
+		//
+		// Init local storage.
+		//
+		$databases = [];
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		//
+		// Ask client for list.
+		//
+		$list = $this->Connection()->listDatabases( $theOptions );
+		foreach( $list as $element )
+			$databases[] = $element[ 'name' ];
+
+		return $databases;															// ==>
 
 	} // databaseList.
 
@@ -147,16 +170,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * <h4>Create database.</h4>
 	 *
-	 * This method should create and return a {@link Database} object corresponding to the
-	 * provided name, if the operation fails, the method should raise an exception.
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * The method should not be concerned if the database already exists, it is the
-	 * responsibility of the caller to check it.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * In this class we instantiate a {@link Database} object.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
@@ -164,6 +178,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 */
 	protected function databaseCreate( $theDatabase, $theOptions )
 	{
+		return new Database( $this, $theDatabase, $theOptions );					// ==>
 
 	} // databaseCreate.
 
@@ -175,46 +190,26 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * <h4>Return a database object.</h4>
 	 *
-	 * This method should return a {@link Database} object corresponding to the provided
-	 * name, or <tt>NULL</tt> if the provided name does not correspond to any database in
-	 * the server.
-	 *
-	 * The method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * In this class we first check whether the database exists in the server, if that is
+	 * not the case, we return <tt>NULL</tt>.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
 	 * @return Database				Database object or <tt>NULL</tt> if not found.
+	 *
+	 * @uses databaseList()
 	 */
 	protected function databaseRetrieve( $theDatabase, $theOptions )
 	{
+		//
+		// Check if database exists.
+		//
+		if( in_array( $theDatabase, $this->databaseList() ) )
+			return new Database( $this, $theDatabase, $theOptions );				// ==>
+
+		return NULL;																// ==>
 
 	} // databaseRetrieve.
-
-
-	/*===================================================================================
-	 *	databaseDrop																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Drop a database.</h4>
-	 *
-	 * This method should drop the provided database.
-	 *
-	 * The method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param Database				$theDatabase		Database object.
-	 * @param mixed					$theOptions			Database native options.
-	 */
-	protected function databaseDrop( Database $theDatabase, $theOptions )
-	{
-
-	} // databaseDrop.
 
 
 
