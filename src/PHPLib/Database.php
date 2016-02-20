@@ -532,7 +532,7 @@ abstract class Database extends Container
 			//
 			// Clear collection.
 			//
-			$collection->Clear( $theOptions );
+			$collection->Truncate( $theOptions );
 
 			return TRUE;															// ==>
 		}

@@ -210,7 +210,7 @@ $collection = $database->RetrieveCollection( $collections[ 0 ], self::kFLAG_CREA
 // Work with that collection...<br/>
 $database->CollectionDrop( $collections[ 0 ] );<br/>
 // Dropped the collection.</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Database.html#20-768" title="Go to source code">PHPLib/Database.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Database.html#20-765" title="Go to source code">PHPLib/Database.php</a>
 		<br>
 	</div>
 
@@ -558,7 +558,7 @@ $list = $database->WorkingCollections();</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_RetrieveCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#347-439" title="Go to source code">RetrieveCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_CREATE">Milko\PHPLib\Server::<b>kFLAG_CREATE</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#347-436" title="Go to source code">RetrieveCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return a collection object.</h4>
@@ -578,9 +578,6 @@ following parameters:</p>
 
 <p>The method will either return a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> object, or <tt>NULL</tt> if the
 collection was not found.</p>
-
-<p>The kFLAG_CREATE flag is set by default to ensure the indicated collection is
-created if necessary.</p>
 
 <p>It is the responsibility of the caller to ensure the server is connected.</p>
 
@@ -644,7 +641,7 @@ $collection = $database->RetrieveCollection( "collection", kFLAG_CREATE );</p><b
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ForgetCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#446-482" title="Go to source code">ForgetCollection</a>( <span>string <var>$theCollection</var></span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#443-479" title="Go to source code">ForgetCollection</a>( <span>string <var>$theCollection</var></span> )</code>
 
 		<div class="description short">
 			<h4>Dispose of a collection object.</h4>
@@ -698,7 +695,7 @@ $collection = $database->ForgetCollection( "collection" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_EmptyCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#489-545" title="Go to source code">EmptyCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#486-542" title="Go to source code">EmptyCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Clear a collection.</h4>
@@ -763,7 +760,7 @@ $done = $database->EmptyCollection( "collection" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_DropCollection">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#552-608" title="Go to source code">DropCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#549-605" title="Go to source code">DropCollection</a>( <span>string <var>$theCollection</var></span>, <span>string <var>$theFlags</var> = <code><a href="class-Milko.PHPLib.Server.html#kFLAG_DEFAULT">Milko\PHPLib\Server::<b>kFLAG_DEFAULT</b></a></code></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Drop a collection.</h4>
@@ -827,7 +824,7 @@ $done = $database->DropCollection( "collection" );</p><br>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_databaseNew">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#624-644" title="Go to source code">databaseNew</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#621-641" title="Go to source code">databaseNew</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return a native database object.</h4>
@@ -885,7 +882,7 @@ operation.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_databaseName">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#651-669" title="Go to source code">databaseName</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#648-666" title="Go to source code">databaseName</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return the database name.</h4>
@@ -940,7 +937,7 @@ operation.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionList">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#685-704" title="Go to source code">collectionList</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#682-701" title="Go to source code">collectionList</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>List server databases.</h4>
@@ -996,7 +993,7 @@ operation.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionCreate">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#711-735" title="Go to source code">collectionCreate</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#708-732" title="Go to source code">collectionCreate</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Create collection.</h4>
@@ -1058,7 +1055,7 @@ operation.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_collectionRetrieve">#</a>
-		<code><a href="source-class-Milko.PHPLib.Database.html#742-764" title="Go to source code">collectionRetrieve</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+		<code><a href="source-class-Milko.PHPLib.Database.html#739-761" title="Go to source code">collectionRetrieve</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 		<div class="description short">
 			<h4>Return a collection object.</h4>

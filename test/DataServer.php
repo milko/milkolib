@@ -83,7 +83,7 @@ class test_Collection extends Milko\PHPLib\Collection
 	// Implement Collection virtual interface.
 	//
 	public function Drop( $theOptions = NULL ) {}
-	public function Clear( $theOptions = NULL ) {}
+	public function Truncate( $theOptions = NULL ) {}
 	protected function collectionNew( $theCollection, $theOptions ) {
 		return (string)$theCollection;	}
 	protected function collectionName() {

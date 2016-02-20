@@ -68,7 +68,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	Clear																			*
+	 *	Truncate																		*
 	 *==================================================================================*/
 
 	/**
@@ -83,7 +83,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @see kMONGO_OPTS_CL_EMPTY
 	 */
-	public function Clear( $theOptions = NULL )
+	public function Truncate( $theOptions = NULL )
 	{
 		//
 		// Init local storage.

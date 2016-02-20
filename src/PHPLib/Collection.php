@@ -42,7 +42,7 @@ use Milko\PHPLib\Container;
  * 	<li><b>{@link FindMany()}</b>: Find many records.
  * 	<li><b>{@link DeleteOne()}</b>: Delete one record.
  * 	<li><b>{@link DeleteMany()}</b>: Delete many records.
- * 	<li><b>{@link Clear()}</b>: Clear collection contents; this method is virtual.
+ * 	<li><b>{@link Truncate()}</b>: Clear collection contents; this method is virtual.
  * 	<li><b>{@link Drop()}</b>: Drop current collection; this method is virtual.
  * </ul>
  *
@@ -244,7 +244,7 @@ abstract class Collection extends Container
 	
 	
 	/*===================================================================================
-	 *	Clear																			*
+	 *	Truncate																		*
 	 *==================================================================================*/
 	
 	/**
@@ -265,7 +265,7 @@ abstract class Collection extends Container
 	 *
 	 * @param mixed					$theOptions			Collection native options.
 	 */
-	abstract public function Clear( $theOptions = NULL );
+	abstract public function Truncate( $theOptions = NULL );
 
 
 	/*===================================================================================
