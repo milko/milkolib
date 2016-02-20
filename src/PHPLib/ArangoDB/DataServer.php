@@ -3,12 +3,26 @@
 /**
  * DataServer.php
  *
- * This file contains the definition of the MongoDB {@link DataServer} class.
+ * This file contains the definition of the ArangoDB {@link DataServer} class.
  */
 
-namespace Milko\PHPLib\MongoDB;
+namespace Milko\PHPLib\ArangoDB;
 
-use \MongoDB\Client;
+use triagens\ArangoDb\Database as ArangoDatabase;
+use triagens\ArangoDb\Collection as ArangoCollection;
+use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
+use triagens\ArangoDb\Endpoint as ArangoEndpoint;
+use triagens\ArangoDb\Connection as ArangoConnection;
+use triagens\ArangoDb\ConnectionOptions as ArangoConnectionOptions;
+use triagens\ArangoDb\DocumentHandler as ArangoDocumentHandler;
+use triagens\ArangoDb\Document as ArangoDocument;
+use triagens\ArangoDb\Exception as ArangoException;
+use triagens\ArangoDb\Export as ArangoExport;
+use triagens\ArangoDb\ConnectException as ArangoConnectException;
+use triagens\ArangoDb\ClientException as ArangoClientException;
+use triagens\ArangoDb\ServerException as ArangoServerException;
+use triagens\ArangoDb\Statement as ArangoStatement;
+use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
 
 /*=======================================================================================
  *																						*
@@ -17,21 +31,19 @@ use \MongoDB\Client;
  *======================================================================================*/
 
 /**
- * <h4>MongoDB data server object.</h4>
+ * <h4>ArangoDB data server object.</h4>
  *
- * This <em>concrete</em> class is the implementation of a MongoDB data server, it
- * implements the inherited virtual interface to provide an object that can manage MongoDB
+ * This <em>concrete</em> class is the implementation of a ArangoDB data server, it
+ * implements the inherited virtual interface to provide an object that can manage ArangoDB
  * databases, collections and documents.
- *
- * The functionality of the class is implemented through the {@link \MongoDB\Client} class.
  *
  *	@package	Data
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
- *	@since		18/02/2016
+ *	@since		20/02/2016
  *
- *	@example	../../test/MongoDataServer.php
+ *	@example	../../test/ArangoDataServer.php
  *	@example
  * $server = new Milko\PHPLib\DataServer();<br/>
  * $databases = $server->ListDatabases( kFLAG_CONNECT );<br/>
@@ -45,11 +57,11 @@ class DataServer extends \Milko\PHPLib\DataServer
 
 
 
-/*=======================================================================================
- *																						*
- *										MAGIC											*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *										MAGIC											*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -76,7 +88,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 		//
 		if( $theConnection === NULL )
 			$theConnection = kMONGO_OPTS_CLIENT_DEFAULT;
-		
+
 		//
 		// Call parent constructor.
 		//
@@ -86,11 +98,11 @@ class DataServer extends \Milko\PHPLib\DataServer
 
 
 
-/*=======================================================================================
- *																						*
- *								PROTECTED CONNECTION INTERFACE							*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *								PROTECTED CONNECTION INTERFACE							*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -101,7 +113,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * Open connection.
 	 *
-	 * We overload this method to return a MongoDB client object; we also remove the path
+	 * We overload this method to return a ArangoDB client object; we also remove the path
 	 * from the data source URL.
 	 *
 	 * @param mixed					$theOptions			Connection native options.
@@ -109,7 +121,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 *
 	 * @uses toURL()
 	 *
-	  @see kMONGO_OPTS_CLIENT_CREATE
+	@see kMONGO_OPTS_CLIENT_CREATE
 	 */
 	protected function connectionCreate( $theOptions = NULL )
 	{
@@ -119,7 +131,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 		$uri_opts = [];
 		if( $theOptions === NULL )
 			$theOptions = kMONGO_OPTS_CLIENT_CREATE;
-		
+
 		return new Client(
 			$this->toURL( [ \Milko\PHPLib\DataSource::PATH ] ),
 			$uri_opts,
@@ -135,17 +147,17 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * Close connection.
 	 *
-	 * The MongoDB client does not have a destructor, this method does nothing.
+	 * The ArangoDB client does not have a destructor, this method does nothing.
 	 */
 	protected function connectionDestruct( $theOptions = NULL ) {}
 
 
 
-/*=======================================================================================
- *																						*
- *						PROTECTED DATABASE MANAGEMENT INTERFACE							*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *						PROTECTED DATABASE MANAGEMENT INTERFACE							*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -163,7 +175,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
-	 * @uses \MongoDB\Client::listDatabases()
+	 * @uses \ArangoDB\Client::listDatabases()
 	 *
 	 * @see kMONGO_OPTS_CLIENT_DBLIST
 	 */
@@ -246,9 +258,9 @@ class DataServer extends \Milko\PHPLib\DataServer
 			//
 			if( $theOptions === NULL )
 				$theOptions = kMONGO_OPTS_CLIENT_DBRETRIEVE;
-			
+
 			return new Database( $this, $theDatabase, $theOptions );				// ==>
-		
+
 		} // Among server databases.
 
 		return NULL;																// ==>

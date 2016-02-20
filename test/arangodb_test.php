@@ -11,8 +11,10 @@ require_once( dirname( __DIR__ ) . "/includes.local.php" );
 require_once( "functions.php" );
 
 // set up some aliases for less typing later
+use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Collection as ArangoCollection;
 use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
+use triagens\ArangoDb\Endpoint as ArangoEndpoint;
 use triagens\ArangoDb\Connection as ArangoConnection;
 use triagens\ArangoDb\ConnectionOptions as ArangoConnectionOptions;
 use triagens\ArangoDb\DocumentHandler as ArangoDocumentHandler;
@@ -48,6 +50,243 @@ $connectionOptions = array(
 	// optionally create new collections when inserting documents
 	ArangoConnectionOptions::OPTION_UPDATE_POLICY => ArangoUpdatePolicy::LAST,
 );
+
+//
+// My tests.
+//
+
+//
+// Prepare options.
+//
+unset( $connectionOptions[ ArangoConnectionOptions::OPTION_DATABASE ] );
+unset( $connectionOptions[ ArangoConnectionOptions::OPTION_AUTH_PASSWD ] );
+
+//
+// Check endpoints.
+//
+echo( "Check endpoints:\n" );
+$uri_tcp = 'tcp://127.0.0.1:8529';
+echo( "$uri_tcp ==> " );
+var_dump( ArangoEndpoint::isValid( $uri_tcp ) );
+$uri_sock = 'unix:///tmp/arangodb.sock';
+echo( "$uri_sock ==> " );
+var_dump( ArangoEndpoint::isValid( $uri_sock ) );
+echo( "\n" );
+
+//
+// Set endpoint.
+//
+$uri = $uri_tcp;
+$connectionOptions[ ArangoConnectionOptions::OPTION_ENDPOINT ] = $uri;
+
+//
+// Show connection options.
+//
+echo( "Connection options:\n" );
+print_r( $connectionOptions );
+echo( "\n" );
+
+//
+// Disable default database.
+//
+//echo( "Disabled default database:\n" );
+//unset( $connectionOptions[ ArangoConnectionOptions::OPTION_DATABASE ] );
+//print_r( $connectionOptions );
+//echo( "\n" );
+
+//
+// Create connection.
+//
+echo( "Create server connection:\n" );
+$connection = new ArangoConnection($connectionOptions);
+echo( "\n" );
+
+//
+// Get connection information.
+//
+echo( "Get connection information:\n" );
+$list = ArangoDatabase::getInfo( $connection );
+print_r( $list );
+echo( "\n" );
+
+//
+// Get connection endpoints.
+//
+echo( "Get connection endpoints:\n" );
+$list = ArangoEndpoint::listEndpoints( $connection );
+print_r( $list );
+echo( "\n" );
+
+//
+// List databases.
+//
+echo( "List databases:\n" );
+$list = ArangoDatabase::listDatabases( $connection );
+print_r( $list );
+echo( "\n" );
+
+//
+// List user databases.
+//
+echo( "User List databases:\n" );
+$list = ArangoDatabase::listUserDatabases( $connection );
+print_r( $list );
+echo( "\n" );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Get collection handler.
+//
+echo( "Get collection handler\n" );
+$collectionHandler = new ArangoCollectionHandler( $connection );
+echo( "\n" );
+
+//
+// Get collections list.
+//
+echo( "Get collections list:\n" );
+$list = $collectionHandler->getAllCollections();
+print_r( $list );
+echo( "\n" );
+
+//
+// Get non system collections list.
+//
+echo( "Get non system collections list:\n" );
+$list = $collectionHandler->getAllCollections( ['excludeSystem' => TRUE] );
+print_r( $list );
+echo( "\n" );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Set test database.
+//
+echo( "Set test database:\n" );
+if( ! in_array( 'test_database', ArangoDatabase::listDatabases( $connection )[ 'result' ] ) ) {
+	$result = ArangoDatabase::create( $connection, 'test_database' );
+	print_r( $result );
+}
+$connection->setDatabase( 'test_database' );
+$list = ArangoDatabase::getInfo( $connection );
+print_r( $list );
+echo( "\n" );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Check for collection.
+//
+echo( "Check for collection:\n" );
+echo( 'test_collection ==> ' );
+$found = $collectionHandler->has( 'test_collection' );
+var_dump( $found );
+if( $found )
+{
+	echo( "Found:" );
+	$collection = $collectionHandler->get( 'test_collection' );
+	print_r( $collection );
+}
+echo( "\n" );
+
+//
+// Drop collection.
+//
+if( ! $found )
+{
+	echo( "Create collection:\n" );
+	$collection = $collectionHandler->create( 'test_collection' );
+	print_r( $collection );
+}
+echo( "\n" );
+
+//
+// Get collection info.
+//
+echo( "Get collection info:\n" );
+$collection = $collectionHandler->get( 'test_collection' );
+print_r( $collection );
+echo( "\n" );
+
+//
+// Get collections list.
+//
+echo( "Get collections list:\n" );
+$list = $collectionHandler->getAllCollections();
+print_r( $list );
+echo( "\n" );
+
+//
+// Get non system collections list.
+//
+echo( "Get non system collections list:\n" );
+$list = $collectionHandler->getAllCollections( ['excludeSystem' => TRUE] );
+print_r( $list );
+echo( "\n" );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Create a document handler.
+//
+echo( "Create a document handler:\n" );
+$documentHandler = new ArangoDocumentHandler( $connection );
+$data = [ "name" => "Milko", "surname" => "Škofič" ];
+print_r( $data );
+$document = ArangoDocument::createFromArray( $data );
+print_r( $document );
+echo( "\n" );
+
+//
+// Create a document.
+//
+echo( "Create a document:\n" );
+$data = [ "name" => "Milko", "surname" => "Škofič" ];
+print_r( $data );
+$document = ArangoDocument::createFromArray( $data );
+print_r( $document );
+echo( "\n" );
+
+//
+// Add a document.
+//
+echo( "Add a document:\n" );
+$id = $documentHandler->save( $collection, $document );
+print_r( $id );
+print_r( $document );
+echo( "\n" );
+
+//
+// List all documents.
+//
+echo( "List all documents:\n" );
+$result = $collectionHandler->all( $collection->getId() );
+print_r( $result->getAll() );
+echo( "\n" );
+
+//
+// Get by ID.
+//
+echo( "Get by ID:\n" );
+$result = $documentHandler->getById( $collection->getId(), $id );
+print_r( $result );
+echo( "\n" );
+
+//
+// Get by example.
+//
+echo( "Get by example (surname=:Škofič)\n" );
+$result = $collectionHandler->byExample( $collection->getId(), ["surname" => "Škofič"] );
+$full_count = $result->getCount();
+$result = $collectionHandler->byExample( $collection->getId(), ["surname" => "Škofič"], ["skip" => 0, "limit" => 10] );
+echo( "Count: " . $result->getCount() . "\n" );
+echo( "Full count: " . $full_count/*$result->getFullCount()*/ . "\n" );
+echo( "Result:" );
+print_r( $result->getAll() );
+echo( "\n" );
+
+exit;																				// ==>
 
 
 // turn on exception logging (logs to whatever PHP is configured)
