@@ -222,7 +222,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * <h4>Return a database object.</h4>
 	 *
 	 * In this class we first check whether the database exists in the server, if that is
-	 * not the case, we return <tt>NULL</tt>.
+	 * the case, we instantiate a {@link Database} object, if not, we return <tt>NULL</tt>.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.

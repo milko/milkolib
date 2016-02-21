@@ -124,8 +124,8 @@ echo( "\n" );
 // Drop collection.
 //
 echo( "Drop collection:\n" );
-echo( '$result = $test->DropCollection( "test_milkolib" );' . "\n" );
-$result = $test->DropCollection( "test_milkolib" );
+echo( '$result = $test->DropCollection( "test_collection" );' . "\n" );
+$result = $test->DropCollection( "test_collection" );
 echo( '$list = $test->ListCollections();' . "\n" );
 $list = $test->ListCollections();
 print_r( $list );

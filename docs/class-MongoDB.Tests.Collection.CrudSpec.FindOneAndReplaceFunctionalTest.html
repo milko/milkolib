@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class MongoDB\Tests\Collection\CrudSpec\FindOneAndReplaceFunctionalTest | milkolib reference documentation</title>
+
+	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
+	<link rel="stylesheet" href="resources/style.css?70c1d062672daa3f906b72e4f5d03d4bc5c4174d">
+
+</head>
+
+<body>
+	<nav id="navigation" class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="index.html" class="navbar-brand">milkolib reference documentation</a>
+			</div>
+			<div class="collapse navbar-collapse">
+
+                <form id="search" class="navbar-form navbar-left" role="search">
+                    <input type="hidden" name="cx" value="">
+                    <input type="hidden" name="ie" value="UTF-8">
+                    <div class="form-group">
+                        <input type="text" name="q" class="search-query form-control" placeholder="Search">
+					</div>
+				</form>
+
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="namespace-MongoDB.Tests.Collection.CrudSpec.html" title="Summary of MongoDB\Tests\Collection\CrudSpec"><span>Namespace</span></a>
+					</li>
+					<li class="active">
+<span>Class</span>					</li>
+
+					<li class="divider-vertical"></li>
+
+					<li>
+						<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+					</li>
+
+						<li>
+							<a href="annotation-group-todo.html" title="List of elements with todo annotation">
+								<span>Todo</span>
+							</a>
+						</li>
+
+					<li class="divider-vertical"></li>
+
+					<li>
+						<a href="-API-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div id="left">
+	<div id="menu">
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+					<li>
+						<a href="namespace-Composer.html">
+							Composer<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-Composer.Autoload.html">
+							Autoload						</a>
+							</li>
+								</ul></li>
+					<li>
+						<a href="namespace-Milko.html">
+							Milko<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-Milko.PHPLib.html">
+							PHPLib<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-Milko.PHPLib.ArangoDB.html">
+							ArangoDB						</a>
+							</li>
+					<li>
+						<a href="namespace-Milko.PHPLib.MongoDB.html">
+							MongoDB						</a>
+							</li>
+								</ul></li></ul></li>
+					<li class="active">
+						<a href="namespace-MongoDB.html">
+							MongoDB<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-MongoDB.Exception.html">
+							Exception						</a>
+							</li>
+					<li>
+						<a href="namespace-MongoDB.Model.html">
+							Model						</a>
+							</li>
+					<li>
+						<a href="namespace-MongoDB.Operation.html">
+							Operation						</a>
+							</li>
+					<li class="active">
+						<a href="namespace-MongoDB.Tests.html">
+							Tests<span></span>
+						</a>
+							<ul>
+					<li class="active">
+						<a href="namespace-MongoDB.Tests.Collection.html">
+							Collection<span></span>
+						</a>
+							<ul>
+					<li class="active">
+						<a href="namespace-MongoDB.Tests.Collection.CrudSpec.html">
+							CrudSpec						</a>
+							</li>
+								</ul></li>
+					<li>
+						<a href="namespace-MongoDB.Tests.Database.html">
+							Database						</a>
+							</li>
+					<li>
+						<a href="namespace-MongoDB.Tests.Operation.html">
+							Operation						</a>
+							</li>
+								</ul></li></ul></li>
+					<li>
+						<a href="namespace-None.html">
+							None						</a>
+							</li>
+					<li>
+						<a href="namespace-PHP.html">
+							PHP						</a>
+							</li>
+					<li>
+						<a href="namespace-triagens.html">
+							triagens<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-triagens.ArangoDb.html">
+							ArangoDb						</a>
+							</li>
+								</ul></li>
+			</ul>
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.AggregateFunctionalTest.html">AggregateFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.CountFunctionalTest.html">CountFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.DeleteManyFunctionalTest.html">DeleteManyFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.DeleteOneFunctionalTest.html">DeleteOneFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.DistinctFunctionalTest.html">DistinctFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.FindFunctionalTest.html">FindFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.FindOneAndDeleteFunctionalTest.html">FindOneAndDeleteFunctionalTest</a></li>
+				<li class="active"><a href="class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html">FindOneAndReplaceFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.FindOneAndUpdateFunctionalTest.html">FindOneAndUpdateFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.FunctionalTestCase.html">FunctionalTestCase</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.InsertManyFunctionalTest.html">InsertManyFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.InsertOneFunctionalTest.html">InsertOneFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.ReplaceOneFunctionalTest.html">ReplaceOneFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.UpdateManyFunctionalTest.html">UpdateManyFunctionalTest</a></li>
+				<li><a href="class-MongoDB.Tests.Collection.CrudSpec.UpdateOneFunctionalTest.html">UpdateOneFunctionalTest</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<div id="content" class="class">
+	<h1>Class FindOneAndReplaceFunctionalTest</h1>
+
+
+	<div class="description">
+	<p>CRUD spec functional tests for findOneAndReplace().</p>
+	</div>
+
+	<dl class="tree well">
+		<dd style="padding-left:0px">
+PHPUnit_Framework_TestCase
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-MongoDB.Tests.TestCase.html"><span>MongoDB\Tests\TestCase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-MongoDB.Tests.FunctionalTestCase.html"><span>MongoDB\Tests\FunctionalTestCase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:90px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-MongoDB.Tests.Collection.FunctionalTestCase.html"><span>MongoDB\Tests\Collection\FunctionalTestCase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:120px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-MongoDB.Tests.Collection.CrudSpec.FunctionalTestCase.html"><span>MongoDB\Tests\Collection\CrudSpec\FunctionalTestCase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:150px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>MongoDB\Tests\Collection\CrudSpec\FindOneAndReplaceFunctionalTest</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="alert alert-info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-MongoDB.html">MongoDB</a>\<a href="namespace-MongoDB.Tests.html">Tests</a>\<a href="namespace-MongoDB.Tests.Collection.html">Collection</a>\<a href="namespace-MongoDB.Tests.Collection.CrudSpec.html">CrudSpec</a><br>
+		
+
+				<b>See:</b>
+				https://github.com/mongodb/specifications/tree/master/source/crud/tests<br>
+			<b>Located at</b> <a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#8-199" title="Go to source code">mongodb/mongodb/tests/Collection/CrudSpec/FindOneAndReplaceFunctionalTest.php</a>
+		<br>
+	</div>
+
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading"><h2>Methods summary</h2></div>
+			<table class="summary table table-bordered table-striped methods" id="methods">
+		<tr data-order="setUp" id="_setUp">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_setUp">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#15-20" title="Go to source code">setUp</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-MongoDB.Tests.Collection.FunctionalTestCase.html#_setUp">MongoDB\Tests\Collection\FunctionalTestCase::setUp</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="testFindOneAndReplaceWhenManyDocumentsMatchReturningDocumentBeforeModification" id="_testFindOneAndReplaceWhenManyDocumentsMatchReturningDocumentBeforeModification">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_testFindOneAndReplaceWhenManyDocumentsMatchReturningDocumentBeforeModification">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#22-41" title="Go to source code">testFindOneAndReplaceWhenManyDocumentsMatchReturningDocumentBeforeModification</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="testFindOneAndReplaceWhenManyDocumentsMatchReturningDocumentAfterModification" id="_testFindOneAndReplaceWhenManyDocumentsMatchReturningDocumentAfterModification">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_testFindOneAndReplaceWhenManyDocumentsMatchReturningDocumentAfterModification">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#43-63" title="Go to source code">testFindOneAndReplaceWhenManyDocumentsMatchReturningDocumentAfterModification</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="testFindOneAndReplaceWhenOneDocumentMatchesReturningDocumentBeforeModification" id="_testFindOneAndReplaceWhenOneDocumentMatchesReturningDocumentBeforeModification">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_testFindOneAndReplaceWhenOneDocumentMatchesReturningDocumentBeforeModification">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#65-84" title="Go to source code">testFindOneAndReplaceWhenOneDocumentMatchesReturningDocumentBeforeModification</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="testFindOneAndReplaceWhenOneDocumentMatchesReturningDocumentAfterModification" id="_testFindOneAndReplaceWhenOneDocumentMatchesReturningDocumentAfterModification">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_testFindOneAndReplaceWhenOneDocumentMatchesReturningDocumentAfterModification">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#86-106" title="Go to source code">testFindOneAndReplaceWhenOneDocumentMatchesReturningDocumentAfterModification</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="testFindOneAndReplaceWhenNoDocumentsMatchReturningDocumentBeforeModification" id="_testFindOneAndReplaceWhenNoDocumentsMatchReturningDocumentBeforeModification">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_testFindOneAndReplaceWhenNoDocumentsMatchReturningDocumentBeforeModification">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#108-127" title="Go to source code">testFindOneAndReplaceWhenNoDocumentsMatchReturningDocumentBeforeModification</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="testFindOneAndReplaceWithUpsertWhenNoDocumentsMatchReturningDocumentBeforeModification" id="_testFindOneAndReplaceWithUpsertWhenNoDocumentsMatchReturningDocumentBeforeModification">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_testFindOneAndReplaceWithUpsertWhenNoDocumentsMatchReturningDocumentBeforeModification">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#129-151" title="Go to source code">testFindOneAndReplaceWithUpsertWhenNoDocumentsMatchReturningDocumentBeforeModification</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="testFindOneAndReplaceWhenNoDocumentsMatchReturningDocumentAfterModification" id="_testFindOneAndReplaceWhenNoDocumentsMatchReturningDocumentAfterModification">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_testFindOneAndReplaceWhenNoDocumentsMatchReturningDocumentAfterModification">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#153-173" title="Go to source code">testFindOneAndReplaceWhenNoDocumentsMatchReturningDocumentAfterModification</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="testFindOneAndReplaceWithUpsertWhenNoDocumentsMatchReturningDocumentAfterModification" id="_testFindOneAndReplaceWithUpsertWhenNoDocumentsMatchReturningDocumentAfterModification">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_testFindOneAndReplaceWithUpsertWhenNoDocumentsMatchReturningDocumentAfterModification">#</a>
+			<code><a href="source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html#175-198" title="Go to source code">testFindOneAndReplaceWithUpsertWhenNoDocumentsMatchReturningDocumentAfterModification</a>( )</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+			</table>
+		</div>
+
+		<div class="panel panel-default">
+	        <div class="panel-heading"><h3>Methods inherited from <a href="class-MongoDB.Tests.Collection.CrudSpec.FunctionalTestCase.html#methods">MongoDB\Tests\Collection\CrudSpec\FunctionalTestCase</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-MongoDB.Tests.Collection.CrudSpec.FunctionalTestCase.html#_createFixtures">createFixtures()</a></code>
+			</p>
+		</div>
+		<div class="panel panel-default">
+	        <div class="panel-heading"><h3>Methods inherited from <a href="class-MongoDB.Tests.Collection.FunctionalTestCase.html#methods">MongoDB\Tests\Collection\FunctionalTestCase</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-MongoDB.Tests.Collection.FunctionalTestCase.html#_tearDown">tearDown()</a></code>
+			</p>
+		</div>
+		<div class="panel panel-default">
+	        <div class="panel-heading"><h3>Methods inherited from <a href="class-MongoDB.Tests.FunctionalTestCase.html#methods">MongoDB\Tests\FunctionalTestCase</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-MongoDB.Tests.FunctionalTestCase.html#_assertCollectionCount">assertCollectionCount()</a></code>, 
+				<code><a href="class-MongoDB.Tests.FunctionalTestCase.html#_assertCommandSucceeded">assertCommandSucceeded()</a></code>, 
+				<code><a href="class-MongoDB.Tests.FunctionalTestCase.html#_assertSameDocument">assertSameDocument()</a></code>, 
+				<code><a href="class-MongoDB.Tests.FunctionalTestCase.html#_assertSameDocuments">assertSameDocuments()</a></code>, 
+				<code><a href="class-MongoDB.Tests.FunctionalTestCase.html#_getPrimaryServer">getPrimaryServer()</a></code>, 
+				<code><a href="class-MongoDB.Tests.FunctionalTestCase.html#_getServerVersion">getServerVersion()</a></code>
+			</p>
+		</div>
+		<div class="panel panel-default">
+	        <div class="panel-heading"><h3>Methods inherited from <a href="class-MongoDB.Tests.TestCase.html#methods">MongoDB\Tests\TestCase</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getCollectionName">getCollectionName()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getDatabaseName">getDatabaseName()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getInvalidArrayValues">getInvalidArrayValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getInvalidBooleanValues">getInvalidBooleanValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getInvalidDocumentValues">getInvalidDocumentValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getInvalidIntegerValues">getInvalidIntegerValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getInvalidReadConcernValues">getInvalidReadConcernValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getInvalidReadPreferenceValues">getInvalidReadPreferenceValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getInvalidStringValues">getInvalidStringValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getInvalidWriteConcernValues">getInvalidWriteConcernValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getNamespace">getNamespace()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_getUri">getUri()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_provideInvalidDocumentValues">provideInvalidDocumentValues()</a></code>, 
+				<code><a href="class-MongoDB.Tests.TestCase.html#_wrapValuesForDataProvider">wrapValuesForDataProvider()</a></code>
+			</p>
+		</div>
+
+
+
+
+
+
+
+
+
+
+		<div class="panel panel-default">
+            <div class="panel-heading"><h2>Properties summary</h2></div>
+		</div>
+
+		<div class="panel panel-default">
+            <div class="panel-heading"><h3>Properties inherited from <a href="class-MongoDB.Tests.Collection.FunctionalTestCase.html#properties">MongoDB\Tests\Collection\FunctionalTestCase</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-MongoDB.Tests.Collection.FunctionalTestCase.html#$collection"><var>$collection</var></a></code>
+			</p>
+		</div>
+		<div class="panel panel-default">
+            <div class="panel-heading"><h3>Properties inherited from <a href="class-MongoDB.Tests.FunctionalTestCase.html#properties">MongoDB\Tests\FunctionalTestCase</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-MongoDB.Tests.FunctionalTestCase.html#$manager"><var>$manager</var></a></code>
+			</p>
+		</div>
+
+
+
+
+
+</div>
+	</div>
+
+	<div id="footer">
+		milkolib reference documentation API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

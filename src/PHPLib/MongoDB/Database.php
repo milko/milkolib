@@ -29,38 +29,12 @@ namespace Milko\PHPLib\MongoDB;
  *
  *	@example	../../test/MongoDatabase.php
  *	@example
- * $server = new Milko\PHPLib\DataServer( 'protocol://user:pass@host:9090' );<br/>
- * $server->Connect();<br/>
- * $databases = $server->ListCollections();<br/>
- * $database = $server->RetrieveCollection( $databases[ 0 ], self::kFLAG_CREATE );<br/>
- * $collections = $database->ListCollections();<br/>
- * $collection = $database->RetrieveCollection( $collections[ 0 ], self::kFLAG_CREATE );<br/>
- * // Work with that collection...<br/>
- * $database->CollectionDrop( $collections[ 0 ] );<br/>
- * // Dropped the collection.
+ * $server = new Milko\PHPLib\DataServer( 'mongodb://localhost:27017/database/collection' );<br/>
+ * $database = $server->RetrieveDatabase( "database" );<br/>
+ * // Work with that database...<br/>
  */
 class Database extends \Milko\PHPLib\Database
 {
-	/**
-	 * <h4>Database server object.</h4>
-	 *
-	 * This data member holds the <i>database server object</i>, it is the object that
-	 * instantiated the current database.
-	 *
-	 * @var DataServer
-	 */
-	protected $mServer = NULL;
-
-	/**
-	 * <h4>Database native object.</h4>
-	 *
-	 * This data member holds the <i>database native object</i>, it is the object provided
-	 * by the database driver.
-	 *
-	 * @var mixed
-	 */
-	protected $mNativeObject = NULL;
-
 
 
 
@@ -124,7 +98,7 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Native driver options.
-	 * @return mixed				Native database object.
+	 * @return \MongoDB\Database	Native database object.
 	 *
 	 * @uses Server()
 	 * @uses \MongoDB\Client::selectDatabase()

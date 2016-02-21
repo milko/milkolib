@@ -26,7 +26,7 @@ namespace Milko\PHPLib\MongoDB;
  *	@version	1.00
  *	@since		19/02/2016
  *
- *	@example	../../test/Collection.php
+ *	@example	../../test/MongoCollection.php
  *	@example
  * $server = new Milko\PHPLib\DataServer( 'protocol://user:pass@host:9090/database/collection' );<br/>
  * $server->Connect();<br/>
@@ -36,26 +36,6 @@ namespace Milko\PHPLib\MongoDB;
  */
 class Collection extends \Milko\PHPLib\Collection
 {
-	/**
-	 * <h4>Database object.</h4>
-	 *
-	 * This data member holds the <i>database object</i>, it is the object that
-	 * instantiated the current collection.
-	 *
-	 * @var Database
-	 */
-	protected $mDatabase = NULL;
-
-	/**
-	 * <h4>Collection native object.</h4>
-	 *
-	 * This data member holds the <i>collection native object</i>, it is the object provided
-	 * by the database driver.
-	 *
-	 * @var mixed
-	 */
-	protected $mNativeObject = NULL;
-
 
 
 
@@ -96,7 +76,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$this->Connection()->deleteMany( [], $theOptions );
 
-	} // Clear.
+	} // Truncate.
 
 
 	/*===================================================================================
@@ -300,7 +280,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theCriteria		The modification criteria.
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
@@ -362,7 +342,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theRecord			The replacement record.
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
 	 *
@@ -417,7 +397,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return Iterator				The found records.
@@ -474,7 +454,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of deleted records.

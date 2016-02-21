@@ -38,8 +38,10 @@ use Milko\PHPLib\Container;
  * 	<li><b>{@link UpdateOne()}</b>: Update one record.
  * 	<li><b>{@link UpdateMany()}</b>: Update many records.
  * 	<li><b>{@link ReplaceOne()}</b>: Replace one record.
- * 	<li><b>{@link FindOne()}</b>: Find one record.
- * 	<li><b>{@link FindMany()}</b>: Find many records.
+ * 	<li><b>{@link FindOne()}</b>: Find first record.
+ * 	<li><b>{@link FindMany()}</b>: Find all records.
+ * 	<li><b>{@link DoQuery()}</b>: Perform a native query.
+ * 	<li><b>{@link DoAggregate()}</b>: Perform a map and reduce query.
  * 	<li><b>{@link DeleteOne()}</b>: Delete one record.
  * 	<li><b>{@link DeleteMany()}</b>: Delete many records.
  * 	<li><b>{@link Truncate()}</b>: Clear collection contents; this method is virtual.
@@ -56,6 +58,8 @@ use Milko\PHPLib\Container;
  * 	<li><b>{@link update()}</b>: Update one or many records.
  * 	<li><b>{@link replace()}</b>: Replace one or many records.
  * 	<li><b>{@link find()}</b>: Find one or many records.
+ * 	<li><b>{@link query()}</b>: Perform a driver native query.
+ * 	<li><b>{@link aggregate()}</b>: Perform a map and reduce query.
  * 	<li><b>{@link delete()}</b>: Delete one or many records.
  * </ul>
  *
@@ -381,7 +385,7 @@ abstract class Collection extends Container
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param array					$theCriteria		The modification criteria.
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
 	 *
@@ -413,7 +417,7 @@ abstract class Collection extends Container
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param array					$theCriteria		The modification criteria.
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
 	 *
@@ -445,7 +449,7 @@ abstract class Collection extends Container
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param array					$theRecord			The replacement record.
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
 	 *
@@ -465,25 +469,25 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Find a single record.</h4>
 	 *
-	 * This method can be used to find the first selected record in a collection, the
-	 * method expects the following parameters:
+	 * This method can be used to find the first selected record in a collection provided an
+	 * example document, the method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theFilter</b>: The search criteria.
+	 *	<li><b>$theDocument</b>: The search filter as an example document.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param array					$theFilter			The search criteria.
+	 * @param mixed					$theDocument		The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return mixed				The found record.
 	 *
 	 * @uses find()
 	 */
-	public function FindOne( $theFilter, $theOptions = NULL )
+	public function FindOne( $theDocument, $theOptions = NULL )
 	{
-		return $this->find( $theFilter, FALSE, $theOptions );						// ==>
+		return $this->find( $theDocument, FALSE, $theOptions );						// ==>
 
 	} // FindOne.
 
@@ -493,29 +497,89 @@ abstract class Collection extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Find a set of records.</h4>
+	 * <h4>Find all records.</h4>
 	 *
-	 * This method can be used to find a set of records in the collection, the method
-	 * expects the following parameters:
+	 * This method can be used to find a set of records in the collection provided an
+	 * example document, the method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theFilter</b>: The search criteria.
+	 *	<li><b>$theDocument</b>: The search filter as an example document.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param array					$theFilter			The search criteria.
+	 * @param mixed					$theDocument		The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return Iterator				The found records.
 	 *
 	 * @uses find()
 	 */
-	public function FindMany( $theFilter, $theOptions = NULL )
+	public function FindMany( $theDocument, $theOptions = NULL )
 	{
-		return $this->find( $theFilter, TRUE, $theOptions );						// ==>
+		return $this->find( $theDocument, TRUE, $theOptions );						// ==>
 
 	} // FindMany.
+
+
+	/*===================================================================================
+	 *	DoQuery																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Query the collection.</h4>
+	 *
+	 * This method can be used to perform a query in the current collection, the method
+	 * expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theQuery</b>: The query as the driver native selection criteria.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses find()
+	 */
+	public function DoQuery( $theQuery, $theOptions = NULL )
+	{
+		return $this->query( $theQuery, $theOptions );								// ==>
+
+	} // DoQuery.
+
+
+	/*===================================================================================
+	 *	DoAggregate																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Execute an aggregation query.</h4>
+	 *
+	 * This method can be used to perform a map and reduce query, the method expects the
+	 * following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$thePipeline</b>: The aggregation pipeline.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$thePipeline		The aggregation pipeline.
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses find()
+	 */
+	public function DoAggregate( $thePipeline, $theOptions = NULL )
+	{
+		return $this->aggregate( $thePipeline, $theOptions );						// ==>
+
+	} // DoAggregate.
 
 
 	/*===================================================================================
@@ -535,7 +599,7 @@ abstract class Collection extends Container
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param array					$theFilter			The deletion criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of deleted records.
 	 *
@@ -565,7 +629,7 @@ abstract class Collection extends Container
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param array					$theFilter			The deletion criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of deleted records.
 	 *
@@ -714,7 +778,7 @@ abstract class Collection extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theCriteria		The modification criteria.
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
@@ -753,7 +817,7 @@ abstract class Collection extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theRecord			The replacement record.
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
 	 */
@@ -788,12 +852,78 @@ abstract class Collection extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return Iterator				The found records.
 	 */
 	abstract protected function find( $theFilter, $doMany, $theOptions = NULL );
+
+
+	/*===================================================================================
+	 *	query																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Query the collection.</h4>
+	 *
+	 * This method should perform the provided query expressed in the driver's native
+	 * format, the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theQuery</b>: The selection criteria.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * This method assumes that the server is connected, it is the responsibility of the
+	 * caller to ensure this.
+	 *
+	 * The options parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return Iterator				The found records.
+	 */
+	abstract protected function query( $theQuery, $theOptions = NULL );
+
+
+	/*===================================================================================
+	 *	aggregate																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Execute an aggregation query.</h4>
+	 *
+	 * This method should perform a map and reduce query expressed in the driver's native
+	 * format, the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$thePipeline</b>: The aggregation pipeline.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * This method assumes that the server is connected, it is the responsibility of the
+	 * caller to ensure this.
+	 *
+	 * The options parameter represents a set of native options provided to the driver for
+	 * performing the operation: if needed, in derived concrete classes you should define
+	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
+	 * method, this will guarantee that the options will always be used when performing this
+	 * operation.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$thePipeline		The aggregation pipeline.
+	 * @param mixed					$theOptions			Collection native options.
+	 * @return Iterator				The found records.
+	 */
+	abstract protected function aggregate( $thePipeline, $theOptions = NULL );
 
 
 	/*===================================================================================
@@ -824,7 +954,7 @@ abstract class Collection extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theFilter			The selection criteria.
+	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return int					The number of deleted records.

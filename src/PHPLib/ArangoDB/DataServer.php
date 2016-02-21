@@ -193,34 +193,15 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * <h4>Create database.</h4>
 	 *
-	 * In this class we instantiate a {@link ArangoConnection} object.
+	 * In this class we instantiate a {@link Database} object.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
-	 * @return ArangoConnection		Database object.
-	 *
-	 * @uses databaseList()
-	 * @uses Connection()
-	 * @uses getConnectionOptions()
-	 * @uses ArangoDatabase::create()
-	 *
-	 * @see ArangoConnectionOptions::OPTION_DATABASE
+	 * @return Database				Database object.
 	 */
 	protected function databaseCreate( $theDatabase, $theOptions = NULL )
 	{
-		//
-		// Create database.
-		//
-		if( ! in_array( $theDatabase, $this->databaseList() ) )
-			ArangoDatabase::create( $this->Connection(), $theDatabase );
-
-		//
-		// Create database connection.
-		//
-		$options = $this->getConnectionOptions();
-		$options[ ArangoConnectionOptions::OPTION_DATABASE ] = $theDatabase;
-
-		return new ArangoConnection( $options );									// ==>
+		return new Database( $this, $theDatabase, $theOptions );					// ==>
 
 	} // databaseCreate.
 
@@ -233,16 +214,13 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * <h4>Return a database object.</h4>
 	 *
 	 * In this class we first check whether the database exists in the server, if that is
-	 * not the case, we return <tt>NULL</tt>.
+	 * the case, we instantiate a {@link Database} object, if not, we return <tt>NULL</tt>.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
-	 * @return ArangoConnection		Database object or <tt>NULL</tt> if not found.
+	 * @return Database				Database object or <tt>NULL</tt> if not found.
 	 *
-	 * @uses getConnectionOptions()
-	 * @uses ArangoDatabase::create()
-	 *
-	 * @see ArangoConnectionOptions::OPTION_DATABASE
+	 * @uses databaseList()
 	 */
 	protected function databaseRetrieve( $theDatabase, $theOptions = NULL )
 	{
@@ -250,16 +228,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 		// Check if database exists.
 		//
 		if( in_array( $theDatabase, $this->databaseList() ) )
-		{
-			//
-			// Create database connection.
-			//
-			$options = $this->getConnectionOptions();
-			$options[ ArangoConnectionOptions::OPTION_DATABASE ] = $theDatabase;
-
-			return new ArangoConnection( $options );								// ==>
-
-		} // Among server databases.
+			return new Database( $this, $theDatabase, $theOptions );				// ==>
 
 		return NULL;																// ==>
 
