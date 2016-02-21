@@ -27,33 +27,53 @@ use triagens\ArangoDb\ServerException as ArangoServerException;
 use triagens\ArangoDb\Statement as ArangoStatement;
 use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
 
-// set up some basic connection options
+/* set up a trace function that will be called for each communication with the server */
+$traceFunc = function($type, $data) {
+	print "TRACE FOR ". $type . PHP_EOL;
+	var_dump($data);
+};
+
+/* set up connection options */
 $connectionOptions = array(
-	// database name
-	ArangoConnectionOptions::OPTION_DATABASE      => '_system',
-	// server endpoint to connect to
-	ArangoConnectionOptions::OPTION_ENDPOINT      => 'tcp://127.0.0.1:8529',
-	// authorization type to use (currently supported: 'Basic')
-	ArangoConnectionOptions::OPTION_AUTH_TYPE     => 'Basic',
-	// user for basic authorization
-	ArangoConnectionOptions::OPTION_AUTH_USER     => 'root',
-	// password for basic authorization
-	ArangoConnectionOptions::OPTION_AUTH_PASSWD   => '',
-	// connection persistence on server. can use either 'Close' (one-time connections) or 'Keep-Alive' (re-used connections)
-	ArangoConnectionOptions::OPTION_CONNECTION    => 'Keep-Alive',
-	// connect timeout in seconds
-	ArangoConnectionOptions::OPTION_TIMEOUT       => 3,
-	// whether or not to reconnect when a keep-alive connection has timed out on server
-	ArangoConnectionOptions::OPTION_RECONNECT     => true,
-	// optionally create new collections when inserting documents
-	ArangoConnectionOptions::OPTION_CREATE        => true,
-	// optionally create new collections when inserting documents
-	ArangoConnectionOptions::OPTION_UPDATE_POLICY => ArangoUpdatePolicy::LAST,
+	ArangoConnectionOptions::OPTION_DATABASE        => '_system',               // database name
+
+	// normal unencrypted connection via TCP/IP
+	ArangoConnectionOptions::OPTION_ENDPOINT        => 'tcp://localhost:8529',  // endpoint to connect to
+
+	// // connection via SSL
+	// ArangoConnectionOptions::OPTION_ENDPOINT        => 'ssl://localhost:8529',  // SSL endpoint to connect to
+	// ArangoConnectionOptions::OPTION_VERIFY_CERT     => false,                   // SSL certificate validation
+	// ArangoConnectionOptions::OPTION_ALLOW_SELF_SIGNED => true,                  // allow self-signed certificates
+	// ArangoConnectionOptions::OPTION_CIPHERS         => 'DEFAULT',               // https://www.openssl.org/docs/manmaster/apps/ciphers.html
+
+	// // connection via UNIX domain socket
+	// ArangoConnectionOptions::OPTION_ENDPOINT        => 'unix:///tmp/arangodb.sock',  // UNIX domain socket
+
+	ArangoConnectionOptions::OPTION_CONNECTION      => 'Keep-Alive',            // can use either 'Close' (one-time connections) or 'Keep-Alive' (re-used connections)
+	ArangoConnectionOptions::OPTION_AUTH_TYPE       => 'Basic',                 // use basic authorization
+
+	// authentication parameters (note: must also start server with option `--server.disable-authentication false`)
+	// ArangoConnectionOptions::OPTION_AUTH_USER       => '',                      // user for basic authorization
+	// ArangoConnectionOptions::OPTION_AUTH_PASSWD     => '',                      // password for basic authorization
+
+	ArangoConnectionOptions::OPTION_TIMEOUT         => 30,                      // timeout in seconds
+	// ArangoConnectionOptions::OPTION_TRACE           => $traceFunc,              // tracer function, can be used for debugging
+	ArangoConnectionOptions::OPTION_CREATE          => false,                   // do not create unknown collections automatically
+	ArangoConnectionOptions::OPTION_UPDATE_POLICY   => ArangoUpdatePolicy::LAST,	// last update wins
 );
 
 //
 // My tests.
 //
+//$url =
+//	'tcp://root:password@127.0.0.1:8529/_system?' .
+//	ArangoConnectionOptions::OPTION_AUTH_TYPE . '=Basic' . '&' .
+//	ArangoConnectionOptions::OPTION_CONNECTION . '=Keep-Alive' . '&' .
+//	ArangoConnectionOptions::OPTION_TIMEOUT . '=3' . '&' .
+//	ArangoConnectionOptions::OPTION_RECONNECT . '=true' . '&' .
+//	ArangoConnectionOptions::OPTION_CREATE . '=true' . '&' .
+//	ArangoConnectionOptions::OPTION_UPDATE_POLICY . '=' . ArangoUpdatePolicy::LAST;
+//exit( "$url\n" );
 
 //
 // Prepare options.
@@ -232,17 +252,13 @@ echo( "\n=======================================================================
 //
 echo( "Create a document handler:\n" );
 $documentHandler = new ArangoDocumentHandler( $connection );
-$data = [ "name" => "Milko", "surname" => "Škofič" ];
-print_r( $data );
-$document = ArangoDocument::createFromArray( $data );
-print_r( $document );
 echo( "\n" );
 
 //
 // Create a document.
 //
 echo( "Create a document:\n" );
-$data = [ "name" => "Milko", "surname" => "Škofič" ];
+$data = [ "date" => 19570728, "name" => "Milko", "surname" => "Škofič" ];
 print_r( $data );
 $document = ArangoDocument::createFromArray( $data );
 print_r( $document );

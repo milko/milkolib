@@ -37,11 +37,16 @@ use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
  * implements the inherited virtual interface to provide an object that can manage ArangoDB
  * databases, collections and documents.
  *
+ * This class makes use of the {@link https://github.com/arangodb/arangodb-php.git} PHP
+ * library to communicate with the server. This class will store a connection object that
+ * has no defined database, when creating {@link Database} objects, this class will create
+ * a connection with the same parameters and a defined database name.
+ *
  *	@package	Data
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
- *	@since		20/02/2016
+ *	@since		21/02/2016
  *
  *	@example	../../test/ArangoDataServer.php
  *	@example
@@ -57,11 +62,11 @@ class DataServer extends \Milko\PHPLib\DataServer
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *										MAGIC											*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *										MAGIC											*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -76,10 +81,12 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 *
 	 * @param string				$theConnection		Data source name.
 	 *
-	 * @see kMONGO_OPTS_CLIENT_DEFAULT
+	 * @uses defaultConnectionOptions()
+	 *
+	 * @see kARANGO_OPTS_CLIENT_DEFAULT
 	 *
 	 * @example
-	 * $dsn = new DataSource( 'mongodb://user:pass@host:27017/database/collection' );
+	 * $dsn = new DataSource( 'tcp://127.0.0.1:8529/_system/test_collection' );
 	 */
 	public function __construct( $theConnection = NULL )
 	{
@@ -87,22 +94,27 @@ class DataServer extends \Milko\PHPLib\DataServer
 		// Init local storage.
 		//
 		if( $theConnection === NULL )
-			$theConnection = kMONGO_OPTS_CLIENT_DEFAULT;
+			$theConnection = kARANGO_OPTS_CLIENT_DEFAULT;
 
 		//
 		// Call parent constructor.
 		//
 		parent::__construct( $theConnection );
 
+		//
+		// Complete connection options.
+		//
+		$this->defaultConnectionOptions();
+
 	} // Constructor.
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *								PROTECTED CONNECTION INTERFACE							*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *								PROTECTED CONNECTION INTERFACE							*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -113,29 +125,17 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * Open connection.
 	 *
-	 * We overload this method to return a ArangoDB client object; we also remove the path
-	 * from the data source URL.
+	 * We overload this method to return a ArangoDB connection object excluding eventual
+	 * database and collection.
 	 *
 	 * @param mixed					$theOptions			Connection native options.
-	 * @return Client				The native connection.
+	 * @return ArangoConnection		The native connection.
 	 *
-	 * @uses toURL()
-	 *
-	@see kMONGO_OPTS_CLIENT_CREATE
+	 * @uses getConnectionOptions()
 	 */
 	protected function connectionCreate( $theOptions = NULL )
 	{
-		//
-		// Init local storage.
-		//
-		$uri_opts = [];
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CLIENT_CREATE;
-
-		return new Client(
-			$this->toURL( [ \Milko\PHPLib\DataSource::PATH ] ),
-			$uri_opts,
-			$theOptions );															// ==>
+		return new ArangoConnection( $this->getConnectionOptions() );				// ==>
 
 	} // connectionCreate.
 
@@ -153,11 +153,11 @@ class DataServer extends \Milko\PHPLib\DataServer
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *						PROTECTED DATABASE MANAGEMENT INTERFACE							*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *						PROTECTED DATABASE MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -175,27 +175,13 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
-	 * @uses \ArangoDB\Client::listDatabases()
-	 *
-	 * @see kMONGO_OPTS_CLIENT_DBLIST
+	 * @uses ArangoDatabase::listUserDatabases()
 	 */
 	protected function databaseList( $theOptions = NULL )
 	{
-		//
-		// Init local storage.
-		//
-		$databases = [];
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CLIENT_DBLIST;
-
-		//
-		// Ask client for list.
-		//
-		$list = $this->Connection()->listDatabases( $theOptions );
-		foreach( $list as $element )
-			$databases[] = $element->getName();
-
-		return $databases;															// ==>
+		return
+			ArangoDatabase::listUserDatabases
+					( $this->Connection() )[ 'result' ];							// ==>
 
 	} // databaseList.
 
@@ -207,23 +193,34 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * <h4>Create database.</h4>
 	 *
-	 * In this class we instantiate a {@link Database} object.
+	 * In this class we instantiate a {@link ArangoConnection} object.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
-	 * @return Database				Database object.
+	 * @return ArangoConnection		Database object.
 	 *
-	 * @see kMONGO_OPTS_CLIENT_DBCREATE
+	 * @uses databaseList()
+	 * @uses Connection()
+	 * @uses getConnectionOptions()
+	 * @uses ArangoDatabase::create()
+	 *
+	 * @see ArangoConnectionOptions::OPTION_DATABASE
 	 */
 	protected function databaseCreate( $theDatabase, $theOptions = NULL )
 	{
 		//
-		// Init local storage.
+		// Create database.
 		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CLIENT_DBCREATE;
+		if( ! in_array( $theDatabase, $this->databaseList() ) )
+			ArangoDatabase::create( $this->Connection(), $theDatabase );
 
-		return new Database( $this, $theDatabase, $theOptions );					// ==>
+		//
+		// Create database connection.
+		//
+		$options = $this->getConnectionOptions();
+		$options[ ArangoConnectionOptions::OPTION_DATABASE ] = $theDatabase;
+
+		return new ArangoConnection( $options );									// ==>
 
 	} // databaseCreate.
 
@@ -240,11 +237,12 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param mixed					$theOptions			Database native options.
-	 * @return Database				Database object or <tt>NULL</tt> if not found.
+	 * @return ArangoConnection		Database object or <tt>NULL</tt> if not found.
 	 *
-	 * @uses databaseList()
+	 * @uses getConnectionOptions()
+	 * @uses ArangoDatabase::create()
 	 *
-	 * @see kMONGO_OPTS_CLIENT_DBRETRIEVE
+	 * @see ArangoConnectionOptions::OPTION_DATABASE
 	 */
 	protected function databaseRetrieve( $theDatabase, $theOptions = NULL )
 	{
@@ -254,18 +252,185 @@ class DataServer extends \Milko\PHPLib\DataServer
 		if( in_array( $theDatabase, $this->databaseList() ) )
 		{
 			//
-			// Init local storage.
+			// Create database connection.
 			//
-			if( $theOptions === NULL )
-				$theOptions = kMONGO_OPTS_CLIENT_DBRETRIEVE;
+			$options = $this->getConnectionOptions();
+			$options[ ArangoConnectionOptions::OPTION_DATABASE ] = $theDatabase;
 
-			return new Database( $this, $theDatabase, $theOptions );				// ==>
+			return new ArangoConnection( $options );								// ==>
 
 		} // Among server databases.
 
 		return NULL;																// ==>
 
 	} // databaseRetrieve.
+
+
+
+	/*=======================================================================================
+	 *																						*
+	 *							PROTECTED CONFIGURATION INTERFACE							*
+	 *																						*
+	 *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	defaultConnectionOptions														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise connection options.</h4>
+	 *
+	 * This method is called by the constructor to complete the provided connection options
+	 * with the default values, these values are defined in the {@link includes.inc.php}
+	 * file.
+	 *
+	 * @see kARANGO_OPTS_AUTH_DEFAULT kARANGO_OPTS_PERSIST_DEFAULT
+	 * @see kARANGO_OPTS_TIMEOUT_DEFAULT kARANGO_OPTS_RECONNECT_DEFAULT
+	 * @see kARANGO_OPTS_CREATE_DEFAULT kARANGO_OPTS_UPDATE_DEFAULT
+	 */
+	protected function defaultConnectionOptions()
+	{
+		//
+		// Set authorisation type.
+		//
+		if( ! offsetExists( ArangoConnectionOptions::OPTION_AUTH_TYPE ) )
+			$this->offsetSet( ArangoConnectionOptions::OPTION_AUTH_TYPE,
+				kARANGO_OPTS_AUTH_DEFAULT );
+
+		//
+		// Set connection persistence.
+		//
+		if( ! offsetExists( ArangoConnectionOptions::OPTION_CONNECTION ) )
+			$this->offsetSet( ArangoConnectionOptions::OPTION_CONNECTION,
+				kARANGO_OPTS_PERSIST_DEFAULT );
+
+		//
+		// Set connection time-out.
+		//
+		if( ! offsetExists( ArangoConnectionOptions::OPTION_TIMEOUT ) )
+			$this->offsetSet( ArangoConnectionOptions::OPTION_TIMEOUT,
+				kARANGO_OPTS_TIMEOUT_DEFAULT );
+
+		//
+		// Set time-out reconnect.
+		//
+		if( ! offsetExists( ArangoConnectionOptions::OPTION_RECONNECT ) )
+			$this->offsetSet( ArangoConnectionOptions::OPTION_RECONNECT,
+				kARANGO_OPTS_RECONNECT_DEFAULT );
+
+		//
+		// Set creation option.
+		//
+		if( ! offsetExists( ArangoConnectionOptions::OPTION_CREATE ) )
+			$this->offsetSet( ArangoConnectionOptions::OPTION_CREATE,
+				kARANGO_OPTS_CREATE_DEFAULT );
+
+		//
+		// Set update policy.
+		//
+		if( ! offsetExists( ArangoConnectionOptions::OPTION_UPDATE_POLICY ) )
+			$this->offsetSet( ArangoConnectionOptions::OPTION_UPDATE_POLICY,
+				kARANGO_OPTS_UPDATE_DEFAULT );
+
+	} // defaultConnectionOptions.
+
+
+	/*===================================================================================
+	 *	getConnectionOptions															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return connection options.</h4>
+	 *
+	 * This method can be used to return an array of connection options in ArangoDB format
+	 * according to the current object's settings.
+	 *
+	 * @return array				Connection options.
+	 *
+	 * @uses Protocol()
+	 * @uses Host()
+	 * @uses Port()
+	 * @uses User()
+	 * @uses Password()
+	 *
+	 * @see ArangoConnectionOptions::OPTION_ENDPOINT
+	 * @see ArangoConnectionOptions::OPTION_AUTH_TYPE
+	 * @see ArangoConnectionOptions::OPTION_AUTH_USER
+	 * @see ArangoConnectionOptions::OPTION_AUTH_PASSWD
+	 * @see ArangoConnectionOptions::OPTION_CONNECTION
+	 * @see ArangoConnectionOptions::OPTION_TIMEOUT
+	 * @see ArangoConnectionOptions::OPTION_RECONNECT
+	 * @see ArangoConnectionOptions::OPTION_CREATE
+	 * @see ArangoConnectionOptions::OPTION_UPDATE_POLICY
+	 */
+	protected function getConnectionOptions()
+	{
+		//
+		// Init local storage.
+		//
+		$options = [];
+
+		//
+		// Set endpoint.
+		//
+		$endpoint = $this->Protocol() . '://' . $this->Host();
+		if( ($tmp = $this->Port()) !== NULL )
+			$endpoint .= ":$tmp";
+		$options[ ArangoConnectionOptions::OPTION_ENDPOINT ] = $endpoint;
+
+		//
+		// Set authorisation type.
+		//
+		$options[ ArangoConnectionOptions::OPTION_AUTH_TYPE ]
+			= $this->offsetGet( ArangoConnectionOptions::OPTION_AUTH_TYPE );
+
+		//
+		// Set user.
+		//
+		if( ($tmp = $this->User()) !== NULL )
+			$options[ ArangoConnectionOptions::OPTION_AUTH_USER ] = $tmp;
+
+		//
+		// Set password.
+		//
+		if( ($tmp = $this->Password()) !== NULL )
+			$options[ ArangoConnectionOptions::OPTION_AUTH_PASSWD ] = $tmp;
+
+		//
+		// Set connection persistence.
+		//
+		$options[ ArangoConnectionOptions::OPTION_CONNECTION ]
+			= $this->offsetGet( ArangoConnectionOptions::OPTION_CONNECTION );
+
+		//
+		// Set connection time-out.
+		//
+		$options[ ArangoConnectionOptions::OPTION_TIMEOUT ]
+			= $this->offsetGet( ArangoConnectionOptions::OPTION_TIMEOUT );
+
+		//
+		// Set time-out reconnect.
+		//
+		$options[ ArangoConnectionOptions::OPTION_RECONNECT ]
+			= $this->offsetGet( ArangoConnectionOptions::OPTION_RECONNECT );
+
+		//
+		// Set creation option.
+		//
+		$options[ ArangoConnectionOptions::OPTION_CREATE ]
+			= $this->offsetGet( ArangoConnectionOptions::OPTION_CREATE );
+
+		//
+		// Set update policy.
+		//
+		$options[ ArangoConnectionOptions::OPTION_UPDATE_POLICY ]
+			= $this->offsetGet( ArangoConnectionOptions::OPTION_UPDATE_POLICY );
+
+		return $options;															// ==>
+
+	} // defaultConnectionOptions.
 
 
 

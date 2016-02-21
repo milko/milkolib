@@ -23,8 +23,6 @@ use \MongoDB\Client;
  * implements the inherited virtual interface to provide an object that can manage MongoDB
  * databases, collections and documents.
  *
- * The functionality of the class is implemented through the {@link \MongoDB\Client} class.
- *
  *	@package	Data
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
@@ -109,7 +107,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 *
 	 * @uses toURL()
 	 *
-	  @see kMONGO_OPTS_CLIENT_CREATE
+	 * @see kMONGO_OPTS_CLIENT_CREATE
 	 */
 	protected function connectionCreate( $theOptions = NULL )
 	{
