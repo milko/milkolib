@@ -98,6 +98,7 @@ echo( "\n" );
 //
 $uri = $uri_tcp;
 $connectionOptions[ ArangoConnectionOptions::OPTION_ENDPOINT ] = $uri;
+//$connectionOptions[ ArangoConnectionOptions::OPTION_ENDPOINT ] = $uri_sock;
 
 //
 // Show connection options.

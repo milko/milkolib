@@ -30,22 +30,25 @@ use Milko\PHPLib\Container;
  * concrete classes:
  *
  * <ul>
- * 	<li><b>{@link Server()}</b>: Return the database server object.
- * 	<li><b>{@link Database()}</b>: Return the database object.
- * 	<li><b>{@link Connection()}</b>: Return the collection native driver object.
- * 	<li><b>{@link InsertOne()}</b>: Insert one record.
- * 	<li><b>{@link InsertMany()}</b>: Insert many records.
- * 	<li><b>{@link UpdateOne()}</b>: Update one record.
- * 	<li><b>{@link UpdateMany()}</b>: Update many records.
- * 	<li><b>{@link ReplaceOne()}</b>: Replace one record.
- * 	<li><b>{@link FindOne()}</b>: Find first record.
- * 	<li><b>{@link FindMany()}</b>: Find all records.
- * 	<li><b>{@link DoQuery()}</b>: Perform a native query.
- * 	<li><b>{@link DoAggregate()}</b>: Perform a map and reduce query.
- * 	<li><b>{@link DeleteOne()}</b>: Delete one record.
- * 	<li><b>{@link DeleteMany()}</b>: Delete many records.
- * 	<li><b>{@link Truncate()}</b>: Clear collection contents; this method is virtual.
- * 	<li><b>{@link Drop()}</b>: Drop current collection; this method is virtual.
+ * 	<li><em>Collection related:</em>
+ *   <ul>
+ * 		<li><b>{@link Server()}</b>: Return the database server object.
+ * 		<li><b>{@link Database()}</b>: Return the database object.
+ * 		<li><b>{@link Connection()}</b>: Return the collection native driver object.
+ * 		<li><b>{@link Truncate()}</b>: Clear collection contents; this method is virtual.
+ * 		<li><b>{@link Drop()}</b>: Drop current collection; this method is virtual.
+ *   </ul>
+ * 	<li><em>Record related:</em>
+ *   <ul>
+ * 		<li><b>{@link Insert()}</b>: Insert one or more records.
+ * 		<li><b>{@link Update()}</b>: Update one or more records.
+ * 		<li><b>{@link Replace()}</b>: Replace one or more records.
+ * 		<li><b>{@link FindByExample()}</b>: Search by example.
+ * 		<li><b>{@link MapReduce()}</b>: Perform a map and reduce query.
+ * 		<li><b>{@link Query()}</b>: Perform a native query.
+ * 		<li><b>{@link Delete()}</b>: Delete one or more records.
+ * 		<li><b>{@link DeleteMany()}</b>: Delete many records.
+ *   </ul>
  * </ul>
  *
  * The public methods do not implement the actual operations, this is delegated to a
@@ -54,13 +57,13 @@ use Milko\PHPLib\Container;
  * <ul>
  * 	<li><b>{@link collectionNew()}</b>: Instantiate a driver native database instance.
  * 	<li><b>{@link collectionName()}</b>: Return the collection name.
- * 	<li><b>{@link insert()}</b>: Insert one or many records.
- * 	<li><b>{@link update()}</b>: Update one or many records.
- * 	<li><b>{@link replace()}</b>: Replace one or many records.
- * 	<li><b>{@link find()}</b>: Find one or many records.
- * 	<li><b>{@link query()}</b>: Perform a driver native query.
- * 	<li><b>{@link aggregate()}</b>: Perform a map and reduce query.
- * 	<li><b>{@link delete()}</b>: Delete one or many records.
+ * 	<li><b>{@link doInsert()}</b>: Insert one or many records.
+ * 	<li><b>{@link doUpdate()}</b>: Update one or many records.
+ * 	<li><b>{@link doReplace()}</b>: Replace one or many records.
+ * 	<li><b>{@link doFind()}</b>: Find one or many records.
+ * 	<li><b>{@link doQuery()}</b>: Perform a driver native query.
+ * 	<li><b>{@link doMapReduce()}</b>: Perform a map and reduce query.
+ * 	<li><b>{@link doDelete()}</b>: Delete one or many records.
  * </ul>
  *
  *	@package	Core
