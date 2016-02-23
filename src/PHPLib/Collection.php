@@ -43,11 +43,10 @@ use Milko\PHPLib\Container;
  * 		<li><b>{@link Insert()}</b>: Insert one or more records.
  * 		<li><b>{@link Update()}</b>: Update one or more records.
  * 		<li><b>{@link Replace()}</b>: Replace one or more records.
- * 		<li><b>{@link FindByExample()}</b>: Search by example.
- * 		<li><b>{@link MapReduce()}</b>: Perform a map and reduce query.
- * 		<li><b>{@link Query()}</b>: Perform a native query.
  * 		<li><b>{@link Delete()}</b>: Delete one or more records.
- * 		<li><b>{@link DeleteMany()}</b>: Delete many records.
+ * 		<li><b>{@link FindByExample()}</b>: Search by example.
+ * 		<li><b>{@link Query()}</b>: Perform a native query.
+ * 		<li><b>{@link MapReduce()}</b>: Perform a map and reduce query.
  *   </ul>
  * </ul>
  *
@@ -57,13 +56,13 @@ use Milko\PHPLib\Container;
  * <ul>
  * 	<li><b>{@link collectionNew()}</b>: Instantiate a driver native database instance.
  * 	<li><b>{@link collectionName()}</b>: Return the collection name.
- * 	<li><b>{@link doInsert()}</b>: Insert one or many records.
+ * 	<li><b>{@link doInsert()}</b>: Insert one or more records.
  * 	<li><b>{@link doUpdate()}</b>: Update one or many records.
  * 	<li><b>{@link doReplace()}</b>: Replace one or many records.
+ * 	<li><b>{@link doDelete()}</b>: Delete one or many records.
  * 	<li><b>{@link doFind()}</b>: Find one or many records.
  * 	<li><b>{@link doQuery()}</b>: Perform a driver native query.
  * 	<li><b>{@link doMapReduce()}</b>: Perform a map and reduce query.
- * 	<li><b>{@link doDelete()}</b>: Delete one or many records.
  * </ul>
  *
  *	@package	Core
@@ -135,7 +134,7 @@ abstract class Collection extends Container
 	 * $collection = new Collection( $database, "collection" );
 	 *
 	 * @example
-	 * // In general you will use this form:
+	 * // In general you will use this form:<br/>
 	 * $server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
 	 * $database = $server->RetrieveDatabase( "database" );<br/>
 	 * $collection = $database->RetrieveCollection( "collection" );
@@ -310,105 +309,66 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	InsertOne																		*
+	 *	Insert																			*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert a single record.</h4>
+	 * <h4>Insert documents.</h4>
 	 *
-	 * This method can be used to insert a record in the collection, the method expects the
-	 * following parameters:
+	 * This method can be used to insert one or more documents in the collection, the method
+	 * expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theRecord</b>: The record to be inserted.
+	 *	<li><b>$theDocument</b>: The document or documents to be inserted, to provide a list
+	 * 		of documents, the parameter must be an array.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
+	 * The options parameter can be used to indicate whether a list of documents was
+	 * provided, or only one: set <tt>'$doAll' => TRUE</tt> to indicate that a list of
+	 * records was provided; by default the parameter will be <tt>FALSE</tt>.
+	 *
+	 * If a single document was provided, the method will return its unique identifier, if
+	 * a list of documents was provided, the method will return the list of identifiers in
+	 * order.
+	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param array|object			$theRecord			The record to be inserted.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return mixed				The record's unique identifier.
+	 * @param mixed					$theDocument		The document(s) to be inserted.
+	 * @param array					$theOptions			Driver native options.
+	 * @return mixed				The document's unique identifier(s).
 	 *
-	 * @uses insert()
+	 * @uses doInsert()
+	 *
+	 * @example
+	 * // Insert the provided document.<br/>
+	 * $id = $collection->Insert( $document );<br/>
+	 * // Insert the provided list of documents.<br/>
+	 * $ids = $collection->Insert( $list, [ '$doAll' => TRUE ] );
 	 */
-	public function InsertOne( $theRecord, $theOptions = NULL )
+	public function Insert( $theDocument, $theOptions = NULL )
 	{
-		return $this->insert( $theRecord, FALSE, $theOptions );						// ==>
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [ '$doAll' => FALSE ];
+		elseif( ! array_key_exists( '$doAll', $theOptions ) )
+			$theOptions[ '$doAll' ] = FALSE;
 
-	} // InsertOne.
+		return $this->doInsert( $theDocument, $theOptions );						// ==>
+
+	} // Insert.
 
 	
 	/*===================================================================================
-	 *	InsertMany																		*
+	 *	Update																			*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert a set of records.</h4>
+	 * <h4>Update documents.</h4>
 	 *
-	 * This method can be used to insert a set of records in the collection, the method
-	 * expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theRecords</b>: The records to be inserted.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theRecords			The records to be inserted.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return array				The list of record's unique identifiers in order.
-	 *
-	 * @uses insert()
-	 */
-	public function InsertMany( $theRecords, $theOptions = NULL )
-	{
-		return $this->insert( $theRecords, TRUE, $theOptions );						// ==>
-
-	} // InsertMany.
-
-
-	/*===================================================================================
-	 *	UpdateOne																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Update a single record.</h4>
-	 *
-	 * This method can be used to update the first selected record in a collection, the
-	 * method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theCriteria</b>: The modification criteria.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param array					$theCriteria		The modification criteria.
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return int					The number of modified records.
-	 *
-	 * @uses update()
-	 */
-	public function UpdateOne( $theCriteria, $theFilter = NULL, $theOptions = NULL )
-	{
-		return $this->update( $theCriteria, $theFilter, FALSE, $theOptions );		// ==>
-
-	} // UpdateOne.
-
-
-	/*===================================================================================
-	 *	UpdateMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Update a set of records.</h4>
-	 *
-	 * This method can be used to update a set of records in the collection, the method
+	 * This method can be used to update one or more documents in the collection, the method
 	 * expects the following parameters:
 	 *
 	 * <ul>
@@ -417,116 +377,167 @@ abstract class Collection extends Container
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
+	 * The options parameter can be used to indicate whether to update all records selected
+	 * by the filter, or just the first one: provide <tt>'$doAll' => FALSE</tt> to only
+	 * modify the first document; by default this method will update all matched documents.
+	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param array					$theCriteria		The modification criteria.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return int					The number of modified records.
 	 *
-	 * @uses update()
+	 * @uses doUpdate()
+	 *
+	 * @example
+	 * // Update first document.<br/>
+	 * $count = $collection->Update( $criteria, $filter, [ '$doAll' => FALSE ] );<br/>
+	 * // Update all documents.<br/>
+	 * $ids = $collection->Update( $criteria, $filter );
 	 */
-	public function UpdateMany( $theCriteria, $theFilter = NULL, $theOptions = NULL )
+	public function Update( $theCriteria, $theFilter = NULL, $theOptions = NULL )
 	{
-		return $this->update( $theCriteria, $theFilter, TRUE, $theOptions );		// ==>
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [ '$doAll' => TRUE ];
+		elseif( ! array_key_exists( '$doAll', $theOptions ) )
+			$theOptions[ '$doAll' ] = TRUE;
 
-	} // UpdateMany.
+		return $this->doUpdate( $theCriteria, $theFilter, $theOptions );			// ==>
+
+	} // Update.
 
 
 	/*===================================================================================
-	 *	ReplaceOne																		*
+	 *	Replace																			*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Replace a record.</h4>
 	 *
-	 * This method can be used to replace the first selected record in a collection, the
+	 * This method can be used to replace the first selected document in a collection, the
 	 * method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theRecord</b>: The replacement record.
+	 *	<li><b>$theDocument</b>: The replacement document.
 	 *	<li><b>$theFilter</b>: The selection criteria.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param array					$theRecord			The replacement record.
+	 * @param array					$theDocument		The replacement document.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return int					The number of modified records.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The number of replaced records.
 	 *
-	 * @uses replace()
+	 * @uses doReplace()
 	 */
-	public function ReplaceOne( $theRecord, $theFilter = NULL, $theOptions = NULL )
+	public function Replace( $theDocument, $theFilter = NULL, $theOptions = NULL )
 	{
-		return $this->replace( $theRecord, $theFilter, $theOptions );				// ==>
+		return $this->doReplace( $theDocument, $theFilter, $theOptions );			// ==>
 
-	} // ReplaceOne.
+	} // Replace.
 
 
 	/*===================================================================================
-	 *	FindOne																			*
+	 *	Delete																			*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Find a single record.</h4>
+	 * <h4>Delete documents.</h4>
 	 *
-	 * This method can be used to find the first selected record in a collection provided an
-	 * example document, the method expects the following parameters:
+	 * This method can be used to delete one or more documents selected by the provided
+	 * filter, the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theFilter</b>: The selection criteria.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * The options parameter can be used to indicate whether to delete all records selected
+	 * by the filter, or just the first one: provide <tt>'$doAll' => FALSE</tt> to only
+	 * delete the first document; by default this method will delete all matched documents.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses doDelete()
+	 */
+	public function Delete( $theFilter, $theOptions = NULL )
+	{
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [ '$doAll' => TRUE ];
+		elseif( ! array_key_exists( '$doAll', $theOptions ) )
+			$theOptions[ '$doAll' ] = TRUE;
+
+		return $this->doDelete( $theFilter, $theOptions );							// ==>
+
+	} // Delete.
+
+
+	/*===================================================================================
+	 *	FindByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by example.</h4>
+	 *
+	 * This method can be used to select all documents matching the provided example
+	 * document. The method will select all documents in the collection whose properties
+	 * match all the properties of the provided example document, the method expects the
+	 * following parameters:
 	 *
 	 * <ul>
 	 *	<li><b>$theDocument</b>: The search filter as an example document.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param mixed					$theDocument		The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return mixed				The found record.
-	 *
-	 * @uses find()
-	 */
-	public function FindOne( $theDocument, $theOptions = NULL )
-	{
-		return $this->find( $theDocument, FALSE, $theOptions );						// ==>
-
-	} // FindOne.
-
-
-	/*===================================================================================
-	 *	FindMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Find all records.</h4>
-	 *
-	 * This method can be used to find a set of records in the collection provided an
-	 * example document, the method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theDocument</b>: The search filter as an example document.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
+	 * The options parameter can be used to indicate the start and limit of the selection:
+	 * provide <tt>'$start'</em> to indicate from which found record to start and
+	 * <em>'$limit'</em> to indicate the number of documents to be returned; by default the
+	 * method will start with the first document and return all.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param mixed					$theDocument		The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 *
-	 * @uses find()
+	 * @uses doFind()
+	 *
+	 * @example
+	 * // Find first five document.
+	 * $iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ], [ '$start' => 0, '$limit' => 5 ] );<br/>
+	 * // Find all documents.<br/>
+	 * $iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ] );
 	 */
-	public function FindMany( $theDocument, $theOptions = NULL )
+	public function FindByExample( $theDocument, $theOptions = NULL )
 	{
-		return $this->find( $theDocument, TRUE, $theOptions );						// ==>
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [ '$start' => 0 ];
+		elseif( ! array_key_exists( '$start', $theOptions ) )
+			$theOptions[ '$start' ] = 0;
 
-	} // FindMany.
+		return $this->doFind( $theDocument, $theOptions );							// ==>
+
+	} // FindByExample.
 
 
 	/*===================================================================================
-	 *	DoQuery																			*
+	 *	Query																			*
 	 *==================================================================================*/
 
 	/**
@@ -543,20 +554,20 @@ abstract class Collection extends Container
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param mixed					$theQuery			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 *
-	 * @uses find()
+	 * @uses doQuery()
 	 */
-	public function DoQuery( $theQuery, $theOptions = NULL )
+	public function Query( $theQuery, $theOptions = NULL )
 	{
-		return $this->query( $theQuery, $theOptions );								// ==>
+		return $this->Query( $theQuery, $theOptions );								// ==>
 
-	} // DoQuery.
+	} // Query.
 
 
 	/*===================================================================================
-	 *	DoAggregate																		*
+	 *	MapReduce																		*
 	 *==================================================================================*/
 
 	/**
@@ -573,76 +584,16 @@ abstract class Collection extends Container
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param mixed					$thePipeline		The aggregation pipeline.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 *
-	 * @uses find()
+	 * @uses doMapReduce()
 	 */
-	public function DoAggregate( $thePipeline, $theOptions = NULL )
+	public function MapReduce( $thePipeline, $theOptions = NULL )
 	{
-		return $this->aggregate( $thePipeline, $theOptions );						// ==>
+		return $this->doMapReduce( $thePipeline, $theOptions );						// ==>
 
-	} // DoAggregate.
-
-
-	/*===================================================================================
-	 *	DeleteOne																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete a single record.</h4>
-	 *
-	 * This method can be used to delete the first selected record in a collection, the
-	 * method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses delete()
-	 */
-	public function DeleteOne( $theFilter, $theOptions = NULL )
-	{
-		return $this->delete( $theFilter, FALSE, $theOptions );						// ==>
-
-	} // DeleteOne.
-
-
-	/*===================================================================================
-	 *	DeleteMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete a set of records.</h4>
-	 *
-	 * This method can be used to delete a set of records in the collection, the method
-	 * expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theCriteria</b>: The deletion criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses delete()
-	 */
-	public function DeleteMany( $theFilter, $theOptions = NULL )
-	{
-		return $this->delete( $theFilter, TRUE, $theOptions );						// ==>
-
-	} // DeleteMany.
+	} // MapReduce.
 
 	
 	
@@ -675,7 +626,7 @@ abstract class Collection extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return mixed				Native collection object.
 	 */
 	abstract protected function collectionNew( $theCollection, $theOptions = NULL );
@@ -700,7 +651,7 @@ abstract class Collection extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return string				The collection name.
 	 */
 	abstract protected function collectionName( $theOptions = NULL );
@@ -709,14 +660,14 @@ abstract class Collection extends Container
 	
 /*=======================================================================================
  *																						*
- *						PROTECTED RECORD MANAGEMENT INTERFACE							*
+ *						PROTECTED DOCUMENT MANAGEMENT INTERFACE							*
  *																						*
  *======================================================================================*/
 	
 	
 	
 	/*===================================================================================
-	 *	insert																			*
+	 *	doInsert																		*
 	 *==================================================================================*/
 	
 	/**
@@ -726,33 +677,27 @@ abstract class Collection extends Container
 	 * following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theRecord</b>: The record to be inserted.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> provided many records, <tt>FALSE</tt> provided
-	 * 		one record.
+	 *	<li><b>$theDocument</b>: The document or documents to be inserted.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * The options parameter represents a set of native options provided to the driver for
-	 * performing the operation: if needed, in derived concrete classes you should define
-	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-	 * method, this will guarantee that the options will always be used when performing this
-	 * operation.
+	 * If the <tt>'$doAll'</tt> option is set, the method will assume the provided parameter
+	 * to be a list of documents and will return the list of inserted document identifiers;
+	 * if the option is not set, the method will assume the parameter to be a single
+	 * document and will return its identifier; the option <em>must</em> be provided. Other
+	 * provided values represent native driver options.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array|object			$theRecord			The record to be inserted.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return mixed|array			The record's unique identifier(s).
+	 * @param mixed					$theDocument		The document(s) to be inserted.
+	 * @param array					$theOptions			Driver native options.
+	 * @return mixed				The document's unique identifier(s).
 	 */
-	abstract protected function insert( $theRecord, $doMany, $theOptions = NULL );
+	abstract protected function doInsert( $theDocument, $theOptions );
 
 
 	/*===================================================================================
-	 *	update																			*
+	 *	doUpdate																		*
 	 *==================================================================================*/
 
 	/**
@@ -764,36 +709,25 @@ abstract class Collection extends Container
 	 * <ul>
 	 *	<li><b>$theCriteria</b>: The modification criteria.
 	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> update all records, <tt>FALSE</tt> update one
-	 * 		record.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * The options parameter represents a set of native options provided to the driver for
-	 * performing the operation: if needed, in derived concrete classes you should define
-	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-	 * method, this will guarantee that the options will always be used when performing this
-	 * operation.
+	 * If the <tt>'$doAll'</tt> option is set, the method will update all found records, if
+	 * not, it will only update the first found record; the option <em>must</em> be
+	 * provided. Other provided values represent native driver options.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theCriteria		The modification criteria.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return int					The number of modified records.
 	 */
-	abstract protected function update( $theCriteria,
-										$theFilter,
-										$doMany,
-										$theOptions = NULL );
+	abstract protected function doUpdate( $theCriteria, $theFilter, $theOptions );
 
 
 	/*===================================================================================
-	 *	replace																			*
+	 *	doReplace																		*
 	 *==================================================================================*/
 
 	/**
@@ -808,63 +742,76 @@ abstract class Collection extends Container
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * The options parameter represents a set of native options provided to the driver for
-	 * performing the operation: if needed, in derived concrete classes you should define
-	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-	 * method, this will guarantee that the options will always be used when performing this
-	 * operation.
-	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theRecord			The replacement record.
+	 * @param array					$theDocument		The replacement document.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return int					The number of modified records.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The number of replaced records.
 	 */
-	abstract protected function replace( $theRecord, $theFilter, $theOptions = NULL );
+	abstract protected function doReplace( $theRecord, $theFilter, $theOptions );
 
 
 	/*===================================================================================
-	 *	find																			*
+	 *	doDelete																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Find the first or all records.</h4>
+	 * <h4>Delete the first or all records.</h4>
 	 *
-	 * This method should find the first or all records matching the provided search
+	 * This method should delete the first or all records matching the provided search
 	 * criteria, the method expects the following parameters:
 	 *
 	 * <ul>
 	 *	<li><b>$theFilter</b>: The selection criteria.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> return all records, <tt>FALSE</tt> return first
-	 * 		record.
 	 * </ul>
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * The options parameter represents a set of native options provided to the driver for
-	 * performing the operation: if needed, in derived concrete classes you should define
-	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-	 * method, this will guarantee that the options will always be used when performing this
-	 * operation.
+	 * If the <tt>'$doAll'</tt> option is set, the method will delete all found records, if
+	 * not, it will only delete the first found record; the option <em>must</em> be
+	 * provided. Other provided values represent native driver options.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return Iterator				The found records.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The number of deleted records.
 	 */
-	abstract protected function find( $theFilter, $doMany, $theOptions = NULL );
+	abstract protected function doDelete( $theFilter, $theOptions );
 
 
 	/*===================================================================================
-	 *	query																			*
+	 *	doFind																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find the first or all records.</h4>
+	 *
+	 * This method should the records matching the provided search criteria, the method
+	 * expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The search filter as an example document.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * The options parameter can be used to indicate the start and limit of the selection:
+	 * provide <tt>'$start'</tt> to indicate from which found record to start and
+	 * <tt>'$limit'</tt> to indicate the number of documents to be returned; by default the
+	 * method will start with the first document and return all. Other provided values
+	 * represent native driver options.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return Iterator				The found records.
+	 */
+	abstract protected function doFind( $theDocument, $theOptions );
+
+
+	/*===================================================================================
+	 *	doQuery																			*
 	 *==================================================================================*/
 
 	/**
@@ -878,26 +825,17 @@ abstract class Collection extends Container
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * The options parameter represents a set of native options provided to the driver for
-	 * performing the operation: if needed, in derived concrete classes you should define
-	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-	 * method, this will guarantee that the options will always be used when performing this
-	 * operation.
-	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param mixed					$theQuery			The selection criteria.
 	 * @param mixed					$theOptions			Collection native options.
 	 * @return Iterator				The found records.
 	 */
-	abstract protected function query( $theQuery, $theOptions = NULL );
+	abstract protected function doQuery( $theQuery, $theOptions );
 
 
 	/*===================================================================================
-	 *	aggregate																		*
+	 *	doMapReduce																		*
 	 *==================================================================================*/
 
 	/**
@@ -923,46 +861,10 @@ abstract class Collection extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param mixed					$thePipeline		The aggregation pipeline.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 */
-	abstract protected function aggregate( $thePipeline, $theOptions = NULL );
-
-
-	/*===================================================================================
-	 *	delete																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete the first or all records.</h4>
-	 *
-	 * This method should delete the first or all records matching the provided search
-	 * criteria, the method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> delete all records, <tt>FALSE</tt> delete first
-	 * 		record.
-	 * </ul>
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * The options parameter represents a set of native options provided to the driver for
-	 * performing the operation: if needed, in derived concrete classes you should define
-	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-	 * method, this will guarantee that the options will always be used when performing this
-	 * operation.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return int					The number of deleted records.
-	 */
-	abstract protected function delete( $theFilter, $doMany, $theOptions = NULL );
+	abstract protected function doMapReduce( $thePipeline, $theOptions );
 
 	
 	
