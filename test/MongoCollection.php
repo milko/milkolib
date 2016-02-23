@@ -72,8 +72,8 @@ echo( "\n=======================================================================
 // Insert one record.
 //
 echo( "Insert one record:\n" );
-echo( '$result = $test->InsertOne( ["data" => "Value 1", "color" => "red" ] );' . "\n" );
-$result = $test->InsertOne( ["data" => "Value 1", "color" => "red" ] );
+echo( '$result = $test->Insert( ["data" => "Value 1", "color" => "red" ] );' . "\n" );
+$result = $test->Insert( ["data" => "Value 1", "color" => "red" ] );
 print_r( $result );
 
 echo( "\n" );
@@ -82,18 +82,28 @@ echo( "\n" );
 // Insert many records.
 //
 echo( "Insert many records:\n" );
-echo( '$result = $test->InsertMany( [ ["_id" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", , "color" => "red" ] ] );' . "\n" );
-$result = $test->InsertMany( [ ["_id" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", "color" => "red" ] ] );
+echo( '$result = $test->Insert( [ ["_id" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", , "color" => "red" ], [ "_id" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ \'$doAll\' => TRUE ] );' . "\n" );
+$result = $test->Insert( [ ["_id" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", "color" => "red" ], [ "_id" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ '$doAll' => TRUE ] );
 print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
 //
+// Count by example.
+//
+echo( "Count by example:\n" );
+echo( '$result = $test->CountByExample( [ "color" => "red" ] );' . "\n" );
+$result = $test->CountByExample( [ "color" => "red" ] );
+var_dump( $result );
+
+echo( "\n" );
+
+//
 // Find first record.
 //
 echo( "Find first record:\n" );
-echo( '$result = $test->FindOne( [ "color" => "red" ] );' . "\n" );
-$result = $test->FindOne( [ "color" => "red" ] );
+echo( '$result = $test->FindByExample( [ "color" => "red" ], [ \'$limit\' => 1 ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "red" ], [ '$limit' => 1 ] );
 print_r( $result );
 
 echo( "\n" );
@@ -102,9 +112,9 @@ echo( "\n" );
 // Find all records.
 //
 echo( "Find all records:\n" );
-echo( '$result = $test->FindMany( [ "color" => "red" ] );' . "\n" );
-$result = $test->FindMany( [ "color" => "red" ] );
-print_r( iterator_to_array($result) );
+echo( '$result = $test->FindByExample( [ "color" => "red" ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "red" ] );
+print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -112,12 +122,12 @@ echo( "\n=======================================================================
 // Update first record.
 //
 echo( "Update first record:\n" );
-echo( '$result = $test->UpdateOne( [ \'$set\' => [ "color" => "blue", "status" => "changed" ] ], [ "color" => "green" ] );' . "\n" );
-$result = $test->UpdateOne( [ '$set' => [ "color" => "blue", "status" => "changed" ] ], [ "color" => "green" ] );
+echo( '$result = $test->Update( [ \'$set\' => [ "color" => "blue", "status" => "changed" ] ], [ "color" => "green" ], [ \'$doAll\' => FALSE ] );' . "\n" );
+$result = $test->Update( [ '$set' => [ "color" => "blue", "status" => "changed" ] ], [ "color" => "green" ], [ '$doAll' => FALSE ] );
 var_dump( $result );
-echo( '$result = $test->FindMany( [ "color" => "blue" ] );' . "\n" );
-$result = $test->FindMany( [ "color" => "blue" ] );
-print_r( iterator_to_array($result) );
+echo( '$result = $test->FindByExample( [ "color" => "blue" ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "blue" ] );
+print_r( $result );
 
 echo( "\n" );
 
@@ -125,12 +135,12 @@ echo( "\n" );
 // Update all records.
 //
 echo( "Update all records:\n" );
-echo( '$result = $test->UpdateMany( [ \'$set\' => [ "color" => "yellow", "status" => "was red" ] ], [ "color" => "red" ] );' . "\n" );
-$result = $test->UpdateMany( [ '$set' => [ "color" => "yellow", "status" => "was red" ] ], [ "color" => "red" ] );
+echo( '$result = $test->Update( [ \'$set\' => [ "color" => "yellow", "status" => "was red" ] ], [ "color" => "red" ] );' . "\n" );
+$result = $test->Update( [ '$set' => [ "color" => "yellow", "status" => "was red" ] ], [ "color" => "red" ] );
 var_dump( $result );
-echo( '$result = $test->FindMany( [ "color" => "yellow" ] );' . "\n" );
-$result = $test->FindMany( [ "color" => "yellow" ] );
-print_r( iterator_to_array($result) );
+echo( '$result = $test->FindByExample( [ "color" => "yellow" ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "yellow" ] );
+print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -138,12 +148,47 @@ echo( "\n=======================================================================
 // Replace a record.
 //
 echo( "Replace a record:\n" );
-echo( '$result = $test->ReplaceOne( [ "color" => "pink", "status" => "replaced" ], [ "color" => "blue" ] );' . "\n" );
-$result = $test->ReplaceOne( [ "color" => "pink", "status" => "replaced" ], [ "color" => "blue" ] );
+echo( '$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], [ "color" => "blue" ] );' . "\n" );
+$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], [ "color" => "blue" ] );
 var_dump( $result );
-echo( '$result = $test->FindMany( [ "color" => "pink" ] );' . "\n" );
-$result = $test->FindMany( [ "color" => "pink" ] );
-print_r( iterator_to_array($result) );
+echo( '$result = $test->FindByExample( [ "color" => "pink" ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "pink" ] );
+print_r( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Count by query.
+//
+echo( "Count by query:\n" );
+echo( '$result = $test->CountByQuery( [ \'$or\' => [ [ \'data\' => \'XXX\' ], [ \'status\' => \'replaced\' ] ] ] );' . "\n" );
+$result = $test->CountByQuery( [ '$or' => [ [ 'data' => 'XXX' ], [ 'status' => 'replaced' ] ] ] );
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Query records.
+//
+echo( "Query records:\n" );
+echo( '$result = $test->FindByQuery( [ \'$or\' => [ [ \'data\' => \'XXX\' ], [ \'status\' => \'replaced\' ] ] ] );' . "\n" );
+$result = $test->FindByQuery( [ '$or' => [ [ 'data' => 'XXX' ], [ 'status' => 'replaced' ] ] ] );
+print_r( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Aggregate records.
+//
+echo( "Aggregate records:\n" );
+$project = [ "colour" => '$color' ];
+$group = [ "_id" => '$colour', "count" => [ '$sum' => 1 ] ];
+$sort = [ "count" => 1 ];
+$pipeline = [ [ '$project' => $project ], [ '$group' => $group ], [ '$sort' => $sort ] ];
+echo( '$pipeline = ' );
+print_r( $pipeline );
+$result = $test->MapReduce( $pipeline );
+print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -151,12 +196,25 @@ echo( "\n=======================================================================
 // Delete first record.
 //
 echo( "Delete first record:\n" );
-echo( '$result = $test->DeleteOne( [ "color" => "pink" ] );' . "\n" );
-$result = $test->DeleteOne( [ "color" => "pink" ] );
+echo( '$result = $test->Delete( [ "color" => "pink" ], [ \'$doAll\' => FALSE ] );' . "\n" );
+$result = $test->Delete( [ "color" => "pink" ], [ '$doAll' => FALSE ] );
 var_dump( $result );
-echo( '$result = $test->FindMany( [ "color" => "pink" ] );' . "\n" );
-$result = $test->FindMany( [ "color" => "pink" ] );
-print_r( iterator_to_array($result) );
+echo( '$result = $test->FindByExample( [ "color" => "pink" ] );' . "\n" );
+$result = $test->FindByExample();
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Delete all selected records.
+//
+echo( "Delete all selected records:\n" );
+echo( '$result = $test->Delete( [ "data" => "XXX" ] );' . "\n" );
+$result = $test->Delete( [ "data" => "XXX" ] );
+var_dump( $result );
+echo( '$result = $test->FindByExample();' . "\n" );
+$result = $test->FindByExample();
+print_r( $result );
 
 echo( "\n" );
 
@@ -164,12 +222,12 @@ echo( "\n" );
 // Delete all records.
 //
 echo( "Delete all records:\n" );
-echo( '$result = $test->DeleteMany( [ "color" => "yellow" ] );' . "\n" );
-$result = $test->DeleteMany( [ "color" => "yellow" ] );
+echo( '$result = $test->Delete();' . "\n" );
+$result = $test->Delete();
 var_dump( $result );
-echo( '$result = $test->FindMany( [ "color" => "yellow" ] );' . "\n" );
-$result = $test->FindMany( [ "color" => "yellow" ] );
-print_r( iterator_to_array($result) );
+echo( '$result = $test->FindByExample();' . "\n" );
+$result = $test->FindByExample();
+print_r( $result );
 
 
 ?>

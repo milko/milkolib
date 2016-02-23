@@ -71,7 +71,7 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * We overload this method to call the native object's method.
 	 *
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 *
 	 * @uses Server()
 	 * @uses databaseName()
@@ -103,7 +103,7 @@ class Database extends \Milko\PHPLib\Database
 	 * We overload this method to instantiate a native object.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return ArangoConnection		Native database object.
 	 *
 	 * @uses Server()
@@ -138,7 +138,7 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * We overload this method to use the native object.
 	 *
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return string				The database name.
 	 *
 	 * @uses Connection()
@@ -172,7 +172,7 @@ class Database extends \Milko\PHPLib\Database
 	 * We overload this method to use the native driver object, we only consider the non
 	 * system collection names in the returned value.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
@@ -200,7 +200,7 @@ class Database extends \Milko\PHPLib\Database
 	 * class.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object.
 	 */
 	protected function collectionCreate( $theCollection, $theOptions = NULL )
@@ -220,7 +220,7 @@ class Database extends \Milko\PHPLib\Database
 	 * ArangoDB version of the {@link Collection} class.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 *
 	 * @uses collectionList()

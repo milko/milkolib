@@ -75,7 +75,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to call the native object's method.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 *
 	 * @uses Database()
 	 * @uses Connection()
@@ -105,7 +105,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to call the native object's method.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 *
 	 * @uses Database()
 	 * @uses Connection()
@@ -145,7 +145,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * This method will return a {@link ArangoCollection} object.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return mixed				Native collection object.
 	 */
 	protected function collectionNew( $theCollection, $theOptions = NULL )
@@ -213,7 +213,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param array|object			$theRecord			The record to be inserted.
 	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return mixed|array			The record's unique identifier(s).
 	 *
 	 * @uses Database()
@@ -302,7 +302,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theCriteria		The modification criteria.
 	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
 	 *
 	 * @uses Connection()
@@ -418,7 +418,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param array					$theRecord			The replacement record.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return int					The number of modified records.
 	 *
 	 * @uses Connection()
@@ -474,7 +474,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return Iterator				The found records.
 	 *
 	 * @uses Connection()
@@ -531,7 +531,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
 	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return int					The number of deleted records.
 	 *
 	 * @uses Connection()

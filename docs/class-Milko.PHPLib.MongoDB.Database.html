@@ -6,7 +6,7 @@
 	<title>Class Milko\PHPLib\MongoDB\Database | milkolib reference documentation</title>
 
 	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
-	<link rel="stylesheet" href="resources/style.css?70c1d062672daa3f906b72e4f5d03d4bc5c4174d">
+	<link rel="stylesheet" href="resources/style.css?49f43d3208c5d7e33fa16d36107a345bf11cc00d">
 
 </head>
 
@@ -244,14 +244,14 @@ and collections.</p>
 				<b>Since:</b>
 				19/02/2016<br>
 				<b>Used by:</b>
-				Milko\PHPLib\MongoDB\Collection::collectionNew()<br>
+				<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_collectionNew">Milko\PHPLib\MongoDB\Collection::collectionNew()</a></code><br>
 				<b>Example:</b>
 				../../test/MongoDatabase.php<br>
 				<b>Example:</b>
 				<p>$server = new Milko\PHPLib\DataServer( 'mongodb://localhost:27017/database/collection' );<br/>
 $database = $server->RetrieveDatabase( "database" );<br/>
 // Work with that database...<br/></p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.MongoDB.Database.html#17-260" title="Go to source code">PHPLib/MongoDB/Database.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.MongoDB.Database.html#17-250" title="Go to source code">PHPLib/MongoDB/Database.php</a>
 		<br>
 	</div>
 
@@ -271,7 +271,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Drop">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#53-78" title="Go to source code">Drop</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#53-76" title="Go to source code">Drop</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Drop the current database.</h4>
@@ -291,14 +291,10 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_DB_DROP<br>
-					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Database.html#_Connection">Milko\PHPLib\Database::Connection()</a></code><br>
-							\MongoDB\Database::drop()<br>
+							<code><a href="class-MongoDB.Database.html#_drop">MongoDB\Database::drop()</a></code><br>
 					</div>
 
 
@@ -316,7 +312,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseNew">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#94-121" title="Go to source code">databaseNew</a>( <span>string <var>$theDatabase</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#92-117" title="Go to source code">databaseNew</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a native database object.</h4>
@@ -342,14 +338,10 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 					</div>
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_DB_CREATE<br>
-					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Database.html#_Server">Milko\PHPLib\Database::Server()</a></code><br>
-							\MongoDB\Client::selectDatabase()<br>
+							<code><a href="class-MongoDB.Client.html#_selectDatabase">MongoDB\Client::selectDatabase()</a></code><br>
 					</div>
 
 
@@ -367,7 +359,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseName">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#128-143" title="Go to source code">databaseName</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#124-139" title="Go to source code">databaseName</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return the database name.</h4>
@@ -394,7 +386,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Database.html#_Server">Milko\PHPLib\Database::Server()</a></code><br>
-							\MongoDB\Database::getDatabaseName()<br>
+							<code><a href="class-MongoDB.Database.html#_getDatabaseName">MongoDB\Database::getDatabaseName()</a></code><br>
 					</div>
 
 
@@ -412,7 +404,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionList">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#159-190" title="Go to source code">collectionList</a>( <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#155-184" title="Go to source code">collectionList</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>List server databases.</h4>
@@ -437,18 +429,14 @@ collection names in the returned value.</p>
 					</div>
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_DB_CLLIST<br>
-					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Database.html#_Connection">Milko\PHPLib\Database::Connection()</a></code><br>
-							\MongoDB\Database::listCollections()<br>
+							<code><a href="class-MongoDB.Database.html#_listCollections">MongoDB\Database::listCollections()</a></code><br>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							Milko\PHPLib\MongoDB\Database::collectionRetrieve()<br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Database.html#_collectionRetrieve">Milko\PHPLib\MongoDB\Database::collectionRetrieve()</a></code><br>
 					</div>
 
 
@@ -466,7 +454,7 @@ collection names in the returned value.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionCreate">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#197-218" title="Go to source code">collectionCreate</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#191-210" title="Go to source code">collectionCreate</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Create collection.</h4>
@@ -493,10 +481,6 @@ class.</p>
 					</div>
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_DB_CLCREATE<br>
-					</div>
 
 
 			</div>
@@ -513,7 +497,7 @@ class.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionRetrieve">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#225-257" title="Go to source code">collectionRetrieve</a>( <span>string <var>$theCollection</var></span>, <span>mixed <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Database.html#217-247" title="Go to source code">collectionRetrieve</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a collection object.</h4>
@@ -540,10 +524,6 @@ MongoDB version of the <code><a href="class-Milko.PHPLib.MongoDB.Collection.html
 					</div>
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_DB_CLRETRIEVE<br>
-					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.MongoDB.Database.html#_collectionList">Milko\PHPLib\MongoDB\Database::collectionList()</a></code><br>

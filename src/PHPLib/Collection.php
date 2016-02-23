@@ -45,7 +45,9 @@ use Milko\PHPLib\Container;
  * 		<li><b>{@link Replace()}</b>: Replace one or more records.
  * 		<li><b>{@link Delete()}</b>: Delete one or more records.
  * 		<li><b>{@link FindByExample()}</b>: Search by example.
- * 		<li><b>{@link Query()}</b>: Perform a native query.
+ * 		<li><b>{@link FindByQuery()}</b>: Perform a native query.
+ * 		<li><b>{@link CountByExample()}</b>: Return record count by example.
+ * 		<li><b>{@link CountByQuery()}</b>: Return record count by native query.
  * 		<li><b>{@link MapReduce()}</b>: Perform a map and reduce query.
  *   </ul>
  * </ul>
@@ -60,8 +62,10 @@ use Milko\PHPLib\Container;
  * 	<li><b>{@link doUpdate()}</b>: Update one or many records.
  * 	<li><b>{@link doReplace()}</b>: Replace one or many records.
  * 	<li><b>{@link doDelete()}</b>: Delete one or many records.
- * 	<li><b>{@link doFind()}</b>: Find one or many records.
- * 	<li><b>{@link doQuery()}</b>: Perform a driver native query.
+ * 	<li><b>{@link doFindByExample()}</b>: Find one or many records by example.
+ * 	<li><b>{@link doFindByQuery()}</b>: Perform a driver native query.
+ * 	<li><b>{@link doCountByExample()}</b>: Return record count by example.
+ * 	<li><b>{@link doCountByQuery()}</b>: Return record count by native query.
  * 	<li><b>{@link doMapReduce()}</b>: Perform a map and reduce query.
  * </ul>
  *
@@ -124,7 +128,7 @@ abstract class Collection extends Container
 	 *
 	 * @param Database				$theDatabase		Database.
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 *
 	 * @uses collectionNew()
 	 *
@@ -247,8 +251,8 @@ abstract class Collection extends Container
  *																						*
  *======================================================================================*/
 	
-	
-	
+
+
 	/*===================================================================================
 	 *	Truncate																		*
 	 *==================================================================================*/
@@ -269,7 +273,7 @@ abstract class Collection extends Container
 	 *
 	 * Derived concrete classes must implement this method.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 */
 	abstract public function Truncate( $theOptions = NULL );
 
@@ -294,7 +298,7 @@ abstract class Collection extends Container
 	 *
 	 * Derived concrete classes must implement this method.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 */
 	abstract public function Drop( $theOptions = NULL );
 
@@ -394,7 +398,7 @@ abstract class Collection extends Container
 	 * // Update first document.<br/>
 	 * $count = $collection->Update( $criteria, $filter, [ '$doAll' => FALSE ] );<br/>
 	 * // Update all documents.<br/>
-	 * $ids = $collection->Update( $criteria, $filter );
+	 * $count = $collection->Update( $criteria, $filter );
 	 */
 	public function Update( $theCriteria, $theFilter = NULL, $theOptions = NULL )
 	{
@@ -406,7 +410,7 @@ abstract class Collection extends Container
 		elseif( ! array_key_exists( '$doAll', $theOptions ) )
 			$theOptions[ '$doAll' ] = TRUE;
 
-		return $this->doUpdate( $theCriteria, $theFilter, $theOptions );			// ==>
+		return $this->doUpdate( $theFilter, $theCriteria, $theOptions );			// ==>
 
 	} // Update.
 
@@ -438,7 +442,13 @@ abstract class Collection extends Container
 	 */
 	public function Replace( $theDocument, $theFilter = NULL, $theOptions = NULL )
 	{
-		return $this->doReplace( $theDocument, $theFilter, $theOptions );			// ==>
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		return $this->doReplace( $theFilter, $theDocument, $theOptions );			// ==>
 
 	} // Replace.
 
@@ -469,9 +479,23 @@ abstract class Collection extends Container
 	 * @return int					The number of deleted records.
 	 *
 	 * @uses doDelete()
+	 *
+	 * @example
+	 * // Delete first document.<br/>
+	 * $count = $collection->Delete( $filter, [ '$doAll' => FALSE ] );<br/>
+	 * // Delete all selected documents.<br/>
+	 * $count = $collection->Delete( $filter );<br/>
+	 * // Delete all documents.<br/>
+	 * $count = $collection->Delete();
 	 */
-	public function Delete( $theFilter, $theOptions = NULL )
+	public function Delete( $theFilter = NULL, $theOptions = NULL )
 	{
+		//
+		// Set default filter.
+		//
+		if( $theFilter === NULL )
+			$theFilter = [];
+
 		//
 		// Set default options.
 		//
@@ -513,15 +537,17 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 *
-	 * @uses doFind()
+	 * @uses doFindByExample()
 	 *
 	 * @example
 	 * // Find first five document.
 	 * $iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ], [ '$start' => 0, '$limit' => 5 ] );<br/>
+	 * // Find all selected documents.<br/>
+	 * $iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ] );<br/>
 	 * // Find all documents.<br/>
-	 * $iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ] );
+	 * $iterator = $collection->FindByExample();
 	 */
-	public function FindByExample( $theDocument, $theOptions = NULL )
+	public function FindByExample( $theDocument = NULL, $theOptions = NULL )
 	{
 		//
 		// Set default options.
@@ -531,13 +557,13 @@ abstract class Collection extends Container
 		elseif( ! array_key_exists( '$start', $theOptions ) )
 			$theOptions[ '$start' ] = 0;
 
-		return $this->doFind( $theDocument, $theOptions );							// ==>
+		return $this->doFindByExample( $theDocument, $theOptions );					// ==>
 
 	} // FindByExample.
 
 
 	/*===================================================================================
-	 *	Query																			*
+	 *	FindByQuery																		*
 	 *==================================================================================*/
 
 	/**
@@ -557,13 +583,98 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 *
-	 * @uses doQuery()
+	 * @uses doFindByQuery()
 	 */
-	public function Query( $theQuery, $theOptions = NULL )
+	public function FindByQuery( $theQuery = NULL, $theOptions = NULL )
 	{
-		return $this->Query( $theQuery, $theOptions );								// ==>
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
 
-	} // Query.
+		return $this->doFindByQuery( $theQuery, $theOptions );						// ==>
+
+	} // FindByQuery.
+
+
+	/*===================================================================================
+	 *	CountByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count by example.</h4>
+	 *
+	 * This method can be used to return the record count matching the provided example
+	 * document. The method will return the count of all documents in the collection whose
+	 * properties match all the properties of the provided example document, the method
+	 * expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The search filter as an example document.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The found records count.
+	 *
+	 * @uses doCountByExample()
+	 *
+	 * @example
+	 * // Get record count.
+	 * $count = $collection->CountByExample( [ 'color' => 'red', 'city' => 'Rome' ] );
+	 */
+	public function CountByExample( $theDocument = NULL, $theOptions = NULL )
+	{
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		return $this->doCountByExample( $theDocument, $theOptions );				// ==>
+
+	} // CountByExample.
+
+
+	/*===================================================================================
+	 *	CountByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count by example.</h4>
+	 *
+	 * This method can be used to return the record count matching the provided native
+	 * query. The method will return the count of all documents in the collection that match
+	 * the provided query, the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The search filter as an example document.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The found records count.
+	 *
+	 * @uses doCountByQuery()
+	 */
+	public function CountByQuery( $theQuery = NULL, $theOptions = NULL )
+	{
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		return $this->doCountByQuery( $theQuery, $theOptions );						// ==>
+
+	} // CountByQuery.
 
 
 	/*===================================================================================
@@ -591,6 +702,12 @@ abstract class Collection extends Container
 	 */
 	public function MapReduce( $thePipeline, $theOptions = NULL )
 	{
+		//
+		// Set default options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
 		return $this->doMapReduce( $thePipeline, $theOptions );						// ==>
 
 	} // MapReduce.
@@ -651,10 +768,9 @@ abstract class Collection extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theOptions			Driver native options.
 	 * @return string				The collection name.
 	 */
-	abstract protected function collectionName( $theOptions = NULL );
+	abstract protected function collectionName();
 
 	
 	
@@ -707,8 +823,8 @@ abstract class Collection extends Container
 	 * criteria, the method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theCriteria</b>: The modification criteria.
 	 *	<li><b>$theFilter</b>: The selection criteria.
+	 *	<li><b>$theCriteria</b>: The modification criteria.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
@@ -718,12 +834,12 @@ abstract class Collection extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theCriteria		The modification criteria.
 	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theCriteria		The modification criteria.
 	 * @param array					$theOptions			Driver native options.
 	 * @return int					The number of modified records.
 	 */
-	abstract protected function doUpdate( $theCriteria, $theFilter, $theOptions );
+	abstract protected function doUpdate( $theFilter, $theCriteria, $theOptions );
 
 
 	/*===================================================================================
@@ -737,19 +853,19 @@ abstract class Collection extends Container
 	 * following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theRecord</b>: The replacement record.
 	 *	<li><b>$theFilter</b>: The selection criteria.
+	 *	<li><b>$theDocument</b>: The replacement record.
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theDocument		The replacement document.
 	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theDocument		The replacement document.
 	 * @param array					$theOptions			Driver native options.
 	 * @return int					The number of replaced records.
 	 */
-	abstract protected function doReplace( $theRecord, $theFilter, $theOptions );
+	abstract protected function doReplace( $theFilter, $theDocument, $theOptions );
 
 
 	/*===================================================================================
@@ -781,14 +897,14 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	doFind																			*
+	 *	doFindByExample																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Find the first or all records.</h4>
+	 * <h4>Find by example the first or all records.</h4>
 	 *
-	 * This method should the records matching the provided search criteria, the method
-	 * expects the following parameters:
+	 * This method should find the records matching the provided example document, the
+	 * method expects the following parameters:
 	 *
 	 * <ul>
 	 *	<li><b>$theDocument</b>: The search filter as an example document.
@@ -807,11 +923,11 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 */
-	abstract protected function doFind( $theDocument, $theOptions );
+	abstract protected function doFindByExample( $theDocument, $theOptions );
 
 
 	/*===================================================================================
-	 *	doQuery																			*
+	 *	doFindByQuery																	*
 	 *==================================================================================*/
 
 	/**
@@ -828,10 +944,58 @@ abstract class Collection extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param mixed					$theQuery			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return Iterator				The found records.
 	 */
-	abstract protected function doQuery( $theQuery, $theOptions );
+	abstract protected function doFindByQuery( $theQuery, $theOptions );
+
+
+	/*===================================================================================
+	 *	doCountByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a find by example record count.</h4>
+	 *
+	 * This method should return the record count matching the provided example document,
+	 * the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The search filter as an example document.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The records count.
+	 */
+	abstract protected function doCountByExample( $theDocument, $theOptions );
+
+
+	/*===================================================================================
+	 *	doCountByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a find by query record count.</h4>
+	 *
+	 * This method should return the record count of the provided query expressed in the
+	 * driver's native format, the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theQuery</b>: The selection criteria.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 * </ul>
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Collection native options.
+	 * @return int					The records count.
+	 */
+	abstract protected function doCountByQuery( $theQuery, $theOptions );
 
 
 	/*===================================================================================

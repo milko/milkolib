@@ -200,7 +200,7 @@ abstract class DataServer extends Server
 	 * </ul>
 	 *
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return array				List of database names.
 	 *
 	 * @uses isConnected()
@@ -272,7 +272,7 @@ abstract class DataServer extends Server
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return Database				Database object or <tt>NULL</tt>.
 	 * @throws \RuntimeException
 	 *
@@ -418,7 +418,7 @@ abstract class DataServer extends Server
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return boolean				<tt>TRUE</tt> dropped, <tt>FALSE</tt> not found.
 	 * @throws \RuntimeException
 	 *
@@ -494,7 +494,7 @@ abstract class DataServer extends Server
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return array				List of database names.
 	 */
 	abstract protected function databaseList( $theOptions = NULL );
@@ -527,7 +527,7 @@ abstract class DataServer extends Server
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return Database				Database object.
 	 */
 	abstract protected function databaseCreate( $theDatabase, $theOptions = NULL );
@@ -558,7 +558,7 @@ abstract class DataServer extends Server
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return Database				Database object or <tt>NULL</tt> if not found.
 	 */
 	abstract protected function databaseRetrieve( $theDatabase, $theOptions = NULL );

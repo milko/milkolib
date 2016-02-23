@@ -128,7 +128,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * We overload this method to return a ArangoDB connection object excluding eventual
 	 * database and collection.
 	 *
-	 * @param mixed					$theOptions			Connection native options.
+	 * @param array					$theOptions			Connection native options.
 	 * @return ArangoConnection		The native connection.
 	 *
 	 * @uses getConnectionOptions()
@@ -171,7 +171,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * In this class we ask the Mongo client for the list of databases and extract their
 	 * names.
 	 *
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
@@ -196,7 +196,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * In this class we instantiate a {@link Database} object.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return Database				Database object.
 	 */
 	protected function databaseCreate( $theDatabase, $theOptions = NULL )
@@ -217,7 +217,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * the case, we instantiate a {@link Database} object, if not, we return <tt>NULL</tt>.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return Database				Database object or <tt>NULL</tt> if not found.
 	 *
 	 * @uses databaseList()

@@ -135,7 +135,7 @@ abstract class Database extends Container
 	 *
 	 * @param DataServer			$theServer			Data server.
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 *
 	 * @uses Server()
 	 * @uses RetrieveCollection()
@@ -275,7 +275,7 @@ abstract class Database extends Container
 	 *
 	 * The method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 */
 	abstract public function Drop( $theOptions = NULL );
 
@@ -302,7 +302,7 @@ abstract class Database extends Container
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return array				List of collection names.
 	 *
 	 * @uses collectionList()
@@ -369,7 +369,7 @@ abstract class Database extends Container
 	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object or <tt>NULL</tt>.
 	 * @throws \RuntimeException
 	 *
@@ -504,7 +504,7 @@ abstract class Database extends Container
 	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return boolean				<tt>TRUE</tt> dropped, <tt>FALSE</tt> not found.
 	 *
 	 * @example
@@ -566,7 +566,7 @@ abstract class Database extends Container
 	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return boolean				<tt>TRUE</tt> dropped, <tt>FALSE</tt> not found.
 	 *
 	 * @example
@@ -635,7 +635,7 @@ abstract class Database extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return mixed				Native database object.
 	 */
 	abstract protected function databaseNew( $theDatabase, $theOptions = NULL );
@@ -660,7 +660,7 @@ abstract class Database extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return string				The database name.
 	 */
 	abstract protected function databaseName( $theOptions = NULL );
@@ -695,7 +695,7 @@ abstract class Database extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return array				List of database names.
 	 */
 	abstract protected function collectionList( $theOptions = NULL );
@@ -726,7 +726,7 @@ abstract class Database extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object.
 	 */
 	abstract protected function collectionCreate( $theCollection, $theOptions = NULL );
@@ -755,7 +755,7 @@ abstract class Database extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 */
 	abstract protected function collectionRetrieve( $theCollection, $theOptions = NULL );

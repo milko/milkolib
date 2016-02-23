@@ -56,12 +56,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to call the native object's method.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::deleteMany()
-	 *
-	 * @see kMONGO_OPTS_CL_EMPTY
 	 */
 	public function Truncate( $theOptions = NULL )
 	{
@@ -69,8 +67,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_EMPTY;
-		
+			$theOptions = [];
+
 		//
 		// Empty collection.
 		//
@@ -88,12 +86,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to call the native object's method.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::drop()
-	 *
-	 * @see kMONGO_OPTS_CL_DROP
 	 */
 	public function Drop( $theOptions = NULL )
 	{
@@ -101,7 +97,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_DROP;
+			$theOptions = [];
 
 		//
 		// Call native method.
@@ -135,13 +131,11 @@ class Collection extends \Milko\PHPLib\Collection
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return mixed				Native collection object.
 	 *
 	 * @uses Database()
 	 * @uses \MongoDB\Database::selectCollection()
-	 *
-	 * @see kMONGO_OPTS_DB_CLCREATE
 	 */
 	protected function collectionNew( $theCollection, $theOptions = NULL )
 	{
@@ -149,7 +143,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_DB_CLCREATE;
+			$theOptions = [];
 
 		return $this->Database()->Connection()->selectCollection(
 				(string)$theCollection, $theOptions );								// ==>
@@ -175,7 +169,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::getCollectionName()
 	 */
-	protected function collectionName( $theOptions = NULL )
+	protected function collectionName()
 	{
 		return $this->Connection()->getCollectionName();							// ==>
 	
@@ -183,280 +177,160 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *						PROTECTED RECORD MANAGEMENT INTERFACE							*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *						PROTECTED RECORD MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
 
 
 
 	/*===================================================================================
-	 *	insert																			*
+	 *	doInsert																		*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Insert one or more records.</h4>
 	 *
-	 * This method should insert the provided record or records, the method expects the
-	 * following parameters:
+	 * We overload this method to use the {@link \MongoDB\Collection::insertOne()} method
+	 * to insert a single document and {@link \MongoDB\Collection::insertMany()} method to
+	 * insert many records.
 	 *
-	 * <ul>
-	 *	<li><b>$theRecord</b>: The record to be inserted.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> provided many records, <tt>FALSE</tt> provided
-	 * 		one record.
-	 * </ul>
+	 * We strip the <tt>'$doAll'</tt> parameter from the options and keep the other options
+	 * as driver native parameters.
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param array|object			$theRecord			The record to be inserted.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return mixed|array			The record's unique identifier(s).
+	 * @param mixed					$theDocument		The document(s) to be inserted.
+	 * @param array					$theOptions			Driver native options.
+	 * @return mixed				The document's unique identifier(s).
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\Collection::insertMany()
 	 *
-	 * @see kMONGO_OPTS_CL_INSERT
-	 *
 	 * @example
 	 * // Insert one record.
-	 * $collection->insert( $record, FALSE );<br/>
-	 * // Insert many records.
-	 * $collection->insert( $records, TRUE );
+	 * $collection->insert( $record, [ '$doAll' => FALSE ] );<br/>
+	 * // Insert many records.<br/>
+	 * $collection->insert( $records, [ '$doAll' => TRUE ] );
 	 */
-	protected function insert( $theRecord, $doMany, $theOptions = NULL )
+	protected function doInsert( $theDocument, $theOptions )
 	{
 		//
 		// Init local storage.
 		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_INSERT;
-		
+		$do_all = $theOptions[ '$doAll' ];
+
 		//
 		// Normalise container.
 		//
-		if( $theRecord instanceof \Milko\PHPLib\Container )
-			$theRecord = $theRecord->toArray();
+		if( $theDocument instanceof \Milko\PHPLib\Container )
+			$theDocument = $theDocument->toArray();
 
 		//
 		// Insert one or more records.
 		//
-		$result = ( $doMany ) ? $this->Connection()->insertMany( $theRecord, $theOptions )
-							  : $this->Connection()->insertOne( $theRecord, $theOptions );
+		$result = ( $do_all ) ? $this->Connection()->insertMany( $theDocument, $theOptions )
+							  : $this->Connection()->insertOne( $theDocument, $theOptions );
 
-		return ( $doMany ) ? $result->getInsertedIds()								// ==>
+		return ( $do_all ) ? $result->getInsertedIds()								// ==>
 						   : $result->getInsertedId();								// ==>
 
-	} // insert.
+	} // doInsert.
 
 
 	/*===================================================================================
-	 *	update																			*
+	 *	doUpdate																		*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Update one or more records.</h4>
 	 *
-	 * This method should update the first or all records matching the provided search
-	 * criteria, the method expects the following parameters:
+	 * We overload this method to use the {@link \MongoDB\Collection::updateOne()} method
+	 * to update a single document and {@link \MongoDB\Collection::updateMany()} method to
+	 * update many records.
 	 *
-	 * <ul>
-	 *    <li><b>$theCriteria</b>: The modification criteria.
-	 *    <li><b>$theFilter</b>: The selection criteria.
-	 *    <li><b>$doMany</b>: <tt>TRUE</tt> update all records, <tt>FALSE</tt> update one
-	 *        record.
-	 *    <li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
+	 * We strip the <tt>'$doAll'</tt> parameter from the options and keep the other options
+	 * as driver native parameters.
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param array					$theCriteria		The modification criteria.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theCriteria		The modification criteria.
+	 * @param array					$theOptions			Driver native options.
 	 * @return int					The number of modified records.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::updateOne()
 	 * @uses \MongoDB\Collection::updateMany()
 	 *
-	 * @see kMONGO_OPTS_CL_UPDATE
-	 *
 	 * @example
 	 * // Update one record.
-	 * $collection->update( $criteria, $query, FALSE );<br/>
-	 * // Insert many records.
-	 * $collection->update( $criteria, $query, TRUE );
+	 * $collection->update( $criteria, $query, [ '$doAll' => FALSE ] );<br/>
+	 * // Update many records.<br/>
+	 * $collection->update( $criteria, $query, [ '$doAll' => TRUE ] );
 	 */
-	protected function update( $theCriteria,
-							   $theFilter,
-							   $doMany,
-							   $theOptions = NULL )
+	protected function doUpdate( $theFilter, $theCriteria, $theOptions )
 	{
 		//
 		// Init local storage.
 		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_UPDATE;
+		$do_all = $theOptions[ '$doAll' ];
 
 		//
 		// Insert one or more records.
 		//
-		$result = ( $doMany )
+		$result = ( $do_all )
 				? $this->Connection()->updateMany( $theFilter, $theCriteria, $theOptions )
 				: $this->Connection()->updateOne( $theFilter, $theCriteria, $theOptions );
 
 		return $result->getModifiedCount();											// ==>
 	
-	} // update.
+	} // doUpdate.
 
 
 	/*===================================================================================
-	 *	replace																			*
+	 *	doReplace																		*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Replace a record.</h4>
 	 *
-	 * This method should replace the matching provided record, the method expects the
-	 * following parameters:
+	 * We overload this method to use the {@link \MongoDB\Collection::replaceOne()} method.
 	 *
-	 * <ul>
-	 *	<li><b>$theRecord</b>: The replacement record.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param array					$theRecord			The replacement record.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return int					The number of modified records.
+	 * @param array					$theDocument		The replacement document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The number of replaced records.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::replaceOne()
-	 *
-	 * @see kMONGO_OPTS_CL_REPLACE
-	 *
-	 * @example
-	 * // Update one record.
-	 * $collection->replace( $record, $query, FALSE );<br/>
-	 * // Insert many records.
-	 * $collection->replace( $record, $query, TRUE );
 	 */
-	protected function replace( $theRecord, $theFilter, $theOptions = NULL )
+	protected function doReplace( $theFilter, $theDocument, $theOptions )
 	{
-		//
-		// Init local storage.
-		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_REPLACE;
-
 		//
 		// Replace a record.
 		//
-		$result = $this->Connection()->replaceOne( $theFilter, $theRecord, $theOptions );
+		$result = $this->Connection()->replaceOne( $theFilter, $theDocument, $theOptions );
 
 		return $result->getModifiedCount();											// ==>
 	
-	} // replace.
+	} // doReplace.
 
 
 	/*===================================================================================
-	 *	find																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Find the first or all records.</h4>
-	 *
-	 * This method should find the first or all records matching the provided search
-	 * criteria, the method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> return all records, <tt>FALSE</tt> return first
-	 * 		record.
-	 * </ul>
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
-	 * @return Iterator				The found records.
-	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Collection::find()
-	 * @uses \MongoDB\Collection::findOne()
-	 *
-	 * @see kMONGO_OPTS_CL_FIND
-	 *
-	 * @example
-	 * // Find first record.
-	 * $collection->find( $query, FALSE );<br/>
-	 * // Find all records.
-	 * $collection->find( $query, TRUE );
-	 */
-	protected function find( $theFilter, $doMany, $theOptions = NULL )
-	{
-		//
-		// Init local storage.
-		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_FIND;
-
-		//
-		// Insert one or more records.
-		//
-		return ( $doMany )
-			 ? $this->Connection()->find( $theFilter, $theOptions )					// ==>
-			 : $this->Connection()->findOne( $theFilter, $theOptions );				// ==>
-	
-	} // find.
-
-
-	/*===================================================================================
-	 *	delete																			*
+	 *	doDelete																		*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Delete the first or all records.</h4>
 	 *
-	 * This method should delete the first or all records matching the provided search
-	 * criteria, the method expects the following parameters:
+	 * We overload this method to use the {@link \MongoDB\Collection::deleteOne()} method
+	 * to delete a single document and {@link \MongoDB\Collection::deleteMany()} method to
+	 * delete all selected records.
 	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> delete all records, <tt>FALSE</tt> delete first
-	 * 		record.
-	 * </ul>
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * We strip the <tt>'$doAll'</tt> parameter from the options and keep the other options
+	 * as driver native parameters.
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return int					The number of deleted records.
 	 *
 	 * @uses Connection()
@@ -467,28 +341,280 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @example
 	 * // Delete first record.
-	 * $collection->delete( $query, FALSE );<br/>
-	 * // Delete all records.
-	 * $collection->delete( $query, TRUE );
+	 * $collection->delete( $query, [ '$doAll' => FALSE ] );<br/>
+	 * // Delete all records.<br/>
+	 * $collection->delete( $query, [ '$doAll' => TRUE ] );
 	 */
-	protected function delete( $theFilter, $doMany, $theOptions = NULL )
+	protected function doDelete( $theFilter, $theOptions )
 	{
 		//
 		// Init local storage.
 		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_DELETE;
+		$do_all = $theOptions[ '$doAll' ];
 
 		//
 		// Delete one or more records.
 		//
-		$result = ( $doMany )
-				? $this->Connection()->deleteMany( $theFilter, $theOptions )
-				: $this->Connection()->deleteOne( $theFilter, $theOptions );
+		$result = ( $do_all )
+			? $this->Connection()->deleteMany( $theFilter, $theOptions )
+			: $this->Connection()->deleteOne( $theFilter, $theOptions );
 
 		return $result->getDeletedCount();											// ==>
-	
-	} // delete.
+
+	} // doDelete.
+
+
+	/*===================================================================================
+	 *	doFindByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by example the first or all records.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::find()} method, the
+	 * provided example document will be used as the actual selection criteria.
+	 *
+	 * We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
+	 * options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 *
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::find()
+	 *
+	 * @example
+	 * // Find first record.
+	 * $collection->find( $query, [ '$doAll' => FALSE ] );<br/>
+	 * // Find all records.<br/>
+	 * $collection->find( $query, [ '$doAll' => TRUE ] );
+	 */
+	protected function doFindByExample( $theDocument, $theOptions )
+	{
+		//
+		// Normalise document.
+		//
+		if( $theDocument === NULL )
+			$theDocument = [];
+		elseif( $theDocument instanceof \Milko\PHPLib\Container )
+			$theDocument = $theDocument->toArray();
+
+		//
+		// Init local storage.
+		//
+		if( array_key_exists( '$start', $theOptions ) )
+		{
+			$theOptions[ 'skip' ] = $theOptions[ '$start' ];
+			unset( $theOptions[ '$start' ] );
+		}
+		if( array_key_exists( '$limit', $theOptions ) )
+		{
+			$theOptions[ 'limit' ] = $theOptions[ '$limit' ];
+			unset( $theOptions[ '$limit' ] );
+		}
+
+		return $this->cursorToArray(
+				$this->Connection()->find( $theDocument, $theOptions ) );			// ==>
+
+	} // doFindByExample.
+
+
+	/*===================================================================================
+	 *	doFindByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Query the collection.</h4>
+	 *
+	 * We overload this method to use the {@link doFind()} method, since the latter method
+	 * uses the example document as a query.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Collection native options.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses FindByExample()
+	 *
+	 * @example
+	 * // Query first record.
+	 * $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0, '$limit' => 1 ] );<br/>
+	 * // Query all records.<br/>
+	 * $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );
+	 */
+	protected function doFindByQuery( $theQuery, $theOptions )
+	{
+		return $this->FindByExample( $theQuery, $theOptions );						// ==>
+
+	} // doFindByQuery.
+
+
+	/*===================================================================================
+	 *	doCountByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a find by example record count.</h4>
+	 *
+	 * We overload this method to use the {@link count()} method, since the latter method
+	 * uses the example document as a query.
+	 *
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The records count.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::count()
+	 *
+	 * @example
+	 * // Count records.
+	 * $collection->count( [ '$gt' => [ 'age' => 20 ] ] );
+	 */
+	protected function doCountByExample( $theDocument, $theOptions )
+	{
+		//
+		// Normalise document.
+		//
+		if( $theDocument === NULL )
+			$theDocument = [];
+		elseif( $theDocument instanceof \Milko\PHPLib\Container )
+			$theDocument = $theDocument->toArray();
+
+		return $this->Connection()->count( $theDocument, $theOptions );				// ==>
+
+	} // doCountByExample.
+
+
+	/*===================================================================================
+	 *	doCountByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a find by query record count.</h4>
+	 *
+	 * We overload this method to use the {@link doCountByExample()} method, since the
+	 * latter method uses the example document as a query.
+	 *
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The records count.
+	 *
+	 * @uses doCountByExample()
+	 *
+	 * @example
+	 * // Count records.
+	 * $collection->count( [ '$gt' => [ 'age' => 20 ] ] );
+	 */
+	protected function doCountByQuery( $theDocument, $theOptions )
+	{
+		return $this->doCountByExample( $theDocument, $theOptions );				// ==>
+
+	} // doCountByQuery.
+
+
+	/*===================================================================================
+	 *	doMapReduce																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Execute an aggregation query.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::aggregate()} method.
+	 *
+	 * We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
+	 * options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 *
+	 * @param mixed					$thePipeline		The aggregation pipeline.
+	 * @param array					$theOptions			Driver native options.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::aggregate()
+	 *
+	 * @example
+	 * // Find first record.
+	 * $collection->find( $query, [ '$doAll' => FALSE ] );<br/>
+	 * // Find all records.<br/>
+	 * $collection->find( $query, [ '$doAll' => TRUE ] );
+	 */
+	protected function doMapReduce( $thePipeline, $theOptions )
+	{
+		//
+		// Init local storage.
+		//
+		if( array_key_exists( '$start', $theOptions ) )
+		{
+			$theOptions[ 'skip' ] = $theOptions[ '$start' ];
+			unset( $theOptions[ '$start' ] );
+		}
+		if( array_key_exists( '$limit', $theOptions ) )
+		{
+			$theOptions[ 'limit' ] = $theOptions[ '$limit' ];
+			unset( $theOptions[ '$limit' ] );
+		}
+
+		//
+		// Aggregate.
+		//
+		$result = $this->Connection()->aggregate( $thePipeline, $theOptions );
+
+		return $this->cursorToArray(
+			$this->Connection()->aggregate( $thePipeline, $theOptions ) );			// ==>
+
+	} // doMapReduce.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED CURSOR UTILITIES								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	cursorToArray																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Format a query result.</h4>
+	 *
+	 * This method will be used to convert a cursor into an array of arrays.
+	 *
+	 * @param \MongoDB\Driver\Cursor	$theCursor	The result cursor.
+	 * @return array					The result as an array.
+	 */
+	protected function cursorToArray( $theCursor )
+	{
+		//
+		// Init local storage.
+		//
+		$array = [];
+
+		//
+		// Iterate cursor.
+		//
+		foreach( $theCursor as $document )
+		{
+			//
+			// Get document.
+			//
+			$document = $document->getArrayCopy();
+
+			//
+			// Set document.
+			//
+			if( is_object( $document[ '_id' ] ) )
+				$array[ (string)$document[ '_id' ] ] = $document;
+			else
+				$array[ $document[ '_id' ] ] = $document;
+		}
+
+		return $array;																// ==>
+
+	} // cursorToArray.
+
 
 
 } // class Collection.

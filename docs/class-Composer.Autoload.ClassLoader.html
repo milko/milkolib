@@ -6,7 +6,7 @@
 	<title>Class Composer\Autoload\ClassLoader | milkolib reference documentation</title>
 
 	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
-	<link rel="stylesheet" href="resources/style.css?70c1d062672daa3f906b72e4f5d03d4bc5c4174d">
+	<link rel="stylesheet" href="resources/style.css?49f43d3208c5d7e33fa16d36107a345bf11cc00d">
 
 </head>
 
@@ -180,10 +180,9 @@
 
 
 	<div class="description">
-	<p>ClassLoader implements a PSR-0 class loader</p>
+	<p>ClassLoader implements a PSR-0, PSR-4 and classmap class loader.</p>
 
-<p>See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
- $loader = new \Composer\Autoload\ClassLoader();
+<p>$loader = new \Composer\Autoload\ClassLoader();
  // register classes with namespaces $loader->add('Symfony\Component', <strong>DIR</strong>.'/component'); $loader->add('Symfony',           <strong>DIR</strong>.'/framework');
  // activate the autoloader $loader->register();
  // to enable searching the include path (eg. for PEAR packages) $loader->setUseIncludePath(true);</p>
@@ -215,6 +214,10 @@ found before giving up.</p>
 				Fabien Potencier <a href="&#x6d;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#102;&#x61;&#98;&#105;&#x65;&#110;&#64;&#x73;&#121;m&#x66;&#111;&#x6e;&#x79;&#46;&#x63;&#x6f;&#109;">&#102;&#x61;&#98;&#105;&#x65;&#110;&#64;&#x73;&#121;m&#x66;&#111;&#x6e;&#x79;&#46;&#x63;&#x6f;&#109;</a><br>
 				<b>Author:</b>
 				Jordi Boggiano <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#106;.&#x62;&#x6f;&#103;&#103;&#x69;&#x61;&#110;&#111;&#64;&#x73;&#x65;&#108;&#100;&#x2e;&#x62;&#101;">&#106;.&#x62;&#x6f;&#103;&#103;&#x69;&#x61;&#110;&#111;&#64;&#x73;&#x65;&#108;&#100;&#x2e;&#x62;&#101;</a><br>
+				<b>See:</b>
+				http://www.php-fig.org/psr/psr-0/<br>
+				<b>See:</b>
+				http://www.php-fig.org/psr/psr-4/<br>
 			<b>Located at</b> <a href="source-class-Composer.Autoload.ClassLoader.html#15-403" title="Go to source code">composer/ClassLoader.php</a>
 		<br>
 	</div>
@@ -471,7 +474,7 @@ appending or prepending to the ones previously set for this namespace.</p>
 						<dt><var>$prefix</var></dt>
 						<dd>The prefix/namespace, with trailing '&#92;'</dd>
 						<dt><var>$paths</var></dt>
-						<dd>The PSR-0 base directories</dd>
+						<dd>The PSR-4 base directories</dd>
 						<dt><var>$prepend</var></dt>
 						<dd>Whether to prepend the directories</dd>
 					</dl></div>

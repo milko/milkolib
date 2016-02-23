@@ -102,12 +102,10 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * We overload this method to return a MongoDB client object; we also remove the path
 	 * from the data source URL.
 	 *
-	 * @param mixed					$theOptions			Connection native options.
+	 * @param array					$theOptions			Connection native options.
 	 * @return Client				The native connection.
 	 *
 	 * @uses toURL()
-	 *
-	 * @see kMONGO_OPTS_CLIENT_CREATE
 	 */
 	protected function connectionCreate( $theOptions = NULL )
 	{
@@ -116,7 +114,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 		//
 		$uri_opts = [];
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CLIENT_CREATE;
+			$theOptions = [];
 		
 		return new Client(
 			$this->toURL( [ \Milko\PHPLib\DataSource::PATH ] ),
@@ -157,13 +155,11 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * In this class we ask the Mongo client for the list of databases and extract their
 	 * names.
 	 *
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Client::listDatabases()
-	 *
-	 * @see kMONGO_OPTS_CLIENT_DBLIST
 	 */
 	protected function databaseList( $theOptions = NULL )
 	{
@@ -172,7 +168,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 		//
 		$databases = [];
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CLIENT_DBLIST;
+			$theOptions = [];
 
 		//
 		// Ask client for list.
@@ -196,10 +192,8 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * In this class we instantiate a {@link Database} object.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return Database				Database object.
-	 *
-	 * @see kMONGO_OPTS_CLIENT_DBCREATE
 	 */
 	protected function databaseCreate( $theDatabase, $theOptions = NULL )
 	{
@@ -207,7 +201,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CLIENT_DBCREATE;
+			$theOptions = [];
 
 		return new Database( $this, $theDatabase, $theOptions );					// ==>
 
@@ -225,12 +219,10 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * the case, we instantiate a {@link Database} object, if not, we return <tt>NULL</tt>.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Database native options.
+	 * @param array					$theOptions			Database native options.
 	 * @return Database				Database object or <tt>NULL</tt> if not found.
 	 *
 	 * @uses databaseList()
-	 *
-	 * @see kMONGO_OPTS_CLIENT_DBRETRIEVE
 	 */
 	protected function databaseRetrieve( $theDatabase, $theOptions = NULL )
 	{
@@ -243,7 +235,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 			// Init local storage.
 			//
 			if( $theOptions === NULL )
-				$theOptions = kMONGO_OPTS_CLIENT_DBRETRIEVE;
+				$theOptions = [];
 			
 			return new Database( $this, $theDatabase, $theOptions );				// ==>
 		

@@ -7,7 +7,7 @@
 	<title>File mongodb/mongodb/tests/Database/FunctionalTestCase.php | milkolib reference documentation</title>
 
 	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
-	<link rel="stylesheet" href="resources/style.css?70c1d062672daa3f906b72e4f5d03d4bc5c4174d">
+	<link rel="stylesheet" href="resources/style.css?49f43d3208c5d7e33fa16d36107a345bf11cc00d">
 
 </head>
 
@@ -158,7 +158,7 @@
 			<ul>
 				<li><a href="class-ArrayObject.html">ArrayObject</a></li>
 				<li><a href="class-Composer.Autoload.ClassLoader.html">Composer\Autoload\ClassLoader</a></li>
-				<li><a href="class-ComposerAutoloaderInit2d9840c77ae7b93f1a205f69cc8b7af9.html">ComposerAutoloaderInit2d9840c77ae7b93f1a205f69cc8b7af9</a></li>
+				<li><a href="class-ComposerAutoloaderInitcea8eb84f11c06ea11353c3abbc33142.html">ComposerAutoloaderInitcea8eb84f11c06ea11353c3abbc33142</a></li>
 				<li><a href="class-Milko.PHPLib.ArangoDB.Collection.html">Milko\PHPLib\ArangoDB\Collection</a></li>
 				<li><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></li>
 				<li><a href="class-Milko.PHPLib.ArangoDB.DataServer.html">Milko\PHPLib\ArangoDB\DataServer</a></li>
@@ -399,7 +399,7 @@
 			<h3>Functions</h3>
 			<ul>
 				<li><a href="function-Composer.Autoload.includeFile.html">Composer\Autoload\includeFile</a></li>
-				<li><a href="function-composerRequire2d9840c77ae7b93f1a205f69cc8b7af9.html">composerRequire2d9840c77ae7b93f1a205f69cc8b7af9</a></li>
+				<li><a href="function-composerRequirecea8eb84f11c06ea11353c3abbc33142.html">composerRequirecea8eb84f11c06ea11353c3abbc33142</a></li>
 				<li><a href="function-dumpCollection.html">dumpCollection</a></li>
 				<li><a href="function-dumpWriteResults.html">dumpWriteResults</a></li>
 				<li><a href="function-triagens.ArangoDb.getConnection.html">triagens\ArangoDb\getConnection</a></li>
@@ -414,39 +414,36 @@
 
 <div id="right">
 	<div id="rightInner">
-<div id="source">
-	<pre class="numbers"><code><span class="l"><a href="#1"> 1 </a></span><span class="l"><a href="#2"> 2 </a></span><span class="l"><a href="#3"> 3 </a></span><span class="l"><a href="#4"> 4 </a></span><span class="l"><a href="#5"> 5 </a></span><span class="l"><a href="#6"> 6 </a></span><span class="l"><a href="#7"> 7 </a></span><span class="l"><a href="#8"> 8 </a></span></span><span class="l"><a href="#9"> 9 </a></span></span><span class="l"><a href="#10">10 </a></span><span class="l"><a href="#11">11 </a></span><span class="l"><a href="#12">12 </a></span><span class="l"><a href="#13">13 </a></span><span class="l"><a href="#14">14 </a></span><span class="l"><a href="#15">15 </a></span><span class="l"><a href="#16">16 </a></span><span class="l"><a href="#17">17 </a></span><span class="l"><a href="#18">18 </a></span><span class="l"><a href="#19">19 </a></span><span class="l"><a href="#20">20 </a></span><span class="l"><a href="#21">21 </a></span><span class="l"><a href="#22">22 </a></span><span class="l"><a href="#23">23 </a></span></code></pre>
-	<pre class="code"><code><span id="1" class="l"><span class="xlang">&lt;?php</span>
-</span><span id="2" class="l">
-</span><span id="3" class="l"><span class="php-keyword1">namespace</span> MongoDB\Tests\Database;
-</span><span id="4" class="l">
-</span><span id="5" class="l"><span class="php-keyword1">use</span> MongoDB\Database;
-</span><span id="6" class="l"><span class="php-keyword1">use</span> MongoDB\Tests\FunctionalTestCase <span class="php-keyword1">as</span> BaseFunctionalTestCase;
-</span><span id="7" class="l">
-</span><span id="8" class="l"><span class="php-comment">/**
-</span></span><span id="9" class="l"><span class="php-comment"> * Base class for Database functional tests.
-</span></span><span id="10" class="l"><span class="php-comment"> */</span>
-</span><span id="11" class="l"><span class="php-keyword1">abstract</span> <span class="php-keyword1">class</span> FunctionalTestCase <span class="php-keyword1">extends</span> BaseFunctionalTestCase
-</span><span id="12" class="l">{
-</span><span id="13" class="l">    <span class="php-keyword1">protected</span> <span class="php-var">$database</span>;
-</span><span id="14" class="l">
-</span><span id="15" class="l">    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setUp()
-</span><span id="16" class="l">    {
-</span><span id="17" class="l">        parent::setUp();
-</span><span id="18" class="l">
-</span><span id="19" class="l">        <span class="php-var">$this</span>-&gt;database = <span class="php-keyword1">new</span> Database(<span class="php-var">$this</span>-&gt;manager, <span class="php-var">$this</span>-&gt;getDatabaseName());
-</span><span id="20" class="l">        <span class="php-var">$this</span>-&gt;database-&gt;drop();
-</span><span id="21" class="l">    }
-</span><span id="22" class="l">}
-</span><span id="23" class="l"></span></code></pre>
-</div>
+<pre id="source"><code><span id="1" class="l"><a href="#1"> 1 </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a href="#2"> 2 </a>
+</span><span id="3" class="l"><a href="#3"> 3 </a><span class="php-keyword1">namespace</span> MongoDB\Tests\Database;
+</span><span id="4" class="l"><a href="#4"> 4 </a>
+</span><span id="5" class="l"><a href="#5"> 5 </a><span class="php-keyword1">use</span> MongoDB\Database;
+</span><span id="6" class="l"><a href="#6"> 6 </a><span class="php-keyword1">use</span> MongoDB\Tests\FunctionalTestCase <span class="php-keyword1">as</span> BaseFunctionalTestCase;
+</span><span id="7" class="l"><a href="#7"> 7 </a>
+</span><span id="8" class="l"><a href="#8"> 8 </a><span class="php-comment">/**
+</span></span><span id="9" class="l"><a href="#9"> 9 </a><span class="php-comment"> * Base class for Database functional tests.
+</span></span><span id="10" class="l"><a href="#10">10 </a><span class="php-comment"> */</span>
+</span><span id="11" class="l"><a href="#11">11 </a><span class="php-keyword1">abstract</span> <span class="php-keyword1">class</span> FunctionalTestCase <span class="php-keyword1">extends</span> BaseFunctionalTestCase
+</span><span id="12" class="l"><a href="#12">12 </a>{
+</span><span id="13" class="l"><a href="#13">13 </a>    <span class="php-keyword1">protected</span> <span class="php-var">$database</span>;
+</span><span id="14" class="l"><a href="#14">14 </a>
+</span><span id="15" class="l"><a href="#15">15 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setUp()
+</span><span id="16" class="l"><a href="#16">16 </a>    {
+</span><span id="17" class="l"><a href="#17">17 </a>        parent::setUp();
+</span><span id="18" class="l"><a href="#18">18 </a>
+</span><span id="19" class="l"><a href="#19">19 </a>        <span class="php-var">$this</span>-&gt;database = <span class="php-keyword1">new</span> Database(<span class="php-var">$this</span>-&gt;manager, <span class="php-var">$this</span>-&gt;getDatabaseName());
+</span><span id="20" class="l"><a href="#20">20 </a>        <span class="php-var">$this</span>-&gt;database-&gt;drop();
+</span><span id="21" class="l"><a href="#21">21 </a>    }
+</span><span id="22" class="l"><a href="#22">22 </a>}
+</span><span id="23" class="l"><a href="#23">23 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
 		milkolib reference documentation API documentation generated by <a href="http://apigen.org">ApiGen</a>
 	</div>
 </div>
-<script src="resources/combined.js?0e5d4498e168530f33e0e6b8bfef9b3d18923a5a"></script>
-<script src="elementlist.js?05d6e5ddf7fd14bee39aa2190f661c7193e08050"></script>
+<script src="resources/combined.js?533e23ef2f02bd4b20548834a028566b6eb403e0"></script>
+<script src="elementlist.js?fedec7511b3c5a04e9acf5734d914248c5eabd6d"></script>
 </body>
 </html>

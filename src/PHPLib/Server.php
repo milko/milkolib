@@ -299,7 +299,7 @@ abstract class Server extends DataSource
 	 * opening the connection.
 	 *
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param mixed					$theOptions			Connection native options.
+	 * @param array					$theOptions			Connection native options.
 	 * @return mixed				Native connection object or <tt>NULL</tt>.
 	 *
 	 * @example
@@ -345,7 +345,7 @@ abstract class Server extends DataSource
 	 * The method will return the native connection object, or raise an exception if unable
 	 * to open the connection.
 	 *
-	 * @param mixed					$theOptions			Connection native options.
+	 * @param array					$theOptions			Connection native options.
 	 * @return mixed				Native connection object.
 	 *
 	 * @uses isConnected( )
@@ -376,7 +376,7 @@ abstract class Server extends DataSource
 	 *
 	 * The method will return <tt>TRUE</tt> if it closed a connection
 	 *
-	 * @param mixed					$theOptions			Connection native options.
+	 * @param array					$theOptions			Connection native options.
 	 * @return boolean				<tt>TRUE</tt> was connected, <tt>FALSE</tt> wasn't.
 	 *
 	 * @uses isConnected()
@@ -432,7 +432,7 @@ abstract class Server extends DataSource
 	 * allow automatic connection, doing so in this class makes it easier.
 	 *
 	 * @param string				$theFlags			Flags bitfield.
-	 * @param mixed					$theOptions			Connection native options.
+	 * @param array					$theOptions			Connection native options.
 	 * @return boolean				<tt>TRUE</tt> is connected.
 	 * @throws \RuntimeException
 	 *
@@ -512,7 +512,7 @@ abstract class Server extends DataSource
 	 *
 	 * If the operation fails, the method should raise an exception.
 	 *
-	 * @param mixed					$theOptions			Connection native options.
+	 * @param array					$theOptions			Connection native options.
 	 * @return mixed				The native connection.
 	 */
 	abstract protected function connectionCreate( $theOptions = NULL );
@@ -538,7 +538,7 @@ abstract class Server extends DataSource
 	 *
 	 * If the operation fails, the method should raise an exception.
 	 *
-	 * @param mixed					$theOptions			Connection native options.
+	 * @param array					$theOptions			Connection native options.
 	 */
 	abstract protected function connectionDestruct( $theOptions = NULL );
 

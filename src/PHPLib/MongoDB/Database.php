@@ -55,12 +55,10 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * We overload this method to call the native object's method.
 	 *
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Database::drop()
-	 *
-	 * @see kMONGO_OPTS_DB_DROP
 	 */
 	public function Drop( $theOptions = NULL )
 	{
@@ -68,7 +66,7 @@ class Database extends \Milko\PHPLib\Database
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_DB_DROP;
+			$theOptions = [];
 
 		//
 		// Call native method.
@@ -97,13 +95,11 @@ class Database extends \Milko\PHPLib\Database
 	 * We overload this method to instantiate a native object.
 	 *
 	 * @param string				$theDatabase		Database name.
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return \MongoDB\Database	Native database object.
 	 *
 	 * @uses Server()
 	 * @uses \MongoDB\Client::selectDatabase()
-	 *
-	 * @see kMONGO_OPTS_DB_CREATE
 	 */
 	protected function databaseNew( $theDatabase, $theOptions = NULL )
 	{
@@ -111,7 +107,7 @@ class Database extends \Milko\PHPLib\Database
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_DB_CREATE;
+			$theOptions = [];
 
 		return
 			$this->Server()
@@ -130,7 +126,7 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * We overload this method to use the native object.
 	 *
-	 * @param mixed					$theOptions			Native driver options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return string				The database name.
 	 *
 	 * @uses Server()
@@ -162,13 +158,11 @@ class Database extends \Milko\PHPLib\Database
 	 * We overload this method to use the native driver object, we only consider the
 	 * collection names in the returned value.
 	 *
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Database::listCollections()
-	 *
-	 * @see kMONGO_OPTS_DB_CLLIST
 	 */
 	protected function collectionList( $theOptions = NULL )
 	{
@@ -177,7 +171,7 @@ class Database extends \Milko\PHPLib\Database
 		//
 		$collections = [];
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_DB_CLLIST;
+			$theOptions = [];
 
 		//
 		// Ask database for list.
@@ -201,10 +195,8 @@ class Database extends \Milko\PHPLib\Database
 	 * class.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object.
-	 *
-	 * @see kMONGO_OPTS_DB_CLCREATE
 	 */
 	protected function collectionCreate( $theCollection, $theOptions = NULL )
 	{
@@ -212,7 +204,7 @@ class Database extends \Milko\PHPLib\Database
 		// Init local storage.
 		//
 		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_DB_CLCREATE;
+			$theOptions = [];
 
 		return new Collection( $this, $theCollection, $theOptions );				// ==>
 	}
@@ -229,12 +221,10 @@ class Database extends \Milko\PHPLib\Database
 	 * MongoDB version of the {@link Collection} class.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param mixed					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 *
 	 * @uses collectionList()
-	 *
-	 * @see kMONGO_OPTS_DB_CLRETRIEVE
 	 */
 	protected function collectionRetrieve( $theCollection, $theOptions = NULL )
 	{
@@ -247,7 +237,7 @@ class Database extends \Milko\PHPLib\Database
 			// Init local storage.
 			//
 			if( $theOptions === NULL )
-				$theOptions = kMONGO_OPTS_DB_CLRETRIEVE;
+				$theOptions = [];
 			
 			return new Collection( $this, $theCollection, $theOptions );			// ==>
 		
