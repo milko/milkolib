@@ -728,7 +728,7 @@ class DataSource extends Container
 
 /*=======================================================================================
  *																						*
- *									PROTECTED URI UTILITIES								*
+ *								PROTECTED URI UTILITIES									*
  *																						*
  *======================================================================================*/
 
@@ -749,13 +749,13 @@ class DataSource extends Container
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see PROT
+	 * @see PROT USER PASS HOST PORT PATH QUERY FRAG
 	 *
 	 * @example
 	 * $test = $dsn->toURL();	// Return full URL.<br/>
 	 * $test = $dsn->toURL( [ self::PATH ] );	// Return URL without path.
 	 */
-	public function toURL( $theExcluded = [] )
+	protected function toURL( $theExcluded = [] )
 	{
 		//
 		// Init local storage.
@@ -766,14 +766,14 @@ class DataSource extends Container
 		// Set protocol.
 		//
 		if( (! in_array( self::PROT, $theExcluded ))
-		 && (($tmp = $this->offsetGet( self::PROT )) !== NULL) )
+			&& (($tmp = $this->offsetGet( self::PROT )) !== NULL) )
 			$dsn .= ($tmp.'://');
 
 		//
 		// Handle credentials.
 		//
 		if( (! in_array( self::USER, $theExcluded ))
-		 && (($tmp = $this->offsetGet( self::USER )) !== NULL) )
+			&& (($tmp = $this->offsetGet( self::USER )) !== NULL) )
 		{
 			//
 			// Set user.
@@ -784,7 +784,7 @@ class DataSource extends Container
 			// Set password.
 			//
 			if( (! in_array( self::PASS, $theExcluded ))
-			 && (($tmp = $this->offsetGet( self::PASS )) !== NULL) )
+				&& (($tmp = $this->offsetGet( self::PASS )) !== NULL) )
 				$dsn .= ":$tmp";
 
 			//
@@ -798,7 +798,7 @@ class DataSource extends Container
 		// Add host and port.
 		//
 		if( (! in_array( self::HOST, $theExcluded ))
-		 && (($tmp = $this->offsetGet( self::HOST )) !== NULL) )
+			&& (($tmp = $this->offsetGet( self::HOST )) !== NULL) )
 		{
 			//
 			// Init local storage.
@@ -838,7 +838,7 @@ class DataSource extends Container
 				// Add port.
 				//
 				if( $do_port
-				 && (($tmp = $this->offsetGet( self::PORT )) !== NULL) )
+					&& (($tmp = $this->offsetGet( self::PORT )) !== NULL) )
 					$dsn .= ":$tmp";
 			}
 		}
@@ -849,7 +849,7 @@ class DataSource extends Container
 		// if the parameter does not start with one.
 		//
 		if( (! in_array( self::PATH, $theExcluded ))
-		 && (($tmp = $this->offsetGet( self::PATH )) !== NULL) )
+			&& (($tmp = $this->offsetGet( self::PATH )) !== NULL) )
 		{
 			if( ! (substr( $tmp, 0, 1 ) == '/') )
 				$dsn .= '/';
@@ -860,7 +860,7 @@ class DataSource extends Container
 		// Set options.
 		//
 		if( (! in_array( self::QUERY, $theExcluded ))
-		 && (($tmp = $this->offsetGet( self::QUERY )) !== NULL) )
+			&& (($tmp = $this->offsetGet( self::QUERY )) !== NULL) )
 		{
 			//
 			// Format query.
@@ -881,7 +881,7 @@ class DataSource extends Container
 		// Set fragment.
 		//
 		if( (! in_array( self::FRAG, $theExcluded ))
-		 && (($tmp = $this->offsetGet( self::FRAG )) !== NULL) )
+			&& (($tmp = $this->offsetGet( self::FRAG )) !== NULL) )
 			$dsn .= "#$tmp";
 
 		return $dsn;																// ==>

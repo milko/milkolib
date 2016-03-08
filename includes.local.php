@@ -103,12 +103,5 @@ define( "kARANGO_OPTS_RECONNECT_DEFAULT", TRUE );
  */
 define( "kARANGO_OPTS_CREATE_DEFAULT", TRUE );
 
-/**
- * <h4>Default update policy.</h4>
- *
- * This definition should contain the default ArangoDB update policy.
- */
-define( "kARANGO_OPTS_UPDATE_DEFAULT", TRUE );
-
 
 ?>

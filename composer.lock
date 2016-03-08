@@ -9,16 +9,16 @@
     "packages": [
         {
             "name": "mongodb/mongodb",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "851a560864281cbf91fe182aefed85bfc3395031"
+                "reference": "6093d68c06bebcc5361b9e49178725efd9182ed4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/851a560864281cbf91fe182aefed85bfc3395031",
-                "reference": "851a560864281cbf91fe182aefed85bfc3395031",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/6093d68c06bebcc5361b9e49178725efd9182ed4",
+                "reference": "6093d68c06bebcc5361b9e49178725efd9182ed4",
                 "shasum": ""
             },
             "require": {
@@ -65,7 +65,7 @@
                 "mongodb",
                 "persistence"
             ],
-            "time": "2016-01-21 19:43:25"
+            "time": "2016-03-04 20:27:01"
         },
         {
             "name": "triagens/arangodb",

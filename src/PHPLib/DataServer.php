@@ -132,7 +132,7 @@ abstract class DataServer extends Server
 		// Call parent constructor.
 		//
 		parent::__construct( $theConnection );
-		
+
 		//
 		// Handle connection path.
 		//

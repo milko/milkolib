@@ -114,17 +114,22 @@ class Database extends \Milko\PHPLib\Database
 	protected function databaseNew( $theDatabase, $theOptions = NULL )
 	{
 		//
+		// Create connection.
+		//
+		$connection = new ArangoConnection( $this->Server()->GetOptions() );
+
+		//
 		// Create database.
 		//
-		ArangoDatabase::create( $this->Server()->Connection(), $theDatabase );
+		if( ! in_array( $theDatabase, $this->Server()->ListDatabases() ) )
+			ArangoDatabase::create( $connection, $theDatabase );
 
 		//
 		// Add database to connection.
 		//
-		$options = $this->Server()->getConnectionOptions();
-		$options[ ArangoConnectionOptions::OPTION_DATABASE ] = $theDatabase;
+		$connection->setDatabase( $theDatabase );
 
-		return new ArangoConnection( $options );									// ==>
+		return $connection;															// ==>
 
 	} // databaseNew.
 
@@ -186,7 +191,8 @@ class Database extends \Milko\PHPLib\Database
 
 		return array_keys(
 			$collectionHandler->getAllCollections( ['excludeSystem' => TRUE] ) );	// ==>
-	}
+
+	} // collectionList.
 
 
 	/*===================================================================================
@@ -206,7 +212,8 @@ class Database extends \Milko\PHPLib\Database
 	protected function collectionCreate( $theCollection, $theOptions = NULL )
 	{
 		return new Collection( $this, $theCollection, $theOptions );				// ==>
-	}
+
+	} // collectionCreate.
 
 
 	/*===================================================================================
@@ -234,7 +241,8 @@ class Database extends \Milko\PHPLib\Database
 			return new Collection( $this, $theCollection, $theOptions );			// ==>
 
 		return NULL;																// ==>
-	}
+
+	} // collectionRetrieve.
 
 
 } // class Database.

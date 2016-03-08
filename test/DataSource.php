@@ -39,7 +39,7 @@ echo( '$result = (string) $test;' . "\n" );
 $result = dumpValue( (string) $test );
 echo( "Result: $result\n" );
 
-echo( "\n" );
+echo( "\n====================================================================================\n\n" );
 
 //
 // Retrieve protocol.
