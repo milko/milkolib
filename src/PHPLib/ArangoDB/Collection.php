@@ -114,14 +114,20 @@ class Collection extends \Milko\PHPLib\Collection
 	public function Drop( $theOptions = NULL )
 	{
 		//
-		// Instantiate collection handler.
+		// Check collection.
 		//
-		$collectionHandler = new ArangoCollectionHandler( $this->Database()->Connection() );
+		if( ($id = $this->Connection()->getId()) !== NULL )
+		{
+			//
+			// Instantiate collection handler.
+			//
+			$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
 
-		//
-		// Drop collection.
-		//
-		$collectionHandler->drop( $this->Connection() );
+			//
+			// Drop collection.
+			//
+			$handler->drop( $id );
+		}
 
 	} // Drop.
 
