@@ -190,7 +190,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	insert																			*
+	 *	doInsert																		*
 	 *==================================================================================*/
 
 	/**
@@ -227,7 +227,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * // Insert many records.
 	 * $collection->insert( $records, TRUE );
 	 */
-	protected function insert( $theRecord, $doMany, $theOptions = NULL )
+	protected function doInsert( $theRecord, $doMany, $theOptions = NULL )
 	{
 		//
 		// Create document handler.
@@ -273,11 +273,11 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $documentHandler->save( $this->Connection(), $theRecord );			// ==>
 
-	} // insert.
+	} // doInsert.
 
 
 	/*===================================================================================
-	 *	update																			*
+	 *	doUpdate																		*
 	 *==================================================================================*/
 
 	/**
@@ -317,10 +317,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 * // Insert many records.
 	 * $collection->update( $criteria, $query, TRUE );
 	 */
-	protected function update( $theCriteria,
-							   $theFilter,
-							   $doMany,
-							   $theOptions = NULL )
+	protected function doUpdate( $theCriteria,
+								 $theFilter,
+								 $doMany,
+								 $theOptions = NULL )
 	{
 		//
 		// Create selection statement.
@@ -392,11 +392,11 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return 1;																	// ==>
 
-	} // update.
+	} // doUpdate.
 
 
 	/*===================================================================================
-	 *	replace																			*
+	 *	doReplace																		*
 	 *==================================================================================*/
 
 	/**
@@ -432,7 +432,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * // Insert many records.
 	 * $collection->replace( $record, $query, TRUE );
 	 */
-	protected function replace( $theRecord, $theFilter, $theOptions = NULL )
+	protected function doReplace( $theRecord, $theFilter, $theOptions = NULL )
 	{
 		//
 		// Init local storage.
@@ -447,68 +447,11 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $result->getModifiedCount();											// ==>
 
-	} // replace.
+	} // doReplace.
 
 
 	/*===================================================================================
-	 *	find																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Find the first or all records.</h4>
-	 *
-	 * This method should find the first or all records matching the provided search
-	 * criteria, the method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> return all records, <tt>FALSE</tt> return first
-	 * 		record.
-	 * </ul>
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param array					$theOptions			Collection native options.
-	 * @return Iterator				The found records.
-	 *
-	 * @uses Connection()
-	 * @uses \ArangoDB\Collection::find()
-	 * @uses \ArangoDB\Collection::findOne()
-	 *
-	 * @see kMONGO_OPTS_CL_FIND
-	 *
-	 * @example
-	 * // Find first record.
-	 * $collection->find( $query, FALSE );<br/>
-	 * // Find all records.
-	 * $collection->find( $query, TRUE );
-	 */
-	protected function find( $theFilter, $doMany, $theOptions = NULL )
-	{
-		//
-		// Init local storage.
-		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_FIND;
-
-		//
-		// Insert one or more records.
-		//
-		return ( $doMany )
-			? $this->Connection()->find( $theFilter, $theOptions )					// ==>
-			: $this->Connection()->findOne( $theFilter, $theOptions );				// ==>
-
-	} // find.
-
-
-	/*===================================================================================
-	 *	delete																			*
+	 *	doDelete																		*
 	 *==================================================================================*/
 
 	/**
@@ -546,7 +489,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * // Delete all records.
 	 * $collection->delete( $query, TRUE );
 	 */
-	protected function delete( $theFilter, $doMany, $theOptions = NULL )
+	protected function doDelete( $theFilter, $doMany, $theOptions = NULL )
 	{
 		//
 		// Init local storage.
@@ -563,7 +506,208 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $result->getDeletedCount();											// ==>
 
-	} // delete.
+	} // doDelete.
+
+
+	/*===================================================================================
+	 *	doFindByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by example the first or all records.</h4>
+	 *
+	 * This method should find the first or all records matching the provided search
+	 * criteria, the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theFilter</b>: The selection criteria.
+	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
+	 *	<li><b>$doMany</b>: <tt>TRUE</tt> return all records, <tt>FALSE</tt> return first
+	 * 		record.
+	 * </ul>
+	 *
+	 * This method assumes that the server is connected, it is the responsibility of the
+	 * caller to ensure this.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param boolean				$doMany				Single or multiple records flag.
+	 * @param array					$theOptions			Collection native options.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses Connection()
+	 * @uses \ArangoDB\Collection::find()
+	 * @uses \ArangoDB\Collection::findOne()
+	 *
+	 * @see kMONGO_OPTS_CL_FIND
+	 *
+	 * @example
+	 * // Find first record.
+	 * $collection->find( $query, FALSE );<br/>
+	 * // Find all records.
+	 * $collection->find( $query, TRUE );
+	 */
+	protected function doFindByExample( $theDocument, $theOptions )
+	{
+		//
+		// Normalise document.
+		//
+		if( $theDocument === NULL )
+			$theDocument = [];
+		elseif( $theDocument instanceof \Milko\PHPLib\Container )
+			$theDocument = $theDocument->toArray();
+
+		//
+		// Normalise limits.
+		//
+		if( array_key_exists( '$start', $theOptions ) )
+		{
+			$theOptions[ 'skip' ] = $theOptions[ '$start' ];
+			unset( $theOptions[ '$start' ] );
+		}
+		if( array_key_exists( '$limit', $theOptions ) )
+		{
+			$theOptions[ 'limit' ] = $theOptions[ '$limit' ];
+			unset( $theOptions[ '$limit' ] );
+		}
+
+		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
+
+		//
+		// Get cursor.
+		//
+		return $handler->byExample(
+				$this->Connection()->getId(), $theDocument, $theOptions );			// ==>
+
+	} // doFindByExample.
+
+
+	/*===================================================================================
+	 *	doFindByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Query the collection.</h4>
+	 *
+	 * We overload this method to use the {@link doFind()} method, since the latter method
+	 * uses the example document as a query.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Collection native options.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses FindByExample()
+	 *
+	 * @example
+	 * // Query first record.
+	 * $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0, '$limit' => 1 ] );<br/>
+	 * // Query all records.<br/>
+	 * $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );
+	 */
+	protected function doFindByQuery( $theQuery, $theOptions )
+	{
+		//
+		// Create statement.
+		//
+		$statement
+			= new ArangoStatement(
+				$this->Database()->Connection(),
+				array( 'query' => $theQuery ) );
+
+		return $statement->execute();												// ==>
+
+	} // doFindByQuery.
+
+
+	/*===================================================================================
+	 *	doCountByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a find by example record count.</h4>
+	 *
+	 * We overload this method to use the {@link count()} method, since the latter method
+	 * uses the example document as a query.
+	 *
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The records count.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::count()
+	 *
+	 * @example
+	 * // Count records.
+	 * $collection->count( [ '$gt' => [ 'age' => 20 ] ] );
+	 */
+	protected function doCountByExample( $theDocument, $theOptions )
+	{
+		return $this->doFindByExample( $theDocument, $theOptions )->getCount();		// ==>
+
+	} // doCountByExample.
+
+
+	/*===================================================================================
+	 *	doCountByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a find by query record count.</h4>
+	 *
+	 * We overload this method to use the {@link doCountByExample()} method, since the
+	 * latter method uses the example document as a query.
+	 *
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The records count.
+	 *
+	 * @uses doCountByExample()
+	 *
+	 * @example
+	 * // Count records.
+	 * $collection->count( [ '$gt' => [ 'age' => 20 ] ] );
+	 */
+	protected function doCountByQuery( $theDocument, $theOptions )
+	{
+		return $this->doFindByQuery( $theDocument, $theOptions )->getCount();		// ==>
+
+	} // doCountByQuery.
+
+
+	/*===================================================================================
+	 *	doMapReduce																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Execute an aggregation query.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::aggregate()} method.
+	 *
+	 * We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
+	 * options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 *
+	 * @param mixed					$thePipeline		The aggregation pipeline.
+	 * @param array					$theOptions			Driver native options.
+	 * @return Iterator				The found records.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::aggregate()
+	 *
+	 * @example
+	 * // Find first record.
+	 * $collection->find( $query, [ '$doAll' => FALSE ] );<br/>
+	 * // Find all records.<br/>
+	 * $collection->find( $query, [ '$doAll' => TRUE ] );
+	 */
+	protected function doMapReduce( $thePipeline, $theOptions )
+	{
+		return $this->doFindByQuery( $thePipeline, $theOptions );					// ==>
+
+	} // doMapReduce.
 
 
 } // class Collection.

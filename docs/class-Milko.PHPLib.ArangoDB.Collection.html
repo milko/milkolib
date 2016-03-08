@@ -253,7 +253,7 @@ collections.</p>
 $database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...<br/></p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#33-569" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#33-713" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
 		<br>
 	</div>
 
@@ -432,7 +432,7 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="insert" id="_insert">
+		<tr data-order="doInsert" id="_doInsert">
 
 			<td class="attributes"><code>
 				 protected 
@@ -442,8 +442,8 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_insert">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#196-276" title="Go to source code">insert</a>( <span>array|object <var>$theRecord</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<a class="anchor" href="#_doInsert">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#196-276" title="Go to source code">doInsert</a>( <span>array|object <var>$theRecord</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Insert one or more records.</h4>
@@ -502,7 +502,7 @@ $collection->insert( $records, TRUE );</p><br>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="update" id="_update">
+		<tr data-order="doUpdate" id="_doUpdate">
 
 			<td class="attributes"><code>
 				 protected 
@@ -512,8 +512,8 @@ $collection->insert( $records, TRUE );</p><br>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_update">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#283-395" title="Go to source code">update</a>( <span>array <var>$theCriteria</var></span>, <span>mixed <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<a class="anchor" href="#_doUpdate">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#283-395" title="Go to source code">doUpdate</a>( <span>array <var>$theCriteria</var></span>, <span>mixed <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Update one or more records.</h4>
@@ -574,7 +574,7 @@ $collection->update( $criteria, $query, TRUE );</p><br>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="replace" id="_replace">
+		<tr data-order="doReplace" id="_doReplace">
 
 			<td class="attributes"><code>
 				 protected 
@@ -584,8 +584,8 @@ $collection->update( $criteria, $query, TRUE );</p><br>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_replace">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#402-450" title="Go to source code">replace</a>( <span>array <var>$theRecord</var></span>, <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<a class="anchor" href="#_doReplace">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#402-450" title="Go to source code">doReplace</a>( <span>array <var>$theRecord</var></span>, <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -646,80 +646,7 @@ $collection->replace( $record, $query, TRUE );</p><br>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="find" id="_find">
-
-			<td class="attributes"><code>
-				 protected 
-				<code><a href="class-Iterator.html">Iterator</a></code>
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_find">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#457-507" title="Go to source code">find</a>( <span>mixed <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
-
-			<div class="description short">
-				<h4>Find the first or all records.</h4>
-			</div>
-
-			<div class="description detailed hidden">
-				<h4>Find the first or all records.</h4>
-
-<p>This method should find the first or all records matching the provided search
-criteria, the method expects the following parameters:</p>
-
-<ul>
-<li><b>$theFilter</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-<li><b>$doMany</b>: <tt>TRUE</tt> return all records, <tt>FALSE</tt> return first record.
-</ul>
-
-<p>This method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$theFilter</var></dt>
-						<dd>The selection criteria.</dd>
-						<dt><var>$doMany</var></dt>
-						<dd>Single or multiple records flag.</dd>
-						<dt><var>$theOptions</var></dt>
-						<dd>Collection native options.</dd>
-					</dl></div>
-
-					<h4>Returns</h4>
-					<div class="list">
-						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
-					</div>
-
-
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_CL_FIND<br>
-					</div>
-					<h4>Uses</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							\ArangoDB\Collection::find()<br>
-							\ArangoDB\Collection::findOne()<br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Find first record.
-$collection->find( $query, FALSE );<br/>
-// Find all records.
-$collection->find( $query, TRUE );</p><br>
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="delete" id="_delete">
+		<tr data-order="doDelete" id="_doDelete">
 
 			<td class="attributes"><code>
 				 protected 
@@ -729,8 +656,8 @@ $collection->find( $query, TRUE );</p><br>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_delete">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#514-566" title="Go to source code">delete</a>( <span>mixed <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<a class="anchor" href="#_doDelete">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#457-509" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records.</h4>
@@ -792,6 +719,299 @@ $collection->delete( $query, TRUE );</p><br>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="doFindByExample" id="_doFindByExample">
+
+			<td class="attributes"><code>
+				 protected 
+				<code><a href="class-Iterator.html">Iterator</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doFindByExample">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#516-586" title="Go to source code">doFindByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>boolean <var>$theOptions</var></span>, <span>array <var>$theOptions</var>,…</span> )</code>
+
+			<div class="description short">
+				<h4>Find by example the first or all records.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Find by example the first or all records.</h4>
+
+<p>This method should find the first or all records matching the provided search
+criteria, the method expects the following parameters:</p>
+
+<ul>
+<li><b>$theFilter</b>: The selection criteria.
+<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$doMany</b>: <tt>TRUE</tt> return all records, <tt>FALSE</tt> return first record.
+</ul>
+
+<p>This method assumes that the server is connected, it is the responsibility of the
+caller to ensure this.</p>
+
+<p>This method must be implemented by derived concrete classes.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theDocument</var></dt>
+						<dd>$theFilter          The selection criteria.</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>$doMany             Single or multiple records flag.</dd>
+						<dt><var>$theOptions</var>,…</dt>
+						<dd>Collection native options.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
+					</div>
+
+
+					<h4>See</h4>
+					<div class="list">
+							kMONGO_OPTS_CL_FIND<br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
+							\ArangoDB\Collection::find()<br>
+							\ArangoDB\Collection::findOne()<br>
+					</div>
+					<h4>Example</h4>
+					<div class="list">
+							<p>// Find first record.
+$collection->find( $query, FALSE );<br/>
+// Find all records.
+$collection->find( $query, TRUE );</p><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doFindByQuery" id="_doFindByQuery">
+
+			<td class="attributes"><code>
+				 protected 
+				<code><a href="class-Iterator.html">Iterator</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doFindByQuery">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#593-623" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+
+			<div class="description short">
+				<h4>Query the collection.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Query the collection.</h4>
+
+<p>We overload this method to use the doFind() method, since the latter method
+uses the example document as a query.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theQuery</var></dt>
+						<dd>The selection criteria.</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>Collection native options.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_FindByExample">Milko\PHPLib\Collection::FindByExample()</a></code><br>
+					</div>
+					<h4>Example</h4>
+					<div class="list">
+							<p>// Query first record.
+$collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0, '$limit' => 1 ] );<br/>
+// Query all records.<br/>
+$collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );</p><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doCountByExample" id="_doCountByExample">
+
+			<td class="attributes"><code>
+				 protected 
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doCountByExample">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#630-651" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+
+			<div class="description short">
+				<h4>Return a find by example record count.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return a find by example record count.</h4>
+
+<p>We overload this method to use the <code><a href="class-ArrayObject.html#_count">ArrayObject::count()</a></code> method, since the latter method
+uses the example document as a query.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theDocument</var></dt>
+						<dd>The example document.</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>Driver native options.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br>The records count.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
+							<code><a href="class-MongoDB.Collection.html#_count">MongoDB\Collection::count()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doCountByQuery">Milko\PHPLib\ArangoDB\Collection::doCountByQuery()</a></code><br>
+					</div>
+					<h4>Example</h4>
+					<div class="list">
+							<p>// Count records.
+$collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doCountByQuery" id="_doCountByQuery">
+
+			<td class="attributes"><code>
+				 protected 
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doCountByQuery">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#658-678" title="Go to source code">doCountByQuery</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+
+			<div class="description short">
+				<h4>Return a find by query record count.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return a find by query record count.</h4>
+
+<p>We overload this method to use the <code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doCountByExample">Milko\PHPLib\ArangoDB\Collection::doCountByExample()</a></code> method, since the
+latter method uses the example document as a query.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theDocument</var></dt>
+						<dd>The example document.</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>Driver native options.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br>The records count.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doCountByExample">Milko\PHPLib\ArangoDB\Collection::doCountByExample()</a></code><br>
+					</div>
+					<h4>Example</h4>
+					<div class="list">
+							<p>// Count records.
+$collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doMapReduce" id="_doMapReduce">
+
+			<td class="attributes"><code>
+				 protected 
+				<code><a href="class-Iterator.html">Iterator</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doMapReduce">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#685-710" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
+
+			<div class="description short">
+				<h4>Execute an aggregation query.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Execute an aggregation query.</h4>
+
+<p>We overload this method to use the <code><a href="class-MongoDB.Collection.html#_aggregate">MongoDB\Collection::aggregate()</a></code> method.</p>
+
+<p>We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
+options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$thePipeline</var></dt>
+						<dd>The aggregation pipeline.</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>Driver native options.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
+							<code><a href="class-MongoDB.Collection.html#_aggregate">MongoDB\Collection::aggregate()</a></code><br>
+					</div>
+					<h4>Example</h4>
+					<div class="list">
+							<p>// Find first record.
+$collection->find( $query, [ '$doAll' => FALSE ] );<br/>
+// Find all records.<br/>
+$collection->find( $query, [ '$doAll' => TRUE ] );</p><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 			</table>
 		</div>
 
@@ -811,16 +1031,7 @@ $collection->delete( $query, TRUE );</p><br>
 				<code><a href="class-Milko.PHPLib.Collection.html#_Server">Server()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_Update">Update()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#___construct">__construct()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#___toString">__toString()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doCountByExample">doCountByExample()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doCountByQuery">doCountByQuery()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doDelete">doDelete()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doFindByExample">doFindByExample()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doFindByQuery">doFindByQuery()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doInsert">doInsert()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doMapReduce">doMapReduce()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doReplace">doReplace()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#_doUpdate">doUpdate()</a></code>
+				<code><a href="class-Milko.PHPLib.Collection.html#___toString">__toString()</a></code>
 			</p>
 		</div>
 		<div class="panel panel-default">

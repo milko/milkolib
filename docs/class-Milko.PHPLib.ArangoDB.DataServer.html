@@ -271,7 +271,7 @@ $database = $server->RetrieveDatabase( $databases[ 0 ] );<br/>
 // Work with that database...<br/>
 $server->DatabaseDrop( $databases[ 0 ] );<br/>
 // Dropped the database.</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#33-406" title="Go to source code">PHPLib/ArangoDB/DataServer.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#33-416" title="Go to source code">PHPLib/ArangoDB/DataServer.php</a>
 		<br>
 	</div>
 
@@ -291,7 +291,7 @@ $server->DatabaseDrop( $databases[ 0 ] );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#___construct">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#77-109" title="Go to source code">__construct</a>( <span>string <var>$theConnection</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#77-104" title="Go to source code">__construct</a>( <span>string <var>$theConnection</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Instantiate class.</h4>
@@ -334,6 +334,66 @@ $server->DatabaseDrop( $databases[ 0 ] );<br/>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="GetOptions" id="_GetOptions">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_GetOptions">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#120-209" title="Go to source code">GetOptions</a>( )</code>
+
+			<div class="description short">
+				<h4>Return connection options.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return connection options.</h4>
+
+<p>This method can be used to return an array of connection options in ArangoDB format
+according to the current object's settings.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						array<br>Connection options.
+					</div>
+
+
+					<h4>See</h4>
+					<div class="list">
+							ArangoConnectionOptions::OPTION_ENDPOINT<br>
+							ArangoConnectionOptions::OPTION_AUTH_TYPE<br>
+							ArangoConnectionOptions::OPTION_AUTH_USER<br>
+							ArangoConnectionOptions::OPTION_AUTH_PASSWD<br>
+							ArangoConnectionOptions::OPTION_CONNECTION<br>
+							ArangoConnectionOptions::OPTION_TIMEOUT<br>
+							ArangoConnectionOptions::OPTION_RECONNECT<br>
+							ArangoConnectionOptions::OPTION_CREATE<br>
+							ArangoConnectionOptions::OPTION_UPDATE_POLICY<br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.DataSource.html#_Protocol">Milko\PHPLib\DataSource::Protocol()</a></code><br>
+							<code><a href="class-Milko.PHPLib.DataSource.html#_Host">Milko\PHPLib\DataSource::Host()</a></code><br>
+							<code><a href="class-Milko.PHPLib.DataSource.html#_Port">Milko\PHPLib\DataSource::Port()</a></code><br>
+							<code><a href="class-Milko.PHPLib.DataSource.html#_User">Milko\PHPLib\DataSource::User()</a></code><br>
+							<code><a href="class-Milko.PHPLib.DataSource.html#_Password">Milko\PHPLib\DataSource::Password()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.DataServer.html#_connectionCreate">Milko\PHPLib\ArangoDB\DataServer::connectionCreate()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="connectionCreate" id="_connectionCreate">
 
 			<td class="attributes"><code>
@@ -345,7 +405,7 @@ $server->DatabaseDrop( $databases[ 0 ] );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_connectionCreate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#125-140" title="Go to source code">connectionCreate</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#225-246" title="Go to source code">connectionCreate</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<p>Open connection.</p>
@@ -372,7 +432,8 @@ database and collection.</p>
 
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.DataServer.html#_getConnectionOptions">Milko\PHPLib\ArangoDB\DataServer::getConnectionOptions()</a></code><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.DataServer.html#_defaultConnectionOptions">Milko\PHPLib\ArangoDB\DataServer::defaultConnectionOptions()</a></code><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.DataServer.html#_GetOptions">Milko\PHPLib\ArangoDB\DataServer::GetOptions()</a></code><br>
 					</div>
 
 
@@ -390,7 +451,7 @@ database and collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_connectionDestruct">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#147-152" title="Go to source code">connectionDestruct</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#253-258" title="Go to source code">connectionDestruct</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<p>Close connection.</p>
@@ -426,7 +487,7 @@ database and collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseList">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#168-186" title="Go to source code">databaseList</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#274-292" title="Go to source code">databaseList</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>List server databases.</h4>
@@ -435,7 +496,7 @@ database and collection.</p>
 			<div class="description detailed hidden">
 				<h4>List server databases.</h4>
 
-<p>In this class we ask the Mongo client for the list of databases and extract their
+<p>In this class we ask the Arango client for the list of databases and extract their
 names.</p>
 
 
@@ -476,7 +537,7 @@ names.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseCreate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#193-206" title="Go to source code">databaseCreate</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#299-312" title="Go to source code">databaseCreate</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Create database.</h4>
@@ -518,7 +579,7 @@ names.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseRetrieve">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#213-235" title="Go to source code">databaseRetrieve</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#319-341" title="Go to source code">databaseRetrieve</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a database object.</h4>
@@ -565,7 +626,7 @@ the case, we instantiate a <code><a href="class-Milko.PHPLib.ArangoDB.Database.h
 
 			<td class="name"><div>
 			<a class="anchor" href="#_defaultConnectionOptions">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#251-306" title="Go to source code">defaultConnectionOptions</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#357-412" title="Go to source code">defaultConnectionOptions</a>( )</code>
 
 			<div class="description short">
 				<h4>Normalise connection options.</h4>
@@ -586,70 +647,11 @@ file.</p>
 					<div class="list">
 							kARANGO_OPTS_AUTH_DEFAULT kARANGO_OPTS_PERSIST_DEFAULT<br>
 							kARANGO_OPTS_TIMEOUT_DEFAULT kARANGO_OPTS_RECONNECT_DEFAULT<br>
-							kARANGO_OPTS_CREATE_DEFAULT kARANGO_OPTS_UPDATE_DEFAULT<br>
+							kARANGO_OPTS_CREATE_DEFAULT<br>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.DataServer.html#___construct">Milko\PHPLib\ArangoDB\DataServer::__construct()</a></code><br>
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="getConnectionOptions" id="_getConnectionOptions">
-
-			<td class="attributes"><code>
-				 protected 
-				array
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_getConnectionOptions">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#313-402" title="Go to source code">getConnectionOptions</a>( )</code>
-
-			<div class="description short">
-				<h4>Return connection options.</h4>
-			</div>
-
-			<div class="description detailed hidden">
-				<h4>Return connection options.</h4>
-
-<p>This method can be used to return an array of connection options in ArangoDB format
-according to the current object's settings.</p>
-
-
-
-					<h4>Returns</h4>
-					<div class="list">
-						array<br>Connection options.
-					</div>
-
-
-					<h4>See</h4>
-					<div class="list">
-							ArangoConnectionOptions::OPTION_ENDPOINT<br>
-							ArangoConnectionOptions::OPTION_AUTH_TYPE<br>
-							ArangoConnectionOptions::OPTION_AUTH_USER<br>
-							ArangoConnectionOptions::OPTION_AUTH_PASSWD<br>
-							ArangoConnectionOptions::OPTION_CONNECTION<br>
-							ArangoConnectionOptions::OPTION_TIMEOUT<br>
-							ArangoConnectionOptions::OPTION_RECONNECT<br>
-							ArangoConnectionOptions::OPTION_CREATE<br>
-							ArangoConnectionOptions::OPTION_UPDATE_POLICY<br>
-					</div>
-					<h4>Uses</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.DataSource.html#_Protocol">Milko\PHPLib\DataSource::Protocol()</a></code><br>
-							<code><a href="class-Milko.PHPLib.DataSource.html#_Host">Milko\PHPLib\DataSource::Host()</a></code><br>
-							<code><a href="class-Milko.PHPLib.DataSource.html#_Port">Milko\PHPLib\DataSource::Port()</a></code><br>
-							<code><a href="class-Milko.PHPLib.DataSource.html#_User">Milko\PHPLib\DataSource::User()</a></code><br>
-							<code><a href="class-Milko.PHPLib.DataSource.html#_Password">Milko\PHPLib\DataSource::Password()</a></code><br>
-					</div>
-					<h4>Used by</h4>
-					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.DataServer.html#_connectionCreate">Milko\PHPLib\ArangoDB\DataServer::connectionCreate()</a></code><br>
 					</div>
 

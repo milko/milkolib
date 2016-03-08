@@ -363,7 +363,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 *
 	 * @see kARANGO_OPTS_AUTH_DEFAULT kARANGO_OPTS_PERSIST_DEFAULT
 	 * @see kARANGO_OPTS_TIMEOUT_DEFAULT kARANGO_OPTS_RECONNECT_DEFAULT
-	 * @see kARANGO_OPTS_CREATE_DEFAULT kARANGO_OPTS_UPDATE_DEFAULT
+	 * @see kARANGO_OPTS_CREATE_DEFAULT
 	 */
 	protected function defaultConnectionOptions()
 	{

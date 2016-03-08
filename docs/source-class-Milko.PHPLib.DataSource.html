@@ -1144,7 +1144,7 @@
 </span><span id="728" class="l"><a href="#728">728 </a>
 </span><span id="729" class="l"><a href="#729">729 </a><span class="php-comment">/*=======================================================================================
 </span></span><span id="730" class="l"><a href="#730">730 </a><span class="php-comment"> *                                                                                      *
-</span></span><span id="731" class="l"><a href="#731">731 </a><span class="php-comment"> *                                  PROTECTED URI UTILITIES                             *
+</span></span><span id="731" class="l"><a href="#731">731 </a><span class="php-comment"> *                              PROTECTED URI UTILITIES                                 *
 </span></span><span id="732" class="l"><a href="#732">732 </a><span class="php-comment"> *                                                                                      *
 </span></span><span id="733" class="l"><a href="#733">733 </a><span class="php-comment"> *======================================================================================*/</span>
 </span><span id="734" class="l"><a href="#734">734 </a>
@@ -1165,13 +1165,13 @@
 </span></span><span id="749" class="l"><a href="#749">749 </a><span class="php-comment">     *
 </span></span><span id="750" class="l"><a href="#750">750 </a><span class="php-comment">     * @uses manageProperty()
 </span></span><span id="751" class="l"><a href="#751">751 </a><span class="php-comment">     *
-</span></span><span id="752" class="l"><a href="#752">752 </a><span class="php-comment">     * @see PROT
+</span></span><span id="752" class="l"><a href="#752">752 </a><span class="php-comment">     * @see PROT USER PASS HOST PORT PATH QUERY FRAG
 </span></span><span id="753" class="l"><a href="#753">753 </a><span class="php-comment">     *
 </span></span><span id="754" class="l"><a href="#754">754 </a><span class="php-comment">     * @example
 </span></span><span id="755" class="l"><a href="#755">755 </a><span class="php-comment">     * $test = $dsn-&gt;toURL();   // Return full URL.&lt;br/&gt;
 </span></span><span id="756" class="l"><a href="#756">756 </a><span class="php-comment">     * $test = $dsn-&gt;toURL( [ self::PATH ] );   // Return URL without path.
 </span></span><span id="757" class="l"><a href="#757">757 </a><span class="php-comment">     */</span>
-</span><span id="758" class="l"><a href="#758">758 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> toURL( <span class="php-var">$theExcluded</span> = [] )
+</span><span id="758" class="l"><a href="#758">758 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> toURL( <span class="php-var">$theExcluded</span> = [] )
 </span><span id="759" class="l"><a href="#759">759 </a>    {
 </span><span id="760" class="l"><a href="#760">760 </a>        <span class="php-comment">//</span>
 </span><span id="761" class="l"><a href="#761">761 </a>        <span class="php-comment">// Init local storage.</span>
@@ -1182,14 +1182,14 @@
 </span><span id="766" class="l"><a href="#766">766 </a>        <span class="php-comment">// Set protocol.</span>
 </span><span id="767" class="l"><a href="#767">767 </a>        <span class="php-comment">//</span>
 </span><span id="768" class="l"><a href="#768">768 </a>        <span class="php-keyword1">if</span>( (! <span class="php-keyword2">in_array</span>( self::PROT, <span class="php-var">$theExcluded</span> ))
-</span><span id="769" class="l"><a href="#769">769 </a>         &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::PROT )) !== <span class="php-keyword1">NULL</span>) )
+</span><span id="769" class="l"><a href="#769">769 </a>            &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::PROT )) !== <span class="php-keyword1">NULL</span>) )
 </span><span id="770" class="l"><a href="#770">770 </a>            <span class="php-var">$dsn</span> .= (<span class="php-var">$tmp</span>.<span class="php-quote">'://'</span>);
 </span><span id="771" class="l"><a href="#771">771 </a>
 </span><span id="772" class="l"><a href="#772">772 </a>        <span class="php-comment">//</span>
 </span><span id="773" class="l"><a href="#773">773 </a>        <span class="php-comment">// Handle credentials.</span>
 </span><span id="774" class="l"><a href="#774">774 </a>        <span class="php-comment">//</span>
 </span><span id="775" class="l"><a href="#775">775 </a>        <span class="php-keyword1">if</span>( (! <span class="php-keyword2">in_array</span>( self::USER, <span class="php-var">$theExcluded</span> ))
-</span><span id="776" class="l"><a href="#776">776 </a>         &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::USER )) !== <span class="php-keyword1">NULL</span>) )
+</span><span id="776" class="l"><a href="#776">776 </a>            &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::USER )) !== <span class="php-keyword1">NULL</span>) )
 </span><span id="777" class="l"><a href="#777">777 </a>        {
 </span><span id="778" class="l"><a href="#778">778 </a>            <span class="php-comment">//</span>
 </span><span id="779" class="l"><a href="#779">779 </a>            <span class="php-comment">// Set user.</span>
@@ -1200,7 +1200,7 @@
 </span><span id="784" class="l"><a href="#784">784 </a>            <span class="php-comment">// Set password.</span>
 </span><span id="785" class="l"><a href="#785">785 </a>            <span class="php-comment">//</span>
 </span><span id="786" class="l"><a href="#786">786 </a>            <span class="php-keyword1">if</span>( (! <span class="php-keyword2">in_array</span>( self::PASS, <span class="php-var">$theExcluded</span> ))
-</span><span id="787" class="l"><a href="#787">787 </a>             &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::PASS )) !== <span class="php-keyword1">NULL</span>) )
+</span><span id="787" class="l"><a href="#787">787 </a>                &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::PASS )) !== <span class="php-keyword1">NULL</span>) )
 </span><span id="788" class="l"><a href="#788">788 </a>                <span class="php-var">$dsn</span> .= <span class="php-quote">&quot;:</span><span class="php-var">$tmp</span><span class="php-quote">&quot;</span>;
 </span><span id="789" class="l"><a href="#789">789 </a>
 </span><span id="790" class="l"><a href="#790">790 </a>            <span class="php-comment">//</span>
@@ -1214,7 +1214,7 @@
 </span><span id="798" class="l"><a href="#798">798 </a>        <span class="php-comment">// Add host and port.</span>
 </span><span id="799" class="l"><a href="#799">799 </a>        <span class="php-comment">//</span>
 </span><span id="800" class="l"><a href="#800">800 </a>        <span class="php-keyword1">if</span>( (! <span class="php-keyword2">in_array</span>( self::HOST, <span class="php-var">$theExcluded</span> ))
-</span><span id="801" class="l"><a href="#801">801 </a>         &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::HOST )) !== <span class="php-keyword1">NULL</span>) )
+</span><span id="801" class="l"><a href="#801">801 </a>            &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::HOST )) !== <span class="php-keyword1">NULL</span>) )
 </span><span id="802" class="l"><a href="#802">802 </a>        {
 </span><span id="803" class="l"><a href="#803">803 </a>            <span class="php-comment">//</span>
 </span><span id="804" class="l"><a href="#804">804 </a>            <span class="php-comment">// Init local storage.</span>
@@ -1254,7 +1254,7 @@
 </span><span id="838" class="l"><a href="#838">838 </a>                <span class="php-comment">// Add port.</span>
 </span><span id="839" class="l"><a href="#839">839 </a>                <span class="php-comment">//</span>
 </span><span id="840" class="l"><a href="#840">840 </a>                <span class="php-keyword1">if</span>( <span class="php-var">$do_port</span>
-</span><span id="841" class="l"><a href="#841">841 </a>                 &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::PORT )) !== <span class="php-keyword1">NULL</span>) )
+</span><span id="841" class="l"><a href="#841">841 </a>                    &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::PORT )) !== <span class="php-keyword1">NULL</span>) )
 </span><span id="842" class="l"><a href="#842">842 </a>                    <span class="php-var">$dsn</span> .= <span class="php-quote">&quot;:</span><span class="php-var">$tmp</span><span class="php-quote">&quot;</span>;
 </span><span id="843" class="l"><a href="#843">843 </a>            }
 </span><span id="844" class="l"><a href="#844">844 </a>        }
@@ -1265,7 +1265,7 @@
 </span><span id="849" class="l"><a href="#849">849 </a>        <span class="php-comment">// if the parameter does not start with one.</span>
 </span><span id="850" class="l"><a href="#850">850 </a>        <span class="php-comment">//</span>
 </span><span id="851" class="l"><a href="#851">851 </a>        <span class="php-keyword1">if</span>( (! <span class="php-keyword2">in_array</span>( self::PATH, <span class="php-var">$theExcluded</span> ))
-</span><span id="852" class="l"><a href="#852">852 </a>         &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::PATH )) !== <span class="php-keyword1">NULL</span>) )
+</span><span id="852" class="l"><a href="#852">852 </a>            &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::PATH )) !== <span class="php-keyword1">NULL</span>) )
 </span><span id="853" class="l"><a href="#853">853 </a>        {
 </span><span id="854" class="l"><a href="#854">854 </a>            <span class="php-keyword1">if</span>( ! (<span class="php-keyword2">substr</span>( <span class="php-var">$tmp</span>, <span class="php-num">0</span>, <span class="php-num">1</span> ) == <span class="php-quote">'/'</span>) )
 </span><span id="855" class="l"><a href="#855">855 </a>                <span class="php-var">$dsn</span> .= <span class="php-quote">'/'</span>;
@@ -1276,7 +1276,7 @@
 </span><span id="860" class="l"><a href="#860">860 </a>        <span class="php-comment">// Set options.</span>
 </span><span id="861" class="l"><a href="#861">861 </a>        <span class="php-comment">//</span>
 </span><span id="862" class="l"><a href="#862">862 </a>        <span class="php-keyword1">if</span>( (! <span class="php-keyword2">in_array</span>( self::QUERY, <span class="php-var">$theExcluded</span> ))
-</span><span id="863" class="l"><a href="#863">863 </a>         &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::QUERY )) !== <span class="php-keyword1">NULL</span>) )
+</span><span id="863" class="l"><a href="#863">863 </a>            &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::QUERY )) !== <span class="php-keyword1">NULL</span>) )
 </span><span id="864" class="l"><a href="#864">864 </a>        {
 </span><span id="865" class="l"><a href="#865">865 </a>            <span class="php-comment">//</span>
 </span><span id="866" class="l"><a href="#866">866 </a>            <span class="php-comment">// Format query.</span>
@@ -1297,7 +1297,7 @@
 </span><span id="881" class="l"><a href="#881">881 </a>        <span class="php-comment">// Set fragment.</span>
 </span><span id="882" class="l"><a href="#882">882 </a>        <span class="php-comment">//</span>
 </span><span id="883" class="l"><a href="#883">883 </a>        <span class="php-keyword1">if</span>( (! <span class="php-keyword2">in_array</span>( self::FRAG, <span class="php-var">$theExcluded</span> ))
-</span><span id="884" class="l"><a href="#884">884 </a>         &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::FRAG )) !== <span class="php-keyword1">NULL</span>) )
+</span><span id="884" class="l"><a href="#884">884 </a>            &amp;&amp; ((<span class="php-var">$tmp</span> = <span class="php-var">$this</span>-&gt;offsetGet( self::FRAG )) !== <span class="php-keyword1">NULL</span>) )
 </span><span id="885" class="l"><a href="#885">885 </a>            <span class="php-var">$dsn</span> .= <span class="php-quote">&quot;#</span><span class="php-var">$tmp</span><span class="php-quote">&quot;</span>;
 </span><span id="886" class="l"><a href="#886">886 </a>
 </span><span id="887" class="l"><a href="#887">887 </a>        <span class="php-keyword1">return</span> <span class="php-var">$dsn</span>;                                                                <span class="php-comment">// ==&gt;</span>

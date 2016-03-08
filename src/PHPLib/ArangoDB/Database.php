@@ -79,7 +79,7 @@ class Database extends \Milko\PHPLib\Database
 	 */
 	public function Drop( $theOptions = NULL )
 	{
-		ArangoDatabase::delete( $this->Server(), $this->databaseName() );
+		ArangoDatabase::delete( $this->Server()->Connection(), $this->databaseName() );
 
 	} // Drop.
 

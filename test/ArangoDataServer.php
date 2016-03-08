@@ -53,7 +53,6 @@ echo( (string)$test . " ==> " );
 echo( ( "$test" == $url ) ? "OK\n" : "FALIED\n" );
 
 echo( "\n====================================================================================\n\n" );
-exit;
 
 //
 // List server databases.
