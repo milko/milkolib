@@ -158,11 +158,9 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the collection name.</h4>
 	 *
-	 * This method should return the current collection name.
+	 * We overload this method to use the native object.
 	 *
-	 * Note that this method <em>must</em> return a non empty string.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * The options parameter is ignored here.
 	 *
 	 * @return string				The collection name.
 	 *
@@ -206,12 +204,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\Collection::insertMany()
-	 *
-	 * @example
-	 * // Insert one record.
-	 * $collection->insert( $record, [ '$doAll' => FALSE ] );<br/>
-	 * // Insert many records.<br/>
-	 * $collection->insert( $records, [ '$doAll' => TRUE ] );
 	 */
 	protected function doInsert( $theDocument, $theOptions )
 	{
@@ -260,12 +252,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::updateOne()
 	 * @uses \MongoDB\Collection::updateMany()
-	 *
-	 * @example
-	 * // Update one record.
-	 * $collection->update( $criteria, $query, [ '$doAll' => FALSE ] );<br/>
-	 * // Update many records.<br/>
-	 * $collection->update( $criteria, $query, [ '$doAll' => TRUE ] );
 	 */
 	protected function doUpdate( $theFilter, $theCriteria, $theOptions )
 	{
@@ -338,12 +324,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::deleteMany()
 	 *
 	 * @see kMONGO_OPTS_CL_DELETE
-	 *
-	 * @example
-	 * // Delete first record.
-	 * $collection->delete( $query, [ '$doAll' => FALSE ] );<br/>
-	 * // Delete all records.<br/>
-	 * $collection->delete( $query, [ '$doAll' => TRUE ] );
 	 */
 	protected function doDelete( $theFilter, $theOptions )
 	{
@@ -383,12 +363,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::find()
-	 *
-	 * @example
-	 * // Find first record.
-	 * $collection->find( $query, [ '$doAll' => FALSE ] );<br/>
-	 * // Find all records.<br/>
-	 * $collection->find( $query, [ '$doAll' => TRUE ] );
 	 */
 	protected function doFindByExample( $theDocument, $theOptions )
 	{
@@ -435,12 +409,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return Iterator				The found records.
 	 *
 	 * @uses FindByExample()
-	 *
-	 * @example
-	 * // Query first record.
-	 * $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0, '$limit' => 1 ] );<br/>
-	 * // Query all records.<br/>
-	 * $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );
 	 */
 	protected function doFindByQuery( $theQuery, $theOptions )
 	{
@@ -465,10 +433,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::count()
-	 *
-	 * @example
-	 * // Count records.
-	 * $collection->count( [ '$gt' => [ 'age' => 20 ] ] );
 	 */
 	protected function doCountByExample( $theDocument, $theOptions )
 	{
@@ -500,10 +464,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return int					The records count.
 	 *
 	 * @uses doCountByExample()
-	 *
-	 * @example
-	 * // Count records.
-	 * $collection->count( [ '$gt' => [ 'age' => 20 ] ] );
 	 */
 	protected function doCountByQuery( $theDocument, $theOptions )
 	{
@@ -530,12 +490,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::aggregate()
-	 *
-	 * @example
-	 * // Find first record.
-	 * $collection->find( $query, [ '$doAll' => FALSE ] );<br/>
-	 * // Find all records.<br/>
-	 * $collection->find( $query, [ '$doAll' => TRUE ] );
 	 */
 	protected function doMapReduce( $thePipeline, $theOptions )
 	{

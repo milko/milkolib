@@ -228,6 +228,8 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * We overload this method to return a ArangoDB connection object excluding eventual
 	 * database and collection.
 	 *
+	 * The options parameter is ignored here.
+	 *
 	 * @param array					$theOptions			Connection native options.
 	 * @return ArangoConnection		The native connection.
 	 *
@@ -274,8 +276,10 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * <h4>List server databases.</h4>
 	 *
-	 * In this class we ask the Arango client for the list of databases and extract their
-	 * names.
+	 * In this class we ask the Arango client for the list of user databases and extract
+	 * their names.
+	 *
+	 * The options parameter is ignored here.
 	 *
 	 * @param array					$theOptions			Database native options.
 	 * @return array				List of database names.
@@ -359,7 +363,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 *
 	 * This method is called by the constructor to complete the provided connection options
 	 * with the default values, these values are defined in the {@link includes.inc.php}
-	 * file.
+	 * file, except for the update policy which is hard coded here to <tt>last</tt>.
 	 *
 	 * @see kARANGO_OPTS_AUTH_DEFAULT kARANGO_OPTS_PERSIST_DEFAULT
 	 * @see kARANGO_OPTS_TIMEOUT_DEFAULT kARANGO_OPTS_RECONNECT_DEFAULT

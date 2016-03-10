@@ -75,6 +75,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to call the native object's method.
 	 *
+	 * The options parameter is ignored here.
+	 *
 	 * @param array					$theOptions			Collection native options.
 	 *
 	 * @uses Database()
@@ -104,6 +106,11 @@ class Collection extends \Milko\PHPLib\Collection
 	 * <h4>Drop the current collection.</h4>
 	 *
 	 * We overload this method to call the native object's method.
+	 *
+	 * Before dropping the collection we first check whether the collection has an ID: if
+	 * it is not <tt>NULL</tt> we drop it.
+	 *
+	 * The options parameter is ignored here.
 	 *
 	 * @param array					$theOptions			Collection native options.
 	 *
@@ -150,13 +157,34 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * This method will return a {@link ArangoCollection} object.
 	 *
+	 * We first instantiate a collection handler, then we check whether the collection
+	 * exists, in which case we return it; if not, we create a new one and return it.
+	 *
+	 * The options parameter is ignored here.
+	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param array					$theOptions			Native driver options.
 	 * @return mixed				Native collection object.
+	 *
+	 * @uses Database()
+	 * @uses ArangoCollectionHandler::has()
+	 * @uses ArangoCollectionHandler::get()
+	 * @uses ArangoCollectionHandler::create()
 	 */
 	protected function collectionNew( $theCollection, $theOptions = NULL )
 	{
-		return new ArangoCollection( $theCollection );								// ==>
+		//
+		// Get collection handler.
+		//
+		$collectionHandler = new ArangoCollectionHandler( $this->Database()->Connection() );
+
+		//
+		// Return existing collection.
+		//
+		if( $collectionHandler->has( $theCollection ) )
+			return $collectionHandler->get( $theCollection );
+
+		return $collectionHandler->create( $theCollection );						// ==>
 
 	} // collectionNew.
 
@@ -168,11 +196,9 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the collection name.</h4>
 	 *
-	 * This method should return the current collection name.
+	 * We overload this method to use the native object.
 	 *
-	 * Note that this method <em>must</em> return a non empty string.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * The options parameter is ignored here.
 	 *
 	 * @return string				The collection name.
 	 *
@@ -202,48 +228,31 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Insert one or more records.</h4>
 	 *
-	 * This method should insert the provided record or records, the method expects the
-	 * following parameters:
+	 * We overload the method to instantiate a document handler, we then check whether the
+	 * provided document parameter refers to many documents, in which case we iterate them
+	 * and save one by one; if not, we just save it.
 	 *
-	 * <ul>
-	 *	<li><b>$theRecord</b>: The record to be inserted.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> provided many records, <tt>FALSE</tt> provided
-	 * 		one record.
-	 * </ul>
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param array|object			$theRecord			The record to be inserted.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param array					$theOptions			Collection native options.
-	 * @return mixed|array			The record's unique identifier(s).
+	 * @param mixed					$theDocument		The document(s) to be inserted.
+	 * @param array					$theOptions			Driver native options.
+	 * @return mixed				The document's unique identifier(s).
 	 *
 	 * @uses Database()
 	 * @uses Connection()
 	 * @uses ArangoDocument::createFromArray()
-	 * @uses ArangoDocumentHandlern::save()
-	 *
-	 * @example
-	 * // Insert one record.
-	 * $collection->insert( $record, FALSE );<br/>
-	 * // Insert many records.
-	 * $collection->insert( $records, TRUE );
+	 * @uses ArangoDocumentHandler::save()
 	 */
-	protected function doInsert( $theRecord, $doMany, $theOptions = NULL )
+	protected function doInsert( $theDocument, $theOptions )
 	{
 		//
-		// Create document handler.
+		// Init local storage.
 		//
+		$do_all = $theOptions[ '$doAll' ];
 		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
 		//
 		// Handle many documents.
 		//
-		if( $doMany )
+		if( $do_all )
 		{
 			//
 			// Init local storage.
@@ -253,7 +262,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Iterate documents.
 			//
-			foreach( $theRecord as $record )
+			foreach( $theDocument as $record )
 			{
 				//
 				// Convert to document.
@@ -274,10 +283,10 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Convert to document.
 		//
-		if( is_array( $theRecord ) )
-			$theRecord = ArangoDocument::createFromArray( $theRecord );
+		if( is_array( $theDocument ) )
+			$theDocument = ArangoDocument::createFromArray( $theDocument );
 
-		return $documentHandler->save( $this->Connection(), $theRecord );			// ==>
+		return $handler->save( $this->Connection(), $theDocument );					// ==>
 
 	} // doInsert.
 
@@ -289,68 +298,49 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Update one or more records.</h4>
 	 *
-	 * This method should update the first or all records matching the provided search
-	 * criteria, the method expects the following parameters:
+	 * We overload the method to instantiate and execute a statement selecting the documents
+	 * matching the provided filter and apply the modifications to each one.
 	 *
-	 * <ul>
-	 *    <li><b>$theCriteria</b>: The modification criteria.
-	 *    <li><b>$theFilter</b>: The selection criteria.
-	 *    <li><b>$doMany</b>: <tt>TRUE</tt> update all records, <tt>FALSE</tt> update one
-	 *        record.
-	 *    <li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
+	 * The options parameter is ignored here.
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param array					$theCriteria		The modification criteria.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param array					$theOptions			Collection native options.
+	 * @param array					$theCriteria		The modification criteria.
+	 * @param array					$theOptions			Driver native options.
 	 * @return int					The number of modified records.
 	 *
-	 * @uses Connection()
-	 * @uses \ArangoDB\Collection::updateOne()
-	 * @uses \ArangoDB\Collection::updateMany()
-	 *
-	 * @see kMONGO_OPTS_CL_UPDATE
-	 *
-	 * @example
-	 * // Update one record.
-	 * $collection->update( $criteria, $query, FALSE );<br/>
-	 * // Insert many records.
-	 * $collection->update( $criteria, $query, TRUE );
+	 * @uses Database()
+	 * @uses ArangoDocumentHandler::update()
 	 */
-	protected function doUpdate( $theCriteria,
-								 $theFilter,
-								 $doMany,
-								 $theOptions = NULL )
+	protected function doUpdate( $theFilter, $theCriteria, $theOptions )
 	{
 		//
-		// Create selection statement.
+		// Init local storage.
 		//
-		$statement = new ArangoStatement( $this->Database()->Connection(), $theFilter );
+		$do_all = $theOptions[ '$doAll' ];
+		$connection = $this->Database()->Connection();
+		if( ! count( $theFilter ) )
+			$theFilter = [ 'query' => 'FOR r IN @@collection RETURN r',
+				'bindVars' => [ '@collection' => $this->collectionName() ] ];
 
 		//
-		// Execute the statement.
+		// Select documents.
 		//
+		$statement = new ArangoStatement( $connection, $theFilter );
 		$cursor = $statement->execute();
+		$count = $cursor->getCount();
 
 		//
-		// Handle many documents.
+		// Handle selection.
 		//
-		if( $doMany )
+		if( $count )
 		{
 			//
-			// Init local storage.
+			// Instantiate document handler.
 			//
-			$ids = [];
-			$count = $cursor->getCount();
+			$handler = new ArangoDocumentHandler( $connection );
 
 			//
-			// Iterate documents.
+			// Process selection.
 			//
 			foreach( $cursor as $document )
 			{
@@ -359,44 +349,36 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				foreach( $theCriteria as $key => $value )
 				{
+					//
+					// Replace field.
+					//
 					if( $value !== NULL )
 						$document->set( $key, $value );
+
+					//
+					// Remove field.
+					//
 					else
 						unset( $document->$key );
-				}
+
+				} // Iterating modification criteria.
 
 				//
 				// Update document.
 				//
 				$handler->update( $document );
-			}
 
-			return $count;															// ==>
+				//
+				// Handle only first.
+				//
+				if( ! $do_all )
+					return 1;														// ==>
 
-		} // Many documents.
+			} // Iterating documents.
 
-		//
-		// Get first document.
-		//
-		$document = $cursor->current();
+		} // Non empty selection.
 
-		//
-		// Update document.
-		//
-		foreach( $theCriteria as $key => $value )
-		{
-			if( $value !== NULL )
-				$document->set( $key, $value );
-			else
-				unset( $document->$key );
-		}
-
-		//
-		// Update document.
-		//
-		$handler->update( $document );
-
-		return 1;																	// ==>
+		return $count;																// ==>
 
 	} // doUpdate.
 
@@ -408,50 +390,83 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Replace a record.</h4>
 	 *
-	 * This method should replace the matching provided record, the method expects the
-	 * following parameters:
+	 * We overload the method to use native objects. We first make the selection, then we
+	 * replace the contents of the found documents with the contents of the provided
+	 * document.
 	 *
-	 * <ul>
-	 *	<li><b>$theRecord</b>: The replacement record.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 * </ul>
+	 * When removing the contents of the found documents we ignode the identifier, key and
+	 * revision: be sure not to provide these in the replacement document.
 	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param array					$theRecord			The replacement record.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param array					$theOptions			Collection native options.
-	 * @return int					The number of modified records.
+	 * @param array					$theDocument		The replacement document.
+	 * @param array					$theOptions			Driver native options.
+	 * @return int					The number of replaced records.
 	 *
-	 * @uses Connection()
-	 * @uses \ArangoDB\Collection::replaceOne()
-	 *
-	 * @see kMONGO_OPTS_CL_REPLACE
-	 *
-	 * @example
-	 * // Update one record.
-	 * $collection->replace( $record, $query, FALSE );<br/>
-	 * // Insert many records.
-	 * $collection->replace( $record, $query, TRUE );
+	 * @uses Database()
+	 * @uses ArangoDocumentHandler::replace()
 	 */
-	protected function doReplace( $theRecord, $theFilter, $theOptions = NULL )
+	protected function doReplace( $theFilter, $theDocument, $theOptions )
 	{
 		//
 		// Init local storage.
 		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_REPLACE;
+		$do_all = $theOptions[ '$doAll' ];
+		$connection = $this->Database()->Connection();
+		if( ! count( $theFilter ) )
+			$theFilter = [ 'query' => 'FOR r IN @@collection RETURN r',
+				'bindVars' => [ '@collection' => $this->collectionName() ] ];
 
 		//
-		// Replace a record.
+		// Select documents.
 		//
-		$result = $this->Connection()->replaceOne( $theFilter, $theRecord, $theOptions );
+		$statement = new ArangoStatement( $connection, $theFilter );
+		$cursor = $statement->execute();
+		$count = $cursor->getCount();
 
-		return $result->getModifiedCount();											// ==>
+		//
+		// Handle selection.
+		//
+		if( $count )
+		{
+			//
+			// Instantiate document handler.
+			//
+			$handler = new ArangoDocumentHandler( $connection );
+
+			//
+			// Process selection.
+			//
+			foreach( $cursor as $document )
+			{
+				//
+				// Remove document contents.
+				//
+				$fields = array_diff( array_keys( $document->getAll() ), ['_key'] );
+				foreach( $fields as $field )
+					unset( $document->$field );
+
+				//
+				// Update document contents.
+				//
+				foreach( $theDocument as $key => $value )
+					$document->set( $key, $value );
+
+				//
+				// Replace document.
+				//
+				$handler->replace( $document );
+
+				//
+				// Handle only first.
+				//
+				if( ! $do_all )
+					return 1;														// ==>
+
+			} // Iterating documents.
+
+		} // Non empty selection.
+
+		return $count;																// ==>
 
 	} // doReplace.
 
@@ -463,54 +478,65 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Delete the first or all records.</h4>
 	 *
-	 * This method should delete the first or all records matching the provided search
-	 * criteria, the method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
-	 *	<li><b>$doMany</b>: <tt>TRUE</tt> delete all records, <tt>FALSE</tt> delete first
-	 * 		record.
-	 * </ul>
-	 *
-	 * This method assumes that the server is connected, it is the responsibility of the
-	 * caller to ensure this.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * We overload the method to use native objects. We first make the selection, then we
+	 * remove one by one the found records.
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param array					$theOptions			Collection native options.
+	 * @param array					$theOptions			Driver native options.
 	 * @return int					The number of deleted records.
 	 *
-	 * @uses Connection()
-	 * @uses \ArangoDB\Collection::deleteOne()
-	 * @uses \ArangoDB\Collection::deleteMany()
-	 *
-	 * @see kMONGO_OPTS_CL_DELETE
-	 *
-	 * @example
-	 * // Delete first record.
-	 * $collection->delete( $query, FALSE );<br/>
-	 * // Delete all records.
-	 * $collection->delete( $query, TRUE );
+	 * @uses Database()
+	 * @uses ArangoDocumentHandler::remove()
 	 */
-	protected function doDelete( $theFilter, $doMany, $theOptions = NULL )
+	protected function doDelete( $theFilter, $theOptions )
 	{
 		//
 		// Init local storage.
 		//
-		if( $theOptions === NULL )
-			$theOptions = kMONGO_OPTS_CL_DELETE;
+		$do_all = $theOptions[ '$doAll' ];
+		$connection = $this->Database()->Connection();
+		if( ! count( $theFilter ) )
+			$theFilter = [ 'query' => 'FOR r IN @@collection RETURN r',
+						   'bindVars' => [ '@collection' => $this->collectionName() ] ];
 
 		//
-		// Delete one or more records.
+		// Select documents.
 		//
-		$result = ( $doMany )
-			? $this->Connection()->deleteMany( $theFilter, $theOptions )
-			: $this->Connection()->deleteOne( $theFilter, $theOptions );
+		$statement = new ArangoStatement( $connection, $theFilter );
+		$cursor = $statement->execute();
+		$count = $cursor->getCount();
 
-		return $result->getDeletedCount();											// ==>
+		//
+		// Handle selection.
+		//
+		if( $count )
+		{
+			//
+			// Instantiate document handler.
+			//
+			$handler = new ArangoDocumentHandler( $connection );
+
+			//
+			// Process selection.
+			//
+			foreach( $cursor as $document )
+			{
+				//
+				// Remove document.
+				//
+				$handler->remove( $document );
+
+				//
+				// Handle only first.
+				//
+				if( ! $do_all )
+					return 1;														// ==>
+
+			} // Iterating documents.
+
+		} // Non empty selection.
+
+		return $count;																// ==>
 
 	} // doDelete.
 
@@ -537,22 +563,13 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param boolean				$doMany				Single or multiple records flag.
-	 * @param array					$theOptions			Collection native options.
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 *
+	 * @uses Database()
 	 * @uses Connection()
-	 * @uses \ArangoDB\Collection::find()
-	 * @uses \ArangoDB\Collection::findOne()
-	 *
-	 * @see kMONGO_OPTS_CL_FIND
-	 *
-	 * @example
-	 * // Find first record.
-	 * $collection->find( $query, FALSE );<br/>
-	 * // Find all records.
-	 * $collection->find( $query, TRUE );
+	 * @uses ArangoDocumentHandler::byExample()
 	 */
 	protected function doFindByExample( $theDocument, $theOptions )
 	{
@@ -599,30 +616,31 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Query the collection.</h4>
 	 *
-	 * We overload this method to use the {@link doFind()} method, since the latter method
-	 * uses the example document as a query.
+	 * We overload this method to create a statement and execute it. The provided query
+	 * should be an array with the <tt>query</tt> key.
 	 *
-	 * @param mixed					$theQuery			The selection criteria.
+	 * The options parameter is ignored here.
+	 *
+	 * @param array					$theQuery			The selection criteria.
 	 * @param array					$theOptions			Collection native options.
 	 * @return Iterator				The found records.
 	 *
-	 * @uses FindByExample()
-	 *
-	 * @example
-	 * // Query first record.
-	 * $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0, '$limit' => 1 ] );<br/>
-	 * // Query all records.<br/>
-	 * $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );
+	 * @uses Database()
+	 * @uses ArangoStatement::execute()
 	 */
 	protected function doFindByQuery( $theQuery, $theOptions )
 	{
 		//
+		// Normalise query.
+		//
+		if( ! count( $theQuery ) )
+			$theFilter = [ 'query' => 'FOR r IN @@collection RETURN r',
+						   'bindVars' => [ '@collection' => $this->collectionName() ] ];
+
+		//
 		// Create statement.
 		//
-		$statement
-			= new ArangoStatement(
-				$this->Database()->Connection(),
-				array( 'query' => $theQuery ) );
+		$statement = new ArangoStatement( $this->Database()->Connection(), $theQuery );
 
 		return $statement->execute();												// ==>
 
@@ -636,19 +654,14 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return a find by example record count.</h4>
 	 *
-	 * We overload this method to use the {@link count()} method, since the latter method
-	 * uses the example document as a query.
+	 * We overload this method to use the {@link doFindByExample()} method and return the
+	 * cursor's count.
 	 *
 	 * @param array					$theDocument		The example document.
 	 * @param array					$theOptions			Driver native options.
 	 * @return int					The records count.
 	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Collection::count()
-	 *
-	 * @example
-	 * // Count records.
-	 * $collection->count( [ '$gt' => [ 'age' => 20 ] ] );
+	 * @uses doFindByExample()
 	 */
 	protected function doCountByExample( $theDocument, $theOptions )
 	{
@@ -664,18 +677,14 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return a find by query record count.</h4>
 	 *
-	 * We overload this method to use the {@link doCountByExample()} method, since the
-	 * latter method uses the example document as a query.
+	 * We overload this method to use the {@link doFindByQuery()} method and return the
+	 * cursor's count.
 	 *
 	 * @param array					$theDocument		The example document.
 	 * @param array					$theOptions			Driver native options.
 	 * @return int					The records count.
 	 *
-	 * @uses doCountByExample()
-	 *
-	 * @example
-	 * // Count records.
-	 * $collection->count( [ '$gt' => [ 'age' => 20 ] ] );
+	 * @uses doFindByQuery()
 	 */
 	protected function doCountByQuery( $theDocument, $theOptions )
 	{
@@ -691,23 +700,15 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Execute an aggregation query.</h4>
 	 *
-	 * We overload this method to use the {@link \MongoDB\Collection::aggregate()} method.
-	 *
-	 * We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
-	 * options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 * ArangoDB does not have an aggregation framework such as MongoDB, in this class we
+	 * simply call the {@link doFindByQuery()} method replacing the pipeline parameter with
+	 * the query.
 	 *
 	 * @param mixed					$thePipeline		The aggregation pipeline.
 	 * @param array					$theOptions			Driver native options.
 	 * @return Iterator				The found records.
 	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Collection::aggregate()
-	 *
-	 * @example
-	 * // Find first record.
-	 * $collection->find( $query, [ '$doAll' => FALSE ] );<br/>
-	 * // Find all records.<br/>
-	 * $collection->find( $query, [ '$doAll' => TRUE ] );
+	 * @uses doFindByQuery()
 	 */
 	protected function doMapReduce( $thePipeline, $theOptions )
 	{

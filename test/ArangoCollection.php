@@ -1,12 +1,12 @@
 <?php
 
 /**
- * MongoDB server object test suite.
+ * ArangoDB server object test suite.
  *
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
- *	@since		18/02/2016
+ *	@since		08/03/2016
  */
 
 //
@@ -23,15 +23,21 @@ require_once( "functions.php" );
 // Reference class.
 //
 use Milko\PHPLib\MongoDB\Collection;
+use triagens\ArangoDb\Exception as ArangoException;
+
+//
+// Enable exception logging.
+//
+ArangoException::enableLogging();
 
 //
 // Instantiate object.
 //
-echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
-$url = "mongodb://localhost:27017/test_milkolib/test_collection";
-echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
-$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
-echo( '$result = (string)$server;' . "\n" );
+echo( '$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n" );
+$url = "tcp://localhost:8529/test_milkolib/test_collection";
+echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
+$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+echo( '$result = (string)$test;' . "\n" );
 echo( (string)$server . " ==> " );
 echo( ( "$server" == $url ) ? "OK\n" : "FALIED\n" );
 
@@ -82,8 +88,8 @@ echo( "\n" );
 // Insert many records.
 //
 echo( "Insert many records:\n" );
-echo( '$result = $test->Insert( [ ["_id" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", , "color" => "red" ], [ "_id" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ \'$doAll\' => TRUE ] );' . "\n" );
-$result = $test->Insert( [ ["_id" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", "color" => "red" ], [ "_id" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ '$doAll' => TRUE ] );
+echo( '$result = $test->Insert( [ ["_key" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", , "color" => "red" ], [ "_key" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ \'$doAll\' => TRUE ] );' . "\n" );
+$result = $test->Insert( [ ["_key" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", "color" => "red" ], [ "_key" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ '$doAll' => TRUE ] );
 print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
@@ -104,7 +110,7 @@ echo( "\n" );
 echo( "Find first record:\n" );
 echo( '$result = $test->FindByExample( [ "color" => "red" ], [ \'$limit\' => 1 ] );' . "\n" );
 $result = $test->FindByExample( [ "color" => "red" ], [ '$limit' => 1 ] );
-print_r( $result );
+print_r( $result->getAll() );
 
 echo( "\n" );
 
@@ -114,7 +120,7 @@ echo( "\n" );
 echo( "Find all records:\n" );
 echo( '$result = $test->FindByExample( [ "color" => "red" ] );' . "\n" );
 $result = $test->FindByExample( [ "color" => "red" ] );
-print_r( $result );
+print_r( $result->getAll() );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -122,12 +128,12 @@ echo( "\n=======================================================================
 // Update first record.
 //
 echo( "Update first record:\n" );
-echo( '$result = $test->Update( [ \'$set\' => [ "color" => "blue", "status" => "changed" ] ], [ "color" => "green" ], [ \'$doAll\' => FALSE ] );' . "\n" );
-$result = $test->Update( [ '$set' => [ "color" => "blue", "status" => "changed" ] ], [ "color" => "green" ], [ '$doAll' => FALSE ] );
+echo( '$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN test_collection FILTER r.color == \'green\' RETURN r"], [ \'$doAll\' => FALSE ] );' . "\n" );
+$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN test_collection FILTER r.color == 'green' RETURN r"], [ '$doAll' => FALSE ] );
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "changed" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "changed" ] );
-print_r( $result );
+print_r( $result->getAll() );
 
 echo( "\n" );
 
@@ -135,12 +141,12 @@ echo( "\n" );
 // Update all records.
 //
 echo( "Update all records:\n" );
-echo( '$result = $test->Update( [ \'$set\' => [ "color" => "yellow", "status" => "was red" ] ], [ "color" => "red" ] );' . "\n" );
-$result = $test->Update( [ '$set' => [ "color" => "yellow", "status" => "was red" ] ], [ "color" => "red" ] );
+echo( '$result = $test->Update( [ "color" => "yellow", "status" => "was red" ], ["query" => "FOR r IN test_collection FILTER r.color == \'red\' RETURN r"] );' . "\n" );
+$result = $test->Update( [ "color" => "yellow", "status" => "was red" ], ["query" => "FOR r IN test_collection FILTER r.color == 'red' RETURN r"] );
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "was red" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "was red" ] );
-print_r( $result );
+print_r( $result->getAll() );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -148,12 +154,12 @@ echo( "\n=======================================================================
 // Replace a record.
 //
 echo( "Replace a record:\n" );
-echo( '$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], [ "color" => "blue" ] );' . "\n" );
-$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], [ "color" => "blue" ] );
+echo( '$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], ["query" => "FOR r IN test_collection FILTER r.color == \'blue\' RETURN r"] );' . "\n" );
+$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], ["query" => "FOR r IN test_collection FILTER r.color == 'blue' RETURN r"] );
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "replaced" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "replaced" ] );
-print_r( $result );
+print_r( $result->getAll() );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -161,8 +167,8 @@ echo( "\n=======================================================================
 // Count by query.
 //
 echo( "Count by query:\n" );
-echo( '$result = $test->CountByQuery( [ \'$or\' => [ [ \'data\' => \'XXX\' ], [ \'status\' => \'replaced\' ] ] ] );' . "\n" );
-$result = $test->CountByQuery( [ '$or' => [ [ 'data' => 'XXX' ], [ 'status' => 'replaced' ] ] ] );
+echo( '$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.data == \'XXX\' OR r.status == \'replaced\' RETURN r"] );' . "\n" );
+$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.data == 'XXX' OR r.status == 'replaced' RETURN r"] );
 var_dump( $result );
 
 echo( "\n" );
@@ -171,9 +177,9 @@ echo( "\n" );
 // Query records.
 //
 echo( "Query records:\n" );
-echo( '$result = $test->FindByQuery( [ \'$or\' => [ [ \'data\' => \'XXX\' ], [ \'status\' => \'replaced\' ] ] ] );' . "\n" );
-$result = $test->FindByQuery( [ '$or' => [ [ 'data' => 'XXX' ], [ 'status' => 'replaced' ] ] ] );
-print_r( $result );
+echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.data == \'XXX\' OR r.status == \'replaced\' RETURN r"] );' . "\n" );
+$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.data == 'XXX' OR r.status == 'replaced' RETURN r"] );
+print_r( $result->getAll() );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -181,14 +187,9 @@ echo( "\n=======================================================================
 // Aggregate records.
 //
 echo( "Aggregate records:\n" );
-$project = [ "colour" => '$color' ];
-$group = [ "_id" => '$colour', "count" => [ '$sum' => 1 ] ];
-$sort = [ "count" => 1 ];
-$pipeline = [ [ '$project' => $project ], [ '$group' => $group ], [ '$sort' => $sort ] ];
-echo( '$pipeline = ' );
-print_r( $pipeline );
-$result = $test->MapReduce( $pipeline );
-print_r( $result );
+echo( '$result = $test->MapReduce( ["query" => "FOR r IN test_collection COLLECT theColour = r.color WITH COUNT INTO theCount RETURN{ theColour, theCount }"] );' . "\n" );
+$result = $test->MapReduce( ["query" => "FOR r IN test_collection COLLECT theColour = r.color WITH COUNT INTO theCount RETURN{ theColour, theCount }"] );
+print_r( $result->getAll() );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -196,12 +197,12 @@ echo( "\n=======================================================================
 // Delete first record.
 //
 echo( "Delete first record:\n" );
-echo( '$result = $test->Delete( [ "color" => "pink" ], [ \'$doAll\' => FALSE ] );' . "\n" );
-$result = $test->Delete( [ "color" => "pink" ], [ '$doAll' => FALSE ] );
+echo( '$result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.color == \'pink\' RETURN r"], [ \'$doAll\' => FALSE ] );' . "\n" );
+$result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.color == 'pink' RETURN r"], [ '$doAll' => FALSE ] );
 var_dump( $result );
-echo( '$result = $test->FindByExample( [ "color" => "pink" ] );' . "\n" );
+echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
-print_r( $result );
+print_r( $result->getAll() );
 
 echo( "\n" );
 
@@ -209,12 +210,12 @@ echo( "\n" );
 // Delete all selected records.
 //
 echo( "Delete all selected records:\n" );
-echo( '$result = $test->Delete( [ "data" => "XXX" ] );' . "\n" );
-$result = $test->Delete( [ "data" => "XXX" ] );
+echo( '$result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.data == \'XXX\' RETURN r"], [ \'$doAll\' => TRUE ] );' . "\n" );
+$result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.data == 'XXX' RETURN r"], [ '$doAll' => TRUE ] );
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
-print_r( $result );
+print_r( $result->getAll() );
 
 echo( "\n" );
 
@@ -227,7 +228,7 @@ $result = $test->Delete();
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
-print_r( $result );
+print_r( $result->getAll() );
 
 
 ?>

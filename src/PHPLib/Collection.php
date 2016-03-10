@@ -336,6 +336,8 @@ abstract class Collection extends Container
 	 * a list of documents was provided, the method will return the list of identifiers in
 	 * order.
 	 *
+	 * By default the operation will assume we provided a single document.
+	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param mixed					$theDocument		The document(s) to be inserted.
@@ -385,6 +387,8 @@ abstract class Collection extends Container
 	 * by the filter, or just the first one: provide <tt>'$doAll' => FALSE</tt> to only
 	 * modify the first document; by default this method will update all matched documents.
 	 *
+	 * By default the operation will process all documents in the selection.
+	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param array					$theCriteria		The modification criteria.
@@ -431,6 +435,8 @@ abstract class Collection extends Container
 	 *	<li><b>$theOptions</b>: An array of options representing driver native options.
 	 * </ul>
 	 *
+	 * By default the operation will process all documents in the selection.
+	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param array					$theDocument		The replacement document.
@@ -446,7 +452,10 @@ abstract class Collection extends Container
 		// Set default options.
 		//
 		if( $theOptions === NULL )
-			$theOptions = [];
+			$theOptions = [ '$doAll' => TRUE ];
+		elseif( ! array_key_exists( '$doAll', $theOptions ) )
+			$theOptions[ '$doAll' ] = TRUE;
+
 
 		return $this->doReplace( $theFilter, $theDocument, $theOptions );			// ==>
 
@@ -471,6 +480,8 @@ abstract class Collection extends Container
 	 * The options parameter can be used to indicate whether to delete all records selected
 	 * by the filter, or just the first one: provide <tt>'$doAll' => FALSE</tt> to only
 	 * delete the first document; by default this method will delete all matched documents.
+	 *
+	 * By default the operation will process all documents in the selection.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *

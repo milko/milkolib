@@ -69,7 +69,10 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>Drop the current database.</h4>
 	 *
-	 * We overload this method to call the native object's method.
+	 * We overload this method to first check if the database exists, if that is the case,
+	 * we call the native object's method to delete it.
+	 *
+	 * The options parameter is ignored here.
 	 *
 	 * @param array					$theOptions			Native driver options.
 	 *
@@ -79,7 +82,11 @@ class Database extends \Milko\PHPLib\Database
 	 */
 	public function Drop( $theOptions = NULL )
 	{
-		ArangoDatabase::delete( $this->Server()->Connection(), $this->databaseName() );
+		//
+		// Check if database exists.
+		//
+		if( in_array( $theDatabase, $this->Server()->ListDatabases() ) )
+			ArangoDatabase::delete( $this->Server()->Connection(), $this->databaseName() );
 
 	} // Drop.
 
@@ -100,7 +107,12 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>Return a native database object.</h4>
 	 *
-	 * We overload this method to instantiate a native object.
+	 * We overload this method to instantiate a native object, we first create a server
+	 * connection using the parent data source options, then, if the database does not
+	 * exist we create it, we then add the database to the newly created server connection
+	 * and return it.
+	 *
+	 * The options parameter is ignored here.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param array					$theOptions			Native driver options.
@@ -143,6 +155,8 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * We overload this method to use the native object.
 	 *
+	 * The options parameter is ignored here.
+	 *
 	 * @param array					$theOptions			Native driver options.
 	 * @return string				The database name.
 	 *
@@ -174,8 +188,12 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>List server databases.</h4>
 	 *
-	 * We overload this method to use the native driver object, we only consider the non
-	 * system collection names in the returned value.
+	 * We overload this method to instantiate a collection handler from which we get the
+	 * collection names.
+	 *
+	 * We only consider the non system collection names in the returned value.
+	 *
+	 * The options parameter is ignored here.
 	 *
 	 * @param array					$theOptions			Collection native options.
 	 * @return array				List of database names.
