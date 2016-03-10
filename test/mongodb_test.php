@@ -34,9 +34,20 @@ var_dump( $result->getInsertedId() );
 $result = $collection->insertMany( [
 	[ "_id" => "pippo", "data" => "Stuff" ],
 	[ "property" => 25 ],
-	[ "baba" => "bibi" ] ] );
+	[ "baba" => "bibi" ],
+	[ "key" => "XXX", "binary" => new MongoDB\BSON\Binary( 0xFFFFAAAA, MongoDB\BSON\Binary::TYPE_GENERIC ) ],
+	[ "key" => "YYY", "binary" => new MongoDB\BSON\Binary( 'pippo', MongoDB\BSON\Binary::TYPE_GENERIC ) ]] );
 var_dump( $result->getInsertedIds() );
-
+echo( "\n=====================\n" );
+$result = (array) $collection->find()->toArray()[ 5 ]->bsonSerialize();
+print_r( $result );
+var_dump( $result[ 'binary' ] );
+var_dump( (int) $result[ 'binary' ]->getData() );
+var_dump( dechex( (int) $result[ 'binary' ]->getData() ) );
+echo( "\n=====================\n" );
+$result = (array) $collection->find()->toArray()[ 6 ]->bsonSerialize();
+var_dump( $result[ 'binary' ] );
+var_dump( $result[ 'binary' ]->getData() );
 exit;
 
 /*===================================================================================
