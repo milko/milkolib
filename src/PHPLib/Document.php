@@ -8,7 +8,7 @@
 
 namespace Milko\PHPLib;
 
-use Milko\PHPLib\Document;
+use Milko\PHPLib\Container;
 
 /*=======================================================================================
  *																						*
