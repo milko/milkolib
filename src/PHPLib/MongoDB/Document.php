@@ -42,60 +42,9 @@ class Document extends \Milko\PHPLib\Document
 
 /*=======================================================================================
  *																						*
- *						PUBLIC IDENTIFIER MANAGEMENT INTERFACE							*
+ *						PUBLIC DOCUMENT SERIALISATION INTERFACE							*
  *																						*
  *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	Key																				*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Handle the document unique key.</h4>
-	 *
-	 * We overload this method to consider the <tt>_id</tt> property as the document key.
-	 *
-	 * @param mixed					$theValue			Value to set or operation.
-	 * @return mixed				Document old or new key.
-	 *
-	 * @uses manageProperty()
-	 */
-	public function Key( $theValue = NULL )
-	{
-		return $this->manageProperty( '_id', $theValue );							// ==>
-
-	} // Key.
-
-
-	/*===================================================================================
-	 *	ID																				*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Handle the document unique identifier.</h4>
-	 *
-	 * We overload this method to consider the <tt>_id</tt> property as the document key.
-	 *
-	 * @param mixed					$theValue			Value to set or operation.
-	 * @return mixed				Document old or new identifier.
-	 *
-	 * @uses manageProperty()
-	 */
-	public function ID( $theValue = NULL )
-	{
-		return $this->manageProperty( '_id', $theValue );							// ==>
-
-	} // ID.
-
-
-
-	/*=======================================================================================
-	 *																						*
-	 *						PUBLIC DOCUMENT SERIALISATION INTERFACE							*
-	 *																						*
-	 *======================================================================================*/
 
 
 
@@ -113,6 +62,45 @@ class Document extends \Milko\PHPLib\Document
 	 * @uses toArray()
 	 */
 	public function Record()								{	return $this->toArray();	}
+
+
+
+/*=======================================================================================
+ *																						*
+ *						PROTECTED IDENTIFIER MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	getKeyOffset																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document key offset.</h4>
+	 *
+	 * In this class we consider by default the <tt>_id</tt> offset as the document key,
+	 * derived classes may use another property if necessary.
+	 *
+	 * @return string				Document key offset.
+	 */
+	public function getKeyOffset()										{	return '_id';	}
+
+
+	/*===================================================================================
+	 *	getIdOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document identifier offset.</h4>
+	 *
+	 * In this class we consider by default the <tt>_id</tt> offset as the document
+	 * identifier or reference, derived classes may use another property if necessary.
+	 *
+	 * @return string				Document identifier offset.
+	 */
+	public function getIdOffset()										{	return '_id';	}
 
 
 

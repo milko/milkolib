@@ -146,6 +146,49 @@ echo( '$result = $collection->FindByExample( [ "_key" => $result ] );' . "\n" );
 $result = $collection->FindByExample( [ "_key" => $result ] );
 print_r( $result->getAll() );
 
+echo( "\n====================================================================================\n\n" );
+
+//
+// Create document.
+//
+echo( "Create document:\n" );
+echo( '$test = new Milko\PHPLib\ArangoDB\Document( $result->getAll()[ 0 ] );' . "\n" );
+$test = new Milko\PHPLib\ArangoDB\Document( $result->getAll()[ 0 ] );
+print_r( $test );
+
+echo( "\n" );
+
+//
+// Get ID.
+//
+echo( "Get ID:\n" );
+echo( '$result = $test->ID();' . "\n" );
+$result = $test->ID();
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Get key.
+//
+echo( "Get key:\n" );
+echo( '$result = $test->Key();' . "\n" );
+$result = $test->Key();
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Get serialised.
+//
+echo( "Get serialised:\n" );
+echo( '$test = new Milko\PHPLib\ArangoDB\Document( $test );' . "\n" );
+$test = new Milko\PHPLib\ArangoDB\Document( $test );
+print_r( $test );
+echo( '$result = $test->Record();' . "\n" );
+$result = $test->Record();
+print_r( $result );
+
 
 
 ?>

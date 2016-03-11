@@ -270,8 +270,37 @@ echo( "\n" );
 //
 echo( "Add a document:\n" );
 $id = $documentHandler->save( $collection, $document );
-print_r( $id );
+echo( "Document: " );
 print_r( $document );
+echo( "ID: " );
+var_dump( $id );
+echo( "getId: " );
+var_dump( $document->getId() );
+echo( "getInternalId: " );
+var_dump( $document->getInternalId() );
+echo( "getKey: " );
+var_dump( $document->getKey() );
+echo( "getInternalKey: " );
+var_dump( $document->getInternalKey() );
+echo( "\n" );
+
+//
+// Get the document.
+//
+echo( "Get the document:\n" );
+$document = $documentHandler->getById($collection->getId(), $id );
+echo( "Document: " );
+print_r( $document );
+echo( "ID: " );
+var_dump( $id );
+echo( "getId: " );
+var_dump( $document->getId() );
+echo( "getInternalId: " );
+var_dump( $document->getInternalId() );
+echo( "getKey: " );
+var_dump( $document->getKey() );
+echo( "getInternalKey: " );
+var_dump( $document->getInternalKey() );
 echo( "\n" );
 
 //

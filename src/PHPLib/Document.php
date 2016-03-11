@@ -23,14 +23,27 @@ use Milko\PHPLib\Document;
  * database record instances.
  *
  * This class stores the document data in its inherited array data member and features a
- * set of virtual methods that should be implemented in concrete derived classes:
+ * set of methods to handle the document identifiers:
  *
  * <ul>
- * 	<li><b>{@link Key()}</b>: Manage the document key value.
- * 	<li><b>{@link ID()}</b>: Manage the document identifier value.
+ * 	<li><b>{@link ID()}</b>: Retrieve the document identifier or reference.
+ * 	<li><b>{@link Key()}</b>: Manage the document unique key value.
  * 	<li><b>{@link Record()}</b>: Return a structure compatible with the related database
  * 		engine.
  * </ul>
+ *
+ * The document {@link Key()} represents the <em>unique identifier</em> of the document
+ * within its container, which should be at least its collection, this property should be
+ * set by clients.
+ *
+ * The document {@link ID()} represents the <em>document reference</em>, which is the
+ * value used by other documents to reference the current one. It is the document's unique
+ * identifier within the top level container. In other words, if a database features a
+ * document identifier at the database level, this would be the one, while the unique
+ * identifier at the collection level would be handled by the {@link Key()}. This property
+ * should be set by the database, clients may only access it in read-only mode.
+ *
+ * Derived classes should use the above methods to handle unique keys and references.
  *
  *	@package	Core
  *
@@ -73,15 +86,21 @@ abstract class Document extends Container
 	 * </ul>
 	 *
 	 * The document key represents a unique value that identifies the document within its
-	 * container which is its collection, the database should allow this value to be set.
+	 * collection, the database should allow this value to be set.
 	 *
-	 * Concrete derived classes should implement this method and manage the specific
-	 * document property related to the database engine.
+	 * This method makes use of the virtual {@link getKeyOffset()} method to determine
+	 * which property represents the document key.
 	 *
 	 * @param mixed					$theValue			Value to set or operation.
 	 * @return mixed				Document old or new key.
+	 *
+	 * @uses getKeyOffset()
 	 */
-	abstract public function Key( $theValue = NULL );
+	public function Key( $theValue = NULL )
+	{
+		return $this->manageProperty( $this->getKeyOffset(), $theValue );			// ==>
+
+	} // Key.
 
 
 	/*===================================================================================
@@ -91,41 +110,21 @@ abstract class Document extends Container
 	/**
 	 * <h4>Handle the document unique identifier.</h4>
 	 *
-	 * This method should set or retrieve the document unique identifier, this value should
-	 * represent the unique key of the document within its enclosing database.
+	 * This method should return the document unique identifier, this value should represent
+	 * the document's reference, or its unique identifier at the top container level.
 	 *
-	 * The method expects a single parameter which represents either the operation or the
-	 * value to be set:
+	 * This value should be set by the database and should be used to reference documents
+	 * from other documents.
 	 *
-	 * <ul>
-	 *	<li><tt>NULL</tt>: Return the current identifier.
-	 *	<li><tt>FALSE</tt>: Delete the identifier and return the old value.
-	 *	<li><em>other</em>: Set the identifier with the provided value and return it.
-	 * </ul>
-	 *
-	 * The document identifier represents a unique value that identifies the document within
-	 * its container which is its database. The database may or may not allow such value to
-	 * be set, also, some databases might not have a distinction between the unique key or
-	 * identifier, to provide a consistent behaviour you should implement the method as
-	 * follows:
-	 *
-	 * <ul>
-	 * 	<li><em>Protected</em>: If the identifier cannot be modified by clients, the method
-	 * 		should simply return the current value. This means that whenever setting a value
-	 * 		in this case, you should always take the value returned by this method.
-	 * 	<li><em>Only one identifier</em>: If there is no distinction between key and
-	 * 		identifier in the database, you should either use the same document property, or
-	 * 		assign a specific property to the key and use the document identifier in this
-	 * 		method.
-	 * </ul>
-	 *
-	 * Concrete derived classes should implement this method and manage the specific
-	 * document property related to the database engine.
-	 *
-	 * @param mixed					$theValue			Value to set or operation.
 	 * @return mixed				Document old or new identifier.
+	 *
+	 * @uses getIdOffset()
 	 */
-	abstract public function ID( $theValue = NULL );
+	public function ID()
+	{
+		return $this->offsetGet( $this->getIdOffset() );							// ==>
+
+	} // ID.
 
 
 
@@ -150,6 +149,45 @@ abstract class Document extends Container
 	 * @return mixed				Database native document.
 	 */
 	abstract public function Record();
+
+
+
+/*=======================================================================================
+ *																						*
+ *						PROTECTED IDENTIFIER MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	getKeyOffset																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document key offset.</h4>
+	 *
+	 * This method should return the document key offset, concrete derived classes should
+	 * implement this method.
+	 *
+	 * @return string				Document key offset.
+	 */
+	abstract public function getKeyOffset();
+
+
+	/*===================================================================================
+	 *	getIdOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document identifier offset.</h4>
+	 *
+	 * This method should return the document identifier or reference offset, concrete
+	 * derived classes should implement this method.
+	 *
+	 * @return string				Document identifier offset.
+	 */
+	abstract public function getIdOffset();
 
 
 

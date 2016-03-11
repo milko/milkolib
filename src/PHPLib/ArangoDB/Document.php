@@ -63,61 +63,32 @@ class Document extends \Milko\PHPLib\Document
 		// Handle objects.
 		//
 		if( $theValue instanceof ArangoDocument )
-			$theValue = $theValue->getAll();
+		{
+			//
+			// Load properties.
+			//
+			$document = $theValue->getAll();
+
+			//
+			// Add internal properties.
+			//
+			$document[ $this->getIdOffset() ] = $theValue->getInternalId();
+			$document[ $this->getRevOffset() ] = $theValue->getRevision();
+
+			//
+			// Call parent constructor.
+			//
+			parent::__construct( $document );
+
+		} // ArangoDocument.
 
 		//
 		// Call parent constructor.
 		//
-		parent::__construct( $theValue );
+		else
+			parent::__construct( $theValue );
 
 	} // Constructor.
-
-
-
-/*=======================================================================================
- *																						*
- *						PUBLIC IDENTIFIER MANAGEMENT INTERFACE							*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	Key																				*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Handle the document unique key.</h4>
-	 *
-	 * We overload this method to consider the <tt>_key</tt> property as the document key.
-	 *
-	 * @param mixed					$theValue			Value to set or operation.
-	 * @return mixed				Document old or new key.
-	 *
-	 * @uses manageProperty()
-	 */
-	public function Key( $theValue = NULL )
-	{
-		return $this->manageProperty( '_key', $theValue );							// ==>
-
-	} // Key.
-
-
-	/*===================================================================================
-	 *	ID																				*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Handle the document unique identifier.</h4>
-	 *
-	 * We overload this method to consider the <tt>_id</tt> property as the document
-	 * identifier; this method will not allow modifying the value, since the database does
-	 * not allow this, so it will simply return the current value.
-	 *
-	 * @param mixed					$theValue			Value to set or operation.
-	 * @return mixed				Document old or new identifier.
-	 */
-	public function ID( $theValue = NULL )			{	return $this->offsetGet( '_id' );	}
 
 
 
@@ -144,9 +115,88 @@ class Document extends \Milko\PHPLib\Document
 	 */
 	public function Record()
 	{
-		return ArangoDocument::createFromArray( $this->toArray() );
+		//
+		// Clone document.
+		//
+		$class = get_class( $this );
+		$document = new $class( $this->toArray() );
+
+		//
+		// Save and remove internal properties.
+		//
+		$id = $document->manageProperty( $this->getIdOffset(), FALSE );
+		$rev = $document->manageProperty( $this->getRevOffset(), FALSE );
+
+		//
+		// Create ArangoDB document.
+		//
+		$document = ArangoDocument::createFromArray( $document->toArray() );
+
+		//
+		// Set internal properties.
+		//
+		if( $id !== NULL )
+			$document->setInternalId( $id );
+		if( $rev !== NULL )
+			$document->setRevision( $rev );
+
+		return $document;															// ==>
 
 	} // Record();
+
+
+
+/*=======================================================================================
+ *																						*
+ *						PROTECTED IDENTIFIER MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	getKeyOffset																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document key offset.</h4>
+	 *
+	 * In this class we consider by default the <tt>_key</tt> offset as the document key,
+	 * derived classes may use another property if necessary.
+	 *
+	 * @return string				Document key offset.
+	 */
+	public function getKeyOffset()										{	return '_key';	}
+
+
+	/*===================================================================================
+	 *	getIdOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document identifier offset.</h4>
+	 *
+	 * In this class we consider by default the <tt>_id</tt> offset as the document
+	 * identifier or reference, derived classes may use another property if necessary.
+	 *
+	 * @return string				Document identifier offset.
+	 */
+	public function getIdOffset()										{	return '_id';	}
+
+
+	/*===================================================================================
+	 *	getRevOffset																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document revision offset.</h4>
+	 *
+	 * In this class we consider by default the <tt>_rev</tt> offset as the document
+	 * revision.
+	 *
+	 * @return string				Document revision offset.
+	 */
+	public function getRevOffset()										{	return '_rev';	}
 
 
 

@@ -335,7 +335,7 @@ class Container extends \ArrayObject
 	 *	 </ul>
 	 * </ul>
 	 *
-	 * @param mixed					$theProperty		Property offset.
+	 * @param strin					$theProperty		Property offset.
 	 * @param mixed					$theValue			Value or operation.
 	 * @return mixed				Old or current property value.
 	 *
