@@ -253,7 +253,7 @@ collections.</p>
 $database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...<br/></p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#33-955" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#33-982" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
 		<br>
 	</div>
 
@@ -1012,6 +1012,47 @@ should be an array with the <tt>query</tt> key.</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="doCount" id="_doCount">
+
+			<td class="attributes"><code>
+				 protected 
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doCount">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#820-840" title="Go to source code">doCount</a>( )</code>
+
+			<div class="description short">
+				<h4>Return total number of records in collection.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return total number of records in collection.</h4>
+
+<p>We overload this method to use the <a href="ArangoCollectionHandler::count()">ArangoCollectionHandler::count()</a> method.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br>The records count.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
+							ArangoCollectionHandler::count()<br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="doCountByExample" id="_doCountByExample">
 
 			<td class="attributes"><code>
@@ -1023,7 +1064,7 @@ should be an array with the <tt>query</tt> key.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCountByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#820-867" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#847-894" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return a find by example record count.</h4>
@@ -1072,7 +1113,7 @@ cursor's count.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCountByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#874-903" title="Go to source code">doCountByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#901-930" title="Go to source code">doCountByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return a find by query record count.</h4>
@@ -1120,7 +1161,7 @@ cursor's count.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doMapReduce">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#910-952" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#937-979" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Execute an aggregation query.</h4>
@@ -1173,6 +1214,7 @@ the query.</p>
 				<code><a href="class-Milko.PHPLib.Collection.html#_FindByQuery">FindByQuery()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_Insert">Insert()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_MapReduce">MapReduce()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Collection.html#_RecordCount">RecordCount()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_Replace">Replace()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_Server">Server()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_Update">Update()</a></code>, 

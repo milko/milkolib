@@ -58,6 +58,7 @@ use Milko\PHPLib\Document;
  * 		<li><b>{@link Update()}</b>: Update one or more records.
  * 		<li><b>{@link Replace()}</b>: Replace one or more records.
  * 		<li><b>{@link Delete()}</b>: Delete one or more records.
+ * 		<li><b>{@link RecordCount()}</b>: Return collection record count.
  * 		<li><b>{@link FindByExample()}</b>: Search by example.
  * 		<li><b>{@link FindByQuery()}</b>: Perform a native query.
  * 		<li><b>{@link CountByExample()}</b>: Return record count by example.
@@ -78,6 +79,7 @@ use Milko\PHPLib\Document;
  * 	<li><b>{@link doDelete()}</b>: Delete one or many records.
  * 	<li><b>{@link doFindByExample()}</b>: Find one or many records by example.
  * 	<li><b>{@link doFindByQuery()}</b>: Perform a driver native query.
+ * 	<li><b>{@link doCount()}</b>: Return record count in collection.
  * 	<li><b>{@link doCountByExample()}</b>: Return record count by example.
  * 	<li><b>{@link doCountByQuery()}</b>: Return record count by native query.
  * 	<li><b>{@link doMapReduce()}</b>: Perform a map and reduce query.
@@ -664,6 +666,26 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
+	 *	RecordCount																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count documents.</h4>
+	 *
+	 * This method can be used to get the total number of documents in the collection.
+	 *
+	 * @return int					The number of records in the collection.
+	 *
+	 * @uses doCount()
+	 */
+	public function RecordCount()
+	{
+		return $this->doCount();													// ==>
+
+	} // RecordCount.
+
+
+	/*===================================================================================
 	 *	FindByExample																	*
 	 *==================================================================================*/
 
@@ -1102,6 +1124,22 @@ abstract class Collection extends Container
 	 * @return Iterator				The found records.
 	 */
 	abstract protected function doFindByQuery( $theQuery, $theOptions );
+
+
+	/*===================================================================================
+	 *	doCount																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return total number of records in collection.</h4>
+	 *
+	 * This method should return the record count of the collection.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @return int					The records count.
+	 */
+	abstract protected function doCount();
 
 
 	/*===================================================================================

@@ -814,6 +814,33 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
+	 *	doCount																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return total number of records in collection.</h4>
+	 *
+	 * We overload this method to use the {@link ArangoCollectionHandler::count()} method.
+	 *
+	 * @return int					The records count.
+	 *
+	 * @uses Database()
+	 * @uses Connection()
+	 * @uses ArangoCollectionHandler::count()
+	 */
+	protected function doCount()
+	{
+		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
+
+		return $handler->count( $this->Connection()->getId() );						// ==>
+
+	} // doCount.
+
+
+	/*===================================================================================
 	 *	doCountByExample																*
 	 *==================================================================================*/
 

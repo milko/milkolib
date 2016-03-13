@@ -1232,149 +1232,176 @@
 </span><span id="814" class="l"><a href="#814">814 </a>
 </span><span id="815" class="l"><a href="#815">815 </a>
 </span><span id="816" class="l"><a href="#816">816 </a>    <span class="php-comment">/*===================================================================================
-</span></span><span id="817" class="l"><a href="#817">817 </a><span class="php-comment">     *  doCountByExample                                                                *
+</span></span><span id="817" class="l"><a href="#817">817 </a><span class="php-comment">     *  doCount                                                                         *
 </span></span><span id="818" class="l"><a href="#818">818 </a><span class="php-comment">     *==================================================================================*/</span>
 </span><span id="819" class="l"><a href="#819">819 </a>
 </span><span id="820" class="l"><a href="#820">820 </a>    <span class="php-comment">/**
-</span></span><span id="821" class="l"><a href="#821">821 </a><span class="php-comment">     * &lt;h4&gt;Return a find by example record count.&lt;/h4&gt;
+</span></span><span id="821" class="l"><a href="#821">821 </a><span class="php-comment">     * &lt;h4&gt;Return total number of records in collection.&lt;/h4&gt;
 </span></span><span id="822" class="l"><a href="#822">822 </a><span class="php-comment">     *
-</span></span><span id="823" class="l"><a href="#823">823 </a><span class="php-comment">     * We overload this method to use the {@link doFindByExample()} method and return the
-</span></span><span id="824" class="l"><a href="#824">824 </a><span class="php-comment">     * cursor's count.
-</span></span><span id="825" class="l"><a href="#825">825 </a><span class="php-comment">     *
-</span></span><span id="826" class="l"><a href="#826">826 </a><span class="php-comment">     * @param array                 $theDocument        The example document.
-</span></span><span id="827" class="l"><a href="#827">827 </a><span class="php-comment">     * @param array                 $theOptions         Driver native options.
-</span></span><span id="828" class="l"><a href="#828">828 </a><span class="php-comment">     * @return int                  The records count.
-</span></span><span id="829" class="l"><a href="#829">829 </a><span class="php-comment">     *
-</span></span><span id="830" class="l"><a href="#830">830 </a><span class="php-comment">     * @uses Database()
-</span></span><span id="831" class="l"><a href="#831">831 </a><span class="php-comment">     * @uses Connection()
-</span></span><span id="832" class="l"><a href="#832">832 </a><span class="php-comment">     * @uses ArangoDocumentHandler::byExample()
-</span></span><span id="833" class="l"><a href="#833">833 </a><span class="php-comment">     */</span>
-</span><span id="834" class="l"><a href="#834">834 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> doCountByExample( <span class="php-var">$theDocument</span>, <span class="php-var">$theOptions</span> )
-</span><span id="835" class="l"><a href="#835">835 </a>    {
-</span><span id="836" class="l"><a href="#836">836 </a>        <span class="php-comment">//</span>
-</span><span id="837" class="l"><a href="#837">837 </a>        <span class="php-comment">// Normalise document.</span>
-</span><span id="838" class="l"><a href="#838">838 </a>        <span class="php-comment">//</span>
-</span><span id="839" class="l"><a href="#839">839 </a>        <span class="php-keyword1">if</span>( <span class="php-var">$theDocument</span> === <span class="php-keyword1">NULL</span> )
-</span><span id="840" class="l"><a href="#840">840 </a>            <span class="php-var">$theDocument</span> = [];
-</span><span id="841" class="l"><a href="#841">841 </a>        <span class="php-keyword1">elseif</span>( <span class="php-var">$theDocument</span> <span class="php-keyword1">instanceof</span> \Milko\PHPLib\Container )
-</span><span id="842" class="l"><a href="#842">842 </a>            <span class="php-var">$theDocument</span> = <span class="php-var">$theDocument</span>-&gt;toArray();
-</span><span id="843" class="l"><a href="#843">843 </a>
-</span><span id="844" class="l"><a href="#844">844 </a>        <span class="php-comment">//</span>
-</span><span id="845" class="l"><a href="#845">845 </a>        <span class="php-comment">// Normalise limits.</span>
-</span><span id="846" class="l"><a href="#846">846 </a>        <span class="php-comment">//</span>
-</span><span id="847" class="l"><a href="#847">847 </a>        <span class="php-keyword1">if</span>( <span class="php-keyword2">array_key_exists</span>( <span class="php-quote">'$start'</span>, <span class="php-var">$theOptions</span> ) )
-</span><span id="848" class="l"><a href="#848">848 </a>        {
-</span><span id="849" class="l"><a href="#849">849 </a>            <span class="php-var">$theOptions</span>[ <span class="php-quote">'skip'</span> ] = <span class="php-var">$theOptions</span>[ <span class="php-quote">'$start'</span> ];
-</span><span id="850" class="l"><a href="#850">850 </a>            <span class="php-keyword1">unset</span>( <span class="php-var">$theOptions</span>[ <span class="php-quote">'$start'</span> ] );
-</span><span id="851" class="l"><a href="#851">851 </a>        }
-</span><span id="852" class="l"><a href="#852">852 </a>        <span class="php-keyword1">if</span>( <span class="php-keyword2">array_key_exists</span>( <span class="php-quote">'$limit'</span>, <span class="php-var">$theOptions</span> ) )
-</span><span id="853" class="l"><a href="#853">853 </a>        {
-</span><span id="854" class="l"><a href="#854">854 </a>            <span class="php-var">$theOptions</span>[ <span class="php-quote">'limit'</span> ] = <span class="php-var">$theOptions</span>[ <span class="php-quote">'$limit'</span> ];
-</span><span id="855" class="l"><a href="#855">855 </a>            <span class="php-keyword1">unset</span>( <span class="php-var">$theOptions</span>[ <span class="php-quote">'$limit'</span> ] );
-</span><span id="856" class="l"><a href="#856">856 </a>        }
-</span><span id="857" class="l"><a href="#857">857 </a>
-</span><span id="858" class="l"><a href="#858">858 </a>        <span class="php-comment">//</span>
-</span><span id="859" class="l"><a href="#859">859 </a>        <span class="php-comment">// Get collection handler.</span>
-</span><span id="860" class="l"><a href="#860">860 </a>        <span class="php-comment">//</span>
-</span><span id="861" class="l"><a href="#861">861 </a>        <span class="php-var">$handler</span> = <span class="php-keyword1">new</span> ArangoCollectionHandler( <span class="php-var">$this</span>-&gt;Database()-&gt;Connection() );
-</span><span id="862" class="l"><a href="#862">862 </a>
-</span><span id="863" class="l"><a href="#863">863 </a>        <span class="php-keyword1">return</span> <span class="php-var">$handler</span>-&gt;byExample(
-</span><span id="864" class="l"><a href="#864">864 </a>                <span class="php-var">$this</span>-&gt;Connection()-&gt;getId(), <span class="php-var">$theDocument</span>, <span class="php-var">$theOptions</span> )
-</span><span id="865" class="l"><a href="#865">865 </a>                    -&gt;getCount();                                                   <span class="php-comment">// ==&gt;</span>
-</span><span id="866" class="l"><a href="#866">866 </a>
-</span><span id="867" class="l"><a href="#867">867 </a>    } <span class="php-comment">// doCountByExample.</span>
-</span><span id="868" class="l"><a href="#868">868 </a>
-</span><span id="869" class="l"><a href="#869">869 </a>
-</span><span id="870" class="l"><a href="#870">870 </a>    <span class="php-comment">/*===================================================================================
-</span></span><span id="871" class="l"><a href="#871">871 </a><span class="php-comment">     *  doCountByQuery                                                                  *
-</span></span><span id="872" class="l"><a href="#872">872 </a><span class="php-comment">     *==================================================================================*/</span>
-</span><span id="873" class="l"><a href="#873">873 </a>
-</span><span id="874" class="l"><a href="#874">874 </a>    <span class="php-comment">/**
-</span></span><span id="875" class="l"><a href="#875">875 </a><span class="php-comment">     * &lt;h4&gt;Return a find by query record count.&lt;/h4&gt;
-</span></span><span id="876" class="l"><a href="#876">876 </a><span class="php-comment">     *
-</span></span><span id="877" class="l"><a href="#877">877 </a><span class="php-comment">     * We overload this method to use the {@link doFindByQuery()} method and return the
-</span></span><span id="878" class="l"><a href="#878">878 </a><span class="php-comment">     * cursor's count.
-</span></span><span id="879" class="l"><a href="#879">879 </a><span class="php-comment">     *
-</span></span><span id="880" class="l"><a href="#880">880 </a><span class="php-comment">     * @param mixed                 $theQuery           The selection criteria.
-</span></span><span id="881" class="l"><a href="#881">881 </a><span class="php-comment">     * @param array                 $theOptions         Collection native options.
-</span></span><span id="882" class="l"><a href="#882">882 </a><span class="php-comment">     * @return int                  The records count.
-</span></span><span id="883" class="l"><a href="#883">883 </a><span class="php-comment">     *
-</span></span><span id="884" class="l"><a href="#884">884 </a><span class="php-comment">     * @uses Database()
-</span></span><span id="885" class="l"><a href="#885">885 </a><span class="php-comment">     * @uses ArangoStatement::execute()
-</span></span><span id="886" class="l"><a href="#886">886 </a><span class="php-comment">     */</span>
-</span><span id="887" class="l"><a href="#887">887 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> doCountByQuery( <span class="php-var">$theQuery</span>, <span class="php-var">$theOptions</span> )
-</span><span id="888" class="l"><a href="#888">888 </a>    {
-</span><span id="889" class="l"><a href="#889">889 </a>        <span class="php-comment">//</span>
-</span><span id="890" class="l"><a href="#890">890 </a>        <span class="php-comment">// Normalise query.</span>
-</span><span id="891" class="l"><a href="#891">891 </a>        <span class="php-comment">//</span>
-</span><span id="892" class="l"><a href="#892">892 </a>        <span class="php-keyword1">if</span>( ! <span class="php-keyword2">count</span>( <span class="php-var">$theQuery</span> ) )
-</span><span id="893" class="l"><a href="#893">893 </a>            <span class="php-var">$theFilter</span> = [ <span class="php-quote">'query'</span> =&gt; <span class="php-quote">'FOR r IN @@collection RETURN r'</span>,
-</span><span id="894" class="l"><a href="#894">894 </a>                <span class="php-quote">'bindVars'</span> =&gt; [ <span class="php-quote">'@collection'</span> =&gt; <span class="php-var">$this</span>-&gt;collectionName() ] ];
+</span></span><span id="823" class="l"><a href="#823">823 </a><span class="php-comment">     * We overload this method to use the {@link ArangoCollectionHandler::count()} method.
+</span></span><span id="824" class="l"><a href="#824">824 </a><span class="php-comment">     *
+</span></span><span id="825" class="l"><a href="#825">825 </a><span class="php-comment">     * @return int                  The records count.
+</span></span><span id="826" class="l"><a href="#826">826 </a><span class="php-comment">     *
+</span></span><span id="827" class="l"><a href="#827">827 </a><span class="php-comment">     * @uses Database()
+</span></span><span id="828" class="l"><a href="#828">828 </a><span class="php-comment">     * @uses Connection()
+</span></span><span id="829" class="l"><a href="#829">829 </a><span class="php-comment">     * @uses ArangoCollectionHandler::count()
+</span></span><span id="830" class="l"><a href="#830">830 </a><span class="php-comment">     */</span>
+</span><span id="831" class="l"><a href="#831">831 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> doCount()
+</span><span id="832" class="l"><a href="#832">832 </a>    {
+</span><span id="833" class="l"><a href="#833">833 </a>        <span class="php-comment">//</span>
+</span><span id="834" class="l"><a href="#834">834 </a>        <span class="php-comment">// Get collection handler.</span>
+</span><span id="835" class="l"><a href="#835">835 </a>        <span class="php-comment">//</span>
+</span><span id="836" class="l"><a href="#836">836 </a>        <span class="php-var">$handler</span> = <span class="php-keyword1">new</span> ArangoCollectionHandler( <span class="php-var">$this</span>-&gt;Database()-&gt;Connection() );
+</span><span id="837" class="l"><a href="#837">837 </a>
+</span><span id="838" class="l"><a href="#838">838 </a>        <span class="php-keyword1">return</span> <span class="php-var">$handler</span>-&gt;<span class="php-keyword2">count</span>( <span class="php-var">$this</span>-&gt;Connection()-&gt;getId() );                     <span class="php-comment">// ==&gt;</span>
+</span><span id="839" class="l"><a href="#839">839 </a>
+</span><span id="840" class="l"><a href="#840">840 </a>    } <span class="php-comment">// doCount.</span>
+</span><span id="841" class="l"><a href="#841">841 </a>
+</span><span id="842" class="l"><a href="#842">842 </a>
+</span><span id="843" class="l"><a href="#843">843 </a>    <span class="php-comment">/*===================================================================================
+</span></span><span id="844" class="l"><a href="#844">844 </a><span class="php-comment">     *  doCountByExample                                                                *
+</span></span><span id="845" class="l"><a href="#845">845 </a><span class="php-comment">     *==================================================================================*/</span>
+</span><span id="846" class="l"><a href="#846">846 </a>
+</span><span id="847" class="l"><a href="#847">847 </a>    <span class="php-comment">/**
+</span></span><span id="848" class="l"><a href="#848">848 </a><span class="php-comment">     * &lt;h4&gt;Return a find by example record count.&lt;/h4&gt;
+</span></span><span id="849" class="l"><a href="#849">849 </a><span class="php-comment">     *
+</span></span><span id="850" class="l"><a href="#850">850 </a><span class="php-comment">     * We overload this method to use the {@link doFindByExample()} method and return the
+</span></span><span id="851" class="l"><a href="#851">851 </a><span class="php-comment">     * cursor's count.
+</span></span><span id="852" class="l"><a href="#852">852 </a><span class="php-comment">     *
+</span></span><span id="853" class="l"><a href="#853">853 </a><span class="php-comment">     * @param array                 $theDocument        The example document.
+</span></span><span id="854" class="l"><a href="#854">854 </a><span class="php-comment">     * @param array                 $theOptions         Driver native options.
+</span></span><span id="855" class="l"><a href="#855">855 </a><span class="php-comment">     * @return int                  The records count.
+</span></span><span id="856" class="l"><a href="#856">856 </a><span class="php-comment">     *
+</span></span><span id="857" class="l"><a href="#857">857 </a><span class="php-comment">     * @uses Database()
+</span></span><span id="858" class="l"><a href="#858">858 </a><span class="php-comment">     * @uses Connection()
+</span></span><span id="859" class="l"><a href="#859">859 </a><span class="php-comment">     * @uses ArangoDocumentHandler::byExample()
+</span></span><span id="860" class="l"><a href="#860">860 </a><span class="php-comment">     */</span>
+</span><span id="861" class="l"><a href="#861">861 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> doCountByExample( <span class="php-var">$theDocument</span>, <span class="php-var">$theOptions</span> )
+</span><span id="862" class="l"><a href="#862">862 </a>    {
+</span><span id="863" class="l"><a href="#863">863 </a>        <span class="php-comment">//</span>
+</span><span id="864" class="l"><a href="#864">864 </a>        <span class="php-comment">// Normalise document.</span>
+</span><span id="865" class="l"><a href="#865">865 </a>        <span class="php-comment">//</span>
+</span><span id="866" class="l"><a href="#866">866 </a>        <span class="php-keyword1">if</span>( <span class="php-var">$theDocument</span> === <span class="php-keyword1">NULL</span> )
+</span><span id="867" class="l"><a href="#867">867 </a>            <span class="php-var">$theDocument</span> = [];
+</span><span id="868" class="l"><a href="#868">868 </a>        <span class="php-keyword1">elseif</span>( <span class="php-var">$theDocument</span> <span class="php-keyword1">instanceof</span> \Milko\PHPLib\Container )
+</span><span id="869" class="l"><a href="#869">869 </a>            <span class="php-var">$theDocument</span> = <span class="php-var">$theDocument</span>-&gt;toArray();
+</span><span id="870" class="l"><a href="#870">870 </a>
+</span><span id="871" class="l"><a href="#871">871 </a>        <span class="php-comment">//</span>
+</span><span id="872" class="l"><a href="#872">872 </a>        <span class="php-comment">// Normalise limits.</span>
+</span><span id="873" class="l"><a href="#873">873 </a>        <span class="php-comment">//</span>
+</span><span id="874" class="l"><a href="#874">874 </a>        <span class="php-keyword1">if</span>( <span class="php-keyword2">array_key_exists</span>( <span class="php-quote">'$start'</span>, <span class="php-var">$theOptions</span> ) )
+</span><span id="875" class="l"><a href="#875">875 </a>        {
+</span><span id="876" class="l"><a href="#876">876 </a>            <span class="php-var">$theOptions</span>[ <span class="php-quote">'skip'</span> ] = <span class="php-var">$theOptions</span>[ <span class="php-quote">'$start'</span> ];
+</span><span id="877" class="l"><a href="#877">877 </a>            <span class="php-keyword1">unset</span>( <span class="php-var">$theOptions</span>[ <span class="php-quote">'$start'</span> ] );
+</span><span id="878" class="l"><a href="#878">878 </a>        }
+</span><span id="879" class="l"><a href="#879">879 </a>        <span class="php-keyword1">if</span>( <span class="php-keyword2">array_key_exists</span>( <span class="php-quote">'$limit'</span>, <span class="php-var">$theOptions</span> ) )
+</span><span id="880" class="l"><a href="#880">880 </a>        {
+</span><span id="881" class="l"><a href="#881">881 </a>            <span class="php-var">$theOptions</span>[ <span class="php-quote">'limit'</span> ] = <span class="php-var">$theOptions</span>[ <span class="php-quote">'$limit'</span> ];
+</span><span id="882" class="l"><a href="#882">882 </a>            <span class="php-keyword1">unset</span>( <span class="php-var">$theOptions</span>[ <span class="php-quote">'$limit'</span> ] );
+</span><span id="883" class="l"><a href="#883">883 </a>        }
+</span><span id="884" class="l"><a href="#884">884 </a>
+</span><span id="885" class="l"><a href="#885">885 </a>        <span class="php-comment">//</span>
+</span><span id="886" class="l"><a href="#886">886 </a>        <span class="php-comment">// Get collection handler.</span>
+</span><span id="887" class="l"><a href="#887">887 </a>        <span class="php-comment">//</span>
+</span><span id="888" class="l"><a href="#888">888 </a>        <span class="php-var">$handler</span> = <span class="php-keyword1">new</span> ArangoCollectionHandler( <span class="php-var">$this</span>-&gt;Database()-&gt;Connection() );
+</span><span id="889" class="l"><a href="#889">889 </a>
+</span><span id="890" class="l"><a href="#890">890 </a>        <span class="php-keyword1">return</span> <span class="php-var">$handler</span>-&gt;byExample(
+</span><span id="891" class="l"><a href="#891">891 </a>                <span class="php-var">$this</span>-&gt;Connection()-&gt;getId(), <span class="php-var">$theDocument</span>, <span class="php-var">$theOptions</span> )
+</span><span id="892" class="l"><a href="#892">892 </a>                    -&gt;getCount();                                                   <span class="php-comment">// ==&gt;</span>
+</span><span id="893" class="l"><a href="#893">893 </a>
+</span><span id="894" class="l"><a href="#894">894 </a>    } <span class="php-comment">// doCountByExample.</span>
 </span><span id="895" class="l"><a href="#895">895 </a>
-</span><span id="896" class="l"><a href="#896">896 </a>        <span class="php-comment">//</span>
-</span><span id="897" class="l"><a href="#897">897 </a>        <span class="php-comment">// Create statement.</span>
-</span><span id="898" class="l"><a href="#898">898 </a>        <span class="php-comment">//</span>
-</span><span id="899" class="l"><a href="#899">899 </a>        <span class="php-var">$statement</span> = <span class="php-keyword1">new</span> ArangoStatement( <span class="php-var">$this</span>-&gt;Database()-&gt;Connection(), <span class="php-var">$theQuery</span> );
+</span><span id="896" class="l"><a href="#896">896 </a>
+</span><span id="897" class="l"><a href="#897">897 </a>    <span class="php-comment">/*===================================================================================
+</span></span><span id="898" class="l"><a href="#898">898 </a><span class="php-comment">     *  doCountByQuery                                                                  *
+</span></span><span id="899" class="l"><a href="#899">899 </a><span class="php-comment">     *==================================================================================*/</span>
 </span><span id="900" class="l"><a href="#900">900 </a>
-</span><span id="901" class="l"><a href="#901">901 </a>        <span class="php-keyword1">return</span> <span class="php-var">$statement</span>-&gt;execute()-&gt;getCount();                                   <span class="php-comment">// ==&gt;</span>
-</span><span id="902" class="l"><a href="#902">902 </a>
-</span><span id="903" class="l"><a href="#903">903 </a>    } <span class="php-comment">// doCountByQuery.</span>
-</span><span id="904" class="l"><a href="#904">904 </a>
-</span><span id="905" class="l"><a href="#905">905 </a>
-</span><span id="906" class="l"><a href="#906">906 </a>    <span class="php-comment">/*===================================================================================
-</span></span><span id="907" class="l"><a href="#907">907 </a><span class="php-comment">     *  doMapReduce                                                                     *
-</span></span><span id="908" class="l"><a href="#908">908 </a><span class="php-comment">     *==================================================================================*/</span>
-</span><span id="909" class="l"><a href="#909">909 </a>
-</span><span id="910" class="l"><a href="#910">910 </a>    <span class="php-comment">/**
-</span></span><span id="911" class="l"><a href="#911">911 </a><span class="php-comment">     * &lt;h4&gt;Execute an aggregation query.&lt;/h4&gt;
-</span></span><span id="912" class="l"><a href="#912">912 </a><span class="php-comment">     *
-</span></span><span id="913" class="l"><a href="#913">913 </a><span class="php-comment">     * ArangoDB does not have an aggregation framework such as MongoDB, in this class we
-</span></span><span id="914" class="l"><a href="#914">914 </a><span class="php-comment">     * simply call the {@link doFindByQuery()} method replacing the pipeline parameter with
-</span></span><span id="915" class="l"><a href="#915">915 </a><span class="php-comment">     * the query.
-</span></span><span id="916" class="l"><a href="#916">916 </a><span class="php-comment">     *
-</span></span><span id="917" class="l"><a href="#917">917 </a><span class="php-comment">     * @param mixed                 $thePipeline        The aggregation pipeline.
-</span></span><span id="918" class="l"><a href="#918">918 </a><span class="php-comment">     * @param array                 $theOptions         Driver native options.
-</span></span><span id="919" class="l"><a href="#919">919 </a><span class="php-comment">     * @return Iterator             The found records.
-</span></span><span id="920" class="l"><a href="#920">920 </a><span class="php-comment">     *
-</span></span><span id="921" class="l"><a href="#921">921 </a><span class="php-comment">     * @uses Database()
-</span></span><span id="922" class="l"><a href="#922">922 </a><span class="php-comment">     * @uses ArangoStatement::execute()
-</span></span><span id="923" class="l"><a href="#923">923 </a><span class="php-comment">     */</span>
-</span><span id="924" class="l"><a href="#924">924 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> doMapReduce( <span class="php-var">$thePipeline</span>, <span class="php-var">$theOptions</span> )
-</span><span id="925" class="l"><a href="#925">925 </a>    {
-</span><span id="926" class="l"><a href="#926">926 </a>        <span class="php-comment">//</span>
-</span><span id="927" class="l"><a href="#927">927 </a>        <span class="php-comment">// Normalise query.</span>
-</span><span id="928" class="l"><a href="#928">928 </a>        <span class="php-comment">//</span>
-</span><span id="929" class="l"><a href="#929">929 </a>        <span class="php-keyword1">if</span>( ! <span class="php-keyword2">count</span>( <span class="php-var">$thePipeline</span> ) )
-</span><span id="930" class="l"><a href="#930">930 </a>            <span class="php-var">$theFilter</span> = [ <span class="php-quote">'query'</span> =&gt; <span class="php-quote">'FOR r IN @@collection RETURN r'</span>,
-</span><span id="931" class="l"><a href="#931">931 </a>                <span class="php-quote">'bindVars'</span> =&gt; [ <span class="php-quote">'@collection'</span> =&gt; <span class="php-var">$this</span>-&gt;collectionName() ] ];
+</span><span id="901" class="l"><a href="#901">901 </a>    <span class="php-comment">/**
+</span></span><span id="902" class="l"><a href="#902">902 </a><span class="php-comment">     * &lt;h4&gt;Return a find by query record count.&lt;/h4&gt;
+</span></span><span id="903" class="l"><a href="#903">903 </a><span class="php-comment">     *
+</span></span><span id="904" class="l"><a href="#904">904 </a><span class="php-comment">     * We overload this method to use the {@link doFindByQuery()} method and return the
+</span></span><span id="905" class="l"><a href="#905">905 </a><span class="php-comment">     * cursor's count.
+</span></span><span id="906" class="l"><a href="#906">906 </a><span class="php-comment">     *
+</span></span><span id="907" class="l"><a href="#907">907 </a><span class="php-comment">     * @param mixed                 $theQuery           The selection criteria.
+</span></span><span id="908" class="l"><a href="#908">908 </a><span class="php-comment">     * @param array                 $theOptions         Collection native options.
+</span></span><span id="909" class="l"><a href="#909">909 </a><span class="php-comment">     * @return int                  The records count.
+</span></span><span id="910" class="l"><a href="#910">910 </a><span class="php-comment">     *
+</span></span><span id="911" class="l"><a href="#911">911 </a><span class="php-comment">     * @uses Database()
+</span></span><span id="912" class="l"><a href="#912">912 </a><span class="php-comment">     * @uses ArangoStatement::execute()
+</span></span><span id="913" class="l"><a href="#913">913 </a><span class="php-comment">     */</span>
+</span><span id="914" class="l"><a href="#914">914 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> doCountByQuery( <span class="php-var">$theQuery</span>, <span class="php-var">$theOptions</span> )
+</span><span id="915" class="l"><a href="#915">915 </a>    {
+</span><span id="916" class="l"><a href="#916">916 </a>        <span class="php-comment">//</span>
+</span><span id="917" class="l"><a href="#917">917 </a>        <span class="php-comment">// Normalise query.</span>
+</span><span id="918" class="l"><a href="#918">918 </a>        <span class="php-comment">//</span>
+</span><span id="919" class="l"><a href="#919">919 </a>        <span class="php-keyword1">if</span>( ! <span class="php-keyword2">count</span>( <span class="php-var">$theQuery</span> ) )
+</span><span id="920" class="l"><a href="#920">920 </a>            <span class="php-var">$theFilter</span> = [ <span class="php-quote">'query'</span> =&gt; <span class="php-quote">'FOR r IN @@collection RETURN r'</span>,
+</span><span id="921" class="l"><a href="#921">921 </a>                <span class="php-quote">'bindVars'</span> =&gt; [ <span class="php-quote">'@collection'</span> =&gt; <span class="php-var">$this</span>-&gt;collectionName() ] ];
+</span><span id="922" class="l"><a href="#922">922 </a>
+</span><span id="923" class="l"><a href="#923">923 </a>        <span class="php-comment">//</span>
+</span><span id="924" class="l"><a href="#924">924 </a>        <span class="php-comment">// Create statement.</span>
+</span><span id="925" class="l"><a href="#925">925 </a>        <span class="php-comment">//</span>
+</span><span id="926" class="l"><a href="#926">926 </a>        <span class="php-var">$statement</span> = <span class="php-keyword1">new</span> ArangoStatement( <span class="php-var">$this</span>-&gt;Database()-&gt;Connection(), <span class="php-var">$theQuery</span> );
+</span><span id="927" class="l"><a href="#927">927 </a>
+</span><span id="928" class="l"><a href="#928">928 </a>        <span class="php-keyword1">return</span> <span class="php-var">$statement</span>-&gt;execute()-&gt;getCount();                                   <span class="php-comment">// ==&gt;</span>
+</span><span id="929" class="l"><a href="#929">929 </a>
+</span><span id="930" class="l"><a href="#930">930 </a>    } <span class="php-comment">// doCountByQuery.</span>
+</span><span id="931" class="l"><a href="#931">931 </a>
 </span><span id="932" class="l"><a href="#932">932 </a>
-</span><span id="933" class="l"><a href="#933">933 </a>        <span class="php-comment">//</span>
-</span><span id="934" class="l"><a href="#934">934 </a>        <span class="php-comment">// Create statement.</span>
-</span><span id="935" class="l"><a href="#935">935 </a>        <span class="php-comment">//</span>
-</span><span id="936" class="l"><a href="#936">936 </a>        <span class="php-var">$statement</span> = <span class="php-keyword1">new</span> ArangoStatement( <span class="php-var">$this</span>-&gt;Database()-&gt;Connection(), <span class="php-var">$thePipeline</span> );
-</span><span id="937" class="l"><a href="#937">937 </a>
-</span><span id="938" class="l"><a href="#938">938 </a>        <span class="php-comment">//</span>
-</span><span id="939" class="l"><a href="#939">939 </a>        <span class="php-comment">// Execute statement.</span>
-</span><span id="940" class="l"><a href="#940">940 </a>        <span class="php-comment">//</span>
-</span><span id="941" class="l"><a href="#941">941 </a>        <span class="php-var">$cursor</span> = <span class="php-var">$statement</span>-&gt;execute();
-</span><span id="942" class="l"><a href="#942">942 </a>
-</span><span id="943" class="l"><a href="#943">943 </a>        <span class="php-comment">//</span>
-</span><span id="944" class="l"><a href="#944">944 </a>        <span class="php-comment">// Build result.</span>
-</span><span id="945" class="l"><a href="#945">945 </a>        <span class="php-comment">//</span>
-</span><span id="946" class="l"><a href="#946">946 </a>        <span class="php-var">$result</span> = [];
-</span><span id="947" class="l"><a href="#947">947 </a>        <span class="php-keyword1">foreach</span>( <span class="php-var">$cursor</span> <span class="php-keyword1">as</span> <span class="php-var">$record</span> )
-</span><span id="948" class="l"><a href="#948">948 </a>            <span class="php-var">$result</span>[] = <span class="php-var">$record</span>-&gt;getAll();
-</span><span id="949" class="l"><a href="#949">949 </a>
-</span><span id="950" class="l"><a href="#950">950 </a>        <span class="php-keyword1">return</span> <span class="php-var">$result</span>;                                                             <span class="php-comment">// ==&gt;</span>
-</span><span id="951" class="l"><a href="#951">951 </a>
-</span><span id="952" class="l"><a href="#952">952 </a>    } <span class="php-comment">// doMapReduce.</span>
-</span><span id="953" class="l"><a href="#953">953 </a>
-</span><span id="954" class="l"><a href="#954">954 </a>
-</span><span id="955" class="l"><a href="#955">955 </a>} <span class="php-comment">// class Collection.</span>
-</span><span id="956" class="l"><a href="#956">956 </a>
-</span><span id="957" class="l"><a href="#957">957 </a>
-</span><span id="958" class="l"><a href="#958">958 </a><span class="xlang">?&gt;</span>
-</span><span id="959" class="l"><a href="#959">959 </a></span></code></pre>
+</span><span id="933" class="l"><a href="#933">933 </a>    <span class="php-comment">/*===================================================================================
+</span></span><span id="934" class="l"><a href="#934">934 </a><span class="php-comment">     *  doMapReduce                                                                     *
+</span></span><span id="935" class="l"><a href="#935">935 </a><span class="php-comment">     *==================================================================================*/</span>
+</span><span id="936" class="l"><a href="#936">936 </a>
+</span><span id="937" class="l"><a href="#937">937 </a>    <span class="php-comment">/**
+</span></span><span id="938" class="l"><a href="#938">938 </a><span class="php-comment">     * &lt;h4&gt;Execute an aggregation query.&lt;/h4&gt;
+</span></span><span id="939" class="l"><a href="#939">939 </a><span class="php-comment">     *
+</span></span><span id="940" class="l"><a href="#940">940 </a><span class="php-comment">     * ArangoDB does not have an aggregation framework such as MongoDB, in this class we
+</span></span><span id="941" class="l"><a href="#941">941 </a><span class="php-comment">     * simply call the {@link doFindByQuery()} method replacing the pipeline parameter with
+</span></span><span id="942" class="l"><a href="#942">942 </a><span class="php-comment">     * the query.
+</span></span><span id="943" class="l"><a href="#943">943 </a><span class="php-comment">     *
+</span></span><span id="944" class="l"><a href="#944">944 </a><span class="php-comment">     * @param mixed                 $thePipeline        The aggregation pipeline.
+</span></span><span id="945" class="l"><a href="#945">945 </a><span class="php-comment">     * @param array                 $theOptions         Driver native options.
+</span></span><span id="946" class="l"><a href="#946">946 </a><span class="php-comment">     * @return Iterator             The found records.
+</span></span><span id="947" class="l"><a href="#947">947 </a><span class="php-comment">     *
+</span></span><span id="948" class="l"><a href="#948">948 </a><span class="php-comment">     * @uses Database()
+</span></span><span id="949" class="l"><a href="#949">949 </a><span class="php-comment">     * @uses ArangoStatement::execute()
+</span></span><span id="950" class="l"><a href="#950">950 </a><span class="php-comment">     */</span>
+</span><span id="951" class="l"><a href="#951">951 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> doMapReduce( <span class="php-var">$thePipeline</span>, <span class="php-var">$theOptions</span> )
+</span><span id="952" class="l"><a href="#952">952 </a>    {
+</span><span id="953" class="l"><a href="#953">953 </a>        <span class="php-comment">//</span>
+</span><span id="954" class="l"><a href="#954">954 </a>        <span class="php-comment">// Normalise query.</span>
+</span><span id="955" class="l"><a href="#955">955 </a>        <span class="php-comment">//</span>
+</span><span id="956" class="l"><a href="#956">956 </a>        <span class="php-keyword1">if</span>( ! <span class="php-keyword2">count</span>( <span class="php-var">$thePipeline</span> ) )
+</span><span id="957" class="l"><a href="#957">957 </a>            <span class="php-var">$theFilter</span> = [ <span class="php-quote">'query'</span> =&gt; <span class="php-quote">'FOR r IN @@collection RETURN r'</span>,
+</span><span id="958" class="l"><a href="#958">958 </a>                <span class="php-quote">'bindVars'</span> =&gt; [ <span class="php-quote">'@collection'</span> =&gt; <span class="php-var">$this</span>-&gt;collectionName() ] ];
+</span><span id="959" class="l"><a href="#959">959 </a>
+</span><span id="960" class="l"><a href="#960">960 </a>        <span class="php-comment">//</span>
+</span><span id="961" class="l"><a href="#961">961 </a>        <span class="php-comment">// Create statement.</span>
+</span><span id="962" class="l"><a href="#962">962 </a>        <span class="php-comment">//</span>
+</span><span id="963" class="l"><a href="#963">963 </a>        <span class="php-var">$statement</span> = <span class="php-keyword1">new</span> ArangoStatement( <span class="php-var">$this</span>-&gt;Database()-&gt;Connection(), <span class="php-var">$thePipeline</span> );
+</span><span id="964" class="l"><a href="#964">964 </a>
+</span><span id="965" class="l"><a href="#965">965 </a>        <span class="php-comment">//</span>
+</span><span id="966" class="l"><a href="#966">966 </a>        <span class="php-comment">// Execute statement.</span>
+</span><span id="967" class="l"><a href="#967">967 </a>        <span class="php-comment">//</span>
+</span><span id="968" class="l"><a href="#968">968 </a>        <span class="php-var">$cursor</span> = <span class="php-var">$statement</span>-&gt;execute();
+</span><span id="969" class="l"><a href="#969">969 </a>
+</span><span id="970" class="l"><a href="#970">970 </a>        <span class="php-comment">//</span>
+</span><span id="971" class="l"><a href="#971">971 </a>        <span class="php-comment">// Build result.</span>
+</span><span id="972" class="l"><a href="#972">972 </a>        <span class="php-comment">//</span>
+</span><span id="973" class="l"><a href="#973">973 </a>        <span class="php-var">$result</span> = [];
+</span><span id="974" class="l"><a href="#974">974 </a>        <span class="php-keyword1">foreach</span>( <span class="php-var">$cursor</span> <span class="php-keyword1">as</span> <span class="php-var">$record</span> )
+</span><span id="975" class="l"><a href="#975">975 </a>            <span class="php-var">$result</span>[] = <span class="php-var">$record</span>-&gt;getAll();
+</span><span id="976" class="l"><a href="#976">976 </a>
+</span><span id="977" class="l"><a href="#977">977 </a>        <span class="php-keyword1">return</span> <span class="php-var">$result</span>;                                                             <span class="php-comment">// ==&gt;</span>
+</span><span id="978" class="l"><a href="#978">978 </a>
+</span><span id="979" class="l"><a href="#979">979 </a>    } <span class="php-comment">// doMapReduce.</span>
+</span><span id="980" class="l"><a href="#980">980 </a>
+</span><span id="981" class="l"><a href="#981">981 </a>
+</span><span id="982" class="l"><a href="#982">982 </a>} <span class="php-comment">// class Collection.</span>
+</span><span id="983" class="l"><a href="#983">983 </a>
+</span><span id="984" class="l"><a href="#984">984 </a>
+</span><span id="985" class="l"><a href="#985">985 </a><span class="xlang">?&gt;</span>
+</span><span id="986" class="l"><a href="#986">986 </a></span></code></pre>
 	</div>
 
 	<div id="footer">

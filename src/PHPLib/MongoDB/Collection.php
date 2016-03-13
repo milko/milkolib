@@ -557,6 +557,27 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
+	 *	doCount																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return total number of records in collection.</h4>
+	 *
+	 * We overload this method to use the collection count() method without a filter.
+	 *
+	 * @return int					The records count.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::count()
+	 */
+	protected function doCount()
+	{
+		return $this->Connection()->count();										// ==>
+
+	} // doCount.
+
+
+	/*===================================================================================
 	 *	doCountByExample																*
 	 *==================================================================================*/
 
