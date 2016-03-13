@@ -253,7 +253,7 @@ collections.</p>
 $database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...<br/></p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#33-713" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#33-955" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
 		<br>
 	</div>
 
@@ -273,7 +273,7 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Truncate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#73-96" title="Go to source code">Truncate</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#73-98" title="Go to source code">Truncate</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Clear the collection contents.</h4>
@@ -283,6 +283,8 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 				<h4>Clear the collection contents.</h4>
 
 <p>We overload this method to call the native object's method.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -315,7 +317,7 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Drop">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#103-126" title="Go to source code">Drop</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#105-139" title="Go to source code">Drop</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Drop the current collection.</h4>
@@ -325,6 +327,11 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 				<h4>Drop the current collection.</h4>
 
 <p>We overload this method to call the native object's method.</p>
+
+<p>Before dropping the collection we first check whether the collection has an ID: if
+it is not <tt>NULL</tt> we drop it.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -346,6 +353,253 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="ToDocument" id="_ToDocument">
+
+			<td class="attributes"><code>
+				 public 
+				Document
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_ToDocument">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#155-192" title="Go to source code">ToDocument</a>( <span>mixed <var>$theData</var></span>, <span>string <var>$theClass</var> = <span class="php-quote">'Milko\PHPLib\Document'</span> </span> )</code>
+
+			<div class="description short">
+				<h4>Convert native data to standard document.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Convert native data to standard document.</h4>
+
+<p>We overload this method by casting the provided data into an array and instantiating
+the expected document.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theData</var></dt>
+						<dd>Database native document.</dd>
+						<dt><var>$theClass</var></dt>
+						<dd>Expected class name.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						Document<br>Standard document object.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_IdOffset">Milko\PHPLib\ArangoDB\Collection::IdOffset()</a></code><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_RevisionOffset">Milko\PHPLib\ArangoDB\Collection::RevisionOffset()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="FromDocument" id="_FromDocument">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_FromDocument">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#199-239" title="Go to source code">FromDocument</a>( <span><code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> <var>$theDocument</var></span> )</code>
+
+			<div class="description short">
+				<h4>Convert a standard document to native data.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Convert a standard document to native data.</h4>
+
+<p>We overload this method to return an array representation of the document.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theDocument</var></dt>
+						<dd>Document to be converted.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>Database native object.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_IdOffset">Milko\PHPLib\ArangoDB\Collection::IdOffset()</a></code><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_RevisionOffset">Milko\PHPLib\ArangoDB\Collection::RevisionOffset()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doInsert">Milko\PHPLib\ArangoDB\Collection::doInsert()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="IdOffset" id="_IdOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_IdOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#255-262" title="Go to source code">IdOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the document identifier offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the document identifier offset.</h4>
+
+<p>In this class we return the default <tt>_id</tt> offset.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Document identifier offset.
+					</div>
+
+
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_ToDocument">Milko\PHPLib\ArangoDB\Collection::ToDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_FromDocument">Milko\PHPLib\ArangoDB\Collection::FromDocument()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="KeyOffset" id="_KeyOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_KeyOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#269-276" title="Go to source code">KeyOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the document key offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the document key offset.</h4>
+
+<p>In this class we return the identifier <tt>_key</tt> offset.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Document key offset.
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="ClassOffset" id="_ClassOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_ClassOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#283-290" title="Go to source code">ClassOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the document class offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the document class offset.</h4>
+
+<p>In this class we return the <tt>_class</tt> offset.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Document class offset.
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="RevisionOffset" id="_RevisionOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_RevisionOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#297-304" title="Go to source code">RevisionOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the document revision offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the document revision offset.</h4>
+
+<p>In this class we return the <tt>_rev</tt> offset.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Document revision offset.
+					</div>
+
+
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_ToDocument">Milko\PHPLib\ArangoDB\Collection::ToDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_FromDocument">Milko\PHPLib\ArangoDB\Collection::FromDocument()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="collectionNew" id="_collectionNew">
 
 			<td class="attributes"><code>
@@ -357,7 +611,7 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionNew">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#142-155" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#320-354" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a native collection object.</h4>
@@ -367,6 +621,11 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 				<h4>Return a native collection object.</h4>
 
 <p>This method will return a <code><a href="class-triagens.ArangoDb.Collection.html">triagens\ArangoDb\Collection</a></code> object.</p>
+
+<p>We first instantiate a collection handler, then we check whether the collection
+exists, in which case we return it; if not, we create a new one and return it.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -383,6 +642,13 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 					</div>
 
 
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
+							ArangoCollectionHandler::has()<br>
+							ArangoCollectionHandler::get()<br>
+							ArangoCollectionHandler::create()<br>
+					</div>
 
 
 			</div>
@@ -399,7 +665,7 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionName">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#162-180" title="Go to source code">collectionName</a>( <span> <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#361-377" title="Go to source code">collectionName</a>( <span> <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return the collection name.</h4>
@@ -408,11 +674,9 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 			<div class="description detailed hidden">
 				<h4>Return the collection name.</h4>
 
-<p>This method should return the current collection name.</p>
+<p>We overload this method to use the native object.</p>
 
-<p>Note that this method <em>must</em> return a non empty string.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
+<p>The options parameter is ignored here.</p>
 
 
 
@@ -436,14 +700,14 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 
 			<td class="attributes"><code>
 				 protected 
-				mixed|array
+				mixed
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsert">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#196-276" title="Go to source code">doInsert</a>( <span>array|object <var>$theRecord</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#393-459" title="Go to source code">doInsert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert one or more records.</h4>
@@ -452,34 +716,22 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 			<div class="description detailed hidden">
 				<h4>Insert one or more records.</h4>
 
-<p>This method should insert the provided record or records, the method expects the
-following parameters:</p>
-
-<ul>
-<li><b>$theRecord</b>: The record to be inserted.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-<li><b>$doMany</b>: <tt>TRUE</tt> provided many records, <tt>FALSE</tt> provided one record.
-</ul>
-
-<p>This method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
+<p>We overload the method to instantiate a document handler, we then check whether the
+provided document parameter refers to many documents, in which case we iterate them
+and save one by one; if not, we just save it.</p>
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$theRecord</var></dt>
-						<dd>The record to be inserted.</dd>
-						<dt><var>$doMany</var></dt>
-						<dd>Single or multiple records flag.</dd>
+						<dt><var>$theDocument</var></dt>
+						<dd>The document(s) to be inserted.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Collection native options.</dd>
+						<dd>Driver native options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						mixed|array<br>The record's unique identifier(s).
+						mixed<br>The document's unique identifier(s).
 					</div>
 
 
@@ -487,15 +739,9 @@ caller to ensure this.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_FromDocument">Milko\PHPLib\ArangoDB\Collection::FromDocument()</a></code><br>
 							ArangoDocument::createFromArray()<br>
-							ArangoDocumentHandlern::save()<br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Insert one record.
-$collection->insert( $record, FALSE );<br/>
-// Insert many records.
-$collection->insert( $records, TRUE );</p><br>
+							ArangoDocumentHandler::save()<br>
 					</div>
 
 
@@ -513,7 +759,7 @@ $collection->insert( $records, TRUE );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doUpdate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#283-395" title="Go to source code">doUpdate</a>( <span>array <var>$theCriteria</var></span>, <span>mixed <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#466-551" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Update one or more records.</h4>
@@ -522,28 +768,20 @@ $collection->insert( $records, TRUE );</p><br>
 			<div class="description detailed hidden">
 				<h4>Update one or more records.</h4>
 
-<p>This method should update the first or all records matching the provided search
-criteria, the method expects the following parameters:</p>
+<p>We overload the method to instantiate and execute a statement selecting the documents
+matching the provided filter and apply the modifications to each one.</p>
 
-<ul> <li><b>$theCriteria</b>: The modification criteria. <li><b>$theFilter</b>: The selection criteria. <li><b>$doMany</b>: <tt>TRUE</tt> update all records, <tt>FALSE</tt> update one record. <li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>This method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$theCriteria</var></dt>
-						<dd>The modification criteria.</dd>
 						<dt><var>$theFilter</var></dt>
 						<dd>The selection criteria.</dd>
-						<dt><var>$doMany</var></dt>
-						<dd>Single or multiple records flag.</dd>
+						<dt><var>$theCriteria</var></dt>
+						<dd>The modification criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Collection native options.</dd>
+						<dd>Driver native options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -552,22 +790,10 @@ caller to ensure this.</p>
 					</div>
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_CL_UPDATE<br>
-					</div>
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							\ArangoDB\Collection::updateOne()<br>
-							\ArangoDB\Collection::updateMany()<br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Update one record.
-$collection->update( $criteria, $query, FALSE );<br/>
-// Insert many records.
-$collection->update( $criteria, $query, TRUE );</p><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
+							ArangoDocumentHandler::update()<br>
 					</div>
 
 
@@ -585,7 +811,7 @@ $collection->update( $criteria, $query, TRUE );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doReplace">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#402-450" title="Go to source code">doReplace</a>( <span>array <var>$theRecord</var></span>, <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#558-639" title="Go to source code">doReplace</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -594,52 +820,34 @@ $collection->update( $criteria, $query, TRUE );</p><br>
 			<div class="description detailed hidden">
 				<h4>Replace a record.</h4>
 
-<p>This method should replace the matching provided record, the method expects the
-following parameters:</p>
+<p>We overload the method to use native objects. We first make the selection, then we
+replace the contents of the found documents with the contents of the provided
+document.</p>
 
-<ul>
-<li><b>$theRecord</b>: The replacement record.
-<li><b>$theFilter</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>This method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
+<p>When removing the contents of the found documents we ignode the identifier, key and
+revision: be sure not to provide these in the replacement document.</p>
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$theRecord</var></dt>
-						<dd>The replacement record.</dd>
 						<dt><var>$theFilter</var></dt>
 						<dd>The selection criteria.</dd>
+						<dt><var>$theDocument</var></dt>
+						<dd>The replacement document.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Collection native options.</dd>
+						<dd>Driver native options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						integer<br>The number of modified records.
+						integer<br>The number of replaced records.
 					</div>
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_CL_REPLACE<br>
-					</div>
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							\ArangoDB\Collection::replaceOne()<br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Update one record.
-$collection->replace( $record, $query, FALSE );<br/>
-// Insert many records.
-$collection->replace( $record, $query, TRUE );</p><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
+							ArangoDocumentHandler::replace()<br>
 					</div>
 
 
@@ -657,7 +865,7 @@ $collection->replace( $record, $query, TRUE );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDelete">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#457-509" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>boolean <var>$doMany</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#646-709" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records.</h4>
@@ -666,29 +874,16 @@ $collection->replace( $record, $query, TRUE );</p><br>
 			<div class="description detailed hidden">
 				<h4>Delete the first or all records.</h4>
 
-<p>This method should delete the first or all records matching the provided search
-criteria, the method expects the following parameters:</p>
-
-<ul>
-<li><b>$theFilter</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-<li><b>$doMany</b>: <tt>TRUE</tt> delete all records, <tt>FALSE</tt> delete first record.
-</ul>
-
-<p>This method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
+<p>We overload the method to use native objects. We first make the selection, then we
+remove one by one the found records.</p>
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
 						<dt><var>$theFilter</var></dt>
 						<dd>The selection criteria.</dd>
-						<dt><var>$doMany</var></dt>
-						<dd>Single or multiple records flag.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Collection native options.</dd>
+						<dd>Driver native options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -697,22 +892,10 @@ caller to ensure this.</p>
 					</div>
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_CL_DELETE<br>
-					</div>
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							\ArangoDB\Collection::deleteOne()<br>
-							\ArangoDB\Collection::deleteMany()<br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Delete first record.
-$collection->delete( $query, FALSE );<br/>
-// Delete all records.
-$collection->delete( $query, TRUE );</p><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
+							ArangoDocumentHandler::remove()<br>
 					</div>
 
 
@@ -730,7 +913,7 @@ $collection->delete( $query, TRUE );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#516-586" title="Go to source code">doFindByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>boolean <var>$theOptions</var></span>, <span>array <var>$theOptions</var>,…</span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#716-775" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by example the first or all records.</h4>
@@ -757,11 +940,9 @@ caller to ensure this.</p>
 					<h4>Parameters</h4>
 					<div class="list"><dl>
 						<dt><var>$theDocument</var></dt>
-						<dd>$theFilter          The selection criteria.</dd>
+						<dd>The example document.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>$doMany             Single or multiple records flag.</dd>
-						<dt><var>$theOptions</var>,…</dt>
-						<dd>Collection native options.</dd>
+						<dd>Driver native options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -770,22 +951,11 @@ caller to ensure this.</p>
 					</div>
 
 
-					<h4>See</h4>
-					<div class="list">
-							kMONGO_OPTS_CL_FIND<br>
-					</div>
 					<h4>Uses</h4>
 					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							\ArangoDB\Collection::find()<br>
-							\ArangoDB\Collection::findOne()<br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Find first record.
-$collection->find( $query, FALSE );<br/>
-// Find all records.
-$collection->find( $query, TRUE );</p><br>
+							ArangoDocumentHandler::byExample()<br>
 					</div>
 
 
@@ -803,7 +973,7 @@ $collection->find( $query, TRUE );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#593-623" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#782-813" title="Go to source code">doFindByQuery</a>( <span>array <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -812,8 +982,10 @@ $collection->find( $query, TRUE );</p><br>
 			<div class="description detailed hidden">
 				<h4>Query the collection.</h4>
 
-<p>We overload this method to use the doFind() method, since the latter method
-uses the example document as a query.</p>
+<p>We overload this method to create a statement and execute it. The provided query
+should be an array with the <tt>query</tt> key.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -832,14 +1004,8 @@ uses the example document as a query.</p>
 
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_FindByExample">Milko\PHPLib\Collection::FindByExample()</a></code><br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Query first record.
-$collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0, '$limit' => 1 ] );<br/>
-// Query all records.<br/>
-$collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );</p><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
+							ArangoStatement::execute()<br>
 					</div>
 
 
@@ -857,7 +1023,7 @@ $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCountByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#630-651" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#820-867" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return a find by example record count.</h4>
@@ -866,8 +1032,8 @@ $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );</p><br>
 			<div class="description detailed hidden">
 				<h4>Return a find by example record count.</h4>
 
-<p>We overload this method to use the <code><a href="class-ArrayObject.html#_count">ArrayObject::count()</a></code> method, since the latter method
-uses the example document as a query.</p>
+<p>We overload this method to use the <code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByExample">Milko\PHPLib\ArangoDB\Collection::doFindByExample()</a></code> method and return the
+cursor's count.</p>
 
 
 					<h4>Parameters</h4>
@@ -886,17 +1052,9 @@ uses the example document as a query.</p>
 
 					<h4>Uses</h4>
 					<div class="list">
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-MongoDB.Collection.html#_count">MongoDB\Collection::count()</a></code><br>
-					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doCountByQuery">Milko\PHPLib\ArangoDB\Collection::doCountByQuery()</a></code><br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Count records.
-$collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
+							ArangoDocumentHandler::byExample()<br>
 					</div>
 
 
@@ -914,7 +1072,7 @@ $collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCountByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#658-678" title="Go to source code">doCountByQuery</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#874-903" title="Go to source code">doCountByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return a find by query record count.</h4>
@@ -923,16 +1081,16 @@ $collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
 			<div class="description detailed hidden">
 				<h4>Return a find by query record count.</h4>
 
-<p>We overload this method to use the <code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doCountByExample">Milko\PHPLib\ArangoDB\Collection::doCountByExample()</a></code> method, since the
-latter method uses the example document as a query.</p>
+<p>We overload this method to use the <code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByQuery">Milko\PHPLib\ArangoDB\Collection::doFindByQuery()</a></code> method and return the
+cursor's count.</p>
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$theDocument</var></dt>
-						<dd>The example document.</dd>
+						<dt><var>$theQuery</var></dt>
+						<dd>The selection criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Collection native options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -943,12 +1101,8 @@ latter method uses the example document as a query.</p>
 
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doCountByExample">Milko\PHPLib\ArangoDB\Collection::doCountByExample()</a></code><br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Count records.
-$collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
+							ArangoStatement::execute()<br>
 					</div>
 
 
@@ -966,7 +1120,7 @@ $collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doMapReduce">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#685-710" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#910-952" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Execute an aggregation query.</h4>
@@ -975,10 +1129,9 @@ $collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
 			<div class="description detailed hidden">
 				<h4>Execute an aggregation query.</h4>
 
-<p>We overload this method to use the <code><a href="class-MongoDB.Collection.html#_aggregate">MongoDB\Collection::aggregate()</a></code> method.</p>
-
-<p>We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
-options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
+<p>ArangoDB does not have an aggregation framework such as MongoDB, in this class we
+simply call the <code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByQuery">Milko\PHPLib\ArangoDB\Collection::doFindByQuery()</a></code> method replacing the pipeline parameter with
+the query.</p>
 
 
 					<h4>Parameters</h4>
@@ -997,15 +1150,8 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-MongoDB.Collection.html#_aggregate">MongoDB\Collection::aggregate()</a></code><br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Find first record.
-$collection->find( $query, [ '$doAll' => FALSE ] );<br/>
-// Find all records.<br/>
-$collection->find( $query, [ '$doAll' => TRUE ] );</p><br>
+							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
+							ArangoStatement::execute()<br>
 					</div>
 
 
@@ -1031,7 +1177,8 @@ $collection->find( $query, [ '$doAll' => TRUE ] );</p><br>
 				<code><a href="class-Milko.PHPLib.Collection.html#_Server">Server()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_Update">Update()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#___construct">__construct()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#___toString">__toString()</a></code>
+				<code><a href="class-Milko.PHPLib.Collection.html#___toString">__toString()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Collection.html#_cursorToArray">cursorToArray()</a></code>
 			</p>
 		</div>
 		<div class="panel panel-default">

@@ -41,7 +41,7 @@ echo( "\n" );
 //
 echo( "Add identifier:\n" );
 echo( '$result = $test->ID( "ID" );' . "\n" );
-$result = $test->ID( "ID" );
+$result = $test->DocumentId( "ID" );
 var_dump( $result );
 print_r( $test );
 
@@ -73,7 +73,7 @@ echo( "\n=======================================================================
 //
 echo( "Get ID:\n" );
 echo( '$result = $test->ID();' . "\n" );
-$result = $test->ID();
+$result = $test->DocumentId();
 var_dump( $result );
 
 echo( "\n" );
@@ -163,7 +163,7 @@ echo( "\n" );
 //
 echo( "Get ID:\n" );
 echo( '$result = $test->ID();' . "\n" );
-$result = $test->ID();
+$result = $test->DocumentId();
 var_dump( $result );
 
 echo( "\n" );

@@ -271,7 +271,7 @@ $database = $server->RetrieveDatabase( $databases[ 0 ] );<br/>
 // Work with that database...<br/>
 $server->DatabaseDrop( $databases[ 0 ] );<br/>
 // Dropped the database.</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#33-416" title="Go to source code">PHPLib/ArangoDB/DataServer.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#33-420" title="Go to source code">PHPLib/ArangoDB/DataServer.php</a>
 		<br>
 	</div>
 
@@ -405,7 +405,7 @@ according to the current object's settings.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_connectionCreate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#225-246" title="Go to source code">connectionCreate</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#225-248" title="Go to source code">connectionCreate</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<p>Open connection.</p>
@@ -416,6 +416,8 @@ according to the current object's settings.</p>
 
 <p>We overload this method to return a ArangoDB connection object excluding eventual
 database and collection.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -451,7 +453,7 @@ database and collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_connectionDestruct">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#253-258" title="Go to source code">connectionDestruct</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#255-260" title="Go to source code">connectionDestruct</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<p>Close connection.</p>
@@ -487,7 +489,7 @@ database and collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseList">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#274-292" title="Go to source code">databaseList</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#276-296" title="Go to source code">databaseList</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>List server databases.</h4>
@@ -496,8 +498,10 @@ database and collection.</p>
 			<div class="description detailed hidden">
 				<h4>List server databases.</h4>
 
-<p>In this class we ask the Arango client for the list of databases and extract their
-names.</p>
+<p>In this class we ask the Arango client for the list of user databases and extract
+their names.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -537,7 +541,7 @@ names.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseCreate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#299-312" title="Go to source code">databaseCreate</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#303-316" title="Go to source code">databaseCreate</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Create database.</h4>
@@ -579,7 +583,7 @@ names.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseRetrieve">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#319-341" title="Go to source code">databaseRetrieve</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#323-345" title="Go to source code">databaseRetrieve</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a database object.</h4>
@@ -626,7 +630,7 @@ the case, we instantiate a <code><a href="class-Milko.PHPLib.ArangoDB.Database.h
 
 			<td class="name"><div>
 			<a class="anchor" href="#_defaultConnectionOptions">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#357-412" title="Go to source code">defaultConnectionOptions</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.DataServer.html#361-416" title="Go to source code">defaultConnectionOptions</a>( )</code>
 
 			<div class="description short">
 				<h4>Normalise connection options.</h4>
@@ -637,7 +641,7 @@ the case, we instantiate a <code><a href="class-Milko.PHPLib.ArangoDB.Database.h
 
 <p>This method is called by the constructor to complete the provided connection options
 with the default values, these values are defined in the includes.inc.php
-file.</p>
+file, except for the update policy which is hard coded here to <tt>last</tt>.</p>
 
 
 

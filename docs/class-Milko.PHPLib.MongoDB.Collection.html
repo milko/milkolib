@@ -250,7 +250,7 @@ $server->Connect();<br/>
 $database = $server->RetrieveCollection( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.MongoDB.Collection.html#17-620" title="Go to source code">PHPLib/MongoDB/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.MongoDB.Collection.html#17-662" title="Go to source code">PHPLib/MongoDB/Collection.php</a>
 		<br>
 	</div>
 
@@ -341,6 +341,233 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="ToDocument" id="_ToDocument">
+
+			<td class="attributes"><code>
+				 public 
+				Document
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_ToDocument">#</a>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#123-137" title="Go to source code">ToDocument</a>( <span>mixed <var>$theData</var></span>, <span>string <var>$theClass</var> = <span class="php-quote">'Milko\PHPLib\Document'</span> </span> )</code>
+
+			<div class="description short">
+				<h4>Convert native data to standard document.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Convert native data to standard document.</h4>
+
+<p>We overload this method by casting the provided data into an array and instantiating
+the expected document.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theData</var></dt>
+						<dd>Database native document.</dd>
+						<dt><var>$theClass</var></dt>
+						<dd>Expected class name.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						Document<br>Standard document object.
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="FromDocument" id="_FromDocument">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_FromDocument">#</a>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#144-156" title="Go to source code">FromDocument</a>( <span><code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> <var>$theDocument</var></span> )</code>
+
+			<div class="description short">
+				<h4>Convert a standard document to native data.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Convert a standard document to native data.</h4>
+
+<p>We overload this method to return an array representation of the document.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theDocument</var></dt>
+						<dd>Document to be converted.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>Database native object.
+					</div>
+
+
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doInsert">Milko\PHPLib\MongoDB\Collection::doInsert()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="IdOffset" id="_IdOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_IdOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#172-179" title="Go to source code">IdOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the document identifier offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the document identifier offset.</h4>
+
+<p>In this class we return the default <tt>_id</tt> offset.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Document identifier offset.
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="KeyOffset" id="_KeyOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_KeyOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#186-193" title="Go to source code">KeyOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the document key offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the document key offset.</h4>
+
+<p>In this class we return the identifier <tt>_id</tt> offset.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Document key offset.
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="ClassOffset" id="_ClassOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_ClassOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#200-207" title="Go to source code">ClassOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the document class offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the document class offset.</h4>
+
+<p>In this class we return the <tt>_class</tt> offset.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Document class offset.
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="RevisionOffset" id="_RevisionOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_RevisionOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#214-221" title="Go to source code">RevisionOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the document revision offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the document revision offset.</h4>
+
+<p>In this class we return the <tt>_rev</tt> offset.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Document revision offset.
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="collectionNew" id="_collectionNew">
 
 			<td class="attributes"><code>
@@ -352,7 +579,7 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionNew">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#123-151" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#237-265" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a native collection object.</h4>
@@ -404,7 +631,7 @@ set.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionName">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#158-176" title="Go to source code">collectionName</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#272-288" title="Go to source code">collectionName</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the collection name.</h4>
@@ -413,11 +640,9 @@ set.</p>
 			<div class="description detailed hidden">
 				<h4>Return the collection name.</h4>
 
-<p>This method should return the current collection name.</p>
+<p>We overload this method to use the native object.</p>
 
-<p>Note that this method <em>must</em> return a non empty string.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
+<p>The options parameter is ignored here.</p>
 
 
 
@@ -448,7 +673,7 @@ set.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsert">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#192-238" title="Go to source code">doInsert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#304-362" title="Go to source code">doInsert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert one or more records.</h4>
@@ -482,15 +707,9 @@ as driver native parameters.</p>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_FromDocument">Milko\PHPLib\MongoDB\Collection::FromDocument()</a></code><br>
 							<code><a href="class-MongoDB.Collection.html#_insertOne">MongoDB\Collection::insertOne()</a></code><br>
 							<code><a href="class-MongoDB.Collection.html#_insertMany">MongoDB\Collection::insertMany()</a></code><br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Insert one record.
-$collection->insert( $record, [ '$doAll' => FALSE ] );<br/>
-// Insert many records.<br/>
-$collection->insert( $records, [ '$doAll' => TRUE ] );</p><br>
 					</div>
 
 
@@ -508,7 +727,7 @@ $collection->insert( $records, [ '$doAll' => TRUE ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doUpdate">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#245-286" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#369-404" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Update one or more records.</h4>
@@ -547,13 +766,6 @@ as driver native parameters.</p>
 							<code><a href="class-MongoDB.Collection.html#_updateOne">MongoDB\Collection::updateOne()</a></code><br>
 							<code><a href="class-MongoDB.Collection.html#_updateMany">MongoDB\Collection::updateMany()</a></code><br>
 					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Update one record.
-$collection->update( $criteria, $query, [ '$doAll' => FALSE ] );<br/>
-// Update many records.<br/>
-$collection->update( $criteria, $query, [ '$doAll' => TRUE ] );</p><br>
-					</div>
 
 
 			</div>
@@ -570,7 +782,7 @@ $collection->update( $criteria, $query, [ '$doAll' => TRUE ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doReplace">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#293-315" title="Go to source code">doReplace</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#411-439" title="Go to source code">doReplace</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -619,7 +831,7 @@ $collection->update( $criteria, $query, [ '$doAll' => TRUE ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDelete">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#322-364" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#446-482" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records.</h4>
@@ -660,13 +872,6 @@ as driver native parameters.</p>
 							<code><a href="class-MongoDB.Collection.html#_deleteOne">MongoDB\Collection::deleteOne()</a></code><br>
 							<code><a href="class-MongoDB.Collection.html#_deleteMany">MongoDB\Collection::deleteMany()</a></code><br>
 					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Delete first record.
-$collection->delete( $query, [ '$doAll' => FALSE ] );<br/>
-// Delete all records.<br/>
-$collection->delete( $query, [ '$doAll' => TRUE ] );</p><br>
-					</div>
 
 
 			</div>
@@ -683,7 +888,7 @@ $collection->delete( $query, [ '$doAll' => TRUE ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#371-420" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#489-533" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by example the first or all records.</h4>
@@ -716,14 +921,8 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_cursorToArray">Milko\PHPLib\Collection::cursorToArray()</a></code><br>
 							<code><a href="class-MongoDB.Collection.html#_find">MongoDB\Collection::find()</a></code><br>
-					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Find first record.
-$collection->find( $query, [ '$doAll' => FALSE ] );<br/>
-// Find all records.<br/>
-$collection->find( $query, [ '$doAll' => TRUE ] );</p><br>
 					</div>
 
 
@@ -741,7 +940,7 @@ $collection->find( $query, [ '$doAll' => TRUE ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#427-449" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#540-556" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -772,13 +971,6 @@ uses the example document as a query.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_FindByExample">Milko\PHPLib\Collection::FindByExample()</a></code><br>
 					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Query first record.
-$collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0, '$limit' => 1 ] );<br/>
-// Query all records.<br/>
-$collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );</p><br>
-					</div>
 
 
 			</div>
@@ -795,7 +987,7 @@ $collection->find( [ '$gt' => [ 'age' => 20 ] ], [ '$start' => 0 ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCountByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#456-485" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#563-588" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return a find by example record count.</h4>
@@ -831,11 +1023,6 @@ uses the example document as a query.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doCountByQuery">Milko\PHPLib\MongoDB\Collection::doCountByQuery()</a></code><br>
 					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Count records.
-$collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
-					</div>
 
 
 			</div>
@@ -852,7 +1039,7 @@ $collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCountByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#492-512" title="Go to source code">doCountByQuery</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#595-611" title="Go to source code">doCountByQuery</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return a find by query record count.</h4>
@@ -883,11 +1070,6 @@ latter method uses the example document as a query.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doCountByExample">Milko\PHPLib\MongoDB\Collection::doCountByExample()</a></code><br>
 					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Count records.
-$collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
-					</div>
 
 
 			</div>
@@ -904,7 +1086,7 @@ $collection->count( [ '$gt' => [ 'age' => 20 ] ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doMapReduce">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#519-564" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#618-658" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Execute an aggregation query.</h4>
@@ -938,53 +1120,6 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
 							<code><a href="class-MongoDB.Collection.html#_aggregate">MongoDB\Collection::aggregate()</a></code><br>
 					</div>
-					<h4>Example</h4>
-					<div class="list">
-							<p>// Find first record.
-$collection->find( $query, [ '$doAll' => FALSE ] );<br/>
-// Find all records.<br/>
-$collection->find( $query, [ '$doAll' => TRUE ] );</p><br>
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="cursorToArray" id="_cursorToArray">
-
-			<td class="attributes"><code>
-				 protected 
-				array
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_cursorToArray">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#580-616" title="Go to source code">cursorToArray</a>( <span><code><a href="class-MongoDB.Driver.Cursor.html">MongoDB\Driver\Cursor</a></code> <var>$theCursor</var></span> )</code>
-
-			<div class="description short">
-				<h4>Format a query result.</h4>
-			</div>
-
-			<div class="description detailed hidden">
-				<h4>Format a query result.</h4>
-
-<p>This method will be used to convert a cursor into an array of arrays.</p>
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$theCursor</var></dt>
-						<dd>The result cursor.</dd>
-					</dl></div>
-
-					<h4>Returns</h4>
-					<div class="list">
-						array<br>The result as an array.
-					</div>
-
-
 
 
 			</div>
@@ -1009,7 +1144,8 @@ $collection->find( $query, [ '$doAll' => TRUE ] );</p><br>
 				<code><a href="class-Milko.PHPLib.Collection.html#_Server">Server()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_Update">Update()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#___construct">__construct()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Collection.html#___toString">__toString()</a></code>
+				<code><a href="class-Milko.PHPLib.Collection.html#___toString">__toString()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Collection.html#_cursorToArray">cursorToArray()</a></code>
 			</p>
 		</div>
 		<div class="panel panel-default">

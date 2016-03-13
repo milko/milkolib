@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Milko\PHPLib\Document | milkolib reference documentation</title>
+
+	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
+	<link rel="stylesheet" href="resources/style.css?49f43d3208c5d7e33fa16d36107a345bf11cc00d">
+
+</head>
+
+<body>
+	<nav id="navigation" class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="index.html" class="navbar-brand">milkolib reference documentation</a>
+			</div>
+			<div class="collapse navbar-collapse">
+
+                <form id="search" class="navbar-form navbar-left" role="search">
+                    <input type="hidden" name="cx" value="">
+                    <input type="hidden" name="ie" value="UTF-8">
+                    <div class="form-group">
+                        <input type="text" name="q" class="search-query form-control" placeholder="Search">
+					</div>
+				</form>
+
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="namespace-Milko.PHPLib.html" title="Summary of Milko\PHPLib"><span>Namespace</span></a>
+					</li>
+					<li class="active">
+<span>Class</span>					</li>
+
+					<li class="divider-vertical"></li>
+
+					<li>
+						<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+					</li>
+
+						<li>
+							<a href="annotation-group-todo.html" title="List of elements with todo annotation">
+								<span>Todo</span>
+							</a>
+						</li>
+
+					<li class="divider-vertical"></li>
+
+					<li>
+						<a href="-API-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div id="left">
+	<div id="menu">
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+					<li>
+						<a href="namespace-Composer.html">
+							Composer<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-Composer.Autoload.html">
+							Autoload						</a>
+							</li>
+								</ul></li>
+					<li class="active">
+						<a href="namespace-Milko.html">
+							Milko<span></span>
+						</a>
+							<ul>
+					<li class="active">
+						<a href="namespace-Milko.PHPLib.html">
+							PHPLib<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-Milko.PHPLib.ArangoDB.html">
+							ArangoDB						</a>
+							</li>
+					<li>
+						<a href="namespace-Milko.PHPLib.MongoDB.html">
+							MongoDB						</a>
+							</li>
+								</ul></li></ul></li>
+					<li>
+						<a href="namespace-MongoDB.html">
+							MongoDB<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-MongoDB.Exception.html">
+							Exception						</a>
+							</li>
+					<li>
+						<a href="namespace-MongoDB.Model.html">
+							Model						</a>
+							</li>
+					<li>
+						<a href="namespace-MongoDB.Operation.html">
+							Operation						</a>
+							</li>
+					<li>
+						<a href="namespace-MongoDB.Tests.html">
+							Tests<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-MongoDB.Tests.Collection.html">
+							Collection<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-MongoDB.Tests.Collection.CrudSpec.html">
+							CrudSpec						</a>
+							</li>
+								</ul></li>
+					<li>
+						<a href="namespace-MongoDB.Tests.Database.html">
+							Database						</a>
+							</li>
+					<li>
+						<a href="namespace-MongoDB.Tests.Operation.html">
+							Operation						</a>
+							</li>
+								</ul></li></ul></li>
+					<li>
+						<a href="namespace-None.html">
+							None						</a>
+							</li>
+					<li>
+						<a href="namespace-PHP.html">
+							PHP						</a>
+							</li>
+					<li>
+						<a href="namespace-triagens.html">
+							triagens<span></span>
+						</a>
+							<ul>
+					<li>
+						<a href="namespace-triagens.ArangoDb.html">
+							ArangoDb						</a>
+							</li>
+								</ul></li>
+			</ul>
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Milko.PHPLib.Collection.html">Collection</a></li>
+				<li><a href="class-Milko.PHPLib.Container.html">Container</a></li>
+				<li><a href="class-Milko.PHPLib.Database.html">Database</a></li>
+				<li><a href="class-Milko.PHPLib.DataServer.html">DataServer</a></li>
+				<li><a href="class-Milko.PHPLib.DataSource.html">DataSource</a></li>
+				<li class="active"><a href="class-Milko.PHPLib.Document.html">Document</a></li>
+				<li><a href="class-Milko.PHPLib.DocumentSet.html">DocumentSet</a></li>
+				<li><a href="class-Milko.PHPLib.Server.html">Server</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<div id="content" class="class">
+	<h1>Class Document</h1>
+
+
+	<div class="description">
+	<h4>Document ancestor object.</h4>
+
+<p>This class implements a special <code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> instance which is supposed to persist
+in a collection. For this purpose the document features a set of offsets that contain
+information regarding persistence:</p>
+
+<ul> <li><tt><a href="Collection::IdOffset()">Collection::IdOffset()</a></tt>: The offset of the document reference. <li><tt><a href="Collection::KeyOffset()">Collection::KeyOffset()</a></tt>: The offset of the document unique key. <li><tt><a href="Collection::ClassOffset()">Collection::ClassOffset()</a></tt>: The offset of the document class. <li><tt><a href="Collection::RevisionOffset()">Collection::RevisionOffset()</a></tt>: The offset of the document revision.
+</ul>
+
+<p>These offsets are managed by the enclosing collection, which is also responsible of
+instantiating and serialising the document: this is because the above information is
+dependent both on the database engine and the structure of the collection objects. So,
+to set the document key you would do:<br/></p>
+
+<pre><span class="php-var">$document</span>[ <span class="php-var">$collection</span>-&gt;KeyOffset() ] = <span class="php-var">$key</span>;</pre>
+
+<p>and to retrieve the key,</p>
+
+<pre><span class="php-var">$key</span> = <span class="php-var">$document</span>[ <span class="php-var">$collection</span>-&gt;KeyOffset() ];</pre>
+
+<p>For this reason, a document must be instantiated by providing the <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> in
+which it will reside, when instantiated, the only default property that is set is the
+document's class, which will be used to instantiate it when read from the database.</p>
+	</div>
+
+	<dl class="tree well">
+		<dd style="padding-left:0px">
+			<a href="class-ArrayObject.html"><span>ArrayObject</span></a>
+			
+			 implements 
+				<a href="class-IteratorAggregate.html"><span>IteratorAggregate</span></a>, 
+			
+				<a href="class-Traversable.html"><span>Traversable</span></a>, 
+			
+				<a href="class-ArrayAccess.html"><span>ArrayAccess</span></a>, 
+			
+				<a href="class-Serializable.html"><span>Serializable</span></a>, 
+			
+				<a href="class-Countable.html"><span>Countable</span></a>
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+			<a href="class-Milko.PHPLib.Container.html"><span>Milko\PHPLib\Container</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Milko\PHPLib\Document</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="alert alert-info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Milko.html">Milko</a>\<a href="namespace-Milko.PHPLib.html">PHPLib</a><br>
+		<b>Package:</b> Core<br>
+
+				<b>Author:</b>
+				Milko A. Škofič <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;">&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;</a><br>
+				<b>Version:</b>
+				1.00<br>
+				<b>Since:</b>
+				10/03/2016<br>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#19-93" title="Go to source code">PHPLib/Document.php</a>
+		<br>
+	</div>
+
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading"><h2>Methods summary</h2></div>
+			<table class="summary table table-bordered table-striped methods" id="methods">
+		<tr data-order="__construct" id="___construct">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#___construct">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#67-88" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>array <var>$theData</var> = [] </span> )</code>
+
+			<div class="description short">
+				<h4>Instantiate class.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Instantiate class.</h4>
+
+<p>We overload the inherited constructor to set the class offset, for this reason we
+need to provide the collection in which the document should be stored.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theCollection</var></dt>
+						<dd>Collection name.</dd>
+						<dt><var>$theData</var></dt>
+						<dd>Document data.</dd>
+					</dl></div>
+
+
+
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-ArrayObject.html#___construct">ArrayObject::__construct</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+			</table>
+		</div>
+
+		<div class="panel panel-default">
+	        <div class="panel-heading"><h3>Methods inherited from <a href="class-Milko.PHPLib.Container.html#methods">Milko\PHPLib\Container</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-Milko.PHPLib.Container.html#_arrayKeys">arrayKeys()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_arrayValues">arrayValues()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_convertToArray">convertToArray()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_manageAttribute">manageAttribute()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">manageProperty()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_offsetGet">offsetGet()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_offsetSet">offsetSet()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_offsetUnset">offsetUnset()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_toArray">toArray()</a></code>
+			</p>
+		</div>
+		<div class="panel panel-default">
+	        <div class="panel-heading"><h3>Methods inherited from <a href="class-ArrayObject.html#methods">ArrayObject</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-ArrayObject.html#_append">append()</a></code>, 
+				<code><a href="class-ArrayObject.html#_asort">asort()</a></code>, 
+				<code><a href="class-ArrayObject.html#_count">count()</a></code>, 
+				<code><a href="class-ArrayObject.html#_exchangeArray">exchangeArray()</a></code>, 
+				<code><a href="class-ArrayObject.html#_getArrayCopy">getArrayCopy()</a></code>, 
+				<code><a href="class-ArrayObject.html#_getFlags">getFlags()</a></code>, 
+				<code><a href="class-ArrayObject.html#_getIterator">getIterator()</a></code>, 
+				<code><a href="class-ArrayObject.html#_getIteratorClass">getIteratorClass()</a></code>, 
+				<code><a href="class-ArrayObject.html#_ksort">ksort()</a></code>, 
+				<code><a href="class-ArrayObject.html#_natcasesort">natcasesort()</a></code>, 
+				<code><a href="class-ArrayObject.html#_natsort">natsort()</a></code>, 
+				<code><a href="class-ArrayObject.html#_offsetExists">offsetExists()</a></code>, 
+				<code><a href="class-ArrayObject.html#_serialize">serialize()</a></code>, 
+				<code><a href="class-ArrayObject.html#_setFlags">setFlags()</a></code>, 
+				<code><a href="class-ArrayObject.html#_setIteratorClass">setIteratorClass()</a></code>, 
+				<code><a href="class-ArrayObject.html#_uasort">uasort()</a></code>, 
+				<code><a href="class-ArrayObject.html#_uksort">uksort()</a></code>, 
+				<code><a href="class-ArrayObject.html#_unserialize">unserialize()</a></code>
+			</p>
+		</div>
+
+
+
+
+
+
+
+		<div class="panel panel-default">
+            <div class="panel-heading"><h2>Constants summary</h2></div>
+		</div>
+
+		<div class="panel panel-default">
+            <div class="panel-heading"><h3>Constants inherited from <a href="class-ArrayObject.html#constants">ArrayObject</a></h3></div>
+			<p class="elementList">
+				<code><a href="class-ArrayObject.html#ARRAY_AS_PROPS"><b>ARRAY_AS_PROPS</b></a></code>, 
+				<code><a href="class-ArrayObject.html#STD_PROP_LIST"><b>STD_PROP_LIST</b></a></code>
+			</p>
+		</div>
+
+
+
+</div>
+	</div>
+
+	<div id="footer">
+		milkolib reference documentation API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

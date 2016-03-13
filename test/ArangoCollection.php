@@ -110,7 +110,7 @@ echo( "\n" );
 echo( "Find first record:\n" );
 echo( '$result = $test->FindByExample( [ "color" => "red" ], [ \'$limit\' => 1 ] );' . "\n" );
 $result = $test->FindByExample( [ "color" => "red" ], [ '$limit' => 1 ] );
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n" );
 
@@ -120,7 +120,7 @@ echo( "\n" );
 echo( "Find all records:\n" );
 echo( '$result = $test->FindByExample( [ "color" => "red" ] );' . "\n" );
 $result = $test->FindByExample( [ "color" => "red" ] );
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -133,7 +133,7 @@ $result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" 
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "changed" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "changed" ] );
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n" );
 
@@ -146,7 +146,7 @@ $result = $test->Update( [ "color" => "yellow", "status" => "was red" ], ["query
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "was red" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "was red" ] );
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -159,7 +159,7 @@ $result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], ["query
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "replaced" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "replaced" ] );
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -179,7 +179,7 @@ echo( "\n" );
 echo( "Query records:\n" );
 echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.data == \'XXX\' OR r.status == \'replaced\' RETURN r"] );' . "\n" );
 $result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.data == 'XXX' OR r.status == 'replaced' RETURN r"] );
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -189,7 +189,7 @@ echo( "\n=======================================================================
 echo( "Aggregate records:\n" );
 echo( '$result = $test->MapReduce( ["query" => "FOR r IN test_collection COLLECT theColour = r.color WITH COUNT INTO theCount RETURN{ theColour, theCount }"] );' . "\n" );
 $result = $test->MapReduce( ["query" => "FOR r IN test_collection COLLECT theColour = r.color WITH COUNT INTO theCount RETURN{ theColour, theCount }"] );
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -202,7 +202,7 @@ $result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.color ==
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n" );
 
@@ -215,7 +215,7 @@ $result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.data == 
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
-print_r( $result->getAll() );
+print_r( $result );
 
 echo( "\n" );
 
@@ -228,7 +228,7 @@ $result = $test->Delete();
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
-print_r( $result->getAll() );
+print_r( $result );
 
 
 ?>

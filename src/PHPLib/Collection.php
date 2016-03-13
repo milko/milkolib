@@ -9,6 +9,7 @@
 namespace Milko\PHPLib;
 
 use Milko\PHPLib\Container;
+use Milko\PHPLib\Document;
 
 /*=======================================================================================
  *																						*
@@ -37,6 +38,19 @@ use Milko\PHPLib\Container;
  * 		<li><b>{@link Connection()}</b>: Return the collection native driver object.
  * 		<li><b>{@link Truncate()}</b>: Clear collection contents; this method is virtual.
  * 		<li><b>{@link Drop()}</b>: Drop current collection; this method is virtual.
+ *   </ul>
+ * 	<li><em>Document related:</em>
+ *   <ul>
+ * 		<li><b>{@link ToDocument()}</b>: Convert native data to a standard {@link Document}.
+ * 		<li><b>{@link FromDocument()}</b>: Convert a standard {@link Document} to native
+ * 			data.
+ *   </ul>
+ * 	<li><em>Offset related:</em>
+ *   <ul>
+ * 		<li><b>{@link IdOffset()}</b>: Return the document identifier offset.
+ * 		<li><b>{@link KeyOffset()}</b>: Return the document key offset.
+ * 		<li><b>{@link ClassOffset()}</b>: Return the document class offset.
+ * 		<li><b>{@link RevisionOffset()}</b>: Return the document revision offset.
  *   </ul>
  * 	<li><em>Record related:</em>
  *   <ul>
@@ -68,6 +82,9 @@ use Milko\PHPLib\Container;
  * 	<li><b>{@link doCountByQuery()}</b>: Return record count by native query.
  * 	<li><b>{@link doMapReduce()}</b>: Perform a map and reduce query.
  * </ul>
+ *
+ * When persisting documents, this class expects all provided documents to be instances of
+ * {@link Document}.
  *
  *	@package	Core
  *
@@ -301,6 +318,132 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Driver native options.
 	 */
 	abstract public function Drop( $theOptions = NULL );
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC DOCUMENT MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ToDocument																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert native data to standard document.</h4>
+	 *
+	 * This method can be used to instantiate a {@link Document} object from database native
+	 * data, the method expects two parameters:
+	 *
+	 * <ul>
+	 * 	<li><b>$theData</b>: The data expressed in the database native type.
+	 * 	<li><b>$theClass</b>: The class name of the resulting {@link Document} instance.
+	 * </ul>
+	 *
+	 * This method is declared virtual, to allow database native derived classes to handle
+	 * their native types.
+	 *
+	 * Derived concrete classes must implement this method.
+	 *
+	 * @param mixed					$theData			Database native document.
+	 * @param string				$theClass			Expected class name.
+	 * @return Document				Standard document object.
+	 */
+	abstract public function ToDocument( $theData, $theClass = 'Milko\PHPLib\Document' );
+
+
+	/*===================================================================================
+	 *	FromDocument																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert a standard document to native data.</h4>
+	 *
+	 * This method can be used to convert a {@link Document} object into database native
+	 * data.
+	 *
+	 * This method is declared virtual, to allow database native derived classes to handle
+	 * their native types.
+	 *
+	 * Derived concrete classes must implement this method.
+	 *
+	 * @param Document				$theDocument		Document to be converted.
+	 * @return mixed				Database native object.
+	 */
+	abstract public function FromDocument( Document $theDocument );
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC OFFSET DECLARATION INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	IdOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document identifier offset.</h4>
+	 *
+	 * This method should return the document identifier or reference offset, concrete
+	 * derived classes should implement this method.
+	 *
+	 * @return string				Document identifier offset.
+	 */
+	abstract public function IdOffset();
+
+
+	/*===================================================================================
+	 *	KeyOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document key offset.</h4>
+	 *
+	 * This method should return the document key offset, concrete derived classes should
+	 * implement this method.
+	 *
+	 * @return string				Document key offset.
+	 */
+	abstract public function KeyOffset();
+
+
+	/*===================================================================================
+	 *	ClassOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document class offset.</h4>
+	 *
+	 * This method should return the document class offset, concrete derived classes should
+	 * implement this method.
+	 *
+	 * @return string				Document class offset.
+	 */
+	abstract public function ClassOffset();
+
+
+	/*===================================================================================
+	 *	RevisionOffset																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document revision offset.</h4>
+	 *
+	 * This method should return the document revision offset, concrete derived classes should
+	 * implement this method.
+	 *
+	 * @return string				Document revision offset.
+	 */
+	abstract public function RevisionOffset();
 
 
 
@@ -1040,6 +1183,56 @@ abstract class Collection extends Container
 	 * @return Iterator				The found records.
 	 */
 	abstract protected function doMapReduce( $thePipeline, $theOptions );
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED CURSOR UTILITIES								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	cursorToArray																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Format a query result.</h4>
+	 *
+	 * This method will be used to convert a cursor into an array of {@link Document}
+	 * elements.
+	 *
+	 * @param \MongoDB\Driver\Cursor	$theCursor	The result cursor.
+	 * @return array					The result as an array.
+	 */
+	protected function cursorToArray( $theCursor )
+	{
+		//
+		// Init local storage.
+		//
+		$array = [];
+
+		//
+		// Iterate cursor.
+		//
+		foreach( $theCursor as $document )
+		{
+			//
+			// Get document.
+			//
+			$document = $this->ToDocument( $document );
+
+			//
+			// Set document.
+			//
+			$array[ (string) $document[ $this->IdOffset() ] ] = $document;
+		}
+
+		return $array;																// ==>
+
+	} // cursorToArray.
 
 	
 	

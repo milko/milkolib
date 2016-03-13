@@ -248,14 +248,32 @@ and collections.</p>
 				<b>Used by:</b>
 				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_Drop">Milko\PHPLib\ArangoDB\Collection::Drop()</a></code><br>
 				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_collectionNew">Milko\PHPLib\ArangoDB\Collection::collectionNew()</a></code><br>
+				<b>Used by:</b>
 				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doInsert">Milko\PHPLib\ArangoDB\Collection::doInsert()</a></code><br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doUpdate">Milko\PHPLib\ArangoDB\Collection::doUpdate()</a></code><br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doReplace">Milko\PHPLib\ArangoDB\Collection::doReplace()</a></code><br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doDelete">Milko\PHPLib\ArangoDB\Collection::doDelete()</a></code><br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByExample">Milko\PHPLib\ArangoDB\Collection::doFindByExample()</a></code><br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByQuery">Milko\PHPLib\ArangoDB\Collection::doFindByQuery()</a></code><br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doCountByExample">Milko\PHPLib\ArangoDB\Collection::doCountByExample()</a></code><br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doCountByQuery">Milko\PHPLib\ArangoDB\Collection::doCountByQuery()</a></code><br>
+				<b>Used by:</b>
+				<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doMapReduce">Milko\PHPLib\ArangoDB\Collection::doMapReduce()</a></code><br>
 				<b>Example:</b>
 				../../test/ArangoDatabase.php<br>
 				<b>Example:</b>
 				<p>$server = new Milko\PHPLib\DataServer( 'tcp://localhost:8529/database/collection' );<br/>
 $database = $server->RetrieveDatabase( "database" );<br/>
 // Work with that database...<br/></p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Database.html#33-248" title="Go to source code">PHPLib/ArangoDB/Database.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Database.html#33-266" title="Go to source code">PHPLib/ArangoDB/Database.php</a>
 		<br>
 	</div>
 
@@ -275,7 +293,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Drop">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#69-84" title="Go to source code">Drop</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#69-91" title="Go to source code">Drop</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Drop the current database.</h4>
@@ -284,7 +302,10 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 			<div class="description detailed hidden">
 				<h4>Drop the current database.</h4>
 
-<p>We overload this method to call the native object's method.</p>
+<p>We overload this method to first check if the database exists, if that is the case,
+we call the native object's method to delete it.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -317,7 +338,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseNew">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#100-134" title="Go to source code">databaseNew</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#107-146" title="Go to source code">databaseNew</a>( <span>string <var>$theDatabase</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a native database object.</h4>
@@ -326,7 +347,12 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 			<div class="description detailed hidden">
 				<h4>Return a native database object.</h4>
 
-<p>We overload this method to instantiate a native object.</p>
+<p>We overload this method to instantiate a native object, we first create a server
+connection using the parent data source options, then, if the database does not
+exist we create it, we then add the database to the newly created server connection
+and return it.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -368,7 +394,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_databaseName">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#141-158" title="Go to source code">databaseName</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#153-172" title="Go to source code">databaseName</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return the database name.</h4>
@@ -378,6 +404,8 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 				<h4>Return the database name.</h4>
 
 <p>We overload this method to use the native object.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -417,7 +445,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionList">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#174-195" title="Go to source code">collectionList</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#188-213" title="Go to source code">collectionList</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>List server databases.</h4>
@@ -426,8 +454,12 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 			<div class="description detailed hidden">
 				<h4>List server databases.</h4>
 
-<p>We overload this method to use the native driver object, we only consider the non
-system collection names in the returned value.</p>
+<p>We overload this method to instantiate a collection handler from which we get the
+collection names.</p>
+
+<p>We only consider the non system collection names in the returned value.</p>
+
+<p>The options parameter is ignored here.</p>
 
 
 					<h4>Parameters</h4>
@@ -466,7 +498,7 @@ system collection names in the returned value.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionCreate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#202-216" title="Go to source code">collectionCreate</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#220-234" title="Go to source code">collectionCreate</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Create collection.</h4>
@@ -509,7 +541,7 @@ class.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionRetrieve">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#223-245" title="Go to source code">collectionRetrieve</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Database.html#241-263" title="Go to source code">collectionRetrieve</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a collection object.</h4>

@@ -110,6 +110,120 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *							PUBLIC DOCUMENT MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ToDocument																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert native data to standard document.</h4>
+	 *
+	 * We overload this method by casting the provided data into an array and instantiating
+	 * the expected document.
+	 *
+	 * @param mixed					$theData			Database native document.
+	 * @param string				$theClass			Expected class name.
+	 * @return Document				Standard document object.
+	 */
+	public function ToDocument( $theData, $theClass = 'Milko\PHPLib\Document' )
+	{
+		return new $theClass( $this, (array) $theData );							// ==>
+
+	} // ToDocument.
+
+
+	/*===================================================================================
+	 *	FromDocument																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert a standard document to native data.</h4>
+	 *
+	 * We overload this method to return an array representation of the document.
+	 *
+	 * @param Document				$theDocument		Document to be converted.
+	 * @return mixed				Database native object.
+	 */
+	public function FromDocument( \Milko\PHPLib\Document $theDocument )
+	{
+		return $theDocument->toArray();												// ==>
+
+	} // FromDocument.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC OFFSET DECLARATION INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	IdOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document identifier offset.</h4>
+	 *
+	 * In this class we return the default <tt>_id</tt> offset.
+	 *
+	 * @return string				Document identifier offset.
+	 */
+	public function IdOffset()											{	return '_id';	}
+
+
+	/*===================================================================================
+	 *	KeyOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document key offset.</h4>
+	 *
+	 * In this class we return the identifier <tt>_id</tt> offset.
+	 *
+	 * @return string				Document key offset.
+	 */
+	public function KeyOffset()											{	return '_id';	}
+
+
+	/*===================================================================================
+	 *	ClassOffset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document class offset.</h4>
+	 *
+	 * In this class we return the <tt>_class</tt> offset.
+	 *
+	 * @return string				Document class offset.
+	 */
+	public function ClassOffset()									{	return '_class';	}
+
+
+	/*===================================================================================
+	 *	RevisionOffset																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document revision offset.</h4>
+	 *
+	 * In this class we return the <tt>_rev</tt> offset.
+	 *
+	 * @return string				Document revision offset.
+	 */
+	public function RevisionOffset()									{	return '_rev';	}
+
+
+
+/*=======================================================================================
+ *																						*
  *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
  *																						*
  *======================================================================================*/
@@ -202,6 +316,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The document's unique identifier(s).
 	 *
 	 * @uses Connection()
+	 * @uses FromDocument()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\Collection::insertMany()
 	 */
@@ -215,14 +330,31 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Normalise container.
 		//
-		if( $theDocument instanceof \Milko\PHPLib\Container )
-			$theDocument = $theDocument->toArray();
+		if( $do_all )
+		{
+			//
+			// Init local storage.
+			//
+			$data = [];
+
+			//
+			// Iterate documents.
+			//
+			foreach( $theDocument as $document )
+				$data[] = ( $document instanceof \Milko\PHPLib\Document )
+						? $this->FromDocument( $document )
+						: (array) $document;
+		}
+		else
+			$data = ( $theDocument instanceof \Milko\PHPLib\Document )
+				? $this->FromDocument( $theDocument )
+				: (array) $theDocument;
 
 		//
 		// Insert one or more records.
 		//
-		$result = ( $do_all ) ? $this->Connection()->insertMany( $theDocument, $theOptions )
-							  : $this->Connection()->insertOne( $theDocument, $theOptions );
+		$result = ( $do_all ) ? $this->Connection()->insertMany( $data, $theOptions )
+							  : $this->Connection()->insertOne( $data, $theOptions );
 
 		return ( $do_all ) ? $result->getInsertedIds()								// ==>
 						   : $result->getInsertedId();								// ==>
@@ -291,6 +423,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 */
 	protected function doReplace( $theFilter, $theDocument, $theOptions )
 	{
+		//
+		// Normalise container.
+		//
+		if( $theDocument instanceof \Milko\PHPLib\Container )
+			$theDocument = $theDocument->toArray();
+
 		//
 		// Replace a record.
 		//
@@ -362,6 +500,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return Iterator				The found records.
 	 *
 	 * @uses Connection()
+	 * @uses cursorToArray()
 	 * @uses \MongoDB\Collection::find()
 	 */
 	protected function doFindByExample( $theDocument, $theOptions )
@@ -508,66 +647,15 @@ class Collection extends \Milko\PHPLib\Collection
 		}
 
 		//
-		// Aggregate.
+		// Serialise result.
 		//
-		$result = $this->Connection()->aggregate( $thePipeline, $theOptions );
+		$result = [];
+		foreach( $this->Connection()->aggregate( $thePipeline, $theOptions ) as $record )
+			$result[] = (array) $record;
 
-		return $this->cursorToArray(
-			$this->Connection()->aggregate( $thePipeline, $theOptions ) );			// ==>
+		return $result;																// ==>
 
 	} // doMapReduce.
-
-
-
-/*=======================================================================================
- *																						*
- *								PROTECTED CURSOR UTILITIES								*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	cursorToArray																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Format a query result.</h4>
-	 *
-	 * This method will be used to convert a cursor into an array of arrays.
-	 *
-	 * @param \MongoDB\Driver\Cursor	$theCursor	The result cursor.
-	 * @return array					The result as an array.
-	 */
-	protected function cursorToArray( $theCursor )
-	{
-		//
-		// Init local storage.
-		//
-		$array = [];
-
-		//
-		// Iterate cursor.
-		//
-		foreach( $theCursor as $document )
-		{
-			//
-			// Get document.
-			//
-			$document = $document->getArrayCopy();
-
-			//
-			// Set document.
-			//
-			if( is_object( $document[ '_id' ] ) )
-				$array[ (string)$document[ '_id' ] ] = $document;
-			else
-				$array[ $document[ '_id' ] ] = $document;
-		}
-
-		return $array;																// ==>
-
-	} // cursorToArray.
 
 
 
