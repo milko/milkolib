@@ -14,7 +14,7 @@
 //
 // Include local definitions.
 //
-require_once( dirname( __DIR__ ) . "/includes.local.php" );
+require_once(dirname(__DIR__) . "/includes.local.php");
 
 //
 // Include utility functions.

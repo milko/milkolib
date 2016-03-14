@@ -276,7 +276,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...<br/>
 $collection->Drop(); // Drop collection.</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Collection.html#20-1277" title="Go to source code">PHPLib/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Collection.html#20-1279" title="Go to source code">PHPLib/Collection.php</a>
 		<br>
 	</div>
 
@@ -715,8 +715,8 @@ their native types.</p>
 			<div class="description detailed hidden">
 				<h4>Return the document identifier offset.</h4>
 
-<p>This method should return the document identifier or reference offset, concrete
-derived classes should implement this method.</p>
+<p>This represents the default offset of the document identifier or reference, this
+property is generally managed by the database and should be accessed read-only.</p>
 
 
 
@@ -751,8 +751,8 @@ derived classes should implement this method.</p>
 			<div class="description detailed hidden">
 				<h4>Return the document key offset.</h4>
 
-<p>This method should return the document key offset, concrete derived classes should
-implement this method.</p>
+<p>This represents the default offset of the document key or unique identifier within
+its collection, this property is managed by clients.</p>
 
 
 
@@ -778,7 +778,7 @@ implement this method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_ClassOffset">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#425-433" title="Go to source code">ClassOffset</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#425-434" title="Go to source code">ClassOffset</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the document class offset.</h4>
@@ -787,8 +787,9 @@ implement this method.</p>
 			<div class="description detailed hidden">
 				<h4>Return the document class offset.</h4>
 
-<p>This method should return the document class offset, concrete derived classes should
-implement this method.</p>
+<p>This represents the default offset of the document class name, this property is
+managed by clients and serves the purpose on instantiating the right object when
+retrieving documents from the database.</p>
 
 
 
@@ -814,7 +815,7 @@ implement this method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_RevisionOffset">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#440-448" title="Go to source code">RevisionOffset</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#441-450" title="Go to source code">RevisionOffset</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the document revision offset.</h4>
@@ -823,8 +824,9 @@ implement this method.</p>
 			<div class="description detailed hidden">
 				<h4>Return the document revision offset.</h4>
 
-<p>This method should return the document revision offset, concrete derived classes should
-implement this method.</p>
+<p>This represents the default offset of the document revision, this property represents
+the database internal revision of the stored document and it is generally managed by
+the database.</p>
 
 
 
@@ -850,7 +852,7 @@ implement this method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Insert">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#464-512" title="Go to source code">Insert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#466-514" title="Go to source code">Insert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Insert documents.</h4>
@@ -921,7 +923,7 @@ $ids = $collection->Insert( $list, [ '$doAll' => TRUE ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Update">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#519-564" title="Go to source code">Update</a>( <span>array <var>$theCriteria</var></span>, <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#521-566" title="Go to source code">Update</a>( <span>array <var>$theCriteria</var></span>, <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Update documents.</h4>
@@ -991,7 +993,7 @@ $count = $collection->Update( $criteria, $filter );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Replace">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#571-607" title="Go to source code">Replace</a>( <span>array <var>$theDocument</var></span>, <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#573-609" title="Go to source code">Replace</a>( <span>array <var>$theDocument</var></span>, <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -1050,7 +1052,7 @@ method expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Delete">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#614-665" title="Go to source code">Delete</a>( <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#616-667" title="Go to source code">Delete</a>( <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Delete documents.</h4>
@@ -1119,7 +1121,7 @@ $count = $collection->Delete();</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_RecordCount">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#672-685" title="Go to source code">RecordCount</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#674-687" title="Go to source code">RecordCount</a>( )</code>
 
 			<div class="description short">
 				<h4>Count documents.</h4>
@@ -1158,7 +1160,7 @@ $count = $collection->Delete();</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_FindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#692-738" title="Go to source code">FindByExample</a>( <span>array <var>$theDocument</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#694-740" title="Go to source code">FindByExample</a>( <span>array <var>$theDocument</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Find by example.</h4>
@@ -1228,7 +1230,7 @@ $iterator = $collection->FindByExample();</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_FindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#745-774" title="Go to source code">FindByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#747-776" title="Go to source code">FindByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -1282,7 +1284,7 @@ expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_CountByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#781-816" title="Go to source code">CountByExample</a>( <span>array <var>$theDocument</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#783-818" title="Go to source code">CountByExample</a>( <span>array <var>$theDocument</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Count by example.</h4>
@@ -1343,7 +1345,7 @@ $count = $collection->CountByExample( [ 'color' => 'red', 'city' => 'Rome' ] );<
 
 			<td class="name"><div>
 			<a class="anchor" href="#_CountByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#823-853" title="Go to source code">CountByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#825-855" title="Go to source code">CountByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Count by example.</h4>
@@ -1398,7 +1400,7 @@ the provided query, the method expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_MapReduce">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#860-889" title="Go to source code">MapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#862-891" title="Go to source code">MapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Execute an aggregation query.</h4>
@@ -1452,7 +1454,7 @@ following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionNew">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#905-925" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#907-927" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return a native collection object.</h4>
@@ -1509,7 +1511,7 @@ operation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionName">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#932-949" title="Go to source code">collectionName</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#934-951" title="Go to source code">collectionName</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the collection name.</h4>
@@ -1558,7 +1560,7 @@ operation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsert">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#965-988" title="Go to source code">doInsert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#967-990" title="Go to source code">doInsert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert one or more records.</h4>
@@ -1618,7 +1620,7 @@ provided values represent native driver options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doUpdate">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#995-1018" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#997-1020" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Update one or more records.</h4>
@@ -1679,7 +1681,7 @@ provided. Other provided values represent native driver options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doReplace">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1025-1044" title="Go to source code">doReplace</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1027-1046" title="Go to source code">doReplace</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -1736,7 +1738,7 @@ following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDelete">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1051-1072" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1053-1074" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records.</h4>
@@ -1794,7 +1796,7 @@ provided. Other provided values represent native driver options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1079-1102" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1081-1104" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by example the first or all records.</h4>
@@ -1854,7 +1856,7 @@ represent native driver options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1109-1126" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1111-1128" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -1908,7 +1910,7 @@ format, the method expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCount">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1133-1142" title="Go to source code">doCount</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1135-1144" title="Go to source code">doCount</a>( )</code>
 
 			<div class="description short">
 				<h4>Return total number of records in collection.</h4>
@@ -1949,7 +1951,7 @@ format, the method expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCountByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1149-1166" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1151-1168" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return a find by example record count.</h4>
@@ -2003,7 +2005,7 @@ the method expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doCountByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1173-1190" title="Go to source code">doCountByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1175-1192" title="Go to source code">doCountByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return a find by query record count.</h4>
@@ -2057,7 +2059,7 @@ driver's native format, the method expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doMapReduce">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1197-1223" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1199-1225" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Execute an aggregation query.</h4>
@@ -2120,7 +2122,7 @@ operation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_cursorToArray">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1239-1273" title="Go to source code">cursorToArray</a>( <span><code><a href="class-MongoDB.Driver.Cursor.html">MongoDB\Driver\Cursor</a></code> <var>$theCursor</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1241-1275" title="Go to source code">cursorToArray</a>( <span><code><a href="class-MongoDB.Driver.Cursor.html">MongoDB\Driver\Cursor</a></code> <var>$theCursor</var></span> )</code>
 
 			<div class="description short">
 				<h4>Format a query result.</h4>

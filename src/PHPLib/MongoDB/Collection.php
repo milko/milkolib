@@ -172,11 +172,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the document identifier offset.</h4>
 	 *
-	 * In this class we return the default <tt>_id</tt> offset.
+	 * We overload this method to use the {@link kTAG_MONGO_ID} constant.
 	 *
 	 * @return string				Document identifier offset.
 	 */
-	public function IdOffset()											{	return '_id';	}
+	public function IdOffset()									{	return kTAG_MONGO_ID;	}
 
 
 	/*===================================================================================
@@ -186,11 +186,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the document key offset.</h4>
 	 *
-	 * In this class we return the identifier <tt>_id</tt> offset.
+	 * We overload this method to use the {@link kTAG_MONGO_KEY} constant.
 	 *
 	 * @return string				Document key offset.
 	 */
-	public function KeyOffset()											{	return '_id';	}
+	public function KeyOffset()									{	return kTAG_MONGO_KEY;	}
 
 
 	/*===================================================================================
@@ -200,11 +200,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the document class offset.</h4>
 	 *
-	 * In this class we return the <tt>_class</tt> offset.
+	 * We overload this method to use the {@link kTAG_MONGO_CLASS} constant.
 	 *
 	 * @return string				Document class offset.
 	 */
-	public function ClassOffset()									{	return '_class';	}
+	public function ClassOffset()							{	return kTAG_MONGO_CLASS;	}
 
 
 	/*===================================================================================
@@ -214,11 +214,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the document revision offset.</h4>
 	 *
-	 * In this class we return the <tt>_rev</tt> offset.
+	 * We overload this method to use the {@link kTAG_MONGO_REVISION} constant.
 	 *
 	 * @return string				Document revision offset.
 	 */
-	public function RevisionOffset()									{	return '_rev';	}
+	public function RevisionOffset()						{	return kTAG_MONGO_REVISION;	}
 
 
 

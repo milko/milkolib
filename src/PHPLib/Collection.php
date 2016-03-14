@@ -395,8 +395,8 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Return the document identifier offset.</h4>
 	 *
-	 * This method should return the document identifier or reference offset, concrete
-	 * derived classes should implement this method.
+	 * This represents the default offset of the document identifier or reference, this
+	 * property is generally managed by the database and should be accessed read-only.
 	 *
 	 * @return string				Document identifier offset.
 	 */
@@ -410,8 +410,8 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Return the document key offset.</h4>
 	 *
-	 * This method should return the document key offset, concrete derived classes should
-	 * implement this method.
+	 * This represents the default offset of the document key or unique identifier within
+	 * its collection, this property is managed by clients.
 	 *
 	 * @return string				Document key offset.
 	 */
@@ -425,8 +425,9 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Return the document class offset.</h4>
 	 *
-	 * This method should return the document class offset, concrete derived classes should
-	 * implement this method.
+	 * This represents the default offset of the document class name, this property is
+	 * managed by clients and serves the purpose on instantiating the right object when
+	 * retrieving documents from the database.
 	 *
 	 * @return string				Document class offset.
 	 */
@@ -440,8 +441,9 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Return the document revision offset.</h4>
 	 *
-	 * This method should return the document revision offset, concrete derived classes should
-	 * implement this method.
+	 * This represents the default offset of the document revision, this property represents
+	 * the database internal revision of the stored document and it is generally managed by
+	 * the database.
 	 *
 	 * @return string				Document revision offset.
 	 */

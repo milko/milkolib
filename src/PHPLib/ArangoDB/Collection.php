@@ -255,11 +255,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the document identifier offset.</h4>
 	 *
-	 * In this class we return the default <tt>_id</tt> offset.
+	 * We overload this method to use the {@link kTAG_ARANGO_ID} constant.
 	 *
 	 * @return string				Document identifier offset.
 	 */
-	public function IdOffset()											{	return '_id';	}
+	public function IdOffset()									{	return kTAG_ARANGO_ID;	}
 
 
 	/*===================================================================================
@@ -269,11 +269,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the document key offset.</h4>
 	 *
-	 * In this class we return the identifier <tt>_key</tt> offset.
+	 * We overload this method to use the {@link kTAG_ARANGO_KEY} constant.
 	 *
 	 * @return string				Document key offset.
 	 */
-	public function KeyOffset()											{	return '_key';	}
+	public function KeyOffset()									{	return kTAG_ARANGO_KEY;	}
 
 
 	/*===================================================================================
@@ -283,11 +283,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the document class offset.</h4>
 	 *
-	 * In this class we return the <tt>_class</tt> offset.
+	 * We overload this method to use the {@link kTAG_ARANGO_CLASS} constant.
 	 *
 	 * @return string				Document class offset.
 	 */
-	public function ClassOffset()									{	return '_class';	}
+	public function ClassOffset()							{	return kTAG_ARANGO_CLASS;	}
 
 
 	/*===================================================================================
@@ -297,11 +297,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return the document revision offset.</h4>
 	 *
-	 * In this class we return the <tt>_rev</tt> offset.
+	 * We overload this method to use the {@link kTAG_ARANGO_REVISION} constant.
 	 *
 	 * @return string				Document revision offset.
 	 */
-	public function RevisionOffset()									{	return '_rev';	}
+	public function RevisionOffset()					{	return kTAG_ARANGO_REVISION;	}
 
 
 
@@ -347,7 +347,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Return existing collection.
 		//
 		if( $collectionHandler->has( $theCollection ) )
-			return $collectionHandler->get( $theCollection );
+			return $collectionHandler->get( $theCollection );						// ==>
 
 		return $collectionHandler->create( $theCollection );						// ==>
 

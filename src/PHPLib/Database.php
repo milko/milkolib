@@ -206,7 +206,15 @@ abstract class Database extends Container
 	 * @example
 	 * $name = (string) $database;
 	 */
-	public function __toString()						{	return $this->databaseName();	}
+	public function __toString()
+	{
+		//
+		// Try to get name.
+		//
+		try{ return $this->databaseName(); }										// ==>
+		catch( Exception $error ){ return ""; }										// ==>
+
+	} // __toString.
 
 
 

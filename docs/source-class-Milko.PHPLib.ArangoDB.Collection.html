@@ -397,6 +397,24 @@
 				<li><a href="class-UnexpectedValueException.html">UnexpectedValueException</a></li>
 			</ul>
 
+			<h3>Constants</h3>
+			<ul>
+				<li><a href="constant-kARANGO_OPTS_AUTH_DEFAULT.html">kARANGO_OPTS_AUTH_DEFAULT</a></li>
+				<li><a href="constant-kARANGO_OPTS_CLIENT_DEFAULT.html">kARANGO_OPTS_CLIENT_DEFAULT</a></li>
+				<li><a href="constant-kARANGO_OPTS_CREATE_DEFAULT.html">kARANGO_OPTS_CREATE_DEFAULT</a></li>
+				<li><a href="constant-kARANGO_OPTS_PERSIST_DEFAULT.html">kARANGO_OPTS_PERSIST_DEFAULT</a></li>
+				<li><a href="constant-kARANGO_OPTS_RECONNECT_DEFAULT.html">kARANGO_OPTS_RECONNECT_DEFAULT</a></li>
+				<li><a href="constant-kARANGO_OPTS_TIMEOUT_DEFAULT.html">kARANGO_OPTS_TIMEOUT_DEFAULT</a></li>
+				<li><a href="constant-kMONGO_OPTS_CLIENT_DEFAULT.html">kMONGO_OPTS_CLIENT_DEFAULT</a></li>
+				<li><a href="constant-kTAG_ARANGO_CLASS.html">kTAG_ARANGO_CLASS</a></li>
+				<li><a href="constant-kTAG_ARANGO_ID.html">kTAG_ARANGO_ID</a></li>
+				<li><a href="constant-kTAG_ARANGO_KEY.html">kTAG_ARANGO_KEY</a></li>
+				<li><a href="constant-kTAG_ARANGO_REVISION.html">kTAG_ARANGO_REVISION</a></li>
+				<li><a href="constant-kTAG_MONGO_CLASS.html">kTAG_MONGO_CLASS</a></li>
+				<li><a href="constant-kTAG_MONGO_ID.html">kTAG_MONGO_ID</a></li>
+				<li><a href="constant-kTAG_MONGO_KEY.html">kTAG_MONGO_KEY</a></li>
+				<li><a href="constant-kTAG_MONGO_REVISION.html">kTAG_MONGO_REVISION</a></li>
+			</ul>
 
 			<h3>Functions</h3>
 			<ul>
@@ -673,11 +691,11 @@
 </span><span id="255" class="l"><a href="#255">255 </a>    <span class="php-comment">/**
 </span></span><span id="256" class="l"><a href="#256">256 </a><span class="php-comment">     * &lt;h4&gt;Return the document identifier offset.&lt;/h4&gt;
 </span></span><span id="257" class="l"><a href="#257">257 </a><span class="php-comment">     *
-</span></span><span id="258" class="l"><a href="#258">258 </a><span class="php-comment">     * In this class we return the default &lt;tt&gt;_id&lt;/tt&gt; offset.
+</span></span><span id="258" class="l"><a href="#258">258 </a><span class="php-comment">     * We overload this method to use the {@link kTAG_ARANGO_ID} constant.
 </span></span><span id="259" class="l"><a href="#259">259 </a><span class="php-comment">     *
 </span></span><span id="260" class="l"><a href="#260">260 </a><span class="php-comment">     * @return string               Document identifier offset.
 </span></span><span id="261" class="l"><a href="#261">261 </a><span class="php-comment">     */</span>
-</span><span id="262" class="l"><a href="#262">262 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> IdOffset()                                          {   <span class="php-keyword1">return</span> <span class="php-quote">'_id'</span>;   }
+</span><span id="262" class="l"><a href="#262">262 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> IdOffset()                                  {   <span class="php-keyword1">return</span> kTAG_ARANGO_ID;  }
 </span><span id="263" class="l"><a href="#263">263 </a>
 </span><span id="264" class="l"><a href="#264">264 </a>
 </span><span id="265" class="l"><a href="#265">265 </a>    <span class="php-comment">/*===================================================================================
@@ -687,11 +705,11 @@
 </span><span id="269" class="l"><a href="#269">269 </a>    <span class="php-comment">/**
 </span></span><span id="270" class="l"><a href="#270">270 </a><span class="php-comment">     * &lt;h4&gt;Return the document key offset.&lt;/h4&gt;
 </span></span><span id="271" class="l"><a href="#271">271 </a><span class="php-comment">     *
-</span></span><span id="272" class="l"><a href="#272">272 </a><span class="php-comment">     * In this class we return the identifier &lt;tt&gt;_key&lt;/tt&gt; offset.
+</span></span><span id="272" class="l"><a href="#272">272 </a><span class="php-comment">     * We overload this method to use the {@link kTAG_ARANGO_KEY} constant.
 </span></span><span id="273" class="l"><a href="#273">273 </a><span class="php-comment">     *
 </span></span><span id="274" class="l"><a href="#274">274 </a><span class="php-comment">     * @return string               Document key offset.
 </span></span><span id="275" class="l"><a href="#275">275 </a><span class="php-comment">     */</span>
-</span><span id="276" class="l"><a href="#276">276 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> KeyOffset()                                         {   <span class="php-keyword1">return</span> <span class="php-quote">'_key'</span>;  }
+</span><span id="276" class="l"><a href="#276">276 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> KeyOffset()                                 {   <span class="php-keyword1">return</span> kTAG_ARANGO_KEY; }
 </span><span id="277" class="l"><a href="#277">277 </a>
 </span><span id="278" class="l"><a href="#278">278 </a>
 </span><span id="279" class="l"><a href="#279">279 </a>    <span class="php-comment">/*===================================================================================
@@ -701,11 +719,11 @@
 </span><span id="283" class="l"><a href="#283">283 </a>    <span class="php-comment">/**
 </span></span><span id="284" class="l"><a href="#284">284 </a><span class="php-comment">     * &lt;h4&gt;Return the document class offset.&lt;/h4&gt;
 </span></span><span id="285" class="l"><a href="#285">285 </a><span class="php-comment">     *
-</span></span><span id="286" class="l"><a href="#286">286 </a><span class="php-comment">     * In this class we return the &lt;tt&gt;_class&lt;/tt&gt; offset.
+</span></span><span id="286" class="l"><a href="#286">286 </a><span class="php-comment">     * We overload this method to use the {@link kTAG_ARANGO_CLASS} constant.
 </span></span><span id="287" class="l"><a href="#287">287 </a><span class="php-comment">     *
 </span></span><span id="288" class="l"><a href="#288">288 </a><span class="php-comment">     * @return string               Document class offset.
 </span></span><span id="289" class="l"><a href="#289">289 </a><span class="php-comment">     */</span>
-</span><span id="290" class="l"><a href="#290">290 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> ClassOffset()                                   {   <span class="php-keyword1">return</span> <span class="php-quote">'_class'</span>;    }
+</span><span id="290" class="l"><a href="#290">290 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> ClassOffset()                           {   <span class="php-keyword1">return</span> kTAG_ARANGO_CLASS;   }
 </span><span id="291" class="l"><a href="#291">291 </a>
 </span><span id="292" class="l"><a href="#292">292 </a>
 </span><span id="293" class="l"><a href="#293">293 </a>    <span class="php-comment">/*===================================================================================
@@ -715,11 +733,11 @@
 </span><span id="297" class="l"><a href="#297">297 </a>    <span class="php-comment">/**
 </span></span><span id="298" class="l"><a href="#298">298 </a><span class="php-comment">     * &lt;h4&gt;Return the document revision offset.&lt;/h4&gt;
 </span></span><span id="299" class="l"><a href="#299">299 </a><span class="php-comment">     *
-</span></span><span id="300" class="l"><a href="#300">300 </a><span class="php-comment">     * In this class we return the &lt;tt&gt;_rev&lt;/tt&gt; offset.
+</span></span><span id="300" class="l"><a href="#300">300 </a><span class="php-comment">     * We overload this method to use the {@link kTAG_ARANGO_REVISION} constant.
 </span></span><span id="301" class="l"><a href="#301">301 </a><span class="php-comment">     *
 </span></span><span id="302" class="l"><a href="#302">302 </a><span class="php-comment">     * @return string               Document revision offset.
 </span></span><span id="303" class="l"><a href="#303">303 </a><span class="php-comment">     */</span>
-</span><span id="304" class="l"><a href="#304">304 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> RevisionOffset()                                    {   <span class="php-keyword1">return</span> <span class="php-quote">'_rev'</span>;  }
+</span><span id="304" class="l"><a href="#304">304 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> RevisionOffset()                    {   <span class="php-keyword1">return</span> kTAG_ARANGO_REVISION;    }
 </span><span id="305" class="l"><a href="#305">305 </a>
 </span><span id="306" class="l"><a href="#306">306 </a>
 </span><span id="307" class="l"><a href="#307">307 </a>
@@ -765,7 +783,7 @@
 </span><span id="347" class="l"><a href="#347">347 </a>        <span class="php-comment">// Return existing collection.</span>
 </span><span id="348" class="l"><a href="#348">348 </a>        <span class="php-comment">//</span>
 </span><span id="349" class="l"><a href="#349">349 </a>        <span class="php-keyword1">if</span>( <span class="php-var">$collectionHandler</span>-&gt;has( <span class="php-var">$theCollection</span> ) )
-</span><span id="350" class="l"><a href="#350">350 </a>            <span class="php-keyword1">return</span> <span class="php-var">$collectionHandler</span>-&gt;get( <span class="php-var">$theCollection</span> );
+</span><span id="350" class="l"><a href="#350">350 </a>            <span class="php-keyword1">return</span> <span class="php-var">$collectionHandler</span>-&gt;get( <span class="php-var">$theCollection</span> );                       <span class="php-comment">// ==&gt;</span>
 </span><span id="351" class="l"><a href="#351">351 </a>
 </span><span id="352" class="l"><a href="#352">352 </a>        <span class="php-keyword1">return</span> <span class="php-var">$collectionHandler</span>-&gt;create( <span class="php-var">$theCollection</span> );                        <span class="php-comment">// ==&gt;</span>
 </span><span id="353" class="l"><a href="#353">353 </a>
@@ -1409,6 +1427,6 @@
 	</div>
 </div>
 <script src="resources/combined.js?533e23ef2f02bd4b20548834a028566b6eb403e0"></script>
-<script src="elementlist.js?6adc857adbcd22d29d0a7fbe931e40dc32342181"></script>
+<script src="elementlist.js?fc6b67fee1fede46206d3ec2f30d8fa05ac0b8d5"></script>
 </body>
 </html>
