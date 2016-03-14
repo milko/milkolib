@@ -8,6 +8,16 @@
 
 namespace Milko\PHPLib;
 
+/**
+ * Global tag definitions.
+ */
+require_once( 'tags.inc.php' );
+
+/**
+ * Global token definitions.
+ */
+require_once( 'tokens.inc.php' );
+
 use Milko\PHPLib\Container;
 
 /*=======================================================================================
@@ -19,9 +29,10 @@ use Milko\PHPLib\Container;
 /**
  * <h4>Document ancestor object.</h4>
  *
- * This class implements a special {@link Container} instance which is supposed to persist
- * in a collection. For this purpose the document features a set of offsets that contain
- * information regarding persistence:
+ * This class represents the ancestor of all objects that can persist in a database, it
+ * implements a special {@link Container} instance which can be stored in a collection. For
+ * this purpose the document features a set of offsets that contain information regarding
+ * identifiers, class and revisions:
  *
  * <ul>
  * 	<li><tt>{@link Collection::IdOffset()}</tt>: The offset of the document reference.

@@ -452,7 +452,7 @@ abstract class Server extends DataSource
 		// Check if connected.
 		//
 		if( ($this->mConnection !== NULL)
-			&& ($this->mConnection !== TRUE) )
+		 && ($this->mConnection !== TRUE) )
 			return TRUE;															// ==>
 
 		//
