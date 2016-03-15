@@ -164,6 +164,7 @@
 				<li><a href="class-Milko.PHPLib.Document.html">Document</a></li>
 				<li><a href="class-Milko.PHPLib.DocumentSet.html">DocumentSet</a></li>
 				<li><a href="class-Milko.PHPLib.Server.html">Server</a></li>
+				<li><a href="class-Milko.PHPLib.Term.html">Term</a></li>
 			</ul>
 
 
@@ -188,20 +189,20 @@
 <p>This <em>abstract</em> class is the ancestor of all classes representing collection
 instances.</p>
 
-<p>This class features a data member that holds the <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> object that
-instantiated the current collection and another data member that holds the native
-driver's collection object.</p>
+<p>This class features a data member, <code><a href="class-Milko.PHPLib.Collection.html#$mDatabase">Milko\PHPLib\Collection::<var>$mDatabase</var></a></code>, that holds the <code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code>
+object that instantiated the current collection and another data member,
+<code><a href="class-Milko.PHPLib.Collection.html#$mNativeObject">Milko\PHPLib\Collection::<var>$mNativeObject</var></a></code>, that holds the native driver's collection object.</p>
 
-<p>The class implements a public interface that deploys the common interface of derived
+<p>The class implements a public interface that implements the common interface of derived
 concrete classes:</p>
 
-<ul> <li><em>Collection related:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code></b>: Return the database server object. <li><b><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code></b>: Return the database object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code></b>: Return the collection native driver object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Truncate">Milko\PHPLib\Collection::Truncate()</a></code></b>: Clear collection contents; this method is virtual. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Drop">Milko\PHPLib\Collection::Drop()</a></code></b>: Drop current collection; this method is virtual. </ul> <li><em>Document related:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ToDocument">Milko\PHPLib\Collection::ToDocument()</a></code></b>: Convert native data to a standard <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code>. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FromDocument">Milko\PHPLib\Collection::FromDocument()</a></code></b>: Convert a standard <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> to native data. </ul> <li><em>Offset related:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_IdOffset">Milko\PHPLib\Collection::IdOffset()</a></code></b>: Return the document identifier offset. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code></b>: Return the document key offset. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ClassOffset">Milko\PHPLib\Collection::ClassOffset()</a></code></b>: Return the document class offset. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_RevisionOffset">Milko\PHPLib\Collection::RevisionOffset()</a></code></b>: Return the document revision offset. </ul> <li><em>Record related:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Insert">Milko\PHPLib\Collection::Insert()</a></code></b>: Insert one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Update">Milko\PHPLib\Collection::Update()</a></code></b>: Update one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Replace">Milko\PHPLib\Collection::Replace()</a></code></b>: Replace one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Delete">Milko\PHPLib\Collection::Delete()</a></code></b>: Delete one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_RecordCount">Milko\PHPLib\Collection::RecordCount()</a></code></b>: Return collection record count. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindByExample">Milko\PHPLib\Collection::FindByExample()</a></code></b>: Search by example. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindByQuery">Milko\PHPLib\Collection::FindByQuery()</a></code></b>: Perform a native query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_CountByExample">Milko\PHPLib\Collection::CountByExample()</a></code></b>: Return record count by example. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_CountByQuery">Milko\PHPLib\Collection::CountByQuery()</a></code></b>: Return record count by native query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_MapReduce">Milko\PHPLib\Collection::MapReduce()</a></code></b>: Perform a map and reduce query. </ul>
+<ul> <li><em>Attribute accessors:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Server.html">Milko\PHPLib\Server</a></code></b>: Return the database server object. <li><b><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code></b>: Return the database object. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code></b>: Return the collection native driver object. </ul> <li><em>Collection related:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Truncate">Milko\PHPLib\Collection::Truncate()</a></code></b>: Clear collection contents; this method is virtual. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Drop">Milko\PHPLib\Collection::Drop()</a></code></b>: Drop current collection; this method is virtual. </ul> <li><em>Document related:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ToDocument">Milko\PHPLib\Collection::ToDocument()</a></code></b>: Convert native data to a standard <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code>. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FromDocument">Milko\PHPLib\Collection::FromDocument()</a></code></b>: Convert a standard <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> to native data. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ToDocumentHandle">Milko\PHPLib\Collection::ToDocumentHandle()</a></code></b>: Convert native data to a document reference. </ul> <li><em>Default document properties:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code></b>: Return the document key offset. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_ClassOffset">Milko\PHPLib\Collection::ClassOffset()</a></code></b>: Return the document class offset. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_RevisionOffset">Milko\PHPLib\Collection::RevisionOffset()</a></code></b>: Return the document revision offset. </ul> <li><em>Record related:</em> <ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Insert">Milko\PHPLib\Collection::Insert()</a></code></b>: Insert one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Update">Milko\PHPLib\Collection::Update()</a></code></b>: Update one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Replace">Milko\PHPLib\Collection::Replace()</a></code></b>: Replace one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_Delete">Milko\PHPLib\Collection::Delete()</a></code></b>: Delete one or more records. <li><b>FindByKey()</b>: Search by key. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindByExample">Milko\PHPLib\Collection::FindByExample()</a></code></b>: Search by example. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_FindByQuery">Milko\PHPLib\Collection::FindByQuery()</a></code></b>: Perform a native query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_RecordCount">Milko\PHPLib\Collection::RecordCount()</a></code></b>: Return collection record count. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_CountByExample">Milko\PHPLib\Collection::CountByExample()</a></code></b>: Return record count by example. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_CountByQuery">Milko\PHPLib\Collection::CountByQuery()</a></code></b>: Return record count by native query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_MapReduce">Milko\PHPLib\Collection::MapReduce()</a></code></b>: Perform a map and reduce query. </ul>
 </ul>
 
 <p>The public methods do not implement the actual operations, this is delegated to a
 protected virtual interface which must be implemented by derived concrete classes:</p>
 
-<ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_collectionNew">Milko\PHPLib\Collection::collectionNew()</a></code></b>: Instantiate a driver native database instance. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_collectionName">Milko\PHPLib\Collection::collectionName()</a></code></b>: Return the collection name. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doInsert">Milko\PHPLib\Collection::doInsert()</a></code></b>: Insert one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doUpdate">Milko\PHPLib\Collection::doUpdate()</a></code></b>: Update one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doReplace">Milko\PHPLib\Collection::doReplace()</a></code></b>: Replace one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doDelete">Milko\PHPLib\Collection::doDelete()</a></code></b>: Delete one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doFindByExample">Milko\PHPLib\Collection::doFindByExample()</a></code></b>: Find one or many records by example. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doFindByQuery">Milko\PHPLib\Collection::doFindByQuery()</a></code></b>: Perform a driver native query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doCount">Milko\PHPLib\Collection::doCount()</a></code></b>: Return record count in collection. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doCountByExample">Milko\PHPLib\Collection::doCountByExample()</a></code></b>: Return record count by example. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doCountByQuery">Milko\PHPLib\Collection::doCountByQuery()</a></code></b>: Return record count by native query. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doMapReduce">Milko\PHPLib\Collection::doMapReduce()</a></code></b>: Perform a map and reduce query.
+<ul> <li><b><code><a href="class-Milko.PHPLib.Collection.html#_collectionNew">Milko\PHPLib\Collection::collectionNew()</a></code></b>: Instantiate a driver native database instance. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_collectionName">Milko\PHPLib\Collection::collectionName()</a></code></b>: Return the collection name. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doInsert">Milko\PHPLib\Collection::doInsert()</a></code></b>: Insert one or more records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doUpdate">Milko\PHPLib\Collection::doUpdate()</a></code></b>: Update one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doReplace">Milko\PHPLib\Collection::doReplace()</a></code></b>: Replace one or many records. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doDelete">Milko\PHPLib\Collection::doDelete()</a></code></b>: Delete one or many records. <li><b>doFindByKey()</b>: Find one or many records by example. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doFindByExample">Milko\PHPLib\Collection::doFindByExample()</a></code></b>: Find one or many records by example. <li><b><code><a href="class-Milko.PHPLib.Collection.html#_doFindByQuery">Milko\PHPLib\Collection::doFindByQuery()</a></code></b>: Perform a driver native query. <li><b>doCount()</b>: Return record count in collection. <li><b>doCountByExample()</b>: Return record count by example. <li><b>doCountByQuery()</b>: Return record count by native query.
 </ul>
 
 <p>When persisting documents, this class expects all provided documents to be instances of
@@ -276,7 +277,7 @@ $database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...<br/>
 $collection->Drop(); // Drop collection.</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Collection.html#20-1279" title="Go to source code">PHPLib/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Collection.html#30-1462" title="Go to source code">PHPLib/Collection.php</a>
 		<br>
 	</div>
 
@@ -296,7 +297,7 @@ $collection->Drop(); // Drop collection.</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#___construct">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#142-182" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> <var>$theDatabase</var></span>, <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#156-196" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code> <var>$theDatabase</var></span>, <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Instantiate class.</h4>
@@ -353,7 +354,7 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#___toString">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#189-203" title="Go to source code">__toString</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#203-217" title="Go to source code">__toString</a>( )</code>
 
 			<div class="description short">
 				<h4>Return collection name</h4>
@@ -398,7 +399,7 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Server">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#219-229" title="Go to source code">Server</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#233-242" title="Go to source code">Server</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the database server.</h4>
@@ -417,9 +418,9 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 					</div>
 
 
-					<h4>Example</h4>
+					<h4>Uses</h4>
 					<div class="list">
-							$server = $this->Server();<br>
+							<code><a href="class-Milko.PHPLib.Database.html">Milko\PHPLib\Database</a></code><br>
 					</div>
 
 
@@ -437,7 +438,7 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Database">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#236-246" title="Go to source code">Database</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#249-259" title="Go to source code">Database</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the database object.</h4>
@@ -476,7 +477,7 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Connection">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#253-263" title="Go to source code">Connection</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#266-276" title="Go to source code">Connection</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the collection native driver object.</h4>
@@ -515,7 +516,7 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Truncate">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#279-297" title="Go to source code">Truncate</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#292-300" title="Go to source code">Truncate</a>( )</code>
 
 			<div class="description short">
 				<h4>Clear the collection contents.</h4>
@@ -524,25 +525,12 @@ $collection = $database->RetrieveCollection( "collection" );</p><br>
 			<div class="description detailed hidden">
 				<h4>Clear the collection contents.</h4>
 
-<p>This method can be used to erase the contents of the collection, the method expects a
-single parameter that represents driver native options.</p>
-
-<p>It is the responsibility of the caller to ensure the server is connected.</p>
-
-<p>The provided parameter represents a set of native options provided to the driver for
-performing the operation: if needed, in derived concrete classes you should define
-globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-method, this will guarantee that the options will always be used when performing this
-operation.</p>
+<p>This method can be used to erase the contents of the collection, it is the
+responsibility of the caller to ensure the server is connected.</p>
 
 <p>Derived concrete classes must implement this method.</p>
 
 
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
-					</dl></div>
 
 
 
@@ -562,7 +550,7 @@ operation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Drop">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#304-322" title="Go to source code">Drop</a>( <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#307-315" title="Go to source code">Drop</a>( )</code>
 
 			<div class="description short">
 				<h4>Drop the current collection.</h4>
@@ -571,25 +559,12 @@ operation.</p>
 			<div class="description detailed hidden">
 				<h4>Drop the current collection.</h4>
 
-<p>This method can be used to the current collection, the method expects a single
-parameter that represents driver native options.</p>
-
-<p>It is the responsibility of the caller to ensure the server is connected.</p>
-
-<p>The provided parameter represents a set of native options provided to the driver for
-performing the operation: if needed, in derived concrete classes you should define
-globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-method, this will guarantee that the options will always be used when performing this
-operation.</p>
+<p>This method can be used to drop the current collection, it is the responsibility of
+the caller to ensure the server is connected.</p>
 
 <p>Derived concrete classes must implement this method.</p>
 
 
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
-					</dl></div>
 
 
 
@@ -609,7 +584,7 @@ operation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_ToDocument">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#338-358" title="Go to source code">ToDocument</a>( <span>mixed <var>$theData</var></span>, <span>string <var>$theClass</var> = <span class="php-quote">'Milko\PHPLib\Document'</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#331-355" title="Go to source code">ToDocument</a>( <span>mixed <var>$theData</var></span>, <span>Milko\PHPLib\string <var>$theClass</var> = <span class="php-quote">'Milko\PHPLib\Document'</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Convert native data to standard document.</h4>
@@ -623,6 +598,10 @@ data, the method expects two parameters:</p>
 
 <ul> <li><b>$theData</b>: The data expressed in the database native type. <li><b>$theClass</b>: The class name of the resulting <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instance.
 </ul>
+
+<p>The method will first attempt to find the class in the  provided data under the
+<code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code> property, if it is not found, the method will use the provided
+class parameter.</p>
 
 <p>This method is declared virtual, to allow database native derived classes to handle
 their native types.</p>
@@ -644,6 +623,10 @@ their native types.</p>
 					</div>
 
 
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_cursorToArray">Milko\PHPLib\Collection::cursorToArray()</a></code><br>
+					</div>
 
 
 			</div>
@@ -660,7 +643,7 @@ their native types.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_FromDocument">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#365-379" title="Go to source code">FromDocument</a>( <span><code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#362-376" title="Go to source code">FromDocument</a>( <span><code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Convert a standard document to native data.</h4>
@@ -695,37 +678,54 @@ their native types.</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="IdOffset" id="_IdOffset">
+		<tr data-order="ToDocumentHandle" id="_ToDocumentHandle">
 
 			<td class="attributes"><code>
 				abstract public 
-				string
+				mixed
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_IdOffset">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#395-403" title="Go to source code">IdOffset</a>( )</code>
+			<a class="anchor" href="#_ToDocumentHandle">#</a>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#383-400" title="Go to source code">ToDocumentHandle</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
-				<h4>Return the document identifier offset.</h4>
+				<h4>Convert native data to a document handle.</h4>
 			</div>
 
 			<div class="description detailed hidden">
-				<h4>Return the document identifier offset.</h4>
+				<h4>Convert native data to a document handle.</h4>
 
-<p>This represents the default offset of the document identifier or reference, this
-property is generally managed by the database and should be accessed read-only.</p>
+<p>This method can be used to convert a document into a document handle or reference,
+this value can be used by <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances to reference another document.</p>
+
+<p>The method expects a single parameter which can either be a native database document,
+or an instance of the <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> class; in the latter case it is assumed that
+the document's collection is the current one.</p>
+
+<p>The resulting value is dependent on the specific database engine used.</p>
+
+<p>Derived concrete classes must implement this method.</p>
 
 
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theDocument</var></dt>
+						<dd>Document to reference.</dd>
+					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						string<br>Document identifier offset.
+						mixed<br>Document handle.
 					</div>
 
 
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_cursorToHandles">Milko\PHPLib\Collection::cursorToHandles()</a></code><br>
+					</div>
 
 
 			</div>
@@ -742,7 +742,7 @@ property is generally managed by the database and should be accessed read-only.<
 
 			<td class="name"><div>
 			<a class="anchor" href="#_KeyOffset">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#410-418" title="Go to source code">KeyOffset</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#416-424" title="Go to source code">KeyOffset</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the document key offset.</h4>
@@ -762,6 +762,11 @@ its collection, this property is managed by clients.</p>
 					</div>
 
 
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_cursorToArray">Milko\PHPLib\Collection::cursorToArray()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_cursorToHandles">Milko\PHPLib\Collection::cursorToHandles()</a></code><br>
+					</div>
 
 
 			</div>
@@ -778,7 +783,7 @@ its collection, this property is managed by clients.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_ClassOffset">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#425-434" title="Go to source code">ClassOffset</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#431-440" title="Go to source code">ClassOffset</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the document class offset.</h4>
@@ -815,7 +820,7 @@ retrieving documents from the database.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_RevisionOffset">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#441-450" title="Go to source code">RevisionOffset</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#447-456" title="Go to source code">RevisionOffset</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the document revision offset.</h4>
@@ -852,7 +857,7 @@ the database.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Insert">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#466-514" title="Go to source code">Insert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#472-527" title="Go to source code">Insert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Insert documents.</h4>
@@ -865,17 +870,16 @@ the database.</p>
 expects the following parameters:</p>
 
 <ul>
-<li><b>$theDocument</b>: The document or documents to be inserted, to provide a list of documents, the parameter must be an array.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theDocument</b>: The document or documents to be inserted.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether the first parameter represents a single document or a set of documents: <ul> <li><tt>TRUE</tt>: Insert a set of documents, in this case the provided parameter should be an iterable object as an array or cursor. <li><tt>FALSE</tt>: Insert a single document, in this case the provided parameter will be considered the data to be inserted. </ul> </ul>
 </ul>
 
-<p>The options parameter can be used to indicate whether a list of documents was
-provided, or only one: set <tt>'$doAll' => TRUE</tt> to indicate that a list of
-records was provided; by default the parameter will be <tt>FALSE</tt>.</p>
+<p>The record(s) to be inserted must be either <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances, or documents
+in the native database format.</p>
 
-<p>If a single document was provided, the method will return its unique identifier, if
-a list of documents was provided, the method will return the list of identifiers in
-order.</p>
+<p>The method will return either an array of keys, if you provided a set of documents,
+or a single key, if not; the key corresponds to the object ID and is referenced by
+the <code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code> document property.</p>
 
 <p>By default the operation will assume we provided a single document.</p>
 
@@ -887,7 +891,7 @@ order.</p>
 						<dt><var>$theDocument</var></dt>
 						<dd>The document(s) to be inserted.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Insert options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -896,16 +900,21 @@ order.</p>
 					</div>
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code><br>
+					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_doInsert">Milko\PHPLib\Collection::doInsert()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseOptions">Milko\PHPLib\Collection::normaliseOptions()</a></code><br>
 					</div>
 					<h4>Example</h4>
 					<div class="list">
-							<p>// Insert the provided document.<br/>
+							<p>// Insert a single document.<br/>
 $id = $collection->Insert( $document );<br/>
-// Insert the provided list of documents.<br/>
-$ids = $collection->Insert( $list, [ '$doAll' => TRUE ] );</p><br>
+// Insert a list of documents.<br/>
+$ids = $collection->Insert( $list, [ kTOKEN_OPT_MANY => TRUE ] );</p><br>
 					</div>
 
 
@@ -923,7 +932,7 @@ $ids = $collection->Insert( $list, [ '$doAll' => TRUE ] );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Update">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#521-566" title="Go to source code">Update</a>( <span>array <var>$theCriteria</var></span>, <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#534-584" title="Go to source code">Update</a>( <span>mixed <var>$theCriteria</var></span>, <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Update documents.</h4>
@@ -938,14 +947,12 @@ expects the following parameters:</p>
 <ul>
 <li><b>$theCriteria</b>: The modification criteria.
 <li><b>$theFilter</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether to update the first selected document, or all the selected documents: <ul> <li><tt>TRUE</tt>: Update all records selected by the filter. <li><tt>FALSE</tt>: Update the first record selected by the filter. </ul> </ul>
 </ul>
 
-<p>The options parameter can be used to indicate whether to update all records selected
-by the filter, or just the first one: provide <tt>'$doAll' => FALSE</tt> to only
-modify the first document; by default this method will update all matched documents.</p>
-
-<p>By default the operation will process all documents in the selection.</p>
+<p>Both the criteria and the filter must be provided in the native database format and
+if no options are provided, the operation will process all documents in the
+selection.</p>
 
 <p>It is the responsibility of the caller to ensure the server is connected.</p>
 
@@ -957,7 +964,7 @@ modify the first document; by default this method will update all matched docume
 						<dt><var>$theFilter</var></dt>
 						<dd>The selection criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Update options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -966,14 +973,19 @@ modify the first document; by default this method will update all matched docume
 					</div>
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code><br>
+					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_doUpdate">Milko\PHPLib\Collection::doUpdate()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseOptions">Milko\PHPLib\Collection::normaliseOptions()</a></code><br>
 					</div>
 					<h4>Example</h4>
 					<div class="list">
 							<p>// Update first document.<br/>
-$count = $collection->Update( $criteria, $filter, [ '$doAll' => FALSE ] );<br/>
+$count = $collection->Update( $criteria, $filter, [ kTOKEN_OPT_MANY => FALSE ] );<br/>
 // Update all documents.<br/>
 $count = $collection->Update( $criteria, $filter );</p><br>
 					</div>
@@ -993,7 +1005,7 @@ $count = $collection->Update( $criteria, $filter );</p><br>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Replace">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#573-609" title="Go to source code">Replace</a>( <span>array <var>$theDocument</var></span>, <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#591-635" title="Go to source code">Replace</a>( <span>mixed <var>$theDocument</var></span>, <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -1008,10 +1020,12 @@ method expects the following parameters:</p>
 <ul>
 <li><b>$theDocument</b>: The replacement document.
 <li><b>$theFilter</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether to replace the first selected document, or all the selected documents: <ul> <li><tt>TRUE</tt>: Replace all records selected by the filter. <li><tt>FALSE</tt>: Replace the first record selected by the filter. </ul> </ul>
 </ul>
 
-<p>By default the operation will process all documents in the selection.</p>
+<p>The filter must be provided in the native database format and the document can be
+provided either as a <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instance, or in the native database format; if
+no options are provided, the operation will process all documents in the selection.</p>
 
 <p>It is the responsibility of the caller to ensure the server is connected.</p>
 
@@ -1023,7 +1037,7 @@ method expects the following parameters:</p>
 						<dt><var>$theFilter</var></dt>
 						<dd>The selection criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Replace options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -1032,9 +1046,14 @@ method expects the following parameters:</p>
 					</div>
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code><br>
+					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_doReplace">Milko\PHPLib\Collection::doReplace()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseOptions">Milko\PHPLib\Collection::normaliseOptions()</a></code><br>
 					</div>
 
 
@@ -1052,7 +1071,7 @@ method expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Delete">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#616-667" title="Go to source code">Delete</a>( <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#642-691" title="Go to source code">Delete</a>( <span>mixed <var>$theFilter</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Delete documents.</h4>
@@ -1066,14 +1085,11 @@ filter, the method expects the following parameters:</p>
 
 <ul>
 <li><b>$theFilter</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether to delete the first selected document, or all the selected documents: <ul> <li><tt>TRUE</tt>: Delete all records selected by the filter. <li><tt>FALSE</tt>: Delete the first record selected by the filter. </ul> </ul>
 </ul>
 
-<p>The options parameter can be used to indicate whether to delete all records selected
-by the filter, or just the first one: provide <tt>'$doAll' => FALSE</tt> to only
-delete the first document; by default this method will delete all matched documents.</p>
-
-<p>By default the operation will process all documents in the selection.</p>
+<p>The filter must be provided in the native database format and if no options are
+provided, the operation will process all documents in the selection.</p>
 
 <p>It is the responsibility of the caller to ensure the server is connected.</p>
 
@@ -1083,7 +1099,7 @@ delete the first document; by default this method will delete all matched docume
 						<dt><var>$theFilter</var></dt>
 						<dd>The selection criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Delete options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -1092,14 +1108,19 @@ delete the first document; by default this method will delete all matched docume
 					</div>
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code><br>
+					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_doDelete">Milko\PHPLib\Collection::doDelete()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseOptions">Milko\PHPLib\Collection::normaliseOptions()</a></code><br>
 					</div>
 					<h4>Example</h4>
 					<div class="list">
 							<p>// Delete first document.<br/>
-$count = $collection->Delete( $filter, [ '$doAll' => FALSE ] );<br/>
+$count = $collection->Delete( $filter, [ kTOKEN_OPT_MANY => FALSE ] );<br/>
 // Delete all selected documents.<br/>
 $count = $collection->Delete( $filter );<br/>
 // Delete all documents.<br/>
@@ -1110,39 +1131,65 @@ $count = $collection->Delete();</p><br>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="RecordCount" id="_RecordCount">
+		<tr data-order="FindById" id="_FindById">
 
 			<td class="attributes"><code>
 				 public 
-				integer
+				mixed
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_RecordCount">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#674-687" title="Go to source code">RecordCount</a>( )</code>
+			<a class="anchor" href="#_FindById">#</a>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#698-750" title="Go to source code">FindById</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
-				<h4>Count documents.</h4>
+				<h4>Find by key.</h4>
 			</div>
 
 			<div class="description detailed hidden">
-				<h4>Count documents.</h4>
+				<h4>Find by key.</h4>
 
-<p>This method can be used to get the total number of documents in the collection.</p>
+<p>This method will return the document that matches the provided key in the current
+collection, or <tt>NULL</tt> if the document cannot be matched.</p>
+
+<p>The method features two parameters:</p>
+
+<ul>
+<li><b>$theKey</b>: The document key to match.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether the first parameter is a set of keys or a single key: <ul> <li><tt>TRUE</tt>: Provided a set of keys. <li><tt>FALSE</tt>: Provided a single key. </ul> <li><b><code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code></b>: This option determines the result format: <ul> <li><tt>TRUE</tt>: Return the unchanged driver database result. <li><tt>FALSE</tt>: Return either a single or an array of <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances; in case no results are found, the method will return <tt>NULL</tt>. </ul> </ul>
+</ul>
+
+<p>By default the method will return <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances and consider the first
+parameter as a single key.</p>
+
+<p>It is the responsibility of the caller to ensure the server is connected.</p>
 
 
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theKey</var></dt>
+						<dd>The document identifier.</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>Delete options.</dd>
+					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						integer<br>The number of records in the collection.
+						mixed<br>The found document(s).
 					</div>
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code><br>
+							<code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code><br>
+					</div>
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_doCount">Milko\PHPLib\Collection::doCount()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_doFindById">Milko\PHPLib\Collection::doFindById()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseOptions">Milko\PHPLib\Collection::normaliseOptions()</a></code><br>
 					</div>
 
 
@@ -1153,14 +1200,14 @@ $count = $collection->Delete();</p><br>
 
 			<td class="attributes"><code>
 				 public 
-				<code><a href="class-Iterator.html">Iterator</a></code>
+				mixed
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_FindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#694-740" title="Go to source code">FindByExample</a>( <span>array <var>$theDocument</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#757-823" title="Go to source code">FindByExample</a>( <span>mixed <var>$theDocument</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Find by example.</h4>
@@ -1171,18 +1218,18 @@ $count = $collection->Delete();</p><br>
 
 <p>This method can be used to select all documents matching the provided example
 document. The method will select all documents in the collection whose properties
-match all the properties of the provided example document, the method expects the
-following parameters:</p>
+match all the properties of the provided example document, this means that the method
+will generate a query that puts in <tt>AND</tt> all the provided document offsets.</p>
+
+<p>The method expects the following parameters:</p>
 
 <ul>
-<li><b>$theDocument</b>: The search filter as an example document.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theDocument</b>: The example document; it must be either an array, a <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instance, or a native database document.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_SKIP.html"><b>kTOKEN_OPT_SKIP</b></a></code></b>: This option determines how many records to skip in the results selection, it is equivalent to the SQL <tt>START</tt> directive, it is zero based and expressed as an integer. <li><b><code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code></b>: This option determines how many records to return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed as an integer. <li><b><code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code></b>: This option determines the result format: <ul> <li><tt>TRUE</tt>: Return the unchanged driver database result. <li><tt>FALSE</tt>: Return either a single or an array of <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances; in case no results are found, the method will return <tt>NULL</tt>. </ul> </ul>
 </ul>
 
-<p>The options parameter can be used to indicate the start and limit of the selection:
-provide <tt>'$start'</em> to indicate from which found record to start and
-<em>'$limit'</em> to indicate the number of documents to be returned; by default the
-method will start with the first document and return all.</p>
+<p>By default the method will return <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances and return the full set
+of results.</p>
 
 <p>It is the responsibility of the caller to ensure the server is connected.</p>
 
@@ -1192,23 +1239,30 @@ method will start with the first document and return all.</p>
 						<dt><var>$theDocument</var></dt>
 						<dd>The example document.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Find options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
+						mixed<br>The found records.
 					</div>
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_OPT_SKIP.html"><b>kTOKEN_OPT_SKIP</b></a></code><br>
+							<code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code><br>
+							<code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code><br>
+					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_doFindByExample">Milko\PHPLib\Collection::doFindByExample()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseOptions">Milko\PHPLib\Collection::normaliseOptions()</a></code><br>
 					</div>
 					<h4>Example</h4>
 					<div class="list">
 							<p>// Find first five document.
-$iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ], [ '$start' => 0, '$limit' => 5 ] );<br/>
+$iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ], [ kTOKEN_OPT_SKIP => 0, kTOKEN_OPT_LIMIT => 5 ] );<br/>
 // Find all selected documents.<br/>
 $iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ] );<br/>
 // Find all documents.<br/>
@@ -1223,14 +1277,14 @@ $iterator = $collection->FindByExample();</p><br>
 
 			<td class="attributes"><code>
 				 public 
-				<code><a href="class-Iterator.html">Iterator</a></code>
+				mixed
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_FindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#747-776" title="Go to source code">FindByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#830-883" title="Go to source code">FindByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -1243,9 +1297,12 @@ $iterator = $collection->FindByExample();</p><br>
 expects the following parameters:</p>
 
 <ul>
-<li><b>$theQuery</b>: The query as the driver native selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theQuery</b>: The query in the driver native format.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_SKIP.html"><b>kTOKEN_OPT_SKIP</b></a></code></b>: This option determines how many records to skip in the results selection, it is equivalent to the SQL <tt>START</tt> directive, it is zero based and expressed as an integer. <li><b><code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code></b>: This option determines how many records to return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed as an integer. <li><b><code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code></b>: This option determines the result format: <ul> <li><tt>TRUE</tt>: Return the unchanged driver database result. <li><tt>FALSE</tt>: Return either a single or an array of <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances; in case no results are found, the method will return <tt>NULL</tt>. </ul> </ul>
 </ul>
+
+<p>By default the method will return <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances and return the full set
+of results.</p>
 
 <p>It is the responsibility of the caller to ensure the server is connected.</p>
 
@@ -1255,19 +1312,63 @@ expects the following parameters:</p>
 						<dt><var>$theQuery</var></dt>
 						<dd>The selection criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Query options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
+						mixed<br>The found records.
 					</div>
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_OPT_SKIP.html"><b>kTOKEN_OPT_SKIP</b></a></code><br>
+							<code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code><br>
+							<code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code><br>
+					</div>
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_doFindByQuery">Milko\PHPLib\Collection::doFindByQuery()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseOptions">Milko\PHPLib\Collection::normaliseOptions()</a></code><br>
 					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="RecordCount" id="_RecordCount">
+
+			<td class="attributes"><code>
+				abstract public 
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_RecordCount">#</a>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#890-899" title="Go to source code">RecordCount</a>( )</code>
+
+			<div class="description short">
+				<h4>Count documents.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Count documents.</h4>
+
+<p>This method can be used to get the total number of documents in the collection.</p>
+
+<p>Concrete derived classes must implement this method.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br>The number of records in the collection.
+					</div>
+
+
 
 
 			</div>
@@ -1276,7 +1377,7 @@ expects the following parameters:</p>
 		<tr data-order="CountByExample" id="_CountByExample">
 
 			<td class="attributes"><code>
-				 public 
+				abstract public 
 				integer
 				
 				</code>
@@ -1284,7 +1385,7 @@ expects the following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_CountByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#783-818" title="Go to source code">CountByExample</a>( <span>array <var>$theDocument</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#906-923" title="Go to source code">CountByExample</a>( <span>mixed <var>$theDocument</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Count by example.</h4>
@@ -1294,24 +1395,17 @@ expects the following parameters:</p>
 				<h4>Count by example.</h4>
 
 <p>This method can be used to return the record count matching the provided example
-document. The method will return the count of all documents in the collection whose
-properties match all the properties of the provided example document, the method
-expects the following parameters:</p>
+document. The method will select all documents in the collection whose properties
+match all the properties of the provided example document, this means that the method
+will generate a query that puts in <tt>AND</tt> all the provided document offsets.</p>
 
-<ul>
-<li><b>$theDocument</b>: The search filter as an example document.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>It is the responsibility of the caller to ensure the server is connected.</p>
+<p>This method must be implemented in concrete derived classes.</p>
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
 						<dt><var>$theDocument</var></dt>
 						<dd>The example document.</dd>
-						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -1320,10 +1414,6 @@ expects the following parameters:</p>
 					</div>
 
 
-					<h4>Uses</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_doCountByExample">Milko\PHPLib\Collection::doCountByExample()</a></code><br>
-					</div>
 					<h4>Example</h4>
 					<div class="list">
 							<p>// Get record count.
@@ -1337,7 +1427,7 @@ $count = $collection->CountByExample( [ 'color' => 'red', 'city' => 'Rome' ] );<
 		<tr data-order="CountByQuery" id="_CountByQuery">
 
 			<td class="attributes"><code>
-				 public 
+				abstract public 
 				integer
 				
 				</code>
@@ -1345,7 +1435,7 @@ $count = $collection->CountByExample( [ 'color' => 'red', 'city' => 'Rome' ] );<
 
 			<td class="name"><div>
 			<a class="anchor" href="#_CountByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#825-855" title="Go to source code">CountByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#930-940" title="Go to source code">CountByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Count by example.</h4>
@@ -1354,24 +1444,15 @@ $count = $collection->CountByExample( [ 'color' => 'red', 'city' => 'Rome' ] );<
 			<div class="description detailed hidden">
 				<h4>Count by example.</h4>
 
-<p>This method can be used to return the record count matching the provided native
-query. The method will return the count of all documents in the collection that match
-the provided query, the method expects the following parameters:</p>
+<p>This method can be used to return the record count matching the provided query.</p>
 
-<ul>
-<li><b>$theDocument</b>: The search filter as an example document.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>It is the responsibility of the caller to ensure the server is connected.</p>
+<p>This method must be implemented in concrete derived classes.</p>
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
 						<dt><var>$theQuery</var></dt>
 						<dd>The selection criteria.</dd>
-						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -1380,10 +1461,6 @@ the provided query, the method expects the following parameters:</p>
 					</div>
 
 
-					<h4>Uses</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_doCountByQuery">Milko\PHPLib\Collection::doCountByQuery()</a></code><br>
-					</div>
 
 
 			</div>
@@ -1392,15 +1469,15 @@ the provided query, the method expects the following parameters:</p>
 		<tr data-order="MapReduce" id="_MapReduce">
 
 			<td class="attributes"><code>
-				 public 
-				<code><a href="class-Iterator.html">Iterator</a></code>
+				abstract public 
+				array
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_MapReduce">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#862-891" title="Go to source code">MapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#947-978" title="Go to source code">MapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var> = [] </span> )</code>
 
 			<div class="description short">
 				<h4>Execute an aggregation query.</h4>
@@ -1413,9 +1490,11 @@ the provided query, the method expects the following parameters:</p>
 following parameters:</p>
 
 <ul>
-<li><b>$thePipeline</b>: The aggregation pipeline.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$thePipeline</b>: The aggregation pipeline in native format.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_SKIP.html"><b>kTOKEN_OPT_SKIP</b></a></code></b>: This option determines how many records to skip in the results selection, it is equivalent to the SQL <tt>START</tt> directive, it is zero based and expressed as an integer. The corresponding value will be set in the native <tt>skip</tt> option. <li><b><code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code></b>: This option determines how many records to return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed as an integer. The corresponding value will be set in the native <tt>limit</tt> option. </ul>
 </ul>
+
+<p>The method will return an array of documents as arrays.</p>
 
 <p>It is the responsibility of the caller to ensure the server is connected.</p>
 
@@ -1425,18 +1504,18 @@ following parameters:</p>
 						<dt><var>$thePipeline</var></dt>
 						<dd>The aggregation pipeline.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Query options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
+						array<br>The result set.
 					</div>
 
 
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_doMapReduce">Milko\PHPLib\Collection::doMapReduce()</a></code><br>
+							doMapReduce()<br>
 					</div>
 
 
@@ -1454,7 +1533,7 @@ following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionNew">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#907-927" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#994-1014" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = [] </span> )</code>
 
 			<div class="description short">
 				<h4>Return a native collection object.</h4>
@@ -1511,7 +1590,7 @@ operation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionName">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#934-951" title="Go to source code">collectionName</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1021-1038" title="Go to source code">collectionName</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the collection name.</h4>
@@ -1560,7 +1639,7 @@ operation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsert">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#967-990" title="Go to source code">doInsert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1054-1088" title="Go to source code">doInsert</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert one or more records.</h4>
@@ -1574,14 +1653,15 @@ following parameters:</p>
 
 <ul>
 <li><b>$theDocument</b>: The document or documents to be inserted.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether the first parameter represents a single document or a set of documents: <ul> <li><tt>TRUE</tt>: Insert a set of documents, in this case the provided parameter should be an iterable object as an array or cursor. <li><tt>FALSE</tt>: Insert a single document, in this case the provided parameter will be considered the data to be inserted. </ul> </ul>
 </ul>
 
-<p>If the <tt>'$doAll'</tt> option is set, the method will assume the provided parameter
-to be a list of documents and will return the list of inserted document identifiers;
-if the option is not set, the method will assume the parameter to be a single
-document and will return its identifier; the option <em>must</em> be provided. Other
-provided values represent native driver options.</p>
+<p>The record(s) to be inserted must be either <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances, or documents
+in the native database format.</p>
+
+<p>The method will return either an array of keys, if you provided a set of documents,
+or a single key, if not; the key corresponds to the object ID and is referenced by
+the <code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code> document property.</p>
 
 <p>This method must be implemented by derived concrete classes.</p>
 
@@ -1591,7 +1671,7 @@ provided values represent native driver options.</p>
 						<dt><var>$theDocument</var></dt>
 						<dd>The document(s) to be inserted.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Insert options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -1620,7 +1700,7 @@ provided values represent native driver options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doUpdate">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#997-1020" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1095-1122" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>mixed <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Update one or more records.</h4>
@@ -1633,14 +1713,10 @@ provided values represent native driver options.</p>
 criteria, the method expects the following parameters:</p>
 
 <ul>
-<li><b>$theFilter</b>: The selection criteria.
 <li><b>$theCriteria</b>: The modification criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theFilter</b>: The selection criteria.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether to update the first selected document, or all the selected documents: <ul> <li><tt>TRUE</tt>: Update all records selected by the filter. <li><tt>FALSE</tt>: Update the first record selected by the filter. </ul> </ul>
 </ul>
-
-<p>If the <tt>'$doAll'</tt> option is set, the method will update all found records, if
-not, it will only update the first found record; the option <em>must</em> be
-provided. Other provided values represent native driver options.</p>
 
 <p>This method must be implemented by derived concrete classes.</p>
 
@@ -1652,7 +1728,7 @@ provided. Other provided values represent native driver options.</p>
 						<dt><var>$theCriteria</var></dt>
 						<dd>The modification criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Update options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -1681,7 +1757,7 @@ provided. Other provided values represent native driver options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doReplace">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1027-1046" title="Go to source code">doReplace</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1129-1156" title="Go to source code">doReplace</a>( <span>mixed <var>$theFilter</var></span>, <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -1694,9 +1770,9 @@ provided. Other provided values represent native driver options.</p>
 following parameters:</p>
 
 <ul>
+<li><b>$theDocument</b>: The replacement document.
 <li><b>$theFilter</b>: The selection criteria.
-<li><b>$theDocument</b>: The replacement record.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether to replace the first selected document, or all the selected documents: <ul> <li><tt>TRUE</tt>: Replace all records selected by the filter. <li><tt>FALSE</tt>: Replace the first record selected by the filter. </ul> </ul>
 </ul>
 
 <p>This method must be implemented by derived concrete classes.</p>
@@ -1709,7 +1785,7 @@ following parameters:</p>
 						<dt><var>$theDocument</var></dt>
 						<dd>The replacement document.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Replace options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -1738,7 +1814,7 @@ following parameters:</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDelete">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1053-1074" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1163-1188" title="Go to source code">doDelete</a>( <span>mixed <var>$theFilter</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records.</h4>
@@ -1752,12 +1828,8 @@ criteria, the method expects the following parameters:</p>
 
 <ul>
 <li><b>$theFilter</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether to delete the first selected document, or all the selected documents: <ul> <li><tt>TRUE</tt>: Delete all records selected by the filter. <li><tt>FALSE</tt>: Delete the first record selected by the filter. </ul> </ul>
 </ul>
-
-<p>If the <tt>'$doAll'</tt> option is set, the method will delete all found records, if
-not, it will only delete the first found record; the option <em>must</em> be
-provided. Other provided values represent native driver options.</p>
 
 <p>This method must be implemented by derived concrete classes.</p>
 
@@ -1767,7 +1839,7 @@ provided. Other provided values represent native driver options.</p>
 						<dt><var>$theFilter</var></dt>
 						<dd>The selection criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Delete options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -1785,18 +1857,74 @@ provided. Other provided values represent native driver options.</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="doFindById" id="_doFindById">
+
+			<td class="attributes"><code>
+				abstract protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doFindById">#</a>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1195-1229" title="Go to source code">doFindById</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
+
+			<div class="description short">
+				<h4>Find by ID.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Find by ID.</h4>
+
+<p>This method should return the document that matches the provided key in the current
+collection, or <tt>NULL</tt> if the document cannot be matched.</p>
+
+<p>The method features two parameters:</p>
+
+<ul>
+<li><b>$theKey</b>: The document key to match.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code></b>: This option determines whether the first parameter is a set of keys or a single key: <ul> <li><tt>TRUE</tt>: Provided an <em>array</em> of keys. <li><tt>FALSE</tt>: Provided a single key. </ul> <li><b><code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code></b>: This option determines the result format: <ul> <li><tt>TRUE</tt>: Return the unchanged driver database result. <li><tt>FALSE</tt>: Return either a single or an array of <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances; in case no results are found, the method will return <tt>NULL</tt>. </ul> </ul>
+</ul>
+
+<p>This method must be implemented by derived concrete classes.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theKey</var></dt>
+						<dd>The document identifier.</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>Find options.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>The found document(s).
+					</div>
+
+
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_FindById">Milko\PHPLib\Collection::FindById()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="doFindByExample" id="_doFindByExample">
 
 			<td class="attributes"><code>
 				abstract protected 
-				<code><a href="class-Iterator.html">Iterator</a></code>
+				mixed
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1081-1104" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1236-1269" title="Go to source code">doFindByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by example the first or all records.</h4>
@@ -1809,15 +1937,9 @@ provided. Other provided values represent native driver options.</p>
 method expects the following parameters:</p>
 
 <ul>
-<li><b>$theDocument</b>: The search filter as an example document.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theDocument</b>: The example document; it must be either an array, a <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instance, or a native database document.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_SKIP.html"><b>kTOKEN_OPT_SKIP</b></a></code></b>: This option determines how many records to skip in the results selection, it is equivalent to the SQL <tt>START</tt> directive, it is zero based and expressed as an integer. <li><b><code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code></b>: This option determines how many records to return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed as an integer. <li><b><code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code></b>: This option determines the result format: <ul> <li><tt>TRUE</tt>: Return the unchanged driver database result. <li><tt>FALSE</tt>: Return either a single or an array of <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances; in case no results are found, the method will return <tt>NULL</tt>. </ul> </ul>
 </ul>
-
-<p>The options parameter can be used to indicate the start and limit of the selection:
-provide <tt>'$start'</tt> to indicate from which found record to start and
-<tt>'$limit'</tt> to indicate the number of documents to be returned; by default the
-method will start with the first document and return all. Other provided values
-represent native driver options.</p>
 
 <p>This method must be implemented by derived concrete classes.</p>
 
@@ -1827,12 +1949,12 @@ represent native driver options.</p>
 						<dt><var>$theDocument</var></dt>
 						<dd>The example document.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
+						<dd>Find options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
+						mixed<br>The found records.
 					</div>
 
 
@@ -1849,14 +1971,14 @@ represent native driver options.</p>
 
 			<td class="attributes"><code>
 				abstract protected 
-				<code><a href="class-Iterator.html">Iterator</a></code>
+				mixed
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1111-1128" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1276-1308" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -1869,8 +1991,8 @@ represent native driver options.</p>
 format, the method expects the following parameters:</p>
 
 <ul>
-<li><b>$theQuery</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
+<li><b>$theQuery</b>: The query in the driver native format.
+<li><b>$theOptions</b>: An array of options: <ul> <li><b><code><a href="constant-kTOKEN_OPT_SKIP.html"><b>kTOKEN_OPT_SKIP</b></a></code></b>: This option determines how many records to skip in the results selection, it is equivalent to the SQL <tt>START</tt> directive, it is zero based and expressed as an integer. <li><b><code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code></b>: This option determines how many records to return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed as an integer. <li><b><code><a href="constant-kTOKEN_OPT_NATIVE.html"><b>kTOKEN_OPT_NATIVE</b></a></code></b>: This option determines the result format: <ul> <li><tt>TRUE</tt>: Return the unchanged driver database result. <li><tt>FALSE</tt>: Return either a single or an array of <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances; in case no results are found, the method will return <tt>NULL</tt>. </ul> </ul>
 </ul>
 
 <p>This method must be implemented by derived concrete classes.</p>
@@ -1881,230 +2003,18 @@ format, the method expects the following parameters:</p>
 						<dt><var>$theQuery</var></dt>
 						<dd>The selection criteria.</dd>
 						<dt><var>$theOptions</var></dt>
-						<dd>Collection native options.</dd>
+						<dd>Find options.</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
+						mixed<br>The found records.
 					</div>
 
 
 					<h4>Used by</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_FindByQuery">Milko\PHPLib\Collection::FindByQuery()</a></code><br>
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="doCount" id="_doCount">
-
-			<td class="attributes"><code>
-				abstract protected 
-				integer
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_doCount">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1135-1144" title="Go to source code">doCount</a>( )</code>
-
-			<div class="description short">
-				<h4>Return total number of records in collection.</h4>
-			</div>
-
-			<div class="description detailed hidden">
-				<h4>Return total number of records in collection.</h4>
-
-<p>This method should return the record count of the collection.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
-
-
-
-					<h4>Returns</h4>
-					<div class="list">
-						integer<br>The records count.
-					</div>
-
-
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_RecordCount">Milko\PHPLib\Collection::RecordCount()</a></code><br>
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="doCountByExample" id="_doCountByExample">
-
-			<td class="attributes"><code>
-				abstract protected 
-				integer
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_doCountByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1151-1168" title="Go to source code">doCountByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
-
-			<div class="description short">
-				<h4>Return a find by example record count.</h4>
-			</div>
-
-			<div class="description detailed hidden">
-				<h4>Return a find by example record count.</h4>
-
-<p>This method should return the record count matching the provided example document,
-the method expects the following parameters:</p>
-
-<ul>
-<li><b>$theDocument</b>: The search filter as an example document.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>This method must be implemented by derived concrete classes.</p>
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$theDocument</var></dt>
-						<dd>The example document.</dd>
-						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
-					</dl></div>
-
-					<h4>Returns</h4>
-					<div class="list">
-						integer<br>The records count.
-					</div>
-
-
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_CountByExample">Milko\PHPLib\Collection::CountByExample()</a></code><br>
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="doCountByQuery" id="_doCountByQuery">
-
-			<td class="attributes"><code>
-				abstract protected 
-				integer
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_doCountByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1175-1192" title="Go to source code">doCountByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
-
-			<div class="description short">
-				<h4>Return a find by query record count.</h4>
-			</div>
-
-			<div class="description detailed hidden">
-				<h4>Return a find by query record count.</h4>
-
-<p>This method should return the record count of the provided query expressed in the
-driver's native format, the method expects the following parameters:</p>
-
-<ul>
-<li><b>$theQuery</b>: The selection criteria.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>This method must be implemented by derived concrete classes.</p>
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$theQuery</var></dt>
-						<dd>The selection criteria.</dd>
-						<dt><var>$theOptions</var></dt>
-						<dd>Collection native options.</dd>
-					</dl></div>
-
-					<h4>Returns</h4>
-					<div class="list">
-						integer<br>The records count.
-					</div>
-
-
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_CountByQuery">Milko\PHPLib\Collection::CountByQuery()</a></code><br>
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="doMapReduce" id="_doMapReduce">
-
-			<td class="attributes"><code>
-				abstract protected 
-				<code><a href="class-Iterator.html">Iterator</a></code>
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_doMapReduce">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1199-1225" title="Go to source code">doMapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var></span> )</code>
-
-			<div class="description short">
-				<h4>Execute an aggregation query.</h4>
-			</div>
-
-			<div class="description detailed hidden">
-				<h4>Execute an aggregation query.</h4>
-
-<p>This method should perform a map and reduce query expressed in the driver's native
-format, the method expects the following parameters:</p>
-
-<ul>
-<li><b>$thePipeline</b>: The aggregation pipeline.
-<li><b>$theOptions</b>: An array of options representing driver native options.
-</ul>
-
-<p>This method assumes that the server is connected, it is the responsibility of the
-caller to ensure this.</p>
-
-<p>The options parameter represents a set of native options provided to the driver for
-performing the operation: if needed, in derived concrete classes you should define
-globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-method, this will guarantee that the options will always be used when performing this
-operation.</p>
-
-<p>This method must be implemented by derived concrete classes.</p>
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$thePipeline</var></dt>
-						<dd>The aggregation pipeline.</dd>
-						<dt><var>$theOptions</var></dt>
-						<dd>Driver native options.</dd>
-					</dl></div>
-
-					<h4>Returns</h4>
-					<div class="list">
-						<code><a href="class-Iterator.html">Iterator</a></code><br>The found records.
-					</div>
-
-
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_MapReduce">Milko\PHPLib\Collection::MapReduce()</a></code><br>
 					</div>
 
 
@@ -2122,17 +2032,17 @@ operation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_cursorToArray">#</a>
-			<code><a href="source-class-Milko.PHPLib.Collection.html#1241-1275" title="Go to source code">cursorToArray</a>( <span><code><a href="class-MongoDB.Driver.Cursor.html">MongoDB\Driver\Cursor</a></code> <var>$theCursor</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1324-1361" title="Go to source code">cursorToArray</a>( <span>mixed <var>$theCursor</var></span> )</code>
 
 			<div class="description short">
-				<h4>Format a query result.</h4>
+				<h4>Return an array of documents.</h4>
 			</div>
 
 			<div class="description detailed hidden">
-				<h4>Format a query result.</h4>
+				<h4>Return an array of documents.</h4>
 
 <p>This method will be used to convert a cursor into an array of <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code>
-elements.</p>
+elements, each element will be indexed by the document key, <code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code>.</p>
 
 
 					<h4>Parameters</h4>
@@ -2143,10 +2053,121 @@ elements.</p>
 
 					<h4>Returns</h4>
 					<div class="list">
-						array<br>The result as an array.
+						array<br>The result as an array of <code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code>s.
 					</div>
 
 
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_ToDocument">Milko\PHPLib\Collection::ToDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="cursorToHandles" id="_cursorToHandles">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_cursorToHandles">#</a>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1368-1404" title="Go to source code">cursorToHandles</a>( <span>mixed <var>$theCursor</var></span> )</code>
+
+			<div class="description short">
+				<h4>Return an array of document handles.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return an array of document handles.</h4>
+
+<p>This method will be used to convert a cursor into an array of document handles.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theCursor</var></dt>
+						<dd>The result cursor.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						array<br>The result as an array of document handles.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_ToDocumentHandle">Milko\PHPLib\Collection::ToDocumentHandle()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="normaliseOptions" id="_normaliseOptions">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_normaliseOptions">#</a>
+			<code><a href="source-class-Milko.PHPLib.Collection.html#1420-1458" title="Go to source code">normaliseOptions</a>( <span>Milko\PHPLib\string <var>$theToken</var></span>, <span>mixed <var>$theDefault</var></span>, <span>array <var>&amp; $theOptions</var></span> )</code>
+
+			<div class="description short">
+				<h4>Normalise operation options.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Normalise operation options.</h4>
+
+<p>This method can be used to normalise the options provided to methods, it expects
+three parameters:</p>
+
+<ul>
+<li><b>$theToken</b>: The option token.
+<li><b>$theDefault</b>: The default option value.
+<li><b>&$theOptions</b>: The reference to the options.
+</ul>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theToken</var></dt>
+						<dd>The option token.</dd>
+						<dt><var>$theDefault</var></dt>
+						<dd>The Default choice.</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>$theOptions         The options reference.</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+					</div>
+
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_Insert">Milko\PHPLib\Collection::Insert()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_Update">Milko\PHPLib\Collection::Update()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_Replace">Milko\PHPLib\Collection::Replace()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_Delete">Milko\PHPLib\Collection::Delete()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_FindById">Milko\PHPLib\Collection::FindById()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_FindByExample">Milko\PHPLib\Collection::FindByExample()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_FindByQuery">Milko\PHPLib\Collection::FindByQuery()</a></code><br>
+					</div>
 
 
 			</div>
@@ -2223,7 +2244,7 @@ elements.</p>
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-Milko.PHPLib.Collection.html#107-115" title="Go to source code"><var>$mDatabase</var></a>
+					<a href="source-class-Milko.PHPLib.Collection.html#121-129" title="Go to source code"><var>$mDatabase</var></a>
 
 				<div class="description short">
 					<h4>Database object.</h4>
@@ -2251,7 +2272,7 @@ instantiated the current collection.</p>
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-Milko.PHPLib.Collection.html#117-125" title="Go to source code"><var>$mNativeObject</var></a>
+					<a href="source-class-Milko.PHPLib.Collection.html#131-139" title="Go to source code"><var>$mNativeObject</var></a>
 
 				<div class="description short">
 					<h4>Collection native object.</h4>

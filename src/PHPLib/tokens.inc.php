@@ -38,5 +38,42 @@ const kTOKEN_TAG_PREFIX = '@';
  */
 const kTOKEN_NAMESPACE_SEPARATOR = ':';
 
+/*=======================================================================================
+ *	STANDARD OPTION TOKENS																*
+ *======================================================================================*/
+
+/**
+ * Single or multiple.
+ *
+ * This token represents a boolean flag which indicates whether to process one or more
+ * elements: if <tt>TRUE</tt>, it means that more than one element is to be processed; if
+ * <tt>FALSE</tt>, it means that only one element is to be processed.
+ */
+const kTOKEN_OPT_MANY = '$doAll';
+
+/**
+ * Native format.
+ *
+ * This token represents a boolean flag which indicates whether to return a result in native
+ * format or not: if <tt>TRUE</tt>, it means we expect the result of the operation to be in
+ * driver native format; if <tt>FALSE</tt>, it means that we want the result in the standard
+ * driver-agnostic format.
+ */
+const kTOKEN_OPT_NATIVE = '$doNative';
+
+/**
+ * Skip.
+ *
+ * This token represents the number of elements to skip before returning a list of values.
+ */
+const kTOKEN_OPT_SKIP = '$skip';
+
+/**
+ * Limit.
+ *
+ * This token represents the number of elements to select from a list of values.
+ */
+const kTOKEN_OPT_LIMIT = '$limit';
+
 
 ?>

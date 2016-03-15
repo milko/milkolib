@@ -25,11 +25,15 @@ echo( "Database: " . $database->getDatabaseName() . "\n" );
 $collection = $database->selectCollection( 'test_collection' );
 echo( "Collection: " . $collection->getCollectionName() . "\n" );
 
+echo( "\n*===================================================================================\n" );
+
 $result = $collection->insertOne( [ "_id" => "ID01", "data" => "This is the first data" ] );
 var_dump( $result->getInsertedId() );
 
 $result = $collection->insertOne( [ "data" => "This is the second data" ] );
 var_dump( $result->getInsertedId() );
+
+echo( "\n*===================================================================================\n" );
 
 $result = $collection->insertMany( [
 	[ "_id" => "pippo", "data" => "Stuff" ],
@@ -38,16 +42,46 @@ $result = $collection->insertMany( [
 	[ "key" => "XXX", "binary" => new MongoDB\BSON\Binary( 0xFFFFAAAA, MongoDB\BSON\Binary::TYPE_GENERIC ) ],
 	[ "key" => "YYY", "binary" => new MongoDB\BSON\Binary( 'pippo', MongoDB\BSON\Binary::TYPE_GENERIC ) ]] );
 var_dump( $result->getInsertedIds() );
-echo( "\n=====================\n" );
+
+echo( "\n*===================================================================================\n" );
+
+$result = $collection->find();
+foreach( $result as $record )
+{
+	echo( "\n=========================================\n" );
+	var_dump( $record[ '_id' ] );
+	var_dump( $record );
+}
+exit;
+
+echo( "\n*===================================================================================\n" );
+
 $result = (array) $collection->find()->toArray()[ 5 ]->bsonSerialize();
 print_r( $result );
 var_dump( $result[ 'binary' ] );
 var_dump( (int) $result[ 'binary' ]->getData() );
 var_dump( dechex( (int) $result[ 'binary' ]->getData() ) );
-echo( "\n=====================\n" );
+
+echo( "\n*===================================================================================\n" );
+
 $result = (array) $collection->find()->toArray()[ 6 ]->bsonSerialize();
 var_dump( $result[ 'binary' ] );
 var_dump( $result[ 'binary' ]->getData() );
+
+echo( "\n*===================================================================================\n" );
+
+$result = (array) $collection->find( ['_id' => "UNKNOWN"] );
+var_dump( $result );
+$result = $collection->findOne( ['_id' => "UNKNOWN"] );
+var_dump( $result );
+$result = $collection->findOne( ["_id" => "pippo"] );
+var_dump( $result );
+var_dump( $result[ '_id' ] );
+exit;
+$result = $result->bsonSerialize();
+var_dump( $result );
+$result = (array) $result;
+var_dump( $result );
 exit;
 
 /*===================================================================================

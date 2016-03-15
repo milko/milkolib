@@ -56,23 +56,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to call the native object's method.
 	 *
-	 * @param array					$theOptions			Driver native options.
-	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::deleteMany()
 	 */
-	public function Truncate( $theOptions = NULL )
+	public function Truncate()
 	{
-		//
-		// Init local storage.
-		//
-		if( $theOptions === NULL )
-			$theOptions = [];
-
-		//
-		// Empty collection.
-		//
-		$this->Connection()->deleteMany( [], $theOptions );
+		$this->Connection()->deleteMany( [] );
 
 	} // Truncate.
 
@@ -86,23 +75,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to call the native object's method.
 	 *
-	 * @param array					$theOptions			Driver native options.
-	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::drop()
 	 */
-	public function Drop( $theOptions = NULL )
+	public function Drop()
 	{
-		//
-		// Init local storage.
-		//
-		if( $theOptions === NULL )
-			$theOptions = [];
-
-		//
-		// Call native method.
-		//
-		$this->Connection()->drop( $theOptions );
+		$this->Connection()->drop();
 
 	} // Drop.
 
@@ -126,13 +104,27 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method by casting the provided data into an array and instantiating
 	 * the expected document.
 	 *
-	 * @param mixed					$theData			Database native document.
-	 * @param string				$theClass			Expected class name.
-	 * @return Document				Standard document object.
+	 * @param mixed						$theData			Database native document.
+	 * @param string					$theClass			Expected class name.
+	 * @return \Milko\PHPLib\Document	Standard document object.
+	 *
+	 * @uses ClassOffset()
 	 */
-	public function ToDocument( $theData, $theClass = 'Milko\PHPLib\Document' )
+	public function ToDocument( $theData, string $theClass = 'Milko\PHPLib\Document' )
 	{
-		return new $theClass( $this, (array) $theData );							// ==>
+		//
+		// Convert document to array.
+		//
+		$document = (array)$theData;
+
+		//
+		// Resolve class.
+		//
+		$class = ( array_key_exists( $this->ClassOffset(), $document ) )
+			   ? $document[ $this->ClassOffset() ]
+			   : $theClass;
+
+		return new $class( $this, $document );										// ==>
 
 	} // ToDocument.
 
@@ -144,16 +136,58 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Convert a standard document to native data.</h4>
 	 *
-	 * We overload this method to return an array representation of the document.
+	 * We overload this method to return BSONDocument.
 	 *
 	 * @param Document				$theDocument		Document to be converted.
 	 * @return mixed				Database native object.
+	 *
+	 * @uses \Milko\PHPLib\Document::toArray()
 	 */
 	public function FromDocument( \Milko\PHPLib\Document $theDocument )
 	{
-		return $theDocument->toArray();												// ==>
+		return new BSONDocument( $theDocument->toArray() );							// ==>
 
 	} // FromDocument.
+
+
+	/*===================================================================================
+	 *	ToDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert native data to a document handle.</h4>
+	 *
+	 * We overload this method to return an array of two elements: the first represents the
+	 * collection, the second represents the document key ({@link KeyOffset()}.
+	 *
+	 * The method expects the current collection to have a name (@link __toString()}.
+	 *
+	 * @param mixed					$theDocument		Document to reference.
+	 * @return mixed				Document handle.
+	 *
+	 * @uses KeyOffset()
+	 */
+	public function ToDocumentHandle( $theDocument )
+	{
+		//
+		// Init handle collection.
+		//
+		$handle = [ (string)$this ];
+
+		//
+		// Handle native document type.
+		//
+		if( ! ($theDocument instanceof \Milko\PHPLib\Document) )
+			$theDocument = (array) $theDocument;
+
+		//
+		// Add document key.
+		//
+		$handle[] = $theDocument[ $this->KeyOffset() ];
+
+		return $handle;																// ==>
+
+	} // ToDocumentHandle.
 
 
 
@@ -166,20 +200,6 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	IdOffset																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return the document identifier offset.</h4>
-	 *
-	 * We overload this method to use the {@link kTAG_MONGO_ID} constant.
-	 *
-	 * @return string				Document identifier offset.
-	 */
-	public function IdOffset()									{	return kTAG_MONGO_ID;	}
-
-
-	/*===================================================================================
 	 *	KeyOffset																		*
 	 *==================================================================================*/
 
@@ -189,6 +209,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to use the {@link kTAG_MONGO_KEY} constant.
 	 *
 	 * @return string				Document key offset.
+	 *
+	 * @see kTAG_MONGO_KEY
 	 */
 	public function KeyOffset()									{	return kTAG_MONGO_KEY;	}
 
@@ -203,6 +225,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to use the {@link kTAG_MONGO_CLASS} constant.
 	 *
 	 * @return string				Document class offset.
+	 *
+	 * @see kTAG_MONGO_CLASS
 	 */
 	public function ClassOffset()							{	return kTAG_MONGO_CLASS;	}
 
@@ -217,8 +241,150 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to use the {@link kTAG_MONGO_REVISION} constant.
 	 *
 	 * @return string				Document revision offset.
+	 *
+	 * @see kTAG_MONGO_REVISION
 	 */
 	public function RevisionOffset()						{	return kTAG_MONGO_REVISION;	}
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC RECORD MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	RecordCount																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count documents.</h4>
+	 *
+	 * We overload this method to use the collection count() method without a filter.
+	 *
+	 * @return int					The number of records in the collection.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::count()
+	 */
+	public function RecordCount()
+	{
+		return $this->Connection()->count();										// ==>
+
+	} // RecordCount.
+
+
+	/*===================================================================================
+	 *	CountByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count by example.</h4>
+	 *
+	 * In this class we overload this method to use the <tt>count()</tt> method of the
+	 * Mongo Collection.
+	 *
+	 * @param mixed					$theDocument		The example document.
+	 * @return int					The found records count.
+	 *
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::count()
+	 */
+	public function CountByExample( $theDocument = NULL )
+	{
+		//
+		// Normalise filter.
+		//
+		if( $theDocument === NULL )
+			$theDocument = [];
+		elseif( $theDocument instanceof \Milko\PHPLib\Container )
+			$theDocument = $theDocument->toArray();
+		else
+			$theDocument = (array)$theDocument;
+
+		return $this->Connection()->count( $theDocument );							// ==>
+
+	} // CountByExample.
+
+
+	/*===================================================================================
+	 *	CountByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count by example.</h4>
+	 *
+	 * TWe overload this method by calling {@link CountByExample()}.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @return int					The found records count.
+	 */
+	public function CountByQuery( $theQuery = NULL )
+	{
+		return $this->CountByExample( $theQuery );									// ==>
+
+	} // CountByQuery.
+
+
+	/*===================================================================================
+	 *	MapReduce																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Execute an aggregation query.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::aggregate()} method.
+	 *
+	 * We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
+	 * options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 *
+	 * @param mixed					$thePipeline		The aggregation pipeline.
+	 * @param array					$theOptions			Query options.
+	 * @return array				The result set.
+	 *
+	 * @uses doMapReduce()
+	 */
+	public function MapReduce( $thePipeline, $theOptions = [] )
+	{
+		//
+		// Init local storage.
+		//
+		$options = [];
+
+		//
+		// Handle options.
+		//
+		if( count( $theOptions ) )
+		{
+			//
+			// Force skip if limit is there.
+			//
+			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
+			 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
+
+			//
+			// Convert to native options.
+			//
+			if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+				$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+				$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
+		}
+
+		//
+		// Serialise result.
+		//
+		$result = [];
+		foreach( $this->Connection()->aggregate( $thePipeline, $options ) as $record )
+			$result[] = (array) $record;
+
+		return $result;																// ==>
+
+	} // MapReduce.
 
 
 
@@ -251,14 +417,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Database()
 	 * @uses \MongoDB\Database::selectCollection()
 	 */
-	protected function collectionNew( $theCollection, $theOptions = NULL )
+	protected function collectionNew( $theCollection, $theOptions = [] )
 	{
-		//
-		// Init local storage.
-		//
-		if( $theOptions === NULL )
-			$theOptions = [];
-
 		return $this->Database()->Connection()->selectCollection(
 				(string)$theCollection, $theOptions );								// ==>
 
@@ -308,29 +468,22 @@ class Collection extends \Milko\PHPLib\Collection
 	 * to insert a single document and {@link \MongoDB\Collection::insertMany()} method to
 	 * insert many records.
 	 *
-	 * We strip the <tt>'$doAll'</tt> parameter from the options and keep the other options
-	 * as driver native parameters.
-	 *
 	 * @param mixed					$theDocument		The document(s) to be inserted.
-	 * @param array					$theOptions			Driver native options.
+	 * @param array					$theOptions			Insert options.
 	 * @return mixed				The document's unique identifier(s).
 	 *
 	 * @uses Connection()
 	 * @uses FromDocument()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\Collection::insertMany()
+	 * @see kTOKEN_OPT_MANY
 	 */
-	protected function doInsert( $theDocument, $theOptions )
+	protected function doInsert( $theDocument, array $theOptions )
 	{
 		//
-		// Init local storage.
+		// Convert data to be inserted.
 		//
-		$do_all = $theOptions[ '$doAll' ];
-
-		//
-		// Normalise container.
-		//
-		if( $do_all )
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
 		{
 			//
 			// Init local storage.
@@ -342,22 +495,28 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			foreach( $theDocument as $document )
 				$data[] = ( $document instanceof \Milko\PHPLib\Document )
-						? $this->FromDocument( $document )
-						: (array) $document;
-		}
+					? $this->FromDocument( $document )
+					: (array)$document;
+
+		} // Many documents.
+
+		//
+		// Handle single document.
+		//
 		else
 			$data = ( $theDocument instanceof \Milko\PHPLib\Document )
 				? $this->FromDocument( $theDocument )
-				: (array) $theDocument;
+				: (array)$theDocument;
 
 		//
 		// Insert one or more records.
 		//
-		$result = ( $do_all ) ? $this->Connection()->insertMany( $data, $theOptions )
-							  : $this->Connection()->insertOne( $data, $theOptions );
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? $this->Connection()->insertMany( $data )
+				: $this->Connection()->insertOne( $data );
 
-		return ( $do_all ) ? $result->getInsertedIds()								// ==>
-						   : $result->getInsertedId();								// ==>
+		return ( $theOptions[ kTOKEN_OPT_MANY ] ) ? $result->getInsertedIds()		// ==>
+												  : $result->getInsertedId();		// ==>
 
 	} // doInsert.
 
@@ -377,27 +536,23 @@ class Collection extends \Milko\PHPLib\Collection
 	 * as driver native parameters.
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param array					$theCriteria		The modification criteria.
-	 * @param array					$theOptions			Driver native options.
+	 * @param mixed					$theCriteria		The modification criteria.
+	 * @param array					$theOptions			Update options.
 	 * @return int					The number of modified records.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::updateOne()
 	 * @uses \MongoDB\Collection::updateMany()
+	 * @see kTOKEN_OPT_MANY
 	 */
-	protected function doUpdate( $theFilter, $theCriteria, $theOptions )
+	protected function doUpdate( $theFilter, $theCriteria, array $theOptions )
 	{
-		//
-		// Init local storage.
-		//
-		$do_all = $theOptions[ '$doAll' ];
-
 		//
 		// Insert one or more records.
 		//
-		$result = ( $do_all )
-				? $this->Connection()->updateMany( $theFilter, $theCriteria, $theOptions )
-				: $this->Connection()->updateOne( $theFilter, $theCriteria, $theOptions );
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? $this->Connection()->updateMany( $theFilter, $theCriteria )
+				: $this->Connection()->updateOne( $theFilter, $theCriteria );
 
 		return $result->getModifiedCount();											// ==>
 	
@@ -414,14 +569,16 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to use the {@link \MongoDB\Collection::replaceOne()} method.
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param array					$theDocument		The replacement document.
-	 * @param array					$theOptions			Driver native options.
+	 * @param mixed					$theDocument		The replacement document.
+	 * @param array					$theOptions			Replace options.
 	 * @return int					The number of replaced records.
 	 *
 	 * @uses Connection()
+	 * @uses KeyOffset()
 	 * @uses \MongoDB\Collection::replaceOne()
+	 * @see kTOKEN_OPT_MANY
 	 */
-	protected function doReplace( $theFilter, $theDocument, $theOptions )
+	protected function doReplace( $theFilter, $theDocument, array $theOptions )
 	{
 		//
 		// Normalise container.
@@ -430,9 +587,28 @@ class Collection extends \Milko\PHPLib\Collection
 			$theDocument = $theDocument->toArray();
 
 		//
-		// Replace a record.
+		// Replace many records.
 		//
-		$result = $this->Connection()->replaceOne( $theFilter, $theDocument, $theOptions );
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			//
+			// Replace selection.
+			//
+			$cursor = $this->Connection()->find( $theFilter );
+			foreach( $cursor as $record )
+				$this->Connection()
+					->replaceOne(
+						[ $this->KeyOffset() => $record[ $this->KeyOffset() ] ],
+						$theDocument );
+
+			return $cursor->count();												// ==>
+
+		} // Many documents.
+
+		//
+		// Replace a single record.
+		//
+		$result = $this->Connection()->replaceOne( $theFilter, $theDocument );
 
 		return $result->getModifiedCount();											// ==>
 	
@@ -450,36 +626,95 @@ class Collection extends \Milko\PHPLib\Collection
 	 * to delete a single document and {@link \MongoDB\Collection::deleteMany()} method to
 	 * delete all selected records.
 	 *
-	 * We strip the <tt>'$doAll'</tt> parameter from the options and keep the other options
-	 * as driver native parameters.
-	 *
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param array					$theOptions			Driver native options.
+	 * @param array					$theOptions			Delete options.
 	 * @return int					The number of deleted records.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::deleteOne()
 	 * @uses \MongoDB\Collection::deleteMany()
-	 *
-	 * @see kMONGO_OPTS_CL_DELETE
+	 * @see kTOKEN_OPT_MANY
 	 */
-	protected function doDelete( $theFilter, $theOptions )
+	protected function doDelete( $theFilter, array $theOptions )
 	{
-		//
-		// Init local storage.
-		//
-		$do_all = $theOptions[ '$doAll' ];
-
 		//
 		// Delete one or more records.
 		//
-		$result = ( $do_all )
-			? $this->Connection()->deleteMany( $theFilter, $theOptions )
-			: $this->Connection()->deleteOne( $theFilter, $theOptions );
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+			? $this->Connection()->deleteMany( $theFilter )
+			: $this->Connection()->deleteOne( $theFilter );
 
 		return $result->getDeletedCount();											// ==>
 
 	} // doDelete.
+
+
+	/*===================================================================================
+	 *	doFindById																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by ID.</h4>
+	 *
+	 * We implement this method to use the <tt>findOne</tt> method.
+	 *
+	 * @param mixed					$theKey				The document identifier.
+	 * @param array					$theOptions			Delete options.
+	 * @return mixed				The found document(s).
+	 *
+	 * @uses KeyOffset()
+	 * @uses Connection()
+	 * @uses cursorToArray()
+	 * @uses \MongoDB\Collection::find()
+	 * @uses \MongoDB\Collection::findOne()
+	 * @see kTOKEN_OPT_MANY
+	 * @see kTOKEN_OPT_NATIVE
+	 */
+	protected function doFindById( $theKey, array $theOptions )
+	{
+		//
+		// Set selection filter.
+		//
+		$filter = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? [ $this->KeyOffset() => [ '$in' => $theKey ] ]
+				: [ $this->KeyOffset() => $theKey ];
+
+		//
+		// Make selection.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+			? $this->Connection()->find( $filter )
+			: $this->Connection()->findOne( $filter );
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_NATIVE ] )
+			return $result;															// ==>
+
+		//
+		// Handle multiple results.
+		//
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			//
+			// Handle no results.
+			//
+			if( ! $this->Connection()->count( $filter ) )
+				return [];															// ==>
+
+			return $this->cursorToArray( $result );									// ==>
+		}
+
+		//
+		// Handle not found.
+		//
+		if( $result === NULL )
+			return NULL;															// ==>
+
+		return $this->ToDocument( $result );										// ==>
+
+	} // doFindById.
 
 
 	/*===================================================================================
@@ -495,40 +730,67 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
 	 * options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.
 	 *
-	 * @param array					$theDocument		The example document.
-	 * @param array					$theOptions			Driver native options.
-	 * @return Iterator				The found records.
+	 * @param mixed					$theDocument		The example document.
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found records.
 	 *
 	 * @uses Connection()
 	 * @uses cursorToArray()
 	 * @uses \MongoDB\Collection::find()
+	 * @see kTOKEN_OPT_SKIP
+	 * @see kTOKEN_OPT_LIMIT
+	 * @see kTOKEN_OPT_NATIVE
 	 */
-	protected function doFindByExample( $theDocument, $theOptions )
+	protected function doFindByExample( $theDocument, array $theOptions )
 	{
 		//
-		// Normalise document.
+		// Init local storage.
+		//
+		$options = [];
+
+		//
+		// Normalise filter.
 		//
 		if( $theDocument === NULL )
 			$theDocument = [];
 		elseif( $theDocument instanceof \Milko\PHPLib\Container )
 			$theDocument = $theDocument->toArray();
+		else
+			$theDocument = (array)$theDocument;
 
 		//
-		// Init local storage.
+		// Handle options.
 		//
-		if( array_key_exists( '$start', $theOptions ) )
+		if( count( $theOptions ) )
 		{
-			$theOptions[ 'skip' ] = $theOptions[ '$start' ];
-			unset( $theOptions[ '$start' ] );
-		}
-		if( array_key_exists( '$limit', $theOptions ) )
-		{
-			$theOptions[ 'limit' ] = $theOptions[ '$limit' ];
-			unset( $theOptions[ '$limit' ] );
+			//
+			// Force skip if limit is there.
+			//
+			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
+				&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
+
+			//
+			// Convert to native options.
+			//
+			if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+				$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+				$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
 		}
 
-		return $this->cursorToArray(
-				$this->Connection()->find( $theDocument, $theOptions ) );			// ==>
+		//
+		// Make selection.
+		//
+		$result = $this->Connection()->find( $theDocument, $options );
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_NATIVE ] )
+			return $result;															// ==>
+
+		return $this->cursorToArray( $result );										// ==>
 
 	} // doFindByExample.
 
@@ -541,11 +803,11 @@ class Collection extends \Milko\PHPLib\Collection
 	 * <h4>Query the collection.</h4>
 	 *
 	 * We overload this method to use the {@link doFind()} method, since the latter method
-	 * uses the example document as a query.
+	 * treats the example document as a query.
 	 *
 	 * @param mixed					$theQuery			The selection criteria.
-	 * @param array					$theOptions			Collection native options.
-	 * @return Iterator				The found records.
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found records.
 	 *
 	 * @uses FindByExample()
 	 */
@@ -554,129 +816,6 @@ class Collection extends \Milko\PHPLib\Collection
 		return $this->FindByExample( $theQuery, $theOptions );						// ==>
 
 	} // doFindByQuery.
-
-
-	/*===================================================================================
-	 *	doCount																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return total number of records in collection.</h4>
-	 *
-	 * We overload this method to use the collection count() method without a filter.
-	 *
-	 * @return int					The records count.
-	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Collection::count()
-	 */
-	protected function doCount()
-	{
-		return $this->Connection()->count();										// ==>
-
-	} // doCount.
-
-
-	/*===================================================================================
-	 *	doCountByExample																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a find by example record count.</h4>
-	 *
-	 * We overload this method to use the {@link count()} method, since the latter method
-	 * uses the example document as a query.
-	 *
-	 * @param array					$theDocument		The example document.
-	 * @param array					$theOptions			Driver native options.
-	 * @return int					The records count.
-	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Collection::count()
-	 */
-	protected function doCountByExample( $theDocument, $theOptions )
-	{
-		//
-		// Normalise document.
-		//
-		if( $theDocument === NULL )
-			$theDocument = [];
-		elseif( $theDocument instanceof \Milko\PHPLib\Container )
-			$theDocument = $theDocument->toArray();
-
-		return $this->Connection()->count( $theDocument, $theOptions );				// ==>
-
-	} // doCountByExample.
-
-
-	/*===================================================================================
-	 *	doCountByQuery																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a find by query record count.</h4>
-	 *
-	 * We overload this method to use the {@link doCountByExample()} method, since the
-	 * latter method uses the example document as a query.
-	 *
-	 * @param array					$theDocument		The example document.
-	 * @param array					$theOptions			Driver native options.
-	 * @return int					The records count.
-	 *
-	 * @uses doCountByExample()
-	 */
-	protected function doCountByQuery( $theDocument, $theOptions )
-	{
-		return $this->doCountByExample( $theDocument, $theOptions );				// ==>
-
-	} // doCountByQuery.
-
-
-	/*===================================================================================
-	 *	doMapReduce																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Execute an aggregation query.</h4>
-	 *
-	 * We overload this method to use the {@link \MongoDB\Collection::aggregate()} method.
-	 *
-	 * We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
-	 * options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.
-	 *
-	 * @param mixed					$thePipeline		The aggregation pipeline.
-	 * @param array					$theOptions			Driver native options.
-	 * @return Iterator				The found records.
-	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Collection::aggregate()
-	 */
-	protected function doMapReduce( $thePipeline, $theOptions )
-	{
-		//
-		// Init local storage.
-		//
-		if( array_key_exists( '$start', $theOptions ) )
-		{
-			$theOptions[ 'skip' ] = $theOptions[ '$start' ];
-			unset( $theOptions[ '$start' ] );
-		}
-		if( array_key_exists( '$limit', $theOptions ) )
-		{
-			$theOptions[ 'limit' ] = $theOptions[ '$limit' ];
-			unset( $theOptions[ '$limit' ] );
-		}
-
-		//
-		// Serialise result.
-		//
-		$result = [];
-		foreach( $this->Connection()->aggregate( $thePipeline, $theOptions ) as $record )
-			$result[] = (array) $record;
-
-		return $result;																// ==>
-
-	} // doMapReduce.
 
 
 

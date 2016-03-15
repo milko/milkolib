@@ -710,6 +710,64 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
+	 *	doFindById																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by ID.</h4>
+	 *
+	 * We implement the method by using the <tt>getById()</tt> method.
+	 *
+	 * @param mixed					$theIdentifier		The document identifier.
+	 * @return Document				The found document or <tt>NULL</tt>.
+	 *
+	 * @uses Connection()
+	 * @uses ClassOffset()
+	 * @uses ToDocument()
+	 * @uses \MongoDB\Collection::findOne()
+	 */
+	protected function doFindById( $theIdentifier )
+	{
+		//
+		// Instantiate document handler.
+		//
+		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+
+		//
+		// Try to find by ID.
+		//
+		try
+		{
+			//
+			// Find.
+			//
+			$result = $handler->getById( $this->Connection()->getId(), $theIdentifier );
+
+			//
+			// Get class.
+			//
+			$class = $result->get( $this->ClassOffset() );
+			if( $class === NULL )
+				throw new \RuntimeException (
+					"Retrieved document is missing its class." );				// !@! ==>
+
+			return $this->ToDocument( $result, $class );							// ==>
+		}
+		catch( ArangoServerException $error )
+		{
+			//
+			// Handle not found.
+			//
+			if( $error->getCode() == 404 )
+				return NULL;														// ==>
+
+			throw $error;														// !@! ==>
+		}
+
+	} // doFindById.
+
+
+	/*===================================================================================
 	 *	doFindByExample																	*
 	 *==================================================================================*/
 
@@ -737,7 +795,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses ArangoDocumentHandler::byExample()
+	 * @uses ArangoCollectionHandler::byExample()
 	 */
 	protected function doFindByExample( $theDocument, $theOptions )
 	{
@@ -856,7 +914,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses ArangoDocumentHandler::byExample()
+	 * @uses ArangoCollectionHandler::byExample()
 	 */
 	protected function doCountByExample( $theDocument, $theOptions )
 	{

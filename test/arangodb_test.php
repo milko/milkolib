@@ -4,7 +4,7 @@
 // Include local definitions.
 //
 require_once(dirname(__DIR__) . "/includes.local.php");
-require_once(dirname(__DIR__) . "/defines.local.php");
+require_once(dirname(__DIR__) . "/arango.local.php");
 
 //
 // Include utility functions.
@@ -278,7 +278,7 @@ var_dump( $id );
 echo( "getId: " );
 var_dump( $document->getId() );
 echo( "getInternalId: " );
-var_dump( $document->getInternalId() );
+var_dump( $x = $document->getInternalId() );
 echo( "getKey: " );
 var_dump( $document->getKey() );
 echo( "getInternalKey: " );
@@ -288,7 +288,7 @@ echo( "\n" );
 //
 // Get the document.
 //
-echo( "Get the document:\n" );
+echo( "Get the document by ID:\n" );
 $document = $documentHandler->getById($collection->getId(), $id );
 echo( "Document: " );
 print_r( $document );

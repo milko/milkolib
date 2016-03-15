@@ -80,7 +80,7 @@ echo( "\n=======================================================================
 //
 echo( "Insert one record:\n" );
 echo( '$result = $test->Insert( ["data" => "Value 1", "color" => "red" ] );' . "\n" );
-$result = $test->Insert( ["data" => "Value 1", "color" => "red" ] );
+$result = $id = $test->Insert( ["data" => "Value 1", "color" => "red" ] );
 print_r( $result );
 
 echo( "\n" );
@@ -102,6 +102,16 @@ echo( "Count by example:\n" );
 echo( '$result = $test->CountByExample( [ "color" => "red" ] );' . "\n" );
 $result = $test->CountByExample( [ "color" => "red" ] );
 var_dump( $result );
+
+echo( "\n" );
+
+//
+// Find by ID.
+//
+echo( "Find by ID:\n" );
+echo( '$result = $test->FindById( $id );' . "\n" );
+$result = $test->FindById( $id );
+print_r( $result );
 
 echo( "\n" );
 
