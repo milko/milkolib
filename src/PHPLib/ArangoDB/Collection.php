@@ -826,7 +826,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
 
-		return $this->cursorToArray(
+		return $this->formatCursor(
 			$handler->byExample(
 				$this->Connection()->getId(), $theDocument, $theOptions ) );		// ==>
 
@@ -866,7 +866,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$statement = new ArangoStatement( $this->Database()->Connection(), $theQuery );
 
-		return $this->cursorToArray( $statement->execute() );						// ==>
+		return $this->formatCursor( $statement->execute() );						// ==>
 
 	} // doFindByQuery.
 

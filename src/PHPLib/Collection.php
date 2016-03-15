@@ -713,12 +713,14 @@ abstract class Collection extends Container
 	 * 			<li><tt>TRUE</tt>: Provided a set of keys.
 	 * 			<li><tt>FALSE</tt>: Provided a single key.
 	 * 		 </ul>
-	 * 		<li><b>{@link kTOKEN_OPT_NATIVE}</b>: This option determines the result format:
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Return the unchanged driver database result.
-	 * 			<li><tt>FALSE</tt>: Return either a single or an array of {@link Document}
-	 * 				instances; in case no results are found, the method will return
-	 * 				<tt>NULL</tt>.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
+	 * 				an array of {@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
+	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -735,15 +737,17 @@ abstract class Collection extends Container
 	 * @uses doFindById()
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_MANY
-	 * @see kTOKEN_OPT_NATIVE
+	 * @see kTOKEN_OPT_FORMAT
 	 */
 	public function FindById( $theKey, $theOptions = NULL )
 	{
 		//
 		// Normalise options.
 		//
-		$this->normaliseOptions( kTOKEN_OPT_MANY, FALSE, $theOptions );
-		$this->normaliseOptions( kTOKEN_OPT_NATIVE, FALSE, $theOptions );
+		$this->normaliseOptions(
+			kTOKEN_OPT_MANY, FALSE, $theOptions );
+		$this->normaliseOptions(
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
 
 		return $this->doFindById( $theKey, $theOptions );							// ==>
 
@@ -775,12 +779,14 @@ abstract class Collection extends Container
 	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
 	 * 			return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
 	 * 			as an integer.
-	 * 		<li><b>{@link kTOKEN_OPT_NATIVE}</b>: This option determines the result format:
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Return the unchanged driver database result.
-	 * 			<li><tt>FALSE</tt>: Return either a single or an array of {@link Document}
-	 * 				instances; in case no results are found, the method will return
-	 * 				<tt>NULL</tt>.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
+	 * 				an array of {@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
+	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -798,7 +804,7 @@ abstract class Collection extends Container
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
-	 * @see kTOKEN_OPT_NATIVE
+	 * @see kTOKEN_OPT_FORMAT
 	 *
 	 * @example
 	 * // Find first five document.
@@ -813,7 +819,8 @@ abstract class Collection extends Container
 		//
 		// Normalise options.
 		//
-		$this->normaliseOptions( kTOKEN_OPT_NATIVE, FALSE, $theOptions );
+		$this->normaliseOptions(
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
 		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
 		 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
@@ -843,12 +850,14 @@ abstract class Collection extends Container
 	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
 	 * 			return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
 	 * 			as an integer.
-	 * 		<li><b>{@link kTOKEN_OPT_NATIVE}</b>: This option determines the result format:
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Return the unchanged driver database result.
-	 * 			<li><tt>FALSE</tt>: Return either a single or an array of {@link Document}
-	 * 				instances; in case no results are found, the method will return
-	 * 				<tt>NULL</tt>.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
+	 * 				an array of {@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
+	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -866,14 +875,15 @@ abstract class Collection extends Container
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
-	 * @see kTOKEN_OPT_NATIVE
+	 * @see kTOKEN_OPT_FORMAT
 	 */
 	public function FindByQuery( $theQuery = NULL, $theOptions = NULL )
 	{
 		//
 		// Normalise options.
 		//
-		$this->normaliseOptions( kTOKEN_OPT_NATIVE, FALSE, $theOptions );
+		$this->normaliseOptions(
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
 		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
 			&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
@@ -1210,12 +1220,14 @@ abstract class Collection extends Container
 	 * 			<li><tt>TRUE</tt>: Provided an <em>array</em> of keys.
 	 * 			<li><tt>FALSE</tt>: Provided a single key.
 	 * 		 </ul>
-	 * 		<li><b>{@link kTOKEN_OPT_NATIVE}</b>: This option determines the result format:
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Return the unchanged driver database result.
-	 * 			<li><tt>FALSE</tt>: Return either a single or an array of {@link Document}
-	 * 				instances; in case no results are found, the method will return
-	 * 				<tt>NULL</tt>.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
+	 * 				an array of {@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
+	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -1250,12 +1262,14 @@ abstract class Collection extends Container
 	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
 	 * 			return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
 	 * 			as an integer.
-	 * 		<li><b>{@link kTOKEN_OPT_NATIVE}</b>: This option determines the result format:
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Return the unchanged driver database result.
-	 * 			<li><tt>FALSE</tt>: Return either a single or an array of {@link Document}
-	 * 				instances; in case no results are found, the method will return
-	 * 				<tt>NULL</tt>.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
+	 * 				an array of {@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
+	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -1289,12 +1303,14 @@ abstract class Collection extends Container
 	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
 	 * 			return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
 	 * 			as an integer.
-	 * 		<li><b>{@link kTOKEN_OPT_NATIVE}</b>: This option determines the result format:
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Return the unchanged driver database result.
-	 * 			<li><tt>FALSE</tt>: Return either a single or an array of {@link Document}
-	 * 				instances; in case no results are found, the method will return
-	 * 				<tt>NULL</tt>.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
+	 * 				an array of {@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
+	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -1318,22 +1334,32 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	cursorToArray																	*
+	 *	formatCursor																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return an array of documents.</h4>
+	 * <h4>Format cursor.</h4>
 	 *
-	 * This method will be used to convert a cursor into an array of {@link Document}
-	 * elements, each element will be indexed by the document key, {@link KeyOffset()}.
+	 * This method can be used to convert a cursor resulting from a query operation in a
+	 * format determined by the second parameter of this method:
+	 *
+	 * <ul>
+	 *	<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Convert into an array of
+	 * 		{@link Document} instances.
+	 *	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Convert into an array of document
+	 * 		handles (@link ToDocumentHandle()}).
+	 * </ul>
 	 *
 	 * @param mixed			$theCursor	The result cursor.
-	 * @return array					The result as an array of {@link Document}s.
+	 * @param int			$theFormat	The cursor format.
+	 * @return array					An array of different format documents.
+	 * @throws InvalidArgumentException
 	 *
 	 * @uses ToDocument()
+	 * @uses ToDocumentHandle()
 	 * @uses KeyOffset()
 	 */
-	protected function cursorToArray( $theCursor )
+	protected function formatCursor($theCursor, int $theFormat )
 	{
 		//
 		// Init local storage.
@@ -1346,62 +1372,29 @@ abstract class Collection extends Container
 		foreach( $theCursor as $document )
 		{
 			//
-			// Get document.
+			// Convert document.
 			//
-			$document = $this->ToDocument( $document );
+			switch( $theFormat )
+			{
+				case kTOKEN_OPT_FORMAT_STANDARD:
+					$document = $this->ToDocument( $document );
+					$array[ (string) $document[ $this->KeyOffset() ] ] = $document;
+					break;
 
-			//
-			// Set document.
-			//
-			$array[ (string) $document[ $this->KeyOffset() ] ] = $document;
+				case kTOKEN_OPT_FORMAT_HANDLE:
+					$document = $this->ToDocumentHandle( $document );
+					$array[] = $document;
+					break;
+
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid conversion format." );							// !@! ==>
+			}
 		}
 
 		return $array;																// ==>
 
 	} // cursorToArray.
-
-
-	/*===================================================================================
-	 *	cursorToHandles																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return an array of document handles.</h4>
-	 *
-	 * This method will be used to convert a cursor into an array of document handles.
-	 *
-	 * @param mixed			$theCursor	The result cursor.
-	 * @return array					The result as an array of document handles.
-	 *
-	 * @uses ToDocumentHandle()
-	 * @uses KeyOffset()
-	 */
-	protected function cursorToHandles( $theCursor )
-	{
-		//
-		// Init local storage.
-		//
-		$array = [];
-
-		//
-		// Iterate cursor.
-		//
-		foreach( $theCursor as $document )
-		{
-			//
-			// Get document.
-			//
-			$handle = $this->ToDocumentHandle( $document );
-
-			//
-			// Set document.
-			//
-			$array[ (string) $document[ $this->KeyOffset() ] ] = $handle;
-		}
-
-		return $array;																// ==>
-
-	} // cursorToHandles.
 
 
 

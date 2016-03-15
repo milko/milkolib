@@ -52,14 +52,46 @@ const kTOKEN_NAMESPACE_SEPARATOR = ':';
 const kTOKEN_OPT_MANY = '$doAll';
 
 /**
- * Native format.
+ * Result format.
  *
- * This token represents a boolean flag which indicates whether to return a result in native
- * format or not: if <tt>TRUE</tt>, it means we expect the result of the operation to be in
- * driver native format; if <tt>FALSE</tt>, it means that we want the result in the standard
- * driver-agnostic format.
+ * This token represents a controlled vocabulary that determines the format in which query
+ * retults should be returned:
+ *
+ * <ul>
+ * 	<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the result in the database driver
+ * 		native format.
+ * 	<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return the result as
+ * 		{@link Milko\PHPLib\Document} instances.
+ * 	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return the result as a set of document
+ * 		handles.
+ * </ul>
  */
-const kTOKEN_OPT_NATIVE = '$doNative';
+const kTOKEN_OPT_FORMAT = '$doFormat';
+
+/**
+ * Native result format.
+ *
+ * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
+ * indicates that a query result should be returned in the native database driver format.
+ */
+const kTOKEN_OPT_FORMAT_NATIVE = 'N';
+
+/**
+ * Standard result format.
+ *
+ * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
+ * indicates that a query result should be returned as a set of
+ * {@link Milko\PHPLib\Document} instances.
+ */
+const kTOKEN_OPT_FORMAT_STANDARD = 'S';
+
+/**
+ * Document handle result format.
+ *
+ * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
+ * indicates that a query result should be returned as a set of document handles.
+ */
+const kTOKEN_OPT_FORMAT_HANDLE = 'H';
 
 /**
  * Skip.

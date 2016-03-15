@@ -703,7 +703,7 @@ class Collection extends \Milko\PHPLib\Collection
 			if( ! $this->Connection()->count( $filter ) )
 				return [];															// ==>
 
-			return $this->cursorToArray( $result );									// ==>
+			return $this->formatCursor( $result );									// ==>
 		}
 
 		//
@@ -790,7 +790,7 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theOptions[ kTOKEN_OPT_NATIVE ] )
 			return $result;															// ==>
 
-		return $this->cursorToArray( $result );										// ==>
+		return $this->formatCursor( $result );										// ==>
 
 	} // doFindByExample.
 
