@@ -339,10 +339,10 @@ abstract class Collection extends Container
 	 *
 	 * Derived concrete classes must implement this method.
 	 *
-	 * @param Document				$theDocument		Document to be converted.
+	 * @param Container				$theDocument		Document to be converted.
 	 * @return mixed				Database native object.
 	 */
-	abstract public function FromDocument( Document $theDocument );
+	abstract public function FromDocument( Container $theDocument );
 
 
 	/*===================================================================================
@@ -407,7 +407,7 @@ abstract class Collection extends Container
 	 * this value can be used by {@link Document} instances to reference another document.
 	 *
 	 * The method expects a single parameter which can either be a native database document,
-	 * or an instance of the {@link Document} class; in the latter case it is assumed that
+	 * or an instance of the {@link Container} class; in the latter case it is assumed that
 	 * the document's collection is the current one.
 	 *
 	 * The resulting value is dependent on the specific database engine used.

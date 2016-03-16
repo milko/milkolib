@@ -106,9 +106,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param Document				$theDocument		Document to be converted.
 	 * @return mixed				Database native object.
 	 *
-	 * @uses \Milko\PHPLib\Document::toArray()
+	 * @uses \Milko\PHPLib\Container::toArray()
 	 */
-	public function FromDocument( \Milko\PHPLib\Document $theDocument )
+	public function FromDocument( \Milko\PHPLib\Container $theDocument )
 	{
 		return new BSONDocument( $theDocument->toArray() );							// ==>
 
@@ -127,7 +127,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed						$theData			Database native document.
 	 * @param string					$theClass			Expected class name.
-	 * @return \Milko\PHPLib\Document	Standard document object.
+	 * @return \Milko\PHPLib\Container	Standard document object.
 	 *
 	 * @uses ClassOffset()
 	 */
@@ -205,7 +205,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Add document key.
 		//
-		$handle[] = $theDocument[ $this->KeyOffset() ];
+		$handle[] = $key;
 
 		return $handle;																// ==>
 
@@ -597,7 +597,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theDocument		The replacement document.
 	 * @param array					$theOptions			Replace options.
 	 * @return int					The number of replaced records.
-	 * @throws InvalidArgumentException
 	 *
 	 * @uses Connection()
 	 * @uses KeyOffset()
@@ -630,20 +629,10 @@ class Collection extends \Milko\PHPLib\Collection
 				$record = new \Milko\PHPLib\Container( (array)$record );
 
 				//
-				// Handle document key.
+				// Replace document.
 				//
-				if( ($key = $record[ $this->KeyOffset() ]) !== NULL )
-					$this->Connection()
-						->replaceOne(
-							[ $this->KeyOffset() => $key ],
-							$theDocument );
-
-				//
-				// Assert document key.
-				//
-				else
-					throw new \InvalidArgumentException (
-						"Data is missing the document key." );					// !@! ==>
+				$this->Connection()->replaceOne(
+					[ $this->KeyOffset() => $key ], $theDocument );
 
 				//
 				// Increment replaced count.

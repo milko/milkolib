@@ -73,8 +73,8 @@ echo( "\n=======================================================================
 // Insert one record.
 //
 echo( "Insert one record:\n" );
-echo( '$result = $test->Insert( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] );' . "\n" );
-$result = $test->Insert( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] );
+echo( '$result = $test->Insert( new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] ) );' . "\n" );
+$result = $test->Insert( new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] ) );
 print_r( $result );
 
 echo( "\n" );
