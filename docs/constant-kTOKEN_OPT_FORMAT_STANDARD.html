@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Constant kTOKEN_OPT_NATIVE | milkolib reference documentation</title>
+	<title>Constant kTOKEN_OPT_FORMAT_STANDARD | milkolib reference documentation</title>
 
 	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
 	<link rel="stylesheet" href="resources/style.css?49f43d3208c5d7e33fa16d36107a345bf11cc00d">
@@ -172,22 +172,23 @@
 				<li><a href="constant-kARANGO_OPTS_TIMEOUT_DEFAULT.html">kARANGO_OPTS_TIMEOUT_DEFAULT</a></li>
 				<li><a href="constant-kMONGO_OPTS_CLIENT_DEFAULT.html">kMONGO_OPTS_CLIENT_DEFAULT</a></li>
 				<li><a href="constant-kTAG_ARANGO_CLASS.html">kTAG_ARANGO_CLASS</a></li>
-				<li><a href="constant-kTAG_ARANGO_ID.html">kTAG_ARANGO_ID</a></li>
 				<li><a href="constant-kTAG_ARANGO_KEY.html">kTAG_ARANGO_KEY</a></li>
 				<li><a href="constant-kTAG_ARANGO_REVISION.html">kTAG_ARANGO_REVISION</a></li>
 				<li><a href="constant-kTAG_DESCRIPTION.html">kTAG_DESCRIPTION</a></li>
 				<li><a href="constant-kTAG_GID.html">kTAG_GID</a></li>
 				<li><a href="constant-kTAG_LID.html">kTAG_LID</a></li>
 				<li><a href="constant-kTAG_MONGO_CLASS.html">kTAG_MONGO_CLASS</a></li>
-				<li><a href="constant-kTAG_MONGO_ID.html">kTAG_MONGO_ID</a></li>
 				<li><a href="constant-kTAG_MONGO_KEY.html">kTAG_MONGO_KEY</a></li>
 				<li><a href="constant-kTAG_MONGO_REVISION.html">kTAG_MONGO_REVISION</a></li>
 				<li><a href="constant-kTAG_NAME.html">kTAG_NAME</a></li>
 				<li><a href="constant-kTAG_NS.html">kTAG_NS</a></li>
 				<li><a href="constant-kTOKEN_NAMESPACE_SEPARATOR.html">kTOKEN_NAMESPACE_SEPARATOR</a></li>
+				<li><a href="constant-kTOKEN_OPT_FORMAT.html">kTOKEN_OPT_FORMAT</a></li>
+				<li><a href="constant-kTOKEN_OPT_FORMAT_HANDLE.html">kTOKEN_OPT_FORMAT_HANDLE</a></li>
+				<li><a href="constant-kTOKEN_OPT_FORMAT_NATIVE.html">kTOKEN_OPT_FORMAT_NATIVE</a></li>
+				<li class="active"><a href="constant-kTOKEN_OPT_FORMAT_STANDARD.html">kTOKEN_OPT_FORMAT_STANDARD</a></li>
 				<li><a href="constant-kTOKEN_OPT_LIMIT.html">kTOKEN_OPT_LIMIT</a></li>
 				<li><a href="constant-kTOKEN_OPT_MANY.html">kTOKEN_OPT_MANY</a></li>
-				<li class="active"><a href="constant-kTOKEN_OPT_NATIVE.html">kTOKEN_OPT_NATIVE</a></li>
 				<li><a href="constant-kTOKEN_OPT_SKIP.html">kTOKEN_OPT_SKIP</a></li>
 				<li><a href="constant-kTOKEN_TAG_PREFIX.html">kTOKEN_TAG_PREFIX</a></li>
 			</ul>
@@ -207,16 +208,15 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="constant">
-	<h1>Constant kTOKEN_OPT_NATIVE</h1>
+	<h1>Constant kTOKEN_OPT_FORMAT_STANDARD</h1>
 
 
 	<div class="description">
-	<p>Native format.</p>
+	<p>Standard result format.</p>
 
-<p>This token represents a boolean flag which indicates whether to return a result in native
-format or not: if <tt>TRUE</tt>, it means we expect the result of the operation to be in
-driver native format; if <tt>FALSE</tt>, it means that we want the result in the standard
-driver-agnostic format.</p>
+<p>This token represents a controlled vocabulary element of <code><a href="constant-kTOKEN_OPT_FORMAT.html"><b>kTOKEN_OPT_FORMAT</b></a></code> which
+indicates that a query result should be returned as a set of
+<code><a href="class-Milko.PHPLib.Document.html">Milko\PHPLib\Document</a></code> instances.</p>
 	</div>
 
 	<div class="alert alert-info">
@@ -225,7 +225,7 @@ driver-agnostic format.</p>
 				<b>Author:</b>
 				Milko A. Škofič <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;">&#115;&#x6b;&#111;&#x66;i&#99;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;</a><br>
 		<b>Located at</b>
-		<a href="source-constant-kTOKEN_OPT_NATIVE.html#54-62" title="Go to source code">
+		<a href="source-constant-kTOKEN_OPT_FORMAT_STANDARD.html#79-86" title="Go to source code">
 			PHPLib/tokens.inc.php
 		</a><br>
 	</div>
@@ -236,7 +236,7 @@ driver-agnostic format.</p>
 		<table class="summary table table-bordered table-striped" id="vars">
 		<tr>
 			<td class="name"><code>string</code></td>
-			<td class="value"><code><span class="php-quote">'$doNative'</span></code></td>
+			<td class="value"><code><span class="php-quote">'S'</span></code></td>
 		</tr>
 		</table>
 	</div>

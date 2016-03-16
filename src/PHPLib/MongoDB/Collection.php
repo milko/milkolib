@@ -95,41 +95,6 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	ToDocument																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert native data to standard document.</h4>
-	 *
-	 * We overload this method by casting the provided data into an array and instantiating
-	 * the expected document.
-	 *
-	 * @param mixed						$theData			Database native document.
-	 * @param string					$theClass			Expected class name.
-	 * @return \Milko\PHPLib\Document	Standard document object.
-	 *
-	 * @uses ClassOffset()
-	 */
-	public function ToDocument( $theData, string $theClass = 'Milko\PHPLib\Document' )
-	{
-		//
-		// Convert document to array.
-		//
-		$document = (array)$theData;
-
-		//
-		// Resolve class.
-		//
-		$class = ( array_key_exists( $this->ClassOffset(), $document ) )
-			   ? $document[ $this->ClassOffset() ]
-			   : $theClass;
-
-		return new $class( $this, $document );										// ==>
-
-	} // ToDocument.
-
-
-	/*===================================================================================
 	 *	FromDocument																	*
 	 *==================================================================================*/
 
@@ -151,6 +116,52 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
+	 *	ToDocument																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert native data to standard document.</h4>
+	 *
+	 * We overload this method by casting the provided data into an array, since MongoDB
+	 * documents are derived from the ArrayObject class.
+	 *
+	 * @param mixed						$theData			Database native document.
+	 * @param string					$theClass			Expected class name.
+	 * @return \Milko\PHPLib\Document	Standard document object.
+	 *
+	 * @uses ClassOffset()
+	 */
+	public function ToDocument( $theData, $theClass = NULL )
+	{
+		//
+		// Convert document to array.
+		//
+		$document = (array)$theData;
+
+		//
+		// Handle document.
+		//
+		if( array_key_exists( $this->ClassOffset(), $document ) )
+		{
+			$class = $document[ $this->ClassOffset() ];
+			return new $class( $this, $document );									// ==>
+		}
+
+		//
+		// Handle provided class.
+		//
+		if( $theClass !== NULL )
+		{
+			$theClass = (string)$theClass;
+			return new $theClass( $this, $document );								// ==>
+		}
+
+		return new \Milko\PHPLib\Container( $document );							// ==>
+
+	} // ToDocument.
+
+
+	/*===================================================================================
 	 *	ToDocumentHandle																*
 	 *==================================================================================*/
 
@@ -158,27 +169,38 @@ class Collection extends \Milko\PHPLib\Collection
 	 * <h4>Convert native data to a document handle.</h4>
 	 *
 	 * We overload this method to return an array of two elements: the first represents the
-	 * collection, the second represents the document key ({@link KeyOffset()}.
+	 * collection name, the second represents the document key ({@link KeyOffset()}.
 	 *
-	 * The method expects the current collection to have a name (@link __toString()}.
+	 * Note that if the provided data doesn't feature the {@link KeyOffset()} property, the
+	 * method will raise an exception, since it will be impossible to resolve the document.
 	 *
 	 * @param mixed					$theDocument		Document to reference.
 	 * @return mixed				Document handle.
+	 * @throws InvalidArgumentException
 	 *
 	 * @uses KeyOffset()
+	 * @uses collectionName()
 	 */
 	public function ToDocumentHandle( $theDocument )
 	{
 		//
 		// Init handle collection.
 		//
-		$handle = [ (string)$this ];
+		$handle = [ $this->collectionName() ];
 
 		//
 		// Handle native document type.
 		//
-		if( ! ($theDocument instanceof \Milko\PHPLib\Document) )
-			$theDocument = (array) $theDocument;
+		if( ! ($theDocument instanceof \Milko\PHPLib\Container) )
+			$theDocument = (array)$theDocument;
+
+		//
+		// Check document key.
+		//
+		$key = $theDocument[ $this->KeyOffset() ];
+		if( $key === NULL )
+			throw new \InvalidArgumentException (
+				"Data is missing the document key." );							// !@! ==>
 
 		//
 		// Add document key.
@@ -419,8 +441,11 @@ class Collection extends \Milko\PHPLib\Collection
 	 */
 	protected function collectionNew( $theCollection, $theOptions = [] )
 	{
-		return $this->Database()->Connection()->selectCollection(
-				(string)$theCollection, $theOptions );								// ==>
+		return
+			$this->
+				Database()->
+					Connection()->
+						selectCollection( (string)$theCollection, $theOptions );	// ==>
 
 	} // collectionNew.
 
@@ -494,9 +519,9 @@ class Collection extends \Milko\PHPLib\Collection
 			// Iterate documents.
 			//
 			foreach( $theDocument as $document )
-				$data[] = ( $document instanceof \Milko\PHPLib\Document )
-					? $this->FromDocument( $document )
-					: (array)$document;
+				$data[] = ( $document instanceof \Milko\PHPLib\Container )
+						? $this->FromDocument( $document )
+						: (array)$document;
 
 		} // Many documents.
 
@@ -504,9 +529,9 @@ class Collection extends \Milko\PHPLib\Collection
 		// Handle single document.
 		//
 		else
-			$data = ( $theDocument instanceof \Milko\PHPLib\Document )
-				? $this->FromDocument( $theDocument )
-				: (array)$theDocument;
+			$data = ( $theDocument instanceof \Milko\PHPLib\Container )
+				  ? $this->FromDocument( $theDocument )
+				  : (array)$theDocument;
 
 		//
 		// Insert one or more records.
@@ -572,6 +597,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theDocument		The replacement document.
 	 * @param array					$theOptions			Replace options.
 	 * @return int					The number of replaced records.
+	 * @throws InvalidArgumentException
 	 *
 	 * @uses Connection()
 	 * @uses KeyOffset()
@@ -594,14 +620,38 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Replace selection.
 			//
+			$count = 0;
 			$cursor = $this->Connection()->find( $theFilter );
 			foreach( $cursor as $record )
-				$this->Connection()
-					->replaceOne(
-						[ $this->KeyOffset() => $record[ $this->KeyOffset() ] ],
-						$theDocument );
+			{
+				//
+				// Convert to container.
+				//
+				$record = new \Milko\PHPLib\Container( (array)$record );
 
-			return $cursor->count();												// ==>
+				//
+				// Handle document key.
+				//
+				if( ($key = $record[ $this->KeyOffset() ]) !== NULL )
+					$this->Connection()
+						->replaceOne(
+							[ $this->KeyOffset() => $key ],
+							$theDocument );
+
+				//
+				// Assert document key.
+				//
+				else
+					throw new \InvalidArgumentException (
+						"Data is missing the document key." );					// !@! ==>
+
+				//
+				// Increment replaced count.
+				//
+				$count++;
+			}
+
+			return $count;															// ==>
 
 		} // Many documents.
 
@@ -638,6 +688,14 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function doDelete( $theFilter, array $theOptions )
 	{
 		//
+		// Normalise filter.
+		//
+		if( $theFilter === NULL )
+			$theFilter = [];
+		elseif( ! is_array( $theFilter ) )
+			$theFilter = (string)$theFilter;
+
+		//
 		// Delete one or more records.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
@@ -661,6 +719,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theKey				The document identifier.
 	 * @param array					$theOptions			Delete options.
 	 * @return mixed				The found document(s).
+	 * @throws InvalidArgumentException
 	 *
 	 * @uses KeyOffset()
 	 * @uses Connection()
@@ -668,7 +727,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::find()
 	 * @uses \MongoDB\Collection::findOne()
 	 * @see kTOKEN_OPT_MANY
-	 * @see kTOKEN_OPT_NATIVE
+	 * @see kTOKEN_OPT_FORMAT
 	 */
 	protected function doFindById( $theKey, array $theOptions )
 	{
@@ -689,7 +748,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Handle native result.
 		//
-		if( $theOptions[ kTOKEN_OPT_NATIVE ] )
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
 			return $result;															// ==>
 
 		//
@@ -703,16 +762,37 @@ class Collection extends \Milko\PHPLib\Collection
 			if( ! $this->Connection()->count( $filter ) )
 				return [];															// ==>
 
-			return $this->formatCursor( $result );									// ==>
+			return
+				$this->formatCursor(
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
 		}
 
 		//
-		// Handle not found.
+		// Handle found document.
 		//
-		if( $result === NULL )
-			return NULL;															// ==>
+		if( $result !== NULL )
+		{
+			//
+			// Format result.
+			//
+			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+			{
+				case kTOKEN_OPT_FORMAT_STANDARD:
+					return $this->ToDocument( $result );							// ==>
 
-		return $this->ToDocument( $result );										// ==>
+				case kTOKEN_OPT_FORMAT_HANDLE:
+					return $this->ToDocumentHandle( $result );						// ==>
+			}
+
+			//
+			// Invalid format code.
+			//
+			throw new \InvalidArgumentException (
+				"Invalid conversion format code." );							// !@! ==>
+
+		} // Found document.
+
+		return $result;																// ==>
 
 	} // doFindById.
 
@@ -733,13 +813,14 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theDocument		The example document.
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
+	 * @throws InvalidArgumentException
 	 *
 	 * @uses Connection()
 	 * @uses cursorToArray()
 	 * @uses \MongoDB\Collection::find()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
-	 * @see kTOKEN_OPT_NATIVE
+	 * @see kTOKEN_OPT_FORMAT
 	 */
 	protected function doFindByExample( $theDocument, array $theOptions )
 	{
@@ -767,7 +848,7 @@ class Collection extends \Milko\PHPLib\Collection
 			// Force skip if limit is there.
 			//
 			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-				&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+			 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
 			//
@@ -785,12 +866,24 @@ class Collection extends \Milko\PHPLib\Collection
 		$result = $this->Connection()->find( $theDocument, $options );
 
 		//
-		// Handle native result.
+		// Format result.
 		//
-		if( $theOptions[ kTOKEN_OPT_NATIVE ] )
-			return $result;															// ==>
+		switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+		{
+			case kTOKEN_OPT_FORMAT_NATIVE:
+				return $result;														// ==>
 
-		return $this->formatCursor( $result );										// ==>
+			case kTOKEN_OPT_FORMAT_STANDARD:
+			case kTOKEN_OPT_FORMAT_HANDLE:
+				return $this->formatCursor(
+							$result, $theOptions[ kTOKEN_OPT_FORMAT ] );			// ==>
+		}
+
+		//
+		// Invalid format code.
+		//
+		throw new \InvalidArgumentException (
+			"Invalid conversion format code." );								// !@! ==>
 
 	} // doFindByExample.
 

@@ -171,22 +171,23 @@
 				<li><a href="constant-kARANGO_OPTS_TIMEOUT_DEFAULT.html">kARANGO_OPTS_TIMEOUT_DEFAULT</a></li>
 				<li><a href="constant-kMONGO_OPTS_CLIENT_DEFAULT.html">kMONGO_OPTS_CLIENT_DEFAULT</a></li>
 				<li><a href="constant-kTAG_ARANGO_CLASS.html">kTAG_ARANGO_CLASS</a></li>
-				<li><a href="constant-kTAG_ARANGO_ID.html">kTAG_ARANGO_ID</a></li>
 				<li><a href="constant-kTAG_ARANGO_KEY.html">kTAG_ARANGO_KEY</a></li>
 				<li><a href="constant-kTAG_ARANGO_REVISION.html">kTAG_ARANGO_REVISION</a></li>
 				<li><a href="constant-kTAG_DESCRIPTION.html">kTAG_DESCRIPTION</a></li>
 				<li><a href="constant-kTAG_GID.html">kTAG_GID</a></li>
 				<li><a href="constant-kTAG_LID.html">kTAG_LID</a></li>
 				<li><a href="constant-kTAG_MONGO_CLASS.html">kTAG_MONGO_CLASS</a></li>
-				<li><a href="constant-kTAG_MONGO_ID.html">kTAG_MONGO_ID</a></li>
 				<li><a href="constant-kTAG_MONGO_KEY.html">kTAG_MONGO_KEY</a></li>
 				<li><a href="constant-kTAG_MONGO_REVISION.html">kTAG_MONGO_REVISION</a></li>
 				<li><a href="constant-kTAG_NAME.html">kTAG_NAME</a></li>
 				<li><a href="constant-kTAG_NS.html">kTAG_NS</a></li>
 				<li><a href="constant-kTOKEN_NAMESPACE_SEPARATOR.html">kTOKEN_NAMESPACE_SEPARATOR</a></li>
+				<li><a href="constant-kTOKEN_OPT_FORMAT.html">kTOKEN_OPT_FORMAT</a></li>
+				<li><a href="constant-kTOKEN_OPT_FORMAT_HANDLE.html">kTOKEN_OPT_FORMAT_HANDLE</a></li>
+				<li><a href="constant-kTOKEN_OPT_FORMAT_NATIVE.html">kTOKEN_OPT_FORMAT_NATIVE</a></li>
+				<li><a href="constant-kTOKEN_OPT_FORMAT_STANDARD.html">kTOKEN_OPT_FORMAT_STANDARD</a></li>
 				<li><a href="constant-kTOKEN_OPT_LIMIT.html">kTOKEN_OPT_LIMIT</a></li>
 				<li><a href="constant-kTOKEN_OPT_MANY.html">kTOKEN_OPT_MANY</a></li>
-				<li><a href="constant-kTOKEN_OPT_NATIVE.html">kTOKEN_OPT_NATIVE</a></li>
 				<li><a href="constant-kTOKEN_OPT_SKIP.html">kTOKEN_OPT_SKIP</a></li>
 				<li><a href="constant-kTOKEN_TAG_PREFIX.html">kTOKEN_TAG_PREFIX</a></li>
 			</ul>
@@ -259,10 +260,6 @@
 	<td><h4>Default class offset.</h4></td>
 </tr>
 <tr>
-	<td class="name"><a href="constant-kTAG_ARANGO_ID.html">kTAG_ARANGO_ID</a></td>
-	<td><h4>Default identifier offset.</h4></td>
-</tr>
-<tr>
 	<td class="name"><a href="constant-kTAG_ARANGO_KEY.html">kTAG_ARANGO_KEY</a></td>
 	<td><h4>Default key offset.</h4></td>
 </tr>
@@ -287,10 +284,6 @@
 	<td><h4>Default class offset.</h4></td>
 </tr>
 <tr>
-	<td class="name"><a href="constant-kTAG_MONGO_ID.html">kTAG_MONGO_ID</a></td>
-	<td><h4>Default identifier offset.</h4></td>
-</tr>
-<tr>
 	<td class="name"><a href="constant-kTAG_MONGO_KEY.html">kTAG_MONGO_KEY</a></td>
 	<td><h4>Default key offset.</h4></td>
 </tr>
@@ -311,16 +304,28 @@
 	<td>Namespace separator token.</td>
 </tr>
 <tr>
+	<td class="name"><a href="constant-kTOKEN_OPT_FORMAT.html">kTOKEN_OPT_FORMAT</a></td>
+	<td>Result format.</td>
+</tr>
+<tr>
+	<td class="name"><a href="constant-kTOKEN_OPT_FORMAT_HANDLE.html">kTOKEN_OPT_FORMAT_HANDLE</a></td>
+	<td>Document handle result format.</td>
+</tr>
+<tr>
+	<td class="name"><a href="constant-kTOKEN_OPT_FORMAT_NATIVE.html">kTOKEN_OPT_FORMAT_NATIVE</a></td>
+	<td>Native result format.</td>
+</tr>
+<tr>
+	<td class="name"><a href="constant-kTOKEN_OPT_FORMAT_STANDARD.html">kTOKEN_OPT_FORMAT_STANDARD</a></td>
+	<td>Standard result format.</td>
+</tr>
+<tr>
 	<td class="name"><a href="constant-kTOKEN_OPT_LIMIT.html">kTOKEN_OPT_LIMIT</a></td>
 	<td>Limit.</td>
 </tr>
 <tr>
 	<td class="name"><a href="constant-kTOKEN_OPT_MANY.html">kTOKEN_OPT_MANY</a></td>
 	<td>Single or multiple.</td>
-</tr>
-<tr>
-	<td class="name"><a href="constant-kTOKEN_OPT_NATIVE.html">kTOKEN_OPT_NATIVE</a></td>
-	<td>Native format.</td>
 </tr>
 <tr>
 	<td class="name"><a href="constant-kTOKEN_OPT_SKIP.html">kTOKEN_OPT_SKIP</a></td>
@@ -358,6 +363,6 @@
 	</div>
 </div>
 <script src="resources/combined.js?533e23ef2f02bd4b20548834a028566b6eb403e0"></script>
-<script src="elementlist.js?2c7df6d4e53797804fffe596d701cedbfdf30083"></script>
+<script src="elementlist.js?a61f044ca76f1f8b4675bde3df32005c60673634"></script>
 </body>
 </html>

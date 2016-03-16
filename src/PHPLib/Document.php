@@ -35,7 +35,6 @@ use Milko\PHPLib\Container;
  * identifiers, class and revisions:
  *
  * <ul>
- * 	<li><tt>{@link Collection::IdOffset()}</tt>: The offset of the document reference.
  * 	<li><tt>{@link Collection::KeyOffset()}</tt>: The offset of the document unique key.
  * 	<li><tt>{@link Collection::ClassOffset()}</tt>: The offset of the document class.
  * 	<li><tt>{@link Collection::RevisionOffset()}</tt>: The offset of the document revision.

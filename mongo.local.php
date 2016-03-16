@@ -38,13 +38,6 @@ const kMONGO_OPTS_CLIENT_DEFAULT = 'mongodb://localhost:27017';
  *======================================================================================*/
 
 /**
- * <h4>Default identifier offset.</h4>
- *
- * This defines the default offset for document identifier.
- */
-const kTAG_MONGO_ID = '_id';
-
-/**
  * <h4>Default key offset.</h4>
  *
  * This defines the default offset for document key; note that we use the same property as

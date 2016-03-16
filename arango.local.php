@@ -73,13 +73,6 @@ const kARANGO_OPTS_CREATE_DEFAULT = TRUE;
  *======================================================================================*/
 
 /**
- * <h4>Default identifier offset.</h4>
- *
- * This defines the default offset for document identifier.
- */
-const kTAG_ARANGO_ID = '_id';
-
-/**
  * <h4>Default key offset.</h4>
  *
  * This defines the default offset for document key.

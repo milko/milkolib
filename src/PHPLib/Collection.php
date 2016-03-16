@@ -325,37 +325,6 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	ToDocument																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert native data to standard document.</h4>
-	 *
-	 * This method can be used to instantiate a {@link Document} object from database native
-	 * data, the method expects two parameters:
-	 *
-	 * <ul>
-	 * 	<li><b>$theData</b>: The data expressed in the database native type.
-	 * 	<li><b>$theClass</b>: The class name of the resulting {@link Document} instance.
-	 * </ul>
-	 *
-	 * The method will first attempt to find the class in the  provided data under the
-	 * {@link KeyOffset()} property, if it is not found, the method will use the provided
-	 * class parameter.
-	 *
-	 * This method is declared virtual, to allow database native derived classes to handle
-	 * their native types.
-	 *
-	 * Derived concrete classes must implement this method.
-	 *
-	 * @param mixed					$theData			Database native document.
-	 * @param string				$theClass			Expected class name.
-	 * @return Document				Standard document object.
-	 */
-	abstract public function ToDocument( $theData, string $theClass = 'Milko\PHPLib\Document' );
-
-
-	/*===================================================================================
 	 *	FromDocument																	*
 	 *==================================================================================*/
 
@@ -374,6 +343,57 @@ abstract class Collection extends Container
 	 * @return mixed				Database native object.
 	 */
 	abstract public function FromDocument( Document $theDocument );
+
+
+	/*===================================================================================
+	 *	ToDocument																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert native data to standard document.</h4>
+	 *
+	 * This method should be used to convert a database native document or an array into a
+	 * {@link Container} object or into a {@link Document} object of the class indicated in
+	 * its {@link ClassOffset()} property or in the second method parameter:
+	 *
+	 * <ul>
+	 * 	<li><em>Data has {@link ClassOffset()}</em>: We instantiate the referenced class,
+	 * 		note that in this case the class <em>must</em> be derived from the
+	 * 		{@link Document} class, or feature a constructor compatible with it.
+	 * 	<li><em>Data lacks {@link ClassOffset()}</em>:
+	 * 	 <ul>
+	 * 		<li><em>$theClass is provided</em>: We instantiate an object of the provided
+	 * 			class name, note that in this case the class <em>must</em> be derived from
+	 * 			the {@link \Milko\PHPLib\Document} class, or feature a constructor
+	 * 			compatible with it.
+	 * 		<li><em>$theClass is omitted or <tt>NULL</tt></em>: We instantiate a
+	 * 			{@link Container} object.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The method features these parameters:
+	 *
+	 * <ul>
+	 * 	<li><b>$theData</b>: The data expressed in the database native type or as an array.
+	 * 	<li><b>$theClass</b>: The class name of the resulting {@link Document} instance,
+	 * 		omit or provide <tt>NULL</tt> to instantiate a {@link Container}.
+	 * </ul>
+	 *
+	 * The distinction between {@link Container} and {@link Document} objects is that the
+	 * latter has the {@link ClassOffset()} property, providing the exact class name to
+	 * instantiate when retrieved from the database, while the first is just a standard
+	 * container for data.
+	 *
+	 * This method is declared virtual, to allow database native derived classes to handle
+	 * their native types.
+	 *
+	 * Derived concrete classes must implement this method.
+	 *
+	 * @param mixed					$theData			Database native document.
+	 * @param string				$theClass			Expected class name.
+	 * @return Document				Standard document object.
+	 */
+	abstract public function ToDocument( $theData, $theClass = NULL );
 
 
 	/*===================================================================================
@@ -490,7 +510,7 @@ abstract class Collection extends Container
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The record(s) to be inserted must be either {@link Document} instances, or documents
+	 * The record(s) to be inserted must be either {@link Container} instances, or documents
 	 * in the native database format.
 	 *
 	 * The method will return either an array of keys, if you provided a set of documents,
@@ -609,7 +629,7 @@ abstract class Collection extends Container
 	 * </ul>
 	 *
 	 * The filter must be provided in the native database format and the document can be
-	 * provided either as a {@link Document} instance, or in the native database format; if
+	 * provided either as a {@link Container} instance, or in the native database format; if
 	 * no options are provided, the operation will process all documents in the selection.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
@@ -718,15 +738,16 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
-	 * 				an array of {@link Document} instances.
+	 * 				an array of {@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
 	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * By default the method will return {@link Document} instances and consider the first
-	 * parameter as a single key.
+	 * By default the method will return either {@link Container} instances, or
+	 * {@link Document} instances if the data contains the class property
+	 * ({@link ClassOffset()}, considering the first parameter to be a single key.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
@@ -784,15 +805,16 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
-	 * 				an array of {@link Document} instances.
+	 * 				an array of {@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
 	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * By default the method will return {@link Document} instances and return the full set
-	 * of results.
+	 * By default the method will return either {@link Container} instances, or
+	 * {@link Document} instances if the data contains the class property
+	 * ({@link ClassOffset()}, considering the first parameter to be a single key.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
@@ -855,15 +877,16 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
-	 * 				an array of {@link Document} instances.
+	 * 				an array of {@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
 	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * By default the method will return {@link Document} instances and return the full set
-	 * of results.
+	 * By default the method will return either {@link Container} instances, or
+	 * {@link Document} instances if the data contains the class property
+	 * ({@link ClassOffset()}, considering the first parameter to be a single key.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
@@ -1082,7 +1105,7 @@ abstract class Collection extends Container
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The record(s) to be inserted must be either {@link Document} instances, or documents
+	 * The record(s) to be inserted must be either {@link Container} instances, or documents
 	 * in the native database format.
 	 *
 	 * The method will return either an array of keys, if you provided a set of documents,
@@ -1225,7 +1248,7 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
-	 * 				an array of {@link Document} instances.
+	 * 				an array of {@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
 	 * 				an array of document handles (@link ToDocumentHandle()}).
 	 * 		 </ul>
@@ -1345,13 +1368,14 @@ abstract class Collection extends Container
 	 *
 	 * <ul>
 	 *	<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Convert into an array of
-	 * 		{@link Document} instances.
+	 * 		{@link Container} instances, or {@link Document} instances if the
+	 * 		{@link ClassOffset()} property is present.
 	 *	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Convert into an array of document
 	 * 		handles (@link ToDocumentHandle()}).
 	 * </ul>
 	 *
 	 * @param mixed			$theCursor	The result cursor.
-	 * @param int			$theFormat	The cursor format.
+	 * @param string		$theFormat	The cursor format code.
 	 * @return array					An array of different format documents.
 	 * @throws InvalidArgumentException
 	 *
@@ -1359,7 +1383,7 @@ abstract class Collection extends Container
 	 * @uses ToDocumentHandle()
 	 * @uses KeyOffset()
 	 */
-	protected function formatCursor($theCursor, int $theFormat )
+	protected function formatCursor( $theCursor, string $theFormat )
 	{
 		//
 		// Init local storage.
