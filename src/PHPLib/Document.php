@@ -29,10 +29,18 @@ use Milko\PHPLib\Container;
 /**
  * <h4>Document ancestor object.</h4>
  *
- * This class represents the ancestor of all objects that can persist in a database, it
- * implements a special {@link Container} instance which can be stored in a collection. For
- * this purpose the document features a set of offsets that contain information regarding
- * identifiers, class and revisions:
+ * This class is essentially a {@link Container} that keeps track of its class name, it is
+ * the ancestor of all persistent classes, thus includes the global tokens
+ * ({@link 'tokens.inc.php'}}, and global tags ({@link 'tags.inc.php'}).
+ *
+ * The class features (for the moment) only its constructor which will set in its
+ * {@link Collection::ClassOffset()} property the name of its current class. This must be
+ * taken into consideration, because when instantiating an object derived from this class
+ * from the contents of another derived object, the class property will be overwritten,
+ * which means that the object should be replaced.
+ *
+ * For the purpose of persisting, the document features a set of offsets that contain
+ * information regarding identifiers, class and revisions:
  *
  * <ul>
  * 	<li><tt>{@link Collection::KeyOffset()}</tt>: The offset of the document unique key.
@@ -40,16 +48,15 @@ use Milko\PHPLib\Container;
  * 	<li><tt>{@link Collection::RevisionOffset()}</tt>: The offset of the document revision.
  * </ul>
  *
- * These offsets are managed by the enclosing collection, which is also responsible of
- * instantiating and serialising the document: this is because the above information is
- * dependent both on the database engine and the structure of the collection objects. So,
- * to set the document key you would do:<br/>
+ * To set the document key you would do<br/>
  * <code>$document[ $collection->KeyOffset() ] = $key;</code> and to retrieve the key,
  * <code>$key = $document[ $collection->KeyOffset() ];</code>
  *
- * For this reason, a document must be instantiated by providing the {@link Collection} in
- * which it will reside, when instantiated, the only default property that is set is the
- * document's class, which will be used to instantiate it when read from the database.
+ * These offsets are declared by the enclosing collection, which is also responsible of
+ * instantiating ({@link Collection::NewDocument()} and serialising
+ * {@link Collection::NewNativeDocument()} the document: this is because the above property
+ * tags depend on the native database engine and may also depend on the business logic of
+ * the collection.
  *
  *	@package	Core
  *
@@ -77,8 +84,8 @@ class Document extends Container
 	/**
 	 * <h4>Instantiate class.</h4>
 	 *
-	 * We overload the inherited constructor to set the class offset, for this reason we
-	 * need to provide the collection in which the document should be stored.
+	 * We override the inherited constructor to set the class offset, for this reason we
+	 * need to provide the collection.
 	 *
 	 * @param Collection			$theCollection		Collection name.
 	 * @param array					$theData			Document data.
@@ -92,6 +99,7 @@ class Document extends Container
 
 		//
 		// Add class.
+		// Note that we overwrite the eventual existing class name.
 		//
 		$this->offsetSet( $theCollection->ClassOffset(), get_class( $this ) );
 

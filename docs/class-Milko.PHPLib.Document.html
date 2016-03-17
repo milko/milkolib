@@ -186,18 +186,23 @@
 	<div class="description">
 	<h4>Document ancestor object.</h4>
 
-<p>This class represents the ancestor of all objects that can persist in a database, it
-implements a special <code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> instance which can be stored in a collection. For
-this purpose the document features a set of offsets that contain information regarding
-identifiers, class and revisions:</p>
+<p>This class is essentially a <code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> that keeps track of its class name, it is
+the ancestor of all persistent classes, thus includes the global tokens
+('tokens.inc.php'}, and global tags ('tags.inc.php').</p>
+
+<p>The class features (for the moment) only its constructor which will set in its
+<a href="Collection::ClassOffset()">Collection::ClassOffset()</a> property the name of its current class. This must be
+taken into consideration, because when instantiating an object derived from this class
+from the contents of another derived object, the class property will be overwritten,
+which means that the object should be replaced.</p>
+
+<p>For the purpose of persisting, the document features a set of offsets that contain
+information regarding identifiers, class and revisions:</p>
 
 <ul> <li><tt><a href="Collection::KeyOffset()">Collection::KeyOffset()</a></tt>: The offset of the document unique key. <li><tt><a href="Collection::ClassOffset()">Collection::ClassOffset()</a></tt>: The offset of the document class. <li><tt><a href="Collection::RevisionOffset()">Collection::RevisionOffset()</a></tt>: The offset of the document revision.
 </ul>
 
-<p>These offsets are managed by the enclosing collection, which is also responsible of
-instantiating and serialising the document: this is because the above information is
-dependent both on the database engine and the structure of the collection objects. So,
-to set the document key you would do:<br/></p>
+<p>To set the document key you would do<br/></p>
 
 <pre><span class="php-var">$document</span>[ <span class="php-var">$collection</span>-&gt;KeyOffset() ] = <span class="php-var">$key</span>;</pre>
 
@@ -205,9 +210,11 @@ to set the document key you would do:<br/></p>
 
 <pre><span class="php-var">$key</span> = <span class="php-var">$document</span>[ <span class="php-var">$collection</span>-&gt;KeyOffset() ];</pre>
 
-<p>For this reason, a document must be instantiated by providing the <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> in
-which it will reside, when instantiated, the only default property that is set is the
-document's class, which will be used to instantiate it when read from the database.</p>
+<p>These offsets are declared by the enclosing collection, which is also responsible of
+instantiating (<a href="Collection::NewDocument()">Collection::NewDocument()</a> and serialising
+<a href="Collection::NewNativeDocument()">Collection::NewNativeDocument()</a> the document: this is because the above property
+tags depend on the native database engine and may also depend on the business logic of
+the collection.</p>
 	</div>
 
 	<dl class="tree well">
@@ -267,7 +274,7 @@ document's class, which will be used to instantiate it when read from the databa
 				1.00<br>
 				<b>Since:</b>
 				10/03/2016<br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#29-103" title="Go to source code">PHPLib/Document.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#29-111" title="Go to source code">PHPLib/Document.php</a>
 		<br>
 	</div>
 
@@ -287,7 +294,7 @@ document's class, which will be used to instantiate it when read from the databa
 
 			<td class="name"><div>
 			<a class="anchor" href="#___construct">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#77-98" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>array <var>$theData</var> = [] </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#84-106" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>array <var>$theData</var> = [] </span> )</code>
 
 			<div class="description short">
 				<h4>Instantiate class.</h4>
@@ -296,8 +303,8 @@ document's class, which will be used to instantiate it when read from the databa
 			<div class="description detailed hidden">
 				<h4>Instantiate class.</h4>
 
-<p>We overload the inherited constructor to set the class offset, for this reason we
-need to provide the collection in which the document should be stored.</p>
+<p>We override the inherited constructor to set the class offset, for this reason we
+need to provide the collection.</p>
 
 
 					<h4>Parameters</h4>
