@@ -74,18 +74,21 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * The options parameter is ignored here.
 	 *
-	 * @param array					$theOptions			Native driver options.
+	 * @param string				$theCollection		Collection name.
+	 * @param string				$theFlags			Flags bitfield.
+	 * @param array					$theOptions			Database native options.
+	 * @return boolean				<tt>TRUE</tt> dropped, <tt>FALSE</tt> not found.
 	 *
 	 * @uses Server()
 	 * @uses databaseName()
-	 * @uses ArangoDatabase::delete()
+	 * @uses triagens\ArangoDb\Database::delete()
 	 */
 	public function Drop( $theOptions = NULL )
 	{
 		//
 		// Check if database exists.
 		//
-		if( in_array( $theDatabase, $this->Server()->ListDatabases() ) )
+		if( in_array( $this->databaseName(), $this->Server()->ListDatabases() ) )
 			ArangoDatabase::delete( $this->Server()->Connection(), $this->databaseName() );
 
 	} // Drop.
@@ -121,7 +124,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @uses Server()
 	 * @uses ArangoDatabase::create()
 	 *
-	 * @see ArangoConnectionOptions::OPTION_DATABASE
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_DATABASE
 	 */
 	protected function databaseNew( $theDatabase, $theOptions = NULL )
 	{
@@ -161,7 +164,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @return string				The database name.
 	 *
 	 * @uses Connection()
-	 * @uses ArangoDatabase::getInfo()
+	 * @uses triagens\ArangoDb\Database::getInfo()
 	 */
 	protected function databaseName( $theOptions = NULL )
 	{
@@ -199,6 +202,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
+	 * @uses triagens\ArangoDb\CollectionHandler::getAllCollections()
 	 */
 	protected function collectionList( $theOptions = NULL )
 	{

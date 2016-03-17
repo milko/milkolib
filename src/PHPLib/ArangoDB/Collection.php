@@ -78,7 +78,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses ArangoCollectionHandler::truncate()
+	 * @uses triagens\ArangoDb\CollectionHandler::truncate()
 	 */
 	public function Truncate()
 	{
@@ -106,7 +106,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses ArangoCollectionHandler::drop()
+	 * @uses triagens\ArangoDb\CollectionHandler::drop()
 	 */
 	public function Drop()
 	{
@@ -272,7 +272,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses KeyOffset()
 	 * @uses Connection()
-	 * @uses ArangoDocument::getHandle()
+	 * @uses triagens\ArangoDb\Document::getHandle()
 	 */
 	public function ToDocumentHandle( $theDocument )
 	{
@@ -367,13 +367,14 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Count documents.</h4>
 	 *
-	 * We overload this method to use the {@link ArangoCollectionHandler::count()} method.
+	 * We overload this method to use the
+	 * {@link triagens\ArangoDb\CollectionHandler::count()} method.
 	 *
 	 * @return int					The number of records in the collection.
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses ArangoCollectionHandler::count()
+	 * @uses triagens\ArangoDb\CollectionHandler::count()
 	 */
 	public function RecordCount()
 	{
@@ -403,7 +404,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return int					The found records count.
 	 *
 	 * @uses Connection()
-	 * @uses \MongoDB\Collection::count()
+	 * @uses triagens\ArangoDb\Cursor::count()
 	 */
 	public function CountByExample( $theDocument = NULL )
 	{
@@ -515,9 +516,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				Native collection object.
 	 *
 	 * @uses Database()
-	 * @uses ArangoCollectionHandler::has()
-	 * @uses ArangoCollectionHandler::get()
-	 * @uses ArangoCollectionHandler::create()
+	 * @uses triagens\ArangoDb\CollectionHandler::has()
+	 * @uses triagens\ArangoDb\CollectionHandler::get()
+	 * @uses triagens\ArangoDb\CollectionHandler::create()
 	 */
 	protected function collectionNew( $theCollection, $theOptions = [] )
 	{
@@ -551,7 +552,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return string				The collection name.
 	 *
 	 * @uses Connection()
-	 * @uses ArangoCollection::getName()
+	 * @uses triagens\ArangoDb\Collection::getName()
 	 */
 	protected function collectionName( $theOptions = NULL )
 	{
@@ -587,8 +588,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Database()
 	 * @uses Connection()
 	 * @uses NewNativeDocument()
-	 * @uses ArangoDocument::createFromArray()
-	 * @uses ArangoDocumentHandler::save()
+	 * @uses triagens\ArangoDb\Document::createFromArray()
+	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	protected function doInsert( $theDocument, array $theOptions )
 	{
@@ -660,7 +661,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
-	 * @uses ArangoDocumentHandler::update()
+	 * @uses triagens\ArangoDb\DocumentHandler::update()
 	 */
 	protected function doUpdate( $theFilter, $theCriteria, array $theOptions )
 	{
@@ -756,7 +757,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Database()
 	 * @uses KeyOffset()
 	 * @uses collectionName()
-	 * @uses ArangoDocumentHandler::replace()
+	 * @uses triagens\ArangoDb\DocumentHandler::replace()
 	 */
 	protected function doReplace( $theFilter, $theDocument, array $theOptions )
 	{
@@ -848,6 +849,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Database()
 	 * @uses FindByKey()
 	 * @uses doDeleteByCursor()
+	 * @uses triagens\ArangoDb\DocumentHandler::remove()
 	 * @see kTOKEN_OPT_FORMAT
 	 * @see kTOKEN_OPT_FORMAT_NATIVE
 	 */
@@ -949,7 +951,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return
 			$this->doDeleteByCursor(
-				$this->FindByQuery( $theDocument, $theOptions ),
+				$this->FindByQuery( $theQuery, $theOptions ),
 				$theOptions );														// ==>
 
 	} // doDeleteByQuery.
@@ -986,7 +988,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
-	 * @uses ArangoDocumentHandler::remove()
+	 * @uses triagens\ArangoDb\DocumentHandler::remove()
 	 */
 	protected function doDeleteByCursor( ArangoCursor $theCursor, array $theOptions )
 	{
@@ -1047,7 +1049,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Connection()
 	 * @uses ClassOffset()
 	 * @uses NewDocument()
-	 * @uses \MongoDB\Collection::findOne()
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
+	 * @uses triagens\ArangoDb\CollectionHandler::lookupByKeys()
 	 */
 	protected function doFindByKey($theKey, array $theOptions )
 	{
@@ -1167,7 +1170,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses ArangoCollectionHandler::byExample()
+	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
 	 */
 	protected function doFindByExample( $theDocument, array $theOptions )
 	{
@@ -1237,7 +1240,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses formatCursor()
-	 * @uses ArangoStatement::execute()
+	 * @uses triagens\ArangoDb\Statement::execute()
 	 */
 	protected function doFindByQuery( $theQuery, array $theOptions )
 	{

@@ -131,15 +131,15 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * @uses User()
 	 * @uses Password()
 	 *
-	 * @see ArangoConnectionOptions::OPTION_ENDPOINT
-	 * @see ArangoConnectionOptions::OPTION_AUTH_TYPE
-	 * @see ArangoConnectionOptions::OPTION_AUTH_USER
-	 * @see ArangoConnectionOptions::OPTION_AUTH_PASSWD
-	 * @see ArangoConnectionOptions::OPTION_CONNECTION
-	 * @see ArangoConnectionOptions::OPTION_TIMEOUT
-	 * @see ArangoConnectionOptions::OPTION_RECONNECT
-	 * @see ArangoConnectionOptions::OPTION_CREATE
-	 * @see ArangoConnectionOptions::OPTION_UPDATE_POLICY
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_ENDPOINT
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_AUTH_TYPE
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_AUTH_USER
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_AUTH_PASSWD
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_CONNECTION
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_TIMEOUT
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_RECONNECT
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_CREATE
+	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_UPDATE_POLICY
 	 */
 	public function GetOptions()
 	{
@@ -285,7 +285,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * @return array				List of database names.
 	 *
 	 * @uses Connection()
-	 * @uses ArangoDatabase::listUserDatabases()
+	 * @uses triagens\ArangoDb\Database::listUserDatabases()
 	 */
 	protected function databaseList( $theOptions = NULL )
 	{
