@@ -64,7 +64,7 @@ $test = $db->RetrieveCollection( "test_collection" );
 echo( "$test ==> " );
 echo( ( "$test" == "test_collection" ) ? "OK\n" : "FALIED\n" );
 
-echo( "\n====================================================================================\n\n" );
+echo( "\n" );
 
 //
 // Clear collection.
@@ -81,7 +81,7 @@ echo( "\n=======================================================================
 echo( "Insert one record:\n" );
 echo( '$result = $test->Insert( ["data" => "Value 1", "color" => "red" ] );' . "\n" );
 $result = $id = $test->Insert( ["data" => "Value 1", "color" => "red" ] );
-print_r( $result );
+var_dump( $result );
 
 echo( "\n" );
 
@@ -96,6 +96,16 @@ print_r( $result );
 echo( "\n====================================================================================\n\n" );
 
 //
+// Get record count.
+//
+echo( "Get record count:\n" );
+echo( '$result = $test->RecordCount();' . "\n" );
+$result = $test->RecordCount();
+var_dump( $result );
+
+echo( "\n" );
+
+//
 // Count by example.
 //
 echo( "Count by example:\n" );
@@ -106,31 +116,197 @@ var_dump( $result );
 echo( "\n" );
 
 //
-// Find by ID.
+// Count by query.
 //
-echo( "Find by ID:\n" );
-echo( '$result = $test->FindById( $id );' . "\n" );
-$result = $test->FindById( $id );
+echo( "Count by query:\n" );
+echo( '$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' RETURN r"] );' . "\n" );
+$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' RETURN r"] );
+var_dump( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Find by ID native.
+//
+echo( "Find by ID native:\n" );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find by ID standard.
+//
+echo( "Find by ID standard:\n" );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find by ID handle.
+//
+echo( "Find by ID handle:\n" );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Find many by ID native.
+//
+echo( "Find many by ID native:\n" );
+echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );' . "\n" );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find many by ID standard.
+//
+echo( "Find many by ID standard:\n" );
+echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find many by ID handle.
+//
+echo( "Find by ID handle:\n" );
+echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Find first record native by example.
+//
+echo( "Find first record native by example:\n" );
+echo( '$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
 print_r( $result );
 
 echo( "\n" );
 
 //
-// Find first record.
+// Find first record standard by example.
 //
-echo( "Find first record:\n" );
-echo( '$result = $test->FindByExample( [ "color" => "red" ], [ \'$limit\' => 1 ] );' . "\n" );
-$result = $test->FindByExample( [ "color" => "red" ], [ '$limit' => 1 ] );
+echo( "Find first record standard by example:\n" );
+echo( '$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
 print_r( $result );
 
 echo( "\n" );
 
 //
-// Find all records.
+// Find first record handle by example.
 //
-echo( "Find all records:\n" );
-echo( '$result = $test->FindByExample( [ "color" => "red" ] );' . "\n" );
-$result = $test->FindByExample( [ "color" => "red" ] );
+echo( "Find first record handle by example:\n" );
+echo( '$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+print_r( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Find all records native by example.
+//
+echo( "Find all records native by example:\n" );
+echo( '$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Find all records standard by example.
+//
+echo( "Find all records standard by example:\n" );
+echo( '$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Find all records handle by example.
+//
+echo( "Find all records handle by example:\n" );
+echo( '$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+print_r( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Find first record native by query.
+//
+echo( "Find first record native by query:\n" );
+echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Find first record standard by query.
+//
+echo( "Find first record standard by query:\n" );
+echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Find first record handle by query.
+//
+echo( "Find first record handle by query:\n" );
+echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+print_r( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Find all records native by query.
+//
+echo( "Find all records native by query:\n" );
+echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Find all records standard by query.
+//
+echo( "Find all records standard by query:\n" );
+echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Find all records handle by query.
+//
+echo( "Find all records handle by query:\n" );
+echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
 print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
@@ -139,8 +315,8 @@ echo( "\n=======================================================================
 // Update first record.
 //
 echo( "Update first record:\n" );
-echo( '$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN test_collection FILTER r.color == \'green\' RETURN r"], [ \'$doAll\' => FALSE ] );' . "\n" );
-$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN test_collection FILTER r.color == 'green' RETURN r"], [ '$doAll' => FALSE ] );
+echo( '$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN test_collection FILTER r.color == \'green\' RETURN r"], [ kTOKEN_OPT_MANY => FALSE ] );' . "\n" );
+$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN test_collection FILTER r.color == 'green' RETURN r"], [ kTOKEN_OPT_MANY => FALSE ] );
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "changed" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "changed" ] );
@@ -175,22 +351,32 @@ print_r( $result );
 echo( "\n====================================================================================\n\n" );
 
 //
+// Record count.
+//
+echo( "Record count:\n" );
+echo( '$result = $test->RecordCount();' . "\n" );
+$result = $test->RecordCount();
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Count by example.
+//
+echo( "Count by example:\n" );
+echo( '$result = $test->CountByExample( [ "status" => "replaced" ] );' . "\n" );
+$result = $test->CountByExample( [ "status" => "replaced" ] );
+var_dump( $result );
+
+echo( "\n" );
+
+//
 // Count by query.
 //
 echo( "Count by query:\n" );
 echo( '$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.data == \'XXX\' OR r.status == \'replaced\' RETURN r"] );' . "\n" );
 $result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.data == 'XXX' OR r.status == 'replaced' RETURN r"] );
 var_dump( $result );
-
-echo( "\n" );
-
-//
-// Query records.
-//
-echo( "Query records:\n" );
-echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.data == \'XXX\' OR r.status == \'replaced\' RETURN r"] );' . "\n" );
-$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.data == 'XXX' OR r.status == 'replaced' RETURN r"] );
-print_r( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -205,11 +391,11 @@ print_r( $result );
 echo( "\n====================================================================================\n\n" );
 
 //
-// Delete first record.
+// Delete by ID.
 //
-echo( "Delete first record:\n" );
-echo( '$result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.color == \'pink\' RETURN r"], [ \'$doAll\' => FALSE ] );' . "\n" );
-$result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.color == 'pink' RETURN r"], [ '$doAll' => FALSE ] );
+echo( "Delete by ID:\n" );
+echo( '$result = $test->DeleteByKey( "ID1" );' . "\n" );
+$result = $test->DeleteByKey( "ID1" );
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
@@ -218,11 +404,11 @@ print_r( $result );
 echo( "\n" );
 
 //
-// Delete all selected records.
+// Delete by example.
 //
-echo( "Delete all selected records:\n" );
-echo( '$result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.data == \'XXX\' RETURN r"], [ \'$doAll\' => TRUE ] );' . "\n" );
-$result = $test->Delete( ["query" => "FOR r IN test_collection FILTER r.data == 'XXX' RETURN r"], [ '$doAll' => TRUE ] );
+echo( "Delete by example:\n" );
+echo( '$result = $test->DeleteByExample( ["data" => "Value 1"] );' . "\n" );
+$result = $test->DeleteByExample( ["data" => "Value 1"] );
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
@@ -231,11 +417,11 @@ print_r( $result );
 echo( "\n" );
 
 //
-// Delete all records.
+// Delete by query.
 //
-echo( "Delete all records:\n" );
-echo( '$result = $test->Delete();' . "\n" );
-$result = $test->Delete();
+echo( "Delete by query:\n" );
+echo( '$result = $test->DeleteByQuery();' . "\n" );
+$result = $test->DeleteByExample();
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();

@@ -95,7 +95,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	FromDocument																	*
+	 *	NewNativeDocument																*
 	 *==================================================================================*/
 
 	/**
@@ -108,15 +108,15 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses \Milko\PHPLib\Container::toArray()
 	 */
-	public function FromDocument( \Milko\PHPLib\Container $theDocument )
+	public function NewNativeDocument(\Milko\PHPLib\Container $theDocument )
 	{
 		return new BSONDocument( $theDocument->toArray() );							// ==>
 
-	} // FromDocument.
+	} // NewNativeDocument.
 
 
 	/*===================================================================================
-	 *	ToDocument																		*
+	 *	NewDocument																		*
 	 *==================================================================================*/
 
 	/**
@@ -131,7 +131,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses ClassOffset()
 	 */
-	public function ToDocument( $theData, $theClass = NULL )
+	public function NewDocument($theData, $theClass = NULL )
 	{
 		//
 		// Convert document to array.
@@ -158,7 +158,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return new \Milko\PHPLib\Container( $document );							// ==>
 
-	} // ToDocument.
+	} // NewDocument.
 
 
 	/*===================================================================================
@@ -498,7 +498,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The document's unique identifier(s).
 	 *
 	 * @uses Connection()
-	 * @uses FromDocument()
+	 * @uses NewNativeDocument()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\Collection::insertMany()
 	 * @see kTOKEN_OPT_MANY
@@ -520,7 +520,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			foreach( $theDocument as $document )
 				$data[] = ( $document instanceof \Milko\PHPLib\Container )
-						? $this->FromDocument( $document )
+						? $this->NewNativeDocument( $document )
 						: (array)$document;
 
 		} // Many documents.
@@ -530,7 +530,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		else
 			$data = ( $theDocument instanceof \Milko\PHPLib\Container )
-				  ? $this->FromDocument( $theDocument )
+				  ? $this->NewNativeDocument( $theDocument )
 				  : (array)$theDocument;
 
 		//
@@ -632,7 +632,7 @@ class Collection extends \Milko\PHPLib\Collection
 				// Replace document.
 				//
 				$this->Connection()->replaceOne(
-					[ $this->KeyOffset() => $key ], $theDocument );
+					[ $this->KeyOffset() => $record[ $this->KeyOffset() ] ], $theDocument );
 
 				//
 				// Increment replaced count.
@@ -655,49 +655,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	doDelete																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete the first or all records.</h4>
-	 *
-	 * We overload this method to use the {@link \MongoDB\Collection::deleteOne()} method
-	 * to delete a single document and {@link \MongoDB\Collection::deleteMany()} method to
-	 * delete all selected records.
-	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Collection::deleteOne()
-	 * @uses \MongoDB\Collection::deleteMany()
-	 * @see kTOKEN_OPT_MANY
-	 */
-	protected function doDelete( $theFilter, array $theOptions )
-	{
-		//
-		// Normalise filter.
-		//
-		if( $theFilter === NULL )
-			$theFilter = [];
-		elseif( ! is_array( $theFilter ) )
-			$theFilter = (string)$theFilter;
-
-		//
-		// Delete one or more records.
-		//
-		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-			? $this->Connection()->deleteMany( $theFilter )
-			: $this->Connection()->deleteOne( $theFilter );
-
-		return $result->getDeletedCount();											// ==>
-
-	} // doDelete.
-
-
-	/*===================================================================================
-	 *	doFindById																		*
+	 *	doFindByKey																		*
 	 *==================================================================================*/
 
 	/**
@@ -718,13 +676,13 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @see kTOKEN_OPT_MANY
 	 * @see kTOKEN_OPT_FORMAT
 	 */
-	protected function doFindById( $theKey, array $theOptions )
+	protected function doFindByKey($theKey, array $theOptions )
 	{
 		//
 		// Set selection filter.
 		//
 		$filter = ( $theOptions[ kTOKEN_OPT_MANY ] )
-				? [ $this->KeyOffset() => [ '$in' => $theKey ] ]
+				? [ $this->KeyOffset() => [ '$in' => (array)$theKey ] ]
 				: [ $this->KeyOffset() => $theKey ];
 
 		//
@@ -767,7 +725,7 @@ class Collection extends \Milko\PHPLib\Collection
 			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
 			{
 				case kTOKEN_OPT_FORMAT_STANDARD:
-					return $this->ToDocument( $result );							// ==>
+					return $this->NewDocument( $result );							// ==>
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
 					return $this->ToDocumentHandle( $result );						// ==>
@@ -783,7 +741,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $result;																// ==>
 
-	} // doFindById.
+	} // doFindByKey.
 
 
 	/*===================================================================================
@@ -893,11 +851,116 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses FindByExample()
 	 */
-	protected function doFindByQuery( $theQuery, $theOptions )
+	protected function doFindByQuery( $theQuery, array $theOptions )
 	{
 		return $this->FindByExample( $theQuery, $theOptions );						// ==>
 
 	} // doFindByQuery.
+
+
+	/*===================================================================================
+	 *	doDeleteByKey																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by key.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::deleteOne()} method
+	 * to delete a single document and {@link \MongoDB\Collection::deleteMany()} method to
+	 * delete all selected records.
+	 *
+	 * @param mixed					$theKey				The document key(s).
+	 * @param array					$theOptions			Find options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses KeyOffset()
+	 * @uses Connection()
+	 * @see kTOKEN_OPT_MANY
+	 */
+	protected function doDeleteByKey( $theKey, array $theOptions )
+	{
+		//
+		// Set selection filter.
+		//
+		$filter = ( $theOptions[ kTOKEN_OPT_MANY ] )
+			? [ $this->KeyOffset() => [ '$in' => (array)$theKey ] ]
+			: [ $this->KeyOffset() => $theKey ];
+
+		//
+		// Delete one or more records.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+			? $this->Connection()->deleteMany( $filter )
+			: $this->Connection()->deleteOne( $filter );
+
+		return $result->getDeletedCount();											// ==>
+
+
+	} // doDeleteByKey.
+
+
+	/*===================================================================================
+	 *	doDeleteByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by example.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::deleteOne()} method
+	 * to delete a single document and {@link \MongoDB\Collection::deleteMany()} method to
+	 * delete all selected records.
+	 *
+	 * @param mixed					$theDocument		The example document.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses KeyOffset()
+	 * @uses Connection()
+	 * @see kTOKEN_OPT_MANY
+	 */
+	protected function doDeleteByExample( $theDocument, array $theOptions )
+	{
+		//
+		// Normalise filter.
+		//
+		if( $theDocument === NULL )
+			$theDocument = [];
+		elseif( ! is_array( $theDocument ) )
+			$theDocument = (string)$theDocument;
+
+		//
+		// Delete one or more records.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+			? $this->Connection()->deleteMany( $theDocument )
+			: $this->Connection()->deleteOne( $theDocument );
+
+		return $result->getDeletedCount();											// ==>
+
+	} // doDeleteByExample.
+
+
+	/*===================================================================================
+	 *	doDeleteByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by query.</h4>
+	 *
+	 * We overload this method to call the {@link doDeleteByExample()} method, since it
+	 * treats the example document as a filter.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses doDeleteByExample()
+	 */
+	protected function doDeleteByQuery( $theQuery, array $theOptions )
+	{
+		return $this->doDeleteByExample( $theQuery, $theOptions );					// ==>
+
+	} // doDeleteByQuery.
 
 
 

@@ -17,6 +17,7 @@ use triagens\ArangoDb\ConnectionOptions as ArangoConnectionOptions;
 use triagens\ArangoDb\DocumentHandler as ArangoDocumentHandler;
 use triagens\ArangoDb\Document as ArangoDocument;
 use triagens\ArangoDb\Exception as ArangoException;
+use triagens\ArangoDb\Cursor as ArangoCursor;
 use triagens\ArangoDb\Export as ArangoExport;
 use triagens\ArangoDb\ConnectException as ArangoConnectException;
 use triagens\ArangoDb\ClientException as ArangoClientException;
@@ -138,7 +139,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	FromDocument																	*
+	 *	NewNativeDocument																*
 	 *==================================================================================*/
 
 	/**
@@ -152,10 +153,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses IdOffset()
 	 * @uses RevisionOffset()
 	 */
-	public function FromDocument( \Milko\PHPLib\Container $theDocument )
+	public function NewNativeDocument(\Milko\PHPLib\Container $theDocument )
 	{
 		//
 		// Clone document.
+		// We really don't need to do this, but in case an object was provided...
+		// Also, we work on a clone, not the original document.
 		//
 		$document = new \Milko\PHPLib\Container( $theDocument->toArray() );
 
@@ -187,11 +190,11 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $document;															// ==>
 
-	} // FromDocument.
+	} // NewNativeDocument.
 
 
 	/*===================================================================================
-	 *	ToDocument																		*
+	 *	NewDocument																		*
 	 *==================================================================================*/
 
 	/**
@@ -207,7 +210,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses ClassOffset()
 	 * @uses RevisionOffset()
 	 */
-	public function ToDocument( $theData, $theClass = NULL )
+	public function NewDocument($theData, $theClass = NULL )
 	{
 		//
 		// Convert document to array.
@@ -248,7 +251,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $document;															// ==>
 
-	} // ToDocument.
+	} // NewDocument.
 
 
 	/*===================================================================================
@@ -258,20 +261,18 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Convert native data to a document handle.</h4>
 	 *
-	 * We overload this method to return an array of strings corresponding to the document
-	 * handles, if the provided document is an ArangoDocument, we get its handle, if not,
-	 * we compile it.
+	 * We overload this method to return or compute the handle string.
 	 *
 	 * Note that if the provided data doesn't feature the {@link KeyOffset()} property, the
 	 * method will raise an exception, since it will be impossible to resolve the document.
 	 *
 	 * @param mixed					$theDocument		Document to reference.
 	 * @return mixed				Document handle.
-	 * @throws RuntimeException
 	 * @throws InvalidArgumentException
 	 *
 	 * @uses KeyOffset()
-	 * @uses collectionName()
+	 * @uses Connection()
+	 * @uses ArangoDocument::getHandle()
 	 */
 	public function ToDocumentHandle( $theDocument )
 	{
@@ -282,25 +283,19 @@ class Collection extends \Milko\PHPLib\Collection
 			return $theDocument->getHandle();										// ==>
 
 		//
-		// Convert to array.
+		// Convert to container.
 		//
-		$theDocument = (array)$theDocument;
+		$document = new \Milko\PHPLib\Container( (array)$theDocument );
 
 		//
 		// Check document key.
 		//
-		if( ! array_key_exists( $this->KeyOffset(), $theDocument ) )
-			throw new \InvalidArgumentException (
-				"Data is missing the document key." );							// !@! ==>
+		if( ($key = $document[ $this->KeyOffset() ]) !== NULL )
+			return $this->Connection()->getName() . '/' . $key;						// ==>
 
-		//
-		// Check collection ID.
-		//
-		if( ($cid = $this->Connection()->getId()) === NULL )
-			throw new \RuntimeException (
-				"The collection does not have an ID." );						// !@! ==>
+		throw new \InvalidArgumentException (
+			"Data is missing the document key." );								// !@! ==>
 
-		return "$cid/" . $theDocument[ $this->KeyOffset() ];						// ==>
 
 	} // ToDocumentHandle.
 
@@ -401,6 +396,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * In this class we overload this method to use the <tt>count()</tt> method of the
 	 * Mongo Collection.
+	 *
+	 * The document is expected as an array, container or native document.
 	 *
 	 * @param mixed					$theDocument		The example document.
 	 * @return int					The found records count.
@@ -589,7 +586,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses FromDocument()
+	 * @uses NewNativeDocument()
 	 * @uses ArangoDocument::createFromArray()
 	 * @uses ArangoDocumentHandler::save()
 	 */
@@ -598,7 +595,6 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Init local storage.
 		//
-		$do_all = $theOptions[ '$doAll' ];
 		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
 		//
@@ -620,7 +616,7 @@ class Collection extends \Milko\PHPLib\Collection
 				// Convert to document.
 				//
 				$record = ( $document instanceof \Milko\PHPLib\Container )
-						? $this->FromDocument( $document )
+						? $this->NewNativeDocument( $document )
 						: ArangoDocument::createFromArray( (array)$document );
 
 				//
@@ -637,7 +633,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Convert to document.
 		//
 		$record = ( $theDocument instanceof \Milko\PHPLib\Container )
-				? $this->FromDocument( $theDocument )
+				? $this->NewNativeDocument( $theDocument )
 				: ArangoDocument::createFromArray( (array)$theDocument );
 
 		return $handler->save( $this->Connection(), $record );						// ==>
@@ -669,11 +665,6 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function doUpdate( $theFilter, $theCriteria, array $theOptions )
 	{
 		//
-		// Init local storage.
-		//
-		$connection = $this->Database()->Connection();
-
-		//
 		// Normalise query.
 		// Note that we check both for null and empty array.
 		//
@@ -685,7 +676,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Select documents.
 		//
-		$statement = new ArangoStatement( $connection, $theFilter );
+		$statement = new ArangoStatement( $this->Database()->Connection(), $theFilter );
 		$cursor = $statement->execute();
 		$count = $cursor->getCount();
 
@@ -697,7 +688,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Instantiate document handler.
 			//
-			$handler = new ArangoDocumentHandler( $connection );
+			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
 			//
 			// Process selection.
@@ -770,11 +761,6 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function doReplace( $theFilter, $theDocument, array $theOptions )
 	{
 		//
-		// Init local storage.
-		//
-		$connection = $this->Database()->Connection();
-
-		//
 		// Normalise query.
 		// Note that we check both for null and empty array.
 		//
@@ -786,7 +772,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Select documents.
 		//
-		$statement = new ArangoStatement( $connection, $theFilter );
+		$statement = new ArangoStatement( $this->Database()->Connection(), $theFilter );
 		$cursor = $statement->execute();
 		$count = $cursor->getCount();
 
@@ -798,7 +784,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Instantiate document handler.
 			//
-			$handler = new ArangoDocumentHandler( $connection );
+			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
 			//
 			// Process selection.
@@ -806,12 +792,12 @@ class Collection extends \Milko\PHPLib\Collection
 			foreach( $cursor as $document )
 			{
 				//
-				// Get field names.
+				// Get field names except key and revision.
 				//
 				$fields =
 					array_diff(
 						array_keys( $document->getAll() ),
-						[$this->KeyOffset()] );
+						[$this->KeyOffset(), $this->RevisionOffset()] );
 
 				//
 				// Remove document contents.
@@ -846,45 +832,168 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	doDelete																		*
+	 *	doDeleteByKey																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete the first or all records.</h4>
+	 * <h4>Delete the first or all records by key.</h4>
 	 *
-	 * We overload the method to use native objects. We first make the selection, then we
-	 * remove one by one the found records.
+	 * We overload this method to use the {@link FindByKey()} method and pass the resulting
+	 * cursor to the protected {@link doDeleteByCursor()}.
 	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param array					$theOptions			Driver native options.
+	 * @param mixed					$theKey				The document key(s).
+	 * @param array					$theOptions			Find options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Database()
+	 * @uses FindByKey()
+	 * @uses doDeleteByCursor()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	protected function doDeleteByKey( $theKey, array $theOptions )
+	{
+		//
+		// Normalise options.
+		//
+		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
+
+		//
+		// Make selection.
+		//
+		$cursor = $this->FindByKey( $theKey, $theOptions );
+		if( $cursor instanceof ArangoCursor )
+			return $this->doDeleteByCursor( $cursor, $theOptions );					// ==>
+		if( $cursor !== NULL )
+		{
+			//
+			// Instantiate document handler.
+			//
+			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+
+			//
+			// Remove document.
+			//
+			$handler->remove( $cursor );
+
+			return 1;																// ==>
+		}
+
+		return 0;																	// ==>
+
+	} // doDeleteByKey.
+
+
+	/*===================================================================================
+	 *	doDeleteByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by example.</h4>
+	 *
+	 * We overload this method to use the {@link FindByExample()} method and pass the
+	 * resulting cursor to the protected {@link doDeleteByCursor()}.
+	 *
+	 * @param mixed					$theDocument		The example document.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses FindByExample()
+	 * @uses doDeleteByCursor()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	protected function doDeleteByExample( $theDocument, array $theOptions )
+	{
+		//
+		// Normalise options.
+		//
+		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
+
+		return
+			$this->doDeleteByCursor(
+				$this->FindByExample( $theDocument, $theOptions ),
+				$theOptions );														// ==>
+
+	} // doDeleteByExample.
+
+
+	/*===================================================================================
+	 *	doDeleteByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by query.</h4>
+	 *
+	 * We overload this method to use the {@link FindByExample()} method and pass the
+	 * resulting cursor to the protected {@link doDeleteByCursor()}.
+	 *
+	 * Note that you can delete using AQL, try to use the dedicated methods, so the workflow
+	 * will be more consistent.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses FindByQuery()
+	 * @uses doDeleteByCursor()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	protected function doDeleteByQuery( $theQuery, array $theOptions )
+	{
+		//
+		// Normalise options.
+		//
+		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
+
+		return
+			$this->doDeleteByCursor(
+				$this->FindByQuery( $theDocument, $theOptions ),
+				$theOptions );														// ==>
+
+	} // doDeleteByQuery.
+
+
+	/*===================================================================================
+	 *	doDeleteByCursor																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the the documents from a cursor.</h4>
+	 *
+	 * This method will delete the first or all documents contained in the provided cursor,
+	 * the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theCursor</b>: The cursor.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
+	 *			only the first selected record or all:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
+	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The method will return the number of deleted records.
+	 *
+	 * @param mixed					$theCursor			The cursor.
+	 * @param array					$theOptions			Delete options.
 	 * @return int					The number of deleted records.
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
 	 * @uses ArangoDocumentHandler::remove()
 	 */
-	protected function doDelete( $theFilter, $theOptions )
+	protected function doDeleteByCursor( ArangoCursor $theCursor, array $theOptions )
 	{
 		//
-		// Init local storage.
+		// Get count.
 		//
-		$connection = $this->Database()->Connection();
-
-		//
-		// Normalise query.
-		// Note that we check both for null and empty array.
-		//
-		if( ! $theFilter )
-			$theFilter =
-				[ 'query' => 'FOR r IN @@collection RETURN r',
-					'bindVars' => [ '@collection' => $this->collectionName() ] ];
-
-		//
-		// Select documents.
-		//
-		$statement = new ArangoStatement( $connection, $theFilter );
-		$cursor = $statement->execute();
-		$count = $cursor->getCount();
+		$count = $theCursor->getCount();
 
 		//
 		// Handle selection.
@@ -894,12 +1003,12 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Instantiate document handler.
 			//
-			$handler = new ArangoDocumentHandler( $connection );
+			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
 			//
 			// Process selection.
 			//
-			foreach( $cursor as $document )
+			foreach( $theCursor as $document )
 			{
 				//
 				// Remove document.
@@ -918,7 +1027,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $count;																// ==>
 
-	} // doDelete.
+	} // doDeleteByCursor.
 
 
 	/*===================================================================================
@@ -937,25 +1046,26 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Connection()
 	 * @uses ClassOffset()
-	 * @uses ToDocument()
+	 * @uses NewDocument()
 	 * @uses \MongoDB\Collection::findOne()
 	 */
-	protected function doFindById( $theKey, array $theOptions )
+	protected function doFindByKey($theKey, array $theOptions )
 	{
-		//
-		// Instantiate document handler.
-		//
-		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
-
 		//
 		// Handle list.
 		//
 		if( $theOptions[ kTOKEN_OPT_MANY ] )
 		{
 			//
+			// Instantiate collection handler.
+			//
+			$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
+
+			//
 			// Get documents.
 			//
-			$result = $handler->lookupByKeys( $this->Connection()->getID(), $theKey );
+			$result =
+				$handler->lookupByKeys( $this->Connection()->getID(), (array)$theKey );
 
 			//
 			// Format result.
@@ -980,6 +1090,11 @@ class Collection extends \Milko\PHPLib\Collection
 		} // List.
 
 		//
+		// Instantiate document handler.
+		//
+		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+
+		//
 		// Get document.
 		//
 		try
@@ -998,7 +1113,7 @@ class Collection extends \Milko\PHPLib\Collection
 					return $result;													// ==>
 
 				case kTOKEN_OPT_FORMAT_STANDARD:
-					return $this->ToDocument( $result );							// ==>
+					return $this->NewDocument( $result );							// ==>
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
 					return $this->ToDocumentHandle( $result );						// ==>
@@ -1048,14 +1163,19 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param array					$theDocument		The example document.
 	 * @param array					$theOptions			Driver native options.
-	 * @return Iterator				The found records.
+	 * @return mixed				The found records.
 	 *
 	 * @uses Database()
 	 * @uses Connection()
 	 * @uses ArangoCollectionHandler::byExample()
 	 */
-	protected function doFindByExample( $theDocument, $theOptions )
+	protected function doFindByExample( $theDocument, array $theOptions )
 	{
+		//
+		// Init local storage.
+		//
+		$options = [];
+
 		//
 		// Normalise document.
 		//
@@ -1065,27 +1185,35 @@ class Collection extends \Milko\PHPLib\Collection
 			$theDocument = $theDocument->toArray();
 
 		//
-		// Normalise limits.
+		// Convert to native options.
 		//
-		if( array_key_exists( '$start', $theOptions ) )
-		{
-			$theOptions[ 'skip' ] = $theOptions[ '$start' ];
-			unset( $theOptions[ '$start' ] );
-		}
-		if( array_key_exists( '$limit', $theOptions ) )
-		{
-			$theOptions[ 'limit' ] = $theOptions[ '$limit' ];
-			unset( $theOptions[ '$limit' ] );
-		}
+		if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+			$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+			$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
 
 		//
 		// Get collection handler.
 		//
 		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
 
-		return $this->formatCursor(
-			$handler->byExample(
-				$this->Connection()->getId(), $theDocument, $theOptions ) );		// ==>
+		//
+		// Select documents.
+		//
+		$cursor =
+			$handler->byExample( $this->Connection()->getId(), $theDocument, $options );
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $cursor;															// ==>
+
+		return
+			$this->formatCursor(
+				$handler->byExample(
+					$this->Connection()->getId(), $theDocument, $options ),
+				$theOptions[ kTOKEN_OPT_FORMAT ] );									// ==>
 
 	} // doFindByExample.
 
@@ -1100,30 +1228,33 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to create a statement and execute it. The provided query
 	 * should be an array with the <tt>query</tt> key.
 	 *
-	 * The options parameter is ignored here.
+	 * <em>The options parameters {@link kTOKEN_OPT_SKIP} and {@link kTOKEN_OPT_LIMIT} are
+	 * ignored in this method: you must set them directly into the query</em>.
 	 *
 	 * @param array					$theQuery			The selection criteria.
 	 * @param array					$theOptions			Collection native options.
-	 * @return Iterator				The found records.
+	 * @return mixed				The found records.
 	 *
 	 * @uses Database()
+	 * @uses formatCursor()
 	 * @uses ArangoStatement::execute()
 	 */
-	protected function doFindByQuery( $theQuery, $theOptions )
+	protected function doFindByQuery( $theQuery, array $theOptions )
 	{
 		//
 		// Normalise query.
 		//
 		if( ! count( $theQuery ) )
-			$theFilter = [ 'query' => 'FOR r IN @@collection RETURN r',
-						   'bindVars' => [ '@collection' => $this->collectionName() ] ];
+			$theQuery = [ 'query' => 'FOR r IN @@collection RETURN r',
+						  'bindVars' => [ '@collection' => $this->collectionName() ] ];
 
 		//
 		// Create statement.
 		//
 		$statement = new ArangoStatement( $this->Database()->Connection(), $theQuery );
 
-		return $this->formatCursor( $statement->execute() );						// ==>
+		return $this->formatCursor(
+			$statement->execute(), $theOptions[ kTOKEN_OPT_FORMAT ] );				// ==>
 
 	} // doFindByQuery.
 

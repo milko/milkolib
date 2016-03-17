@@ -247,6 +247,30 @@ $list = $collectionHandler->getAllCollections( ['excludeSystem' => TRUE] );
 print_r( $list );
 echo( "\n" );
 
+//
+// Get collection ID.
+//
+echo( "Get collection ID:\n" );
+$result = $collection->getId();
+var_dump( $result );
+echo( "\n" );
+
+//
+// Get collection name.
+//
+echo( "Get collection name:\n" );
+$result = $collection->getName();
+var_dump( $result );
+echo( "\n" );
+
+//
+// Get collection type.
+//
+echo( "Get collection type:\n" );
+$result = $collection->getType();
+var_dump( $result );
+echo( "\n" );
+
 echo( "\n====================================================================================\n\n" );
 
 //

@@ -54,9 +54,10 @@ use Milko\PHPLib\Document;
  *   </ul>
  * 	<li><em>Document related:</em>
  *   <ul>
- * 		<li><b>{@link ToDocument()}</b>: Convert native data to a standard {@link Document}.
- * 		<li><b>{@link FromDocument()}</b>: Convert a standard {@link Document} to native
- * 			data.
+ * 		<li><b>{@link NewDocument()}</b>: Convert native data to a standard
+ * 			{@link Document}.
+ * 		<li><b>{@link NewNativeDocument()}</b>: Convert a standard {@link Document} to
+ * 			native data.
  * 		<li><b>{@link ToDocumentHandle()}</b>: Convert native data to a document reference.
  *   </ul>
  * 	<li><em>Default document properties:</em>
@@ -70,10 +71,12 @@ use Milko\PHPLib\Document;
  * 		<li><b>{@link Insert()}</b>: Insert one or more records.
  * 		<li><b>{@link Update()}</b>: Update one or more records.
  * 		<li><b>{@link Replace()}</b>: Replace one or more records.
- * 		<li><b>{@link Delete()}</b>: Delete one or more records.
  * 		<li><b>{@link FindByKey()}</b>: Search by key.
  * 		<li><b>{@link FindByExample()}</b>: Search by example.
  * 		<li><b>{@link FindByQuery()}</b>: Perform a native query.
+ * 		<li><b>{@link DeleteByKey()}</b>: Delete by key.
+ * 		<li><b>{@link DeleteByExample()}</b>: Delete by example.
+ * 		<li><b>{@link DeleteByQuery()}</b>: Delete by native query.
  * 		<li><b>{@link RecordCount()}</b>: Return collection record count.
  * 		<li><b>{@link CountByExample()}</b>: Return record count by example.
  * 		<li><b>{@link CountByQuery()}</b>: Return record count by native query.
@@ -90,10 +93,12 @@ use Milko\PHPLib\Document;
  * 	<li><b>{@link doInsert()}</b>: Insert one or more records.
  * 	<li><b>{@link doUpdate()}</b>: Update one or many records.
  * 	<li><b>{@link doReplace()}</b>: Replace one or many records.
- * 	<li><b>{@link doDelete()}</b>: Delete one or many records.
- * 	<li><b>{@link doFindByKey()}</b>: Find one or many records by example.
+ * 	<li><b>{@link doFindByKey()}</b>: Find one or many records by key.
  * 	<li><b>{@link doFindByExample()}</b>: Find one or many records by example.
  * 	<li><b>{@link doFindByQuery()}</b>: Perform a driver native query.
+ * 	<li><b>{@link doDeleteByKey()}</b>: Delete one or many records by key.
+ * 	<li><b>{@link doDeleteByExample()}</b>: Delete one or many records by example.
+ * 	<li><b>{@link doDeleteByQuery()}</b>: Delete one or many records by query.
  * 	<li><b>{@link doCount()}</b>: Return record count in collection.
  * 	<li><b>{@link doCountByExample()}</b>: Return record count by example.
  * 	<li><b>{@link doCountByQuery()}</b>: Return record count by native query.
@@ -325,37 +330,16 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	FromDocument																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert a standard document to native data.</h4>
-	 *
-	 * This method can be used to convert a {@link Document} object into database native
-	 * data.
-	 *
-	 * This method is declared virtual, to allow database native derived classes to handle
-	 * their native types.
-	 *
-	 * Derived concrete classes must implement this method.
-	 *
-	 * @param Container				$theDocument		Document to be converted.
-	 * @return mixed				Database native object.
-	 */
-	abstract public function FromDocument( Container $theDocument );
-
-
-	/*===================================================================================
-	 *	ToDocument																		*
+	 *	NewDocument																		*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Convert native data to standard document.</h4>
 	 *
-	 * This method should be used to convert a database native document or an array into a
-	 * {@link Container} object or into a {@link Document} object of the class indicated in
-	 * its {@link ClassOffset()} property or in the second method parameter, the order is as
-	 * follows:
+	 * This method will instantiate a standard document from a database native document or
+	 * an array, it will return a {@link Container} object or a {@link Document} object of
+	 * the class indicated in its {@link ClassOffset()} property or in the second method
+	 * parameter: the order is as follows:
 	 *
 	 * <ul>
 	 * 	<li><em>$theClass is provided</em>: We instantiate an object of the provided class
@@ -391,31 +375,28 @@ abstract class Collection extends Container
 	 * @param string				$theClass			Expected class name.
 	 * @return Document				Standard document object.
 	 */
-	abstract public function ToDocument( $theData, $theClass = NULL );
+	abstract public function NewDocument($theData, $theClass = NULL );
 
 
 	/*===================================================================================
-	 *	ToDocumentHandle																*
+	 *	NewNativeDocument																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Convert native data to a document handle.</h4>
+	 * <h4>Convert a standard document to native data.</h4>
 	 *
-	 * This method can be used to convert a document into a document handle or reference,
-	 * this value can be used by {@link Document} instances to reference another document.
+	 * This method will instantiate a database native document from a {@link Container}
+	 * derived object.
 	 *
-	 * The method expects a single parameter which can either be a native database document,
-	 * or an instance of the {@link Container} class; in the latter case it is assumed that
-	 * the document's collection is the current one.
-	 *
-	 * The resulting value is dependent on the specific database engine used.
+	 * This method is declared virtual, to allow database native derived classes to handle
+	 * their native types.
 	 *
 	 * Derived concrete classes must implement this method.
 	 *
-	 * @param mixed					$theDocument		Document to reference.
-	 * @return mixed				Document handle.
+	 * @param Container				$theDocument		Document to be converted.
+	 * @return mixed				Database native object.
 	 */
-	abstract public function ToDocumentHandle( $theDocument );
+	abstract public function NewNativeDocument(Container $theDocument );
 
 
 
@@ -654,59 +635,155 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	Delete																			*
+	 *	DeleteByKey																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete documents.</h4>
+	 * <h4>Delete by key.</h4>
 	 *
-	 * This method can be used to delete one or more documents selected by the provided
-	 * filter, the method expects the following parameters:
+	 * This method will delete the document that matches the provided key in the current
+	 * collection, or do nothing if the document cannot be matched.
+	 *
+	 * The method features two parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
+	 *	<li><b>$theKey</b>: The document key to match.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
-	 * 			the first selected document, or all the selected documents:
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
+	 * 			parameter is a set of keys or a single key:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Delete all records selected by the filter.
-	 * 			<li><tt>FALSE</tt>: Delete the first record selected by the filter.
+	 * 			<li><tt>TRUE</tt>: Provided a set of keys.
+	 * 			<li><tt>FALSE</tt>: Provided a single key.
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The filter must be provided in the native database format and if no options are
-	 * provided, the operation will process all documents in the selection.
+	 * By default, the method will delete only the first record and will return the number
+	 * of deleted records.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param mixed					$theFilter			The selection criteria.
+	 * @param mixed					$theKey				The document identifier.
 	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
+	 * @return mixed				The number of deleted document(s).
 	 *
-	 * @uses doDelete()
+	 * @uses doDeleteByKey()
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_MANY
-	 *
-	 * @example
-	 * // Delete first document.<br/>
-	 * $count = $collection->Delete( $filter, [ kTOKEN_OPT_MANY => FALSE ] );<br/>
-	 * // Delete all selected documents.<br/>
-	 * $count = $collection->Delete( $filter );<br/>
-	 * // Delete all documents.<br/>
-	 * $count = $collection->Delete();
 	 */
-	public function Delete( $theFilter = NULL, $theOptions = NULL )
+	public function DeleteByKey( $theKey, $theOptions = NULL )
+	{
+		//
+		// Normalise options.
+		//
+		$this->normaliseOptions( kTOKEN_OPT_MANY, FALSE, $theOptions );
+
+		return $this->doDeleteByKey( $theKey, $theOptions );						// ==>
+
+	} // DeleteByKey.
+
+
+	/*===================================================================================
+	 *	DeleteByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete by example.</h4>
+	 *
+	 * This method can be used to delete the first or all documents matching the provided
+	 * example document. The method will select all documents in the collection whose
+	 * properties match all the properties of the provided example document, this means that
+	 * the method will generate a query that puts in <tt>AND</tt> all the provided document
+	 * offsets.
+	 *
+	 * The method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The example document; it must be either an array, a
+	 * 		{@link Document} instance, or a native database document.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
+	 *			only the first selected record or all:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
+	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * By default, the method will delete all selected records and will return the number
+	 * of deleted records.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theDocument		The example document.
+	 * @param array					$theOptions			Delete options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses doDeleteByExample()
+	 * @uses normaliseOptions()
+	 * @see kTOKEN_OPT_MANY
+	 */
+	public function DeleteByExample( $theDocument = NULL, $theOptions = NULL )
 	{
 		//
 		// Normalise options.
 		//
 		$this->normaliseOptions( kTOKEN_OPT_MANY, TRUE, $theOptions );
 
-		return $this->doDelete( $theFilter, $theOptions );							// ==>
+		return $this->doDeleteByExample( $theDocument, $theOptions );				// ==>
 
-	} // Delete.
+	} // DeleteByExample.
+
+
+	/*===================================================================================
+	 *	DeleteByQuery																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete by query.</h4>
+	 *
+	 * This method can be used to delete the first or all documents matching the provided
+	 * query, it expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theQuery</b>: The query in the driver native format.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
+	 *			only the first selected record or all:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
+	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * By default, the method will delete all selected records and will return the number
+	 * of deleted records.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Delete options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses doDeleteByQuery()
+	 * @uses normaliseOptions()
+	 * @see kTOKEN_OPT_MANY
+	 */
+	public function DeleteByQuery( $theQuery = NULL, $theOptions = NULL )
+	{
+		//
+		// Normalise options.
+		//
+		$this->normaliseOptions( kTOKEN_OPT_MANY, TRUE, $theOptions );
+
+		return $this->doDeleteByQuery( $theQuery, $theOptions );					// ==>
+
+	} // DeleteByQuery.
 
 
 	/*===================================================================================
@@ -738,7 +815,7 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
 	 * 				an array of {@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
-	 * 				an array of document handles (@link ToDocumentHandle()}).
+	 * 				an array of document handles (@link NewDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -749,16 +826,16 @@ abstract class Collection extends Container
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
-	 * @param mixed					$theKey				The document identifier.
-	 * @param array					$theOptions			Delete options.
+	 * @param mixed					$theKey				The document key(s).
+	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found document(s).
 	 *
-	 * @uses doFindById()
+	 * @uses doFindByKey()
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_MANY
 	 * @see kTOKEN_OPT_FORMAT
 	 */
-	public function FindById( $theKey, $theOptions = NULL )
+	public function FindByKey($theKey, $theOptions = NULL )
 	{
 		//
 		// Normalise options.
@@ -768,9 +845,9 @@ abstract class Collection extends Container
 		$this->normaliseOptions(
 			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
 
-		return $this->doFindById( $theKey, $theOptions );							// ==>
+		return $this->doFindByKey( $theKey, $theOptions );							// ==>
 
-	} // FindById.
+	} // FindByKey.
 
 
 	/*===================================================================================
@@ -805,7 +882,7 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
 	 * 				an array of {@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
-	 * 				an array of document handles (@link ToDocumentHandle()}).
+	 * 				an array of document handles (@link NewDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -877,7 +954,7 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
 	 * 				an array of {@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
-	 * 				an array of document handles (@link ToDocumentHandle()}).
+	 * 				an array of document handles (@link NewDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -1188,39 +1265,7 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	doDelete																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete the first or all records.</h4>
-	 *
-	 * This method should delete the first or all records matching the provided search
-	 * criteria, the method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options:
-	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
-	 * 			the first selected document, or all the selected documents:
-	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Delete all records selected by the filter.
-	 * 			<li><tt>FALSE</tt>: Delete the first record selected by the filter.
-	 * 		 </ul>
-	 * 	 </ul>
-	 * </ul>
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
-	 * @param mixed					$theFilter			The selection criteria.
-	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
-	 */
-	abstract protected function doDelete( $theFilter, array $theOptions );
-
-
-	/*===================================================================================
-	 *	doFindById																		*
+	 *	doFindByKey																		*
 	 *==================================================================================*/
 
 	/**
@@ -1248,7 +1293,7 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
 	 * 				an array of {@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
-	 * 				an array of document handles (@link ToDocumentHandle()}).
+	 * 				an array of document handles (@link NewDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -1259,7 +1304,7 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found document(s).
 	 */
-	abstract protected function doFindById( $theKey, array $theOptions );
+	abstract protected function doFindByKey($theKey, array $theOptions );
 
 
 	/*===================================================================================
@@ -1290,7 +1335,7 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
 	 * 				an array of {@link Document} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
-	 * 				an array of document handles (@link ToDocumentHandle()}).
+	 * 				an array of document handles (@link NewDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -1331,7 +1376,7 @@ abstract class Collection extends Container
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
 	 * 				an array of {@link Document} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
-	 * 				an array of document handles (@link ToDocumentHandle()}).
+	 * 				an array of document handles (@link NewDocumentHandle()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
@@ -1342,7 +1387,105 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
 	 */
-	abstract protected function doFindByQuery( $theQuery, $theOptions );
+	abstract protected function doFindByQuery( $theQuery, array $theOptions );
+
+
+	/*===================================================================================
+	 *	doDeleteByKey																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by key.</h4>
+	 *
+	 * This method should delete the first or all records matching the provided key(s), the
+	 * method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theFilter</b>: The selection criteria.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
+	 * 			the first selected document, or all the selected documents:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete all records selected by the filter.
+	 * 			<li><tt>FALSE</tt>: Delete the first record selected by the filter.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theKey				The document key(s).
+	 * @param array					$theOptions			Find options.
+	 * @return int					The number of deleted records.
+	 */
+	abstract protected function doDeleteByKey( $theKey, array $theOptions );
+
+
+	/*===================================================================================
+	 *	doDeleteByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by example.</h4>
+	 *
+	 * This method should delete the first or all records matching the provided example
+	 * document, the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The example document; it must be either an array, a
+	 * 		{@link Document} instance, or a native database document.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
+	 *			only the first selected record or all:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
+	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theDocument		The example document.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 */
+	abstract protected function doDeleteByExample( $theDocument, array $theOptions );
+
+
+	/*===================================================================================
+	 *	doDeleteByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by query.</h4>
+	 *
+	 * This method should delete the first or all records matching the provided query, the
+	 * method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The example document; it must be either an array, a
+	 * 		{@link Document} instance, or a native database document.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
+	 *			only the first selected record or all:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
+	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 */
+	abstract protected function doDeleteByQuery( $theQuery, array $theOptions );
 
 
 
@@ -1365,11 +1508,13 @@ abstract class Collection extends Container
 	 * format determined by the second parameter of this method:
 	 *
 	 * <ul>
+	 *	<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: The cursor will be returned
+	 * 		unchanged.
 	 *	<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Convert into an array of
 	 * 		{@link Container} instances, or {@link Document} instances if the
 	 * 		{@link ClassOffset()} property is present.
 	 *	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Convert into an array of document
-	 * 		handles (@link ToDocumentHandle()}).
+	 * 		handles (@link NewDocumentHandle()}).
 	 * </ul>
 	 *
 	 * @param mixed			$theCursor	The result cursor.
@@ -1377,7 +1522,7 @@ abstract class Collection extends Container
 	 * @return array					An array of different format documents.
 	 * @throws InvalidArgumentException
 	 *
-	 * @uses ToDocument()
+	 * @uses NewDocument()
 	 * @uses ToDocumentHandle()
 	 * @uses KeyOffset()
 	 */
@@ -1398,8 +1543,11 @@ abstract class Collection extends Container
 			//
 			switch( $theFormat )
 			{
+				case kTOKEN_OPT_FORMAT_NATIVE:
+					return $theCursor;												// ==>
+
 				case kTOKEN_OPT_FORMAT_STANDARD:
-					$document = $this->ToDocument( $document );
+					$document = $this->NewDocument( $document );
 					$array[ (string) $document[ $this->KeyOffset() ] ] = $document;
 					break;
 

@@ -124,7 +124,7 @@ echo( "\n=======================================================================
 //
 echo( "Find by ID native:\n" );
 echo( '$result = $test->FindById( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );' . "\n" );
-$result = $test->FindById( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
 print_r( $result );
 echo( "\n" );
 
@@ -135,7 +135,7 @@ echo( "\n" );
 //
 echo( "Find by ID standard:\n" );
 echo( '$result = $test->FindById( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
-$result = $test->FindById( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
 print_r( $result );
 echo( "\n" );
 
@@ -146,7 +146,7 @@ echo( "\n" );
 //
 echo( "Find by ID handle:\n" );
 echo( '$result = $test->FindById( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
-$result = $test->FindById( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
 print_r( $result );
 echo( "\n" );
 
@@ -157,7 +157,7 @@ echo( "\n=======================================================================
 //
 echo( "Find many by ID native:\n" );
 echo( '$result = $test->FindById( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );' . "\n" );
-$result = $test->FindById( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
 print_r( $result );
 echo( "\n" );
 
@@ -168,7 +168,7 @@ echo( "\n" );
 //
 echo( "Find many by ID standard:\n" );
 echo( '$result = $test->FindById( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
-$result = $test->FindById( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
 print_r( $result );
 echo( "\n" );
 
@@ -179,7 +179,7 @@ echo( "\n" );
 //
 echo( "Find by ID handle:\n" );
 echo( '$result = $test->FindById( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
-$result = $test->FindById( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
 print_r( $result );
 echo( "\n" );
 
@@ -390,24 +390,11 @@ print_r( $result );
 echo( "\n====================================================================================\n\n" );
 
 //
-// Delete first record.
+// Delete by ID.
 //
-echo( "Delete first record:\n" );
-echo( '$result = $test->Delete( [ "color" => "pink" ], [ kTOKEN_OPT_MANY => FALSE ] );' . "\n" );
-$result = $test->Delete( [ "color" => "pink" ], [ kTOKEN_OPT_MANY => FALSE ] );
-var_dump( $result );
-echo( '$result = $test->FindByExample( [ "color" => "pink" ] );' . "\n" );
-$result = $test->FindByExample();
-print_r( $result );
-
-echo( "\n" );
-
-//
-// Delete all selected records.
-//
-echo( "Delete all selected records:\n" );
-echo( '$result = $test->Delete( [ "data" => "XXX" ] );' . "\n" );
-$result = $test->Delete( [ "data" => "XXX" ] );
+echo( "Delete by ID:\n" );
+echo( '$result = $test->DeleteByKey( "ID1" );' . "\n" );
+$result = $test->DeleteByKey( "ID1" );
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
@@ -416,11 +403,24 @@ print_r( $result );
 echo( "\n" );
 
 //
-// Delete all records.
+// Delete by example.
 //
-echo( "Delete all records:\n" );
-echo( '$result = $test->Delete();' . "\n" );
-$result = $test->Delete();
+echo( "Delete by example:\n" );
+echo( '$result = $test->DeleteByExample( ["data" => "Value 1"] );' . "\n" );
+$result = $test->DeleteByExample( ["data" => "Value 1"] );
+var_dump( $result );
+echo( '$result = $test->FindByExample();' . "\n" );
+$result = $test->FindByExample();
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Delete by query.
+//
+echo( "Delete by query:\n" );
+echo( '$result = $test->DeleteByQuery();' . "\n" );
+$result = $test->DeleteByExample();
 var_dump( $result );
 echo( '$result = $test->FindByExample();' . "\n" );
 $result = $test->FindByExample();
