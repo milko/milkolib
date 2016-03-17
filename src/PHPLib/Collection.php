@@ -354,21 +354,18 @@ abstract class Collection extends Container
 	 *
 	 * This method should be used to convert a database native document or an array into a
 	 * {@link Container} object or into a {@link Document} object of the class indicated in
-	 * its {@link ClassOffset()} property or in the second method parameter:
+	 * its {@link ClassOffset()} property or in the second method parameter, the order is as
+	 * follows:
 	 *
 	 * <ul>
-	 * 	<li><em>Data has {@link ClassOffset()}</em>: We instantiate the referenced class,
-	 * 		note that in this case the class <em>must</em> be derived from the
-	 * 		{@link Document} class, or feature a constructor compatible with it.
-	 * 	<li><em>Data lacks {@link ClassOffset()}</em>:
-	 * 	 <ul>
-	 * 		<li><em>$theClass is provided</em>: We instantiate an object of the provided
-	 * 			class name, note that in this case the class <em>must</em> be derived from
-	 * 			the {@link \Milko\PHPLib\Document} class, or feature a constructor
-	 * 			compatible with it.
-	 * 		<li><em>$theClass is omitted or <tt>NULL</tt></em>: We instantiate a
-	 * 			{@link Container} object.
-	 * 	 </ul>
+	 * 	<li><em>$theClass is provided</em>: We instantiate an object of the provided class
+	 * 		name. Note that the provided class name will replace the current class name
+	 * 		({@link ClassOffset()}) in the provided data, this means that unless you replace
+	 * 		the object, these changes will not be recorded. For this reason, the class
+	 * 		<em>must</em> be derived from the {@link Document} class.
+	 * 	<li><em>Data has {@link ClassOffset()}</em>: We instantiate the referenced class.
+	 * 	<li><em>No class specified either in parameter or data</em>: we instantiate a
+	 * 		{@link Container} object.
 	 * </ul>
 	 *
 	 * The method features these parameters:
@@ -376,7 +373,8 @@ abstract class Collection extends Container
 	 * <ul>
 	 * 	<li><b>$theData</b>: The data expressed in the database native type or as an array.
 	 * 	<li><b>$theClass</b>: The class name of the resulting {@link Document} instance,
-	 * 		omit or provide <tt>NULL</tt> to instantiate a {@link Container}.
+	 * 		omit or provide <tt>NULL</tt> to use the recorded class name, or instantiate a
+	 * 		{@link Container}.
 	 * </ul>
 	 *
 	 * The distinction between {@link Container} and {@link Document} objects is that the

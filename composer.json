@@ -1,4 +1,20 @@
 {
+	"name": "milko/phplib",
+	"description": "A PHP library implementing an ontology driven database using MongoDB or ArangoDB",
+	"version": "0.5-dev",
+	"type": "library",
+	"keywords": ["database", "ontology", "mongodb", "arangodb"],
+	"license": "MIT",
+	"authors":
+	[
+		{
+			"name": "Milko Škofič",
+			"email": "skofic@gmail.com",
+			"homepage": "https://www.linkedin.com/in/mskofic",
+			"role": "Architect"
+		}
+	],
+
 	"autoload": {
 		"psr-4": { "Milko\\": "src/" }
 	},

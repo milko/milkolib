@@ -217,25 +217,25 @@ class Collection extends \Milko\PHPLib\Collection
 				  : (array)$theData;
 
 		//
-		// Handle document.
+		// Use provided class name.
 		//
-		if( array_key_exists( $this->ClassOffset(), $document ) )
-		{
-			$class = $document[ $this->ClassOffset() ];
-			$document = new $class( $this, $document );
-		}
-
-		//
-		// Handle provided class.
-		//
-		elseif( $theClass !== NULL )
+		if( $theClass !== NULL )
 		{
 			$theClass = (string)$theClass;
 			$document = new $theClass( $this, $document );
 		}
 
 		//
-		// Handle default container.
+		// Use class in data.
+		//
+		elseif( array_key_exists( $this->ClassOffset(), $document ) )
+		{
+			$class = $document[ $this->ClassOffset() ];
+			$document = new $class( $this, $document );
+		}
+
+		//
+		// Instantiate default container.
 		//
 		else
 			$document = new \Milko\PHPLib\Container( $document );

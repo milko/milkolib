@@ -139,21 +139,21 @@ class Collection extends \Milko\PHPLib\Collection
 		$document = (array)$theData;
 
 		//
-		// Handle document.
-		//
-		if( array_key_exists( $this->ClassOffset(), $document ) )
-		{
-			$class = $document[ $this->ClassOffset() ];
-			return new $class( $this, $document );									// ==>
-		}
-
-		//
-		// Handle provided class.
+		// Use provided class name.
 		//
 		if( $theClass !== NULL )
 		{
 			$theClass = (string)$theClass;
 			return new $theClass( $this, $document );								// ==>
+		}
+
+		//
+		// Use class in data.
+		//
+		if( array_key_exists( $this->ClassOffset(), $document ) )
+		{
+			$class = $document[ $this->ClassOffset() ];
+			return new $class( $this, $document );									// ==>
 		}
 
 		return new \Milko\PHPLib\Container( $document );							// ==>
