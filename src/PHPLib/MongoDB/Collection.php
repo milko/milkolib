@@ -95,27 +95,6 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert a standard document to native data.</h4>
-	 *
-	 * We overload this method to return BSONDocument.
-	 *
-	 * @param Document				$theDocument		Document to be converted.
-	 * @return mixed				Database native object.
-	 *
-	 * @uses \Milko\PHPLib\Container::toArray()
-	 */
-	public function NewNativeDocument(\Milko\PHPLib\Container $theDocument )
-	{
-		return new BSONDocument( $theDocument->toArray() );							// ==>
-
-	} // NewNativeDocument.
-
-
-	/*===================================================================================
 	 *	NewDocument																		*
 	 *==================================================================================*/
 
@@ -162,11 +141,32 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	ToDocumentHandle																*
+	 *	NewNativeDocument																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Convert native data to a document handle.</h4>
+	 * <h4>Convert a standard document to native data.</h4>
+	 *
+	 * We overload this method to return BSONDocument.
+	 *
+	 * @param Document				$theDocument		Document to be converted.
+	 * @return mixed				Database native object.
+	 *
+	 * @uses \Milko\PHPLib\Container::toArray()
+	 */
+	public function NewNativeDocument( \Milko\PHPLib\Container $theDocument )
+	{
+		return new \MongoDB\Model\BSONDocument( $theDocument->toArray() );			// ==>
+
+	} // NewNativeDocument.
+
+
+	/*===================================================================================
+	 *	NewDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert a document to a document handle.</h4>
 	 *
 	 * We overload this method to return an array of two elements: the first represents the
 	 * collection name, the second represents the document key ({@link KeyOffset()}.
@@ -176,12 +176,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theDocument		Document to reference.
 	 * @return mixed				Document handle.
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 *
 	 * @uses KeyOffset()
 	 * @uses collectionName()
 	 */
-	public function ToDocumentHandle( $theDocument )
+	public function NewDocumentHandle( $theDocument )
 	{
 		//
 		// Init handle collection.
@@ -189,15 +189,14 @@ class Collection extends \Milko\PHPLib\Collection
 		$handle = [ $this->collectionName() ];
 
 		//
-		// Handle native document type.
+		// Convert to container.
 		//
-		if( ! ($theDocument instanceof \Milko\PHPLib\Container) )
-			$theDocument = (array)$theDocument;
+		$document = new \Milko\PHPLib\Container( (array)$theDocument );
 
 		//
 		// Check document key.
 		//
-		$key = $theDocument[ $this->KeyOffset() ];
+		$key = $document[ $this->KeyOffset() ];
 		if( $key === NULL )
 			throw new \InvalidArgumentException (
 				"Data is missing the document key." );							// !@! ==>
@@ -209,7 +208,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $handle;																// ==>
 
-	} // ToDocumentHandle.
+	} // NewDocumentHandle.
 
 
 
@@ -666,7 +665,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theKey				The document identifier.
 	 * @param array					$theOptions			Delete options.
 	 * @return mixed				The found document(s).
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 *
 	 * @uses KeyOffset()
 	 * @uses Connection()
@@ -728,7 +727,7 @@ class Collection extends \Milko\PHPLib\Collection
 					return $this->NewDocument( $result );							// ==>
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
-					return $this->ToDocumentHandle( $result );						// ==>
+					return $this->NewDocumentHandle( $result );						// ==>
 			}
 
 			//
@@ -760,7 +759,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theDocument		The example document.
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 *
 	 * @uses Connection()
 	 * @uses cursorToArray()

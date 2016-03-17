@@ -33,11 +33,10 @@ use Milko\PHPLib\Container;
  * the ancestor of all persistent classes, thus includes the global tokens
  * ({@link 'tokens.inc.php'}}, and global tags ({@link 'tags.inc.php'}).
  *
- * The class features (for the moment) only its constructor which will set in its
- * {@link Collection::ClassOffset()} property the name of its current class. This must be
- * taken into consideration, because when instantiating an object derived from this class
- * from the contents of another derived object, the class property will be overwritten,
- * which means that the object should be replaced.
+ * The class constructor will set in its {@link Collection::ClassOffset()} property the name
+ * of its current class. This must be taken into consideration, because when instantiating
+ * an object derived from this class from the contents of another derived object, the class
+ * property will be overwritten, which means that the object should be replaced.
  *
  * For the purpose of persisting, the document features a set of offsets that contain
  * information regarding identifiers, class and revisions:
@@ -57,6 +56,13 @@ use Milko\PHPLib\Container;
  * {@link Collection::NewNativeDocument()} the document: this is because the above property
  * tags depend on the native database engine and may also depend on the business logic of
  * the collection.
+ *
+ * The class also features a method, {@link Validate()}, which should check whether the
+ * object has all the required attributes and is fit to be stored in the database, if that
+ * is not the case, the method should raise an exception; this method must be called before
+ * storing documents in the database.
+ *
+ * In this class we assume the object is valid.
  *
  *	@package	Core
  *
@@ -99,11 +105,37 @@ class Document extends Container
 
 		//
 		// Add class.
-		// Note that we overwrite the eventual existing class name.
+		// Note that we overwrite the eventual existing class name
+		// and we use the ancestor class method, since the class property is locked.
 		//
-		$this->offsetSet( $theCollection->ClassOffset(), get_class( $this ) );
+		\ArrayObject::offsetSet( $theCollection->ClassOffset(), get_class( $this ) );
 
 	} // Constructor.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC VALIDATION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Validate																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Validate object.</h4>
+	 *
+	 * This method should check whether the current object's required attributes are present
+	 * and if it is structurally and referentially valid; if that is not the case, the
+	 * method should raise an exception.
+	 *
+	 * In this class we assume the object to be valid.
+	 */
+	protected function Validate()														   {}
 
 
 

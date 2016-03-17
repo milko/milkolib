@@ -58,7 +58,7 @@ use Milko\PHPLib\Document;
  * 			{@link Document}.
  * 		<li><b>{@link NewNativeDocument()}</b>: Convert a standard {@link Document} to
  * 			native data.
- * 		<li><b>{@link ToDocumentHandle()}</b>: Convert native data to a document reference.
+ * 		<li><b>{@link NewDocumentHandle()}</b>: Convert a document to a document reference.
  *   </ul>
  * 	<li><em>Default document properties:</em>
  *   <ul>
@@ -396,7 +396,37 @@ abstract class Collection extends Container
 	 * @param Container				$theDocument		Document to be converted.
 	 * @return mixed				Database native object.
 	 */
-	abstract public function NewNativeDocument(Container $theDocument );
+	abstract public function NewNativeDocument( Container $theDocument );
+
+
+	/*===================================================================================
+	 *	NewDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert a document to a document handle.</h4>
+	 *
+	 * This method will return a document handle derived from the provided document.
+	 *
+	 * A document handle is a value that contains a reference to the collection and key of
+	 * a specific document, and that can be used to point to a specific document instance.
+	 *
+	 * The method is virtual, since document handles depend on the specific database
+	 * engine, this means that the structure and business logic must be implemented in
+	 * derived classes.
+	 *
+	 * The provided document can either be a {@link Container}, or an object than can be
+	 * cast to an array.
+	 *
+	 * If the provided document does not have its {@link KeyOffset()} property, this method
+	 * should raise an exception.
+	 *
+	 * Derived concrete classes must implement this method.
+	 *
+	 * @param mixed					$theDocument		Document to reference.
+	 * @return mixed				Document handle.
+	 */
+	abstract public function NewDocumentHandle( $theDocument );
 
 
 
@@ -1520,10 +1550,10 @@ abstract class Collection extends Container
 	 * @param mixed			$theCursor	The result cursor.
 	 * @param string		$theFormat	The cursor format code.
 	 * @return array					An array of different format documents.
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 *
 	 * @uses NewDocument()
-	 * @uses ToDocumentHandle()
+	 * @uses NewDocumentHandle()
 	 * @uses KeyOffset()
 	 */
 	protected function formatCursor( $theCursor, string $theFormat )
@@ -1552,7 +1582,7 @@ abstract class Collection extends Container
 					break;
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
-					$document = $this->ToDocumentHandle( $document );
+					$document = $this->NewDocumentHandle( $document );
 					$array[] = $document;
 					break;
 
@@ -1595,7 +1625,7 @@ abstract class Collection extends Container
 	 * @param string				$theToken			The option token.
 	 * @param mixed					$theDefault			The Default choice.
 	 * @param array				   &$theOptions			The options reference.
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	protected function normaliseOptions( string $theToken, $theDefault, &$theOptions )
 	{

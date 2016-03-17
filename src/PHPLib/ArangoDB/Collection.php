@@ -139,6 +139,67 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
+	 *	NewDocument																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert native data to standard document.</h4>
+	 *
+	 * We overload this method by casting the provided data into an array and instantiating
+	 * the expected document.
+	 *
+	 * @param mixed						$theData			Database native document.
+	 * @param string					$theClass			Expected class name.
+	 * @return \Milko\PHPLib\Container	Standard document object.
+	 *
+	 * @uses ClassOffset()
+	 * @uses RevisionOffset()
+	 */
+	public function NewDocument($theData, $theClass = NULL )
+	{
+		//
+		// Convert document to array.
+		//
+		$document = ( $theData instanceof ArangoDocument )
+			? $theData->getAll()
+			: (array)$theData;
+
+		//
+		// Use provided class name.
+		//
+		if( $theClass !== NULL )
+		{
+			$theClass = (string)$theClass;
+			$document = new $theClass( $this, $document );
+		}
+
+		//
+		// Use class in data.
+		//
+		elseif( array_key_exists( $this->ClassOffset(), $document ) )
+		{
+			$class = $document[ $this->ClassOffset() ];
+			$document = new $class( $this, $document );
+		}
+
+		//
+		// Instantiate default container.
+		//
+		else
+			$document = new \Milko\PHPLib\Container( $document );
+
+		//
+		// Set revision.
+		//
+		if( $theData instanceof ArangoDocument )
+			$document[ $this->RevisionOffset() ] = $theData->getRevision();
+
+		return $document;															// ==>
+
+	} // NewDocument.
+
+
+	/*===================================================================================
 	 *	NewNativeDocument																*
 	 *==================================================================================*/
 
@@ -194,72 +255,11 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	NewDocument																		*
+	 *	NewDocumentHandle																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Convert native data to standard document.</h4>
-	 *
-	 * We overload this method by casting the provided data into an array and instantiating
-	 * the expected document.
-	 *
-	 * @param mixed						$theData			Database native document.
-	 * @param string					$theClass			Expected class name.
-	 * @return \Milko\PHPLib\Container	Standard document object.
-	 *
-	 * @uses ClassOffset()
-	 * @uses RevisionOffset()
-	 */
-	public function NewDocument($theData, $theClass = NULL )
-	{
-		//
-		// Convert document to array.
-		//
-		$document = ( $theData instanceof ArangoDocument )
-				  ? $theData->getAll()
-				  : (array)$theData;
-
-		//
-		// Use provided class name.
-		//
-		if( $theClass !== NULL )
-		{
-			$theClass = (string)$theClass;
-			$document = new $theClass( $this, $document );
-		}
-
-		//
-		// Use class in data.
-		//
-		elseif( array_key_exists( $this->ClassOffset(), $document ) )
-		{
-			$class = $document[ $this->ClassOffset() ];
-			$document = new $class( $this, $document );
-		}
-
-		//
-		// Instantiate default container.
-		//
-		else
-			$document = new \Milko\PHPLib\Container( $document );
-
-		//
-		// Set revision.
-		//
-		if( $theData instanceof ArangoDocument )
-			$document[ $this->RevisionOffset() ] = $theData->getRevision();
-
-		return $document;															// ==>
-
-	} // NewDocument.
-
-
-	/*===================================================================================
-	 *	ToDocumentHandle																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert native data to a document handle.</h4>
+	 * <h4>Convert a document to a document handle.</h4>
 	 *
 	 * We overload this method to return or compute the handle string.
 	 *
@@ -268,13 +268,13 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theDocument		Document to reference.
 	 * @return mixed				Document handle.
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 *
 	 * @uses KeyOffset()
 	 * @uses Connection()
 	 * @uses triagens\ArangoDb\Document::getHandle()
 	 */
-	public function ToDocumentHandle( $theDocument )
+	public function NewDocumentHandle( $theDocument )
 	{
 		//
 		// Handle handle ;-)
@@ -296,8 +296,7 @@ class Collection extends \Milko\PHPLib\Collection
 		throw new \InvalidArgumentException (
 			"Data is missing the document key." );								// !@! ==>
 
-
-	} // ToDocumentHandle.
+	} // NewDocumentHandle.
 
 
 
@@ -1044,7 +1043,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theKey				The document identifier.
 	 * @param array					$theOptions			Delete options.
 	 * @return mixed				The found document(s).
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 *
 	 * @uses Connection()
 	 * @uses ClassOffset()
@@ -1119,7 +1118,7 @@ class Collection extends \Milko\PHPLib\Collection
 					return $this->NewDocument( $result );							// ==>
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
-					return $this->ToDocumentHandle( $result );						// ==>
+					return $this->NewDocumentHandle( $result );						// ==>
 			}
 		}
 		catch( ArangoServerException $error )

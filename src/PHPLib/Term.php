@@ -22,29 +22,41 @@ use Milko\PHPLib\Document;
  * This class implements an object that represents a concept or term, it is the ancestor of
  * all objects involved in the data dictionary and ontology.
  *
- * The object implements the following global properties:
+ * Objects of this class feature the following properties:
  *
  * <ul>
- * 	<li><tt>{@link TermNamespace()</tt>: Manage the term namespace reference
- * 		(<tt>{@link kTAG_NS}</tt>).
- * 	<li><tt>{@link LocalIdentifier()</tt>: Manage the term local identifier
- * 		(<tt>{@link kTAG_LID}</tt>).
- * 	<li><tt>{@link GlobalIdentifier()</tt>: Manage the term global identifier
- * 		(<tt>{@link kTAG_GID}</tt>).
- * 	<li><tt>{@link Name()</tt>: Manage the term name (<tt>{@link kTAG_NAME}</tt>).
- * 	<li><tt>{@link Description()</tt>: Manage the term description
- * 		(<tt>{@link kTAG_DESCRIPTION}</tt>).
+ * 	<li><tt>{@link kTAG_NS}</tt>: This represents the term <em>namespace</em>, it is a
+ * 		document handle ({@link Collection::NewDocumentHandle()}) that references the term
+ * 		which is the current term's namespace.
+ * 		<em>This property is optional</em>.
+ * 	<li><tt>{@link kTAG_LID}</tt>: This represents the term <em>local identifier</em>, it is
+ * 		a string code that uniquely identifies the term among all terms belonging to its
+ * 		namespace.
+ * 		<em>This property is required</em>.
+ * 	<li><tt>{@link kTAG_GID}</tt>: This represents the term <em>global identifier</em>, it is
+ * 		a string code that uniquely identifies the term among all terms in all namespaces.
+ * 		This value is computed by default by concatenating the namespace's term
+ * 		({@link kTAG_NS}) global identifier with the current term's local identifier
+ * 		({@link kTAG_LID}), separated by the {@link kTOKEN_NAMESPACE_SEPARATOR} token.
+ * 		<em>This property is required</em>.
+ * 	<li><tt>{@link kTAG_NAME}</tt>: This represents the term <em>name</em> or
+ * 		<em>label</em>, it is a short description or human readable identifier that can be
+ * 		used to label or name the term.
+ * 		<em>This property is required</em>.
+ * 	<li><tt>{@link kTAG_DESCRIPTION}</tt>: This represents the term <em>description</em> or
+ * 		<em>definition</em>, it is a text which describes in detail what the term represents
+ * 		and, in the case of the term, may be considered its definition.
+ * 		<em>This property is optional</em>.
  * </ul>
  *
- * As with {@link Container} objects these properties can be accessed also via offsets.
+ * The term's {@link Collection::OffsetKey()} property is set by extracting the <tt>MD5</tt>
+ * checksum of its {@link kTAG_GID} global identifier
  *
- * The class implements also a set of procedures which handle the consistency of the object,
- * part of these are applied as object data is modified and the {@link Validate()} method
- * can be called before the object will be stored.
+ * The {@link Container::ClassOffset()} property is automatically set in the constructor and
+ * should not be changed.
  *
- * There is a public method that can be used to compile the global identifier,
- * {@link MakeGID()}, which expects the terms collection and the reference to the term's
- * namespace object.
+ * Finally, the {@link RevisionOffset()} property is managed directly by the database
+ * driver.
  *
  *	@package	Terms
  *
