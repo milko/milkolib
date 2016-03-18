@@ -94,6 +94,11 @@ class Container extends \ArrayObject
 	 *
 	 * @param mixed					$theOffset			Offset.
 	 * @return mixed				Offset value or <tt>NULL</tt>.
+	 *
+	 * @example
+	 * $test->offsetGet( "offset" );	// Will return the value at that offset.<br/>
+	 * $test->offsetSet( "UNKNOWN" );	// Will not generate a warning and return
+	 * 									   <tt>NULL</tt>.<br/>
 	 */
 	public function offsetGet( $theOffset )
 	{
@@ -126,7 +131,6 @@ class Container extends \ArrayObject
 	 * @example
 	 * $test->offsetSet( "offset", "value" );	// Will set a value in that offset.<br/>
 	 * $test->offsetSet( "offset", NULL );	// Will unset that offset.<br/>
-	 * $test->offsetSet( "UNKNOWN", "value" );	// Will not generate a warning.
 	 */
 	public function offsetSet( $theOffset, $theValue )
 	{
@@ -375,6 +379,62 @@ class Container extends \ArrayObject
 		return $save;																// ==>
 
 	} // manageProperty.
+
+
+	/*===================================================================================
+	 *	manageFlagAttribute																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Manage a flag attribute.</h4>
+	 *
+	 * This method can be used to manage a bitfield attribute, the method expects the
+	 * following parameters:
+	 *
+	 * <ul>
+	 * 	<li><b>&$theAttribute</ul>: Reference of the attribute.
+	 * 	<li><b>$theValue</ul>: The switch new value or operation:
+	 * 	 <ul>
+	 * 		<li><tt>NULL</tt>: Retrieve the current state.
+	 * 		<li><tt>TRUE</tt> Set the current state and return the previous state.
+	 * 		<li><tt>FALSE</tt>: Reset the current state and return the previous state.
+	 * 	 </ul>
+	 * 	<li><b>$theMask</ul>: The flag mask.
+	 * </ul>
+	 *
+	 * @param bitfield			   &$theAttribute		Bitfield attribute reference.
+	 * @param bitfield				$theMask			Flag mask.
+	 * @param mixed					$theValue			New value or operation.
+	 * @return boolean				Current or previous attribute switch value.
+	 */
+	protected function manageFlagAttribute( &$theAttribute, $theMask, $theValue = NULL )
+	{
+		//
+		// Return state.
+		//
+		if( $theValue === NULL )
+			return ($theAttribute & $theMask);										// ==>
+
+		//
+		// Save previous value.
+		//
+		$save = (boolean)($theAttribute & $theMask);
+
+		//
+		// Set flag.
+		//
+		if( $theValue )
+			$theAttribute |= $theMask;
+
+		//
+		// Reset flag.
+		//
+		else
+			$theAttribute &= (~$theMask);
+
+		return $save;																// ==>
+
+	} // manageFlag.
 
 	
 
