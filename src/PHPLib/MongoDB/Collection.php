@@ -88,7 +88,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
- *							PUBLIC DOCUMENT MANAGEMENT INTERFACE						*
+ *							PUBLIC DOCUMENT INSTANTIATION INTERFACE						*
  *																						*
  *======================================================================================*/
 
@@ -149,14 +149,24 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to return BSONDocument.
 	 *
-	 * @param Document				$theDocument		Document to be converted.
+	 * @param mixed					$theDocument		Document to be converted.
 	 * @return mixed				Database native object.
-	 *
-	 * @uses \Milko\PHPLib\Container::toArray()
 	 */
-	public function NewNativeDocument( \Milko\PHPLib\Container $theDocument )
+	public function NewNativeDocument( $theDocument )
 	{
-		return new \MongoDB\Model\BSONDocument( $theDocument->toArray() );			// ==>
+		//
+		// Handle native type.
+		//
+		if( $theDocument instanceof \MongoDB\Model\BSONDocument )
+			return $theDocument;													// ==>
+
+		//
+		// Handle container.
+		//
+		if( $theDocument instanceof \Milko\PHPLib\Container )
+			return $theDocument->toArray();											// ==>
+
+		return (array)$theDocument;													// ==>
 
 	} // NewNativeDocument.
 
@@ -475,74 +485,67 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
- *						PROTECTED RECORD MANAGEMENT INTERFACE							*
+ *						PROTECTED DOCUMENT MANAGEMENT INTERFACE							*
  *																						*
  *======================================================================================*/
 
 
 
 	/*===================================================================================
-	 *	doInsert																		*
+	 *	doInsertOne																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert one or more records.</h4>
+	 * <h4>Insert a document.</h4>
 	 *
-	 * We overload this method to use the {@link \MongoDB\Collection::insertOne()} method
-	 * to insert a single document and {@link \MongoDB\Collection::insertMany()} method to
-	 * insert many records.
+	 * We overload this method to use the {@link \MongoDB\Collection::insertOne()} method.
 	 *
-	 * @param mixed					$theDocument		The document(s) to be inserted.
-	 * @param array					$theOptions			Insert options.
-	 * @return mixed				The document's unique identifier(s).
+	 * @param mixed					$theDocument		The document to be inserted.
+	 * @return mixed				The document's key.
 	 *
 	 * @uses Connection()
 	 * @uses NewNativeDocument()
-	 * @uses \MongoDB\Collection::insertOne()
-	 * @uses \MongoDB\Collection::insertMany()
-	 * @see kTOKEN_OPT_MANY
 	 */
-	protected function doInsert( $theDocument, array $theOptions )
+	protected function doInsertOne( $theDocument )
 	{
-		//
-		// Convert data to be inserted.
-		//
-		if( $theOptions[ kTOKEN_OPT_MANY ] )
-		{
-			//
-			// Init local storage.
-			//
-			$data = [];
+		return
+			$this->Connection()->insertOne( $theDocument )
+				->getInsertedId();													// ==>
 
-			//
-			// Iterate documents.
-			//
-			foreach( $theDocument as $document )
-				$data[] = ( $document instanceof \Milko\PHPLib\Container )
-						? $this->NewNativeDocument( $document )
-						: (array)$document;
+	} // doInsertOne.
 
-		} // Many documents.
 
-		//
-		// Handle single document.
-		//
-		else
-			$data = ( $theDocument instanceof \Milko\PHPLib\Container )
-				  ? $this->NewNativeDocument( $theDocument )
-				  : (array)$theDocument;
+	/*===================================================================================
+	 *	doInsertMany																	*
+	 *==================================================================================*/
 
-		//
-		// Insert one or more records.
-		//
-		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-				? $this->Connection()->insertMany( $data )
-				: $this->Connection()->insertOne( $data );
+	/**
+	 * <h4>Insert a document.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::insertMany()} method.
+	 *
+	 * @param mixed					$theDocuments		The document to be inserted.
+	 * @return mixed				The document's key.
+	 *
+	 * @uses Connection()
+	 * @uses NewNativeDocument()
+	 */
+	protected function doInsertMany( $theDocuments )
+	{
+		return
+			$this->Connection()->insertMany( $theDocuments )
+				->getInsertedIds();													// ==>
 
-		return ( $theOptions[ kTOKEN_OPT_MANY ] ) ? $result->getInsertedIds()		// ==>
-												  : $result->getInsertedId();		// ==>
+	} // doInsertMany.
 
-	} // doInsert.
+
+
+/*=======================================================================================
+ *																						*
+ *						PROTECTED RECORD MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -882,18 +885,17 @@ class Collection extends \Milko\PHPLib\Collection
 		// Set selection filter.
 		//
 		$filter = ( $theOptions[ kTOKEN_OPT_MANY ] )
-			? [ $this->KeyOffset() => [ '$in' => (array)$theKey ] ]
-			: [ $this->KeyOffset() => $theKey ];
+				? [ $this->KeyOffset() => [ '$in' => (array)$theKey ] ]
+				: [ $this->KeyOffset() => $theKey ];
 
 		//
 		// Delete one or more records.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-			? $this->Connection()->deleteMany( $filter )
-			: $this->Connection()->deleteOne( $filter );
+				? $this->Connection()->deleteMany( $filter )
+				: $this->Connection()->deleteOne( $filter );
 
 		return $result->getDeletedCount();											// ==>
-
 
 	} // doDeleteByKey.
 

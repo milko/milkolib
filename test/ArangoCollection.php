@@ -76,22 +76,42 @@ $test->Truncate();
 echo( "\n====================================================================================\n\n" );
 
 //
-// Insert one record.
+// Insert native document.
 //
-echo( "Insert one record:\n" );
-echo( '$result = $test->Insert( ["data" => "Value 1", "color" => "red" ] );' . "\n" );
-$result = $id = $test->Insert( ["data" => "Value 1", "color" => "red" ] );
+echo( "Insert native document:\n" );
+echo( '$document = new triagens\ArangoDb\Document( ["data" => "Value 1", "color" => "red", kTAG_ARANGO_CLASS => "Milko\PHPLib\Document" ] );' . "\n" );
+$document = new triagens\ArangoDb\Document( ["data" => "Value 1", "color" => "red", kTAG_ARANGO_CLASS => "Milko\PHPLib\Document" ] );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
 var_dump( $result );
+print_r( $document );
 
 echo( "\n" );
 
 //
-// Insert many records.
+// Insert container.
 //
-echo( "Insert many records:\n" );
-echo( '$result = $test->Insert( [ ["_key" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", , "color" => "red" ], [ "_key" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ \'$doAll\' => TRUE ] );' . "\n" );
-$result = $test->Insert( [ ["_key" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", "color" => "red" ], [ "_key" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ '$doAll' => TRUE ] );
-print_r( $result );
+echo( "Insert container:\n" );
+echo( '$document = new Milko\PHPLib\Container( [kTAG_ARANGO_KEY => "ID1", "data" => 1, "color" => "green" ] );' . "\n" );
+$document = new Milko\PHPLib\Container( [kTAG_ARANGO_KEY => "ID1", "data" => 1, "color" => "green" ] );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
+var_dump( $result );
+print_r( $document );
+exit;
+
+echo( "\n" );
+
+//
+// Insert document.
+//
+echo( "Insert document:\n" );
+echo( '$document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );' . "\n" );
+$document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
+var_dump( $result );
+print_r( $document );
 
 echo( "\n====================================================================================\n\n" );
 

@@ -66,16 +66,29 @@ use Milko\PHPLib\Container;
  * probe a series of states:
  *
  * <ul>
- * 	<li><b>{@link IsPersistent()}</b>: Check whether the the document is stored or was
- * 		retrieved from a collection, <em>only {@link Collection} objects may set this
+ * 	<li><em>Persistent state</em>: This state indicates whether the the document is stored
+ * 		or was retrieved from a collection, <em>only {@link Collection} objects may set this
  * 		state, probing the state is public</em>.
- * 	<li><b>{@link IsModified()}</b>: Check whether the the document was modified since it
- * 		was instantiated, <em>only the current object may set this state, probing the state
- * 		is public</em>.
+ * 	 <ul>
+ * 		<li><b>{@link SetPersistentState()}</b>: Set the persistent state; requires
+ * 			providing the <tt>$this</tt> of the instance that is setting the state.
+ * 		<li><b>{@link GetPersistentState()}</b>: Get the persistent state.
+ * 	 </ul>
+ * 	<li><em>Modification state</em>: This state indicates whether the document was modified
+ * 		since it was instantiated, <em>only the current object or a {@link Collection}
+ * 		instance may set this state, probing the state is public</em>.
+ * 	 <ul>
+ * 		<li><b>{@link SetModificationState()}</b>: Set the modification state.
+ * 		<li><b>{@link GetModificationState()}</b>: Get the modification state.
+ * 	 </ul>
  * </ul>
  *
- * In order to ensure the correct object is setting the state, the above methods require to
- * provide <tt>$this</tt> when setting the value.
+ * A special public method, {@link SetKey()}, is used by {@link Collection} instances to set
+ * the document key (@link Collection::JeyOffset()}) after it was inserted, this is useful
+ * when the key was not provided and the database generated one automatically; this method
+ * will reset the modification state ({@link IsModified()}) after setting the key, so that
+ * the object will result clean after being inserted, this method can be called only by
+ * {@link Collection} instances.
  *
  *	@package	Core
  *
@@ -95,16 +108,6 @@ class Document extends Container
 	const kFLAG_DEFAULT = 0x00000000;
 
 	/**
-	 * Persistent status.
-	 *
-	 * This bitfield flag represents the persistent status of the document: if set, it means
-	 * that the document was retrieved, or that it was stored in a collection.
-	 *
-	 * @var bitfield
-	 */
-	const kFLAG_DOC_PERSISTENT = 0x00000001;
-
-	/**
 	 * Modified status.
 	 *
 	 * This bitfield flag represents the modification status of the document: if set, it
@@ -113,7 +116,17 @@ class Document extends Container
 	 *
 	 * @var bitfield
 	 */
-	const kFLAG_DOC_MODIFIED = 0x00000002;
+	const kFLAG_DOC_MODIFIED = 0x00000001;
+
+	/**
+	 * Persistent status.
+	 *
+	 * This bitfield flag represents the persistent status of the document: if set, it means
+	 * that the document was retrieved, or that it was stored in a collection.
+	 *
+	 * @var bitfield
+	 */
+	const kFLAG_DOC_PERSISTENT = 0x00000002;
 
 	/**
 	 * Status.
@@ -172,7 +185,7 @@ class Document extends Container
 		// Reset modification state.
 		//
 		if( $class == get_class( $this ) )
-			$this->IsModified( FALSE, $this );
+			$this->SetModificationState( FALSE, $this );
 
 	} // Constructor.
 
@@ -194,7 +207,7 @@ class Document extends Container
 	 * <h4>Set a value at a given offset.</h4>
 	 *
 	 * We override this method to set the modified flag ({@link kFLAG_DOC_MODIFIED}, it will
-	 * only be set if the value is set.
+	 * only be set for new values.
 	 *
 	 * @param string				$theOffset			Offset.
 	 * @param mixed					$theValue			Value to set at offset.
@@ -207,7 +220,7 @@ class Document extends Container
 		//
 		if( $theValue !== NULL )
 		{
-			$this->IsModified( TRUE, $this );
+			$this->SetModificationState( TRUE, $this );
 			parent::offsetSet( $theOffset, $theValue );
 		}
 
@@ -240,7 +253,7 @@ class Document extends Container
 		//
 		if( parent::offsetExists( $theOffset ) )
 		{
-			$this->IsModified( TRUE, $this );
+			$this->SetModificationState( TRUE, $this );
 			parent::offsetUnset( $theOffset );
 		}
 
@@ -269,7 +282,48 @@ class Document extends Container
 	 *
 	 * In this class we assume the object to be valid.
 	 */
-	protected function Validate()														   {}
+	public function Validate()														   {}
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC KEY MANAGEMENT INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	SetKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set document key.</h4>
+	 *
+	 * This method will be used by {@link Collection} instances to set the document key,
+	 * after setting it, the method will reset the modification state; only
+	 * {@link Collection} instances are allowed to call this method, for this reason it
+	 * expects the <tt>$this</tt> value as parameter.
+	 *
+	 * @param mixed					$theKey				The document key.
+	 * @param Collection			$theSetter			The instance calling the method.
+	 *
+	 * @uses SetModificationState()
+	 */
+	public function SetKey( $theKey, Collection $theSetter )
+	{
+		//
+		// Set document key.
+		//
+		$this->offsetSet( $theSetter->KeyOffset(), $theKey );
+
+		//
+		// Reset modification state.
+		//
+		$this->SetModificationState( FALSE, $this );
+
+	} // SetKey.
 
 
 
@@ -282,111 +336,124 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	IsPersistent																	*
+	 *	SetModificationState															*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage document persistent state.</h4>
+	 * <h4>Set the document modified state.</h4>
 	 *
-	 * This method can be used to set or check the document's persistent state, the method
-	 * expects the following parameters:
+	 * This method can be used to set or reset the document modification state, it can only
+	 * be called by the current object or by a {@link Collection} instance, or an exception
+	 * will be raised.
 	 *
-	 * <ul>
-	 * 	<li><b>$theValue</ul>: The new persistent state or the command:
-	 * 	 <ul>
-	 * 		<li><tt>NULL</tt>: Get the current persistent state.
-	 * 		<li><tt>FALSE</tt>: Reset the persistent state, the method will return the
-	 * 			previous state.
-	 * 		<tt>TRUE</tt> Set the persistent state, the method will return the previous
-	 * 			state.
-	 * 	 </ul>
-	 * 	<li><b>$theSetter</ul>: This parameter should be set by the caller: provide the
-	 * 		class reference of the object setting the value. Provide <tt>$this</tt> when
-	 * 		setting the value.
-	 * </ul>
+	 * Provide <tt>TRUE</tt> to set the <em>dirty</em> state and <tt>FALSE</tt> to set the
+	 * <em>clean</em> state.
 	 *
-	 * The second parameter is ignored when retrieving the state, but is required when
-	 * setting or resetting it: only objects derived from the {@link Collection} class are
-	 * allowed to indicate whether the object is persistent or not.
+	 * The second parameter is the <tt>$this</tt> value of the object calling the method,
+	 * Only a {@link Collection} instance or the current object are allowed to call the
+	 * method.
 	 *
-	 * @param mixed					$theValue			<tt>NULL</tt>, <tt>TRUE</tt> or
-	 * 													<tt>FALSE</tt>.
-	 * @param array					$theSetter			Setting object.
-	 * @return boolean				<tt>TRUE</tt> is persistent.
+	 * The method will return the state <em>before</em> it was set or reset.
+	 *
+	 * @param mixed					$theValue			<tt>TRUE</tt> or <tt>FALSE</tt>.
+	 * @param mixed					$theSetter			Setting object.
+	 * @return bool					New or old state.
 	 * @throws RuntimeException
 	 *
 	 * @uses manageFlagAttribute()
+	 * @see kFLAG_DOC_MODIFIED
 	 */
-	public function IsPersistent( $theValue, $theSetter = NULL )
+	public function SetModificationState( $theValue, $theSetter )
 	{
 		//
-		// Check who is setting the state.
+		// Let only this or a collection call it.
 		//
-		if( ($theValue !== NULL)
-			&& ($theValue !== FALSE)
-			&& (! ($theSetter instanceof Collection)) )
-			throw new \RuntimeException (
-				"Only collections may set the document persistent state." );	// !@! ==>
+		if( ($theSetter === $this)
+		 || ($theSetter instanceof Collection) )
+			return
+				$this->manageFlagAttribute(
+					$this->mStatus, self::kFLAG_DOC_MODIFIED, $theValue );			// ==>
 
-		return
-			$this->manageFlagAttribute(
-				$this->mStatus, kFLAG_DOC_PERSISTENT, $theValue );					// ==>
+		throw new \RuntimeException (
+			"Only collections or the current document " .
+			"are allowed to call this method." );								// !@! ==>
 
-	} // IsPersistent.
+	} // SetModificationState.
 
 
 	/*===================================================================================
-	 *	IsModified																		*
+	 *	GetModificationState															*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage document modified state.</h4>
+	 * <h4>Get the document current modified state.</h4>
 	 *
-	 * This method can be used to set or check the document's modified state, the method
-	 * expects the following parameters:
+	 * This method can be used to get the document current modification state, it returns
+	 * a boolean, <tt>TRUE</tt> for the <em>dirty</em> state and <tt>FALSE</tt> for the
+	 * <em>clean</em> state.
 	 *
-	 * <ul>
-	 * 	<li><b>$theValue</ul>: The new modified state or the command:
-	 * 	 <ul>
-	 * 		<li><tt>NULL</tt>: Get the current modified state.
-	 * 		<li><tt>FALSE</tt>: Reset the modified state, the method will return the
-	 * 			previous state.
-	 * 		<tt>TRUE</tt> Set the modified state, the method will return the previous
-	 * 			state.
-	 * 	 </ul>
-	 * 	<li><b>$theSetter</ul>: This parameter should be set by the caller: provide the
-	 * 		class reference of the object setting the value. Provide <tt>$this</tt> when
-	 * 		setting the value.
-	 * </ul>
+	 * @return bool					Current state.
 	 *
-	 * The second parameter is ignored when retrieving the state, but is required when
-	 * setting or resetting it: only the current object is allowed to indicate whether it
-	 * was modified or not.
+	 * @see kFLAG_DOC_MODIFIED
+	 */
+	public function GetModificationState()
+	{
+		return $this->mStatus & self::kFLAG_DOC_MODIFIED;							// ==>
+
+	} // GetModificationState.
+
+
+	/*===================================================================================
+	 *	SetPersistentState																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set the document persistent state.</h4>
 	 *
-	 * @param mixed					$theValue			<tt>NULL</tt>, <tt>TRUE</tt> or
-	 * 													<tt>FALSE</tt>.
-	 * @param array					$theSetter			Setting object.
-	 * @return boolean				<tt>TRUE</tt> was modified.
-	 * @throws RuntimeException
+	 * This method can be used to set or reset the document persistent state, it can only
+	 * be called by {@link Collection} instances.
+	 *
+	 * Provide <tt>TRUE</tt> after storing and after retrieving the document from its
+	 * collection, and <tt>FALSE</tt> after deleting the document.
+	 *
+	 * The method will return the state <em>before</em> it was set or reset.
+	 *
+	 * @param mixed					$theValue			<tt>TRUE</tt> or <tt>FALSE</tt>.
+	 * @param Collection			$theSetter			Setting object.
+	 * @return bool					New or old state.
 	 *
 	 * @uses manageFlagAttribute()
+	 * @see kFLAG_DOC_PERSISTENT
 	 */
-	public function IsModified( $theValue, $theSetter = NULL )
+	public function SetPersistentState( $theValue, Collection $theSetter )
 	{
-		//
-		// Check who is setting the state.
-		//
-		if( ($theValue !== NULL)
-		 && ($theValue !== FALSE)
-		 && ($theSetter !== $this) )
-			throw new \RuntimeException (
-				"Only collections may set the document modified state." );		// !@! ==>
-
 		return
 			$this->manageFlagAttribute(
-				$this->mStatus, kFLAG_DOC_MODIFIED, $theValue );					// ==>
+				$this->mStatus, self::kFLAG_DOC_PERSISTENT, $theValue );			// ==>
 
-	} // IsModified.
+	} // SetPersistentState.
+
+
+	/*===================================================================================
+	 *	GetPersistentState																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get the document persistent state.</h4>
+	 *
+	 * This method can be used to get the document persistent state, it returns a boolean
+	 * a boolean, <tt>TRUE</tt> if the object resides in a collection or <tt>FALSE</tt> if
+	 * it doesn't (yet).
+	 *
+	 * @return bool					Current state.
+	 *
+	 * @see kFLAG_DOC_PERSISTENT
+	 */
+	public function GetPersistentState()
+	{
+		return $this->mStatus & self::kFLAG_DOC_PERSISTENT;							// ==>
+
+	} // GetPersistentState.
 
 
 

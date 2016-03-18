@@ -68,7 +68,8 @@ use Milko\PHPLib\Document;
  *   </ul>
  * 	<li><em>Record related:</em>
  *   <ul>
- * 		<li><b>{@link Insert()}</b>: Insert one or more records.
+ * 		<li><b>{@link InsertOne()}</b>: Insert one record.
+ * 		<li><b>{@link InsertMany()}</b>: Insert many records.
  * 		<li><b>{@link Update()}</b>: Update one or more records.
  * 		<li><b>{@link Replace()}</b>: Replace one or more records.
  * 		<li><b>{@link FindByKey()}</b>: Search by key.
@@ -323,7 +324,7 @@ abstract class Collection extends Container
 
 /*=======================================================================================
  *																						*
- *							PUBLIC DOCUMENT MANAGEMENT INTERFACE						*
+ *							PUBLIC DOCUMENT INSTANTIATION INTERFACE						*
  *																						*
  *======================================================================================*/
 
@@ -386,17 +387,17 @@ abstract class Collection extends Container
 	 * <h4>Convert a standard document to native data.</h4>
 	 *
 	 * This method will instantiate a database native document from a {@link Container}
-	 * derived object.
+	 * derived object, an object that can be cast to an array, or from an array.
 	 *
 	 * This method is declared virtual, to allow database native derived classes to handle
 	 * their native types.
 	 *
 	 * Derived concrete classes must implement this method.
 	 *
-	 * @param Container				$theDocument		Document to be converted.
+	 * @param mixed					$theDocument		Document to be converted.
 	 * @return mixed				Database native object.
 	 */
-	abstract public function NewNativeDocument( Container $theDocument );
+	abstract public function NewNativeDocument( $theDocument );
 
 
 	/*===================================================================================
@@ -488,7 +489,7 @@ abstract class Collection extends Container
 
 /*=======================================================================================
  *																						*
- *							PUBLIC RECORD MANAGEMENT INTERFACE							*
+ *							PUBLIC DOCUMENT MANAGEMENT INTERFACE						*
  *																						*
  *======================================================================================*/
 
@@ -519,12 +520,17 @@ abstract class Collection extends Container
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The record(s) to be inserted must be either {@link Container} instances, or documents
-	 * in the native database format.
+	 * The record(s) to be inserted must be either {@link Container} instances, native
+	 * database documents, or arrays.
 	 *
 	 * The method will return either an array of keys, if you provided a set of documents,
-	 * or a single key, if not; the key corresponds to the object ID and is referenced by
-	 * the {@link KeyOffset()} document property.
+	 * or a single key, if not; the key corresponds to the {@link KeyOffset()} document
+	 * property.
+	 *
+	 * If the inserted document is derived from {@link Container}, the method will copy the
+	 * resulting document key back into the object; if the inserted document is derived from
+	 * {@link Document}, the method will set its state to persistent
+	 * {@link Document::IsPersistent()}.
 	 *
 	 * By default the operation will assume we provided a single document.
 	 *
@@ -534,8 +540,10 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Insert options.
 	 * @return mixed				The document's unique identifier(s).
 	 *
-	 * @uses doInsert()
 	 * @uses normaliseOptions()
+	 * @uses doInsertOne()
+	 * @uses doInsertMany()
+	 * @uses touchDocuments()
 	 * @see kTOKEN_OPT_MANY
 	 *
 	 * @example
@@ -551,11 +559,191 @@ abstract class Collection extends Container
 		//
 		$this->normaliseOptions( kTOKEN_OPT_MANY, FALSE, $theOptions );
 
-		return $this->doInsert( $theDocument, $theOptions );						// ==>
+		//
+		// Convert document(s) to native documents.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			$data = $this->NewNativeDocument( $theDocument );
+		else
+		{
+			$data = [];
+			foreach( $theDocument as $document )
+				$data[] = $this->NewNativeDocument( $document );
+		}
+
+		//
+		// Insert.
+		//
+		$key = ( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			? $this->doInsertOne( $data )
+			: $this->doInsertMany( $data );
+
+		//
+		// Set key(s).
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			//
+			// Handle container.
+			//
+			if( $theDocument instanceof Container )
+				$theDocument[ $this->KeyOffset() ] = $key;
+
+			//
+			// Handle document.
+			//
+			if( $theDocument instanceof Document )
+				$theDocument->SetKey( $key, $this );
+		}
+		else
+		{
+			//
+			// Iterate documents.
+			//
+			$list = $key;
+			foreach( $theDocument as $document )
+			{
+				//
+				// Get key.
+				//
+				$current = array_shift( $list );
+
+				//
+				// Handle container.
+				//
+				if( $document instanceof Container )
+					$document[ $this->KeyOffset() ] = $current;
+
+				//
+				// Handle document.
+				//
+				if( $document instanceof Document )
+					$document->SetKey( $current, $this );
+			}
+		}
+
+		//
+		// Set persistent status.
+		//
+		$this->touchDocuments( $theDocument, TRUE, $theOptions[ kTOKEN_OPT_MANY ] );
+
+		return $key;																// ==>
 
 	} // Insert.
 
-	
+
+	/*===================================================================================
+	 *	Delete																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents.</h4>
+	 *
+	 * This method can be used to delete one or more documents from the collection, the
+	 * method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The document or documents to be deleted.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
+	 * 			parameter represents a single document or a set of documents:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete a set of documents, in this case the provided
+	 * 				parameter should be an iterable object as an array or cursor.
+	 * 			<li><tt>FALSE</tt>: Delete a single document, in this case the provided
+	 * 				parameter will be considered the data to be inserted.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The record(s) to be deleted must be either {@link Container} instances, native
+	 * database documents, or arrays.
+	 *
+	 * The method will return the number of deleted documents.
+	 *
+	 * If any of the provided documents doesn't feature the {@link KeyOffset()} property,
+	 * the method will raise an exception.
+	 *
+	 * If the inserted document is derived from {@link Document}, the method will reset its
+	 * persistent state {@link Document::IsPersistent()}.
+	 *
+	 * By default the operation will assume we provided a single document.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theDocument		The document(s) to be deleted.
+	 * @param array					$theOptions			Delete options.
+	 * @return mixed				The number of deleted documents.
+	 *
+	 * @uses normaliseOptions()
+	 * @uses doInsertOne()
+	 * @uses doInsertMany()
+	 * @uses touchDocuments()
+	 * @see kTOKEN_OPT_MANY
+	 *
+	 * @example
+	 * // Delete a single document.<br/>
+	 * $count = $collection->Delete( $document );<br/>
+	 * // Delete a list of documents.<br/>
+	 * $count = $collection->Delete( $list, [ kTOKEN_OPT_MANY => TRUE ] );
+	 */
+	public function Delete( $theDocument, $theOptions = NULL )
+	{
+		//
+		// Normalise options.
+		//
+		$this->normaliseOptions( kTOKEN_OPT_MANY, FALSE, $theOptions );
+
+		//
+		// Collect document keys.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			if( array_key_exists( $this->KeyOffset(), $data = (array)$theDocument ) )
+				$key = $data[ $this->KeyOffset() ];
+			else
+				throw new \InvalidArgumentException (
+					"Document key is missing." );								// !@! ==>
+		}
+		else
+		{
+			$key = [];
+			foreach( $theDocument as $document )
+			{
+				if( array_key_exists( $this->KeyOffset(), $data = (array)$document ) )
+					$key[] = $data[ $this->KeyOffset() ];
+
+				else
+					throw new \InvalidArgumentException (
+						"Document key is missing." );							// !@! ==>
+			}
+		}
+
+		//
+		// Delete.
+		//
+		$count = $this->doDeleteByKey( $key, $theOptions );
+
+		//
+		// Set persistent status.
+		//
+		$this->touchDocuments( $theDocument, FALSE, $theOptions[ kTOKEN_OPT_MANY ] );
+
+		return $count;																// ==>
+
+	} // Delete.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC RECORD MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
 	/*===================================================================================
 	 *	Update																			*
 	 *==================================================================================*/
@@ -649,6 +837,7 @@ abstract class Collection extends Container
 	 * @return int					The number of replaced records.
 	 *
 	 * @uses doReplace()
+	 * @uses touchDocuments()
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_MANY
 	 */
@@ -659,7 +848,17 @@ abstract class Collection extends Container
 		//
 		$this->normaliseOptions( kTOKEN_OPT_MANY, TRUE, $theOptions );
 
-		return $this->doReplace( $theFilter, $theDocument, $theOptions );			// ==>
+		//
+		// Replace document(s).
+		//
+		$result = $this->doReplace( $theFilter, $theDocument, $theOptions );
+
+		//
+		// Set document(s) persistent state.
+		//
+		$this->touchDocuments( $theDocument, TRUE, $theOptions[ kTOKEN_OPT_MANY ] );
+
+		return $result;																// ==>
 
 	} // Replace.
 
@@ -861,6 +1060,7 @@ abstract class Collection extends Container
 	 * @return mixed				The found document(s).
 	 *
 	 * @uses doFindByKey()
+	 * @uses touchDocuments()
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_MANY
 	 * @see kTOKEN_OPT_FORMAT
@@ -875,7 +1075,18 @@ abstract class Collection extends Container
 		$this->normaliseOptions(
 			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
 
-		return $this->doFindByKey( $theKey, $theOptions );							// ==>
+		//
+		// Find document(s).
+		//
+		$result = $this->doFindByKey( $theKey, $theOptions );
+
+		//
+		// Set document(s) persistent state.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_STANDARD )
+			$this->touchDocuments( $result, TRUE, $theOptions[ kTOKEN_OPT_MANY ] );
+
+		return $result;																// ==>
 
 	} // FindByKey.
 
@@ -925,8 +1136,9 @@ abstract class Collection extends Container
 	 *
 	 * @param mixed					$theDocument		The example document.
 	 * @param array					$theOptions			Find options.
-	 * @return mixed				The found records.
+	 * @return Iterator				The found records.
 	 *
+	 * @uses touchDocuments()
 	 * @uses doFindByExample()
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_SKIP
@@ -952,7 +1164,18 @@ abstract class Collection extends Container
 		 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
-		return $this->doFindByExample( $theDocument, $theOptions );					// ==>
+		//
+		// Find documents.
+		//
+		$result = $this->doFindByExample( $theDocument, $theOptions );
+
+		//
+		// Set document(s) persistent state.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_STANDARD )
+			$this->touchDocuments( $result, TRUE, TRUE );
+
+		return $result;																// ==>
 
 	} // FindByExample.
 
@@ -1000,6 +1223,7 @@ abstract class Collection extends Container
 	 * @return mixed				The found records.
 	 *
 	 * @uses doFindByQuery()
+	 * @uses touchDocuments()
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
@@ -1016,9 +1240,29 @@ abstract class Collection extends Container
 			&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
-		return $this->doFindByQuery( $theQuery, $theOptions );						// ==>
+		//
+		// Find documents.
+		//
+		$result = $this->doFindByQuery( $theQuery, $theOptions );
+
+		//
+		// Set document(s) persistent state.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_STANDARD )
+			$this->touchDocuments( $result, TRUE, TRUE );
+
+		return $result;																// ==>
 
 	} // FindByQuery.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC COUNTER MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -1076,6 +1320,15 @@ abstract class Collection extends Container
 	 * @return int					The found records count.
 	 */
 	abstract public function CountByQuery( $theQuery = NULL );
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC AGGREGATION MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -1182,48 +1435,54 @@ abstract class Collection extends Container
  *						PROTECTED DOCUMENT MANAGEMENT INTERFACE							*
  *																						*
  *======================================================================================*/
-	
-	
-	
+
+
+
 	/*===================================================================================
-	 *	doInsert																		*
+	 *	doInsertOne																		*
 	 *==================================================================================*/
-	
+
 	/**
-	 * <h4>Insert one or more records.</h4>
+	 * <h4>Insert a document.</h4>
 	 *
-	 * This method should insert the provided record or records, the method expects the
-	 * following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theDocument</b>: The document or documents to be inserted.
-	 *	<li><b>$theOptions</b>: An array of options:
-	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
-	 * 			parameter represents a single document or a set of documents:
-	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Insert a set of documents, in this case the provided
-	 * 				parameter should be an iterable object as an array or cursor.
-	 * 			<li><tt>FALSE</tt>: Insert a single document, in this case the provided
-	 * 				parameter will be considered the data to be inserted.
-	 * 		 </ul>
-	 * 	 </ul>
-	 * </ul>
-	 *
-	 * The record(s) to be inserted must be either {@link Container} instances, or documents
-	 * in the native database format.
-	 *
-	 * The method will return either an array of keys, if you provided a set of documents,
-	 * or a single key, if not; the key corresponds to the object ID and is referenced by
-	 * the {@link KeyOffset()} document property.
+	 * This method should insert a document in the collection and return its key
+	 * ({@link KeyOffset()}), the method expects a document provided as a {@link Container}
+	 * object, an object in the database native format, or an array.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theDocument		The document(s) to be inserted.
-	 * @param array					$theOptions			Insert options.
-	 * @return mixed				The document's unique identifier(s).
+	 * @param mixed					$theDocument		The document to be inserted.
+	 * @return mixed				The document's key.
 	 */
-	abstract protected function doInsert( $theDocument, array $theOptions );
+	abstract protected function doInsertOne( $theDocument );
+
+
+	/*===================================================================================
+	 *	doInsertMany																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a list of documents.</h4>
+	 *
+	 * This method should insert a list of documents in the collection and return their keys
+	 * ({@link KeyOffset()}), the method expects an iterable list of elements expressed as
+	 * a {@link Container} object, an object in the database native format, or an array.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theDocuments		The documents list.
+	 * @return array				The document keys.
+	 */
+	abstract protected function doInsertMany( $theDocuments );
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED RECORD MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -1649,6 +1908,59 @@ abstract class Collection extends Container
 			$theOptions[ $theToken ] = $theDefault;
 
 	} // normaliseOptions.
+
+
+	/*===================================================================================
+	 *	touchDocuments																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set document(s) persistent state.</h4>
+	 *
+	 * This method can be used to set a document(s)'s persistent state, it should be called
+	 * whenever inserting, retrieving or deleting documents from the database.
+	 *
+	 * The method expects three parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: Either a single document, or a set of documents.
+	 *	<li><b>$theState</b>: The persistent state to set: <tt>TRUE</tt> is persistent.
+	 *	<li><b>$isSet</b>: If <tt>TRUE</tt>, it means that the document parameter represents
+	 * 		a set of documents and that it is iterable.
+	 * </ul>
+	 *
+	 * @param mixed					$theDocument		The document(s) to set.
+	 * @param bool					$theState			Set or reset.
+	 * @param bool					$isSet				Document set or scalar.
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses Document::SetPersistentState()
+	 */
+	protected function touchDocuments( $theDocument, bool $theState, bool $isSet )
+	{
+		//
+		// Handle scalars.
+		//
+		if( ! $isSet )
+		{
+			if( $theDocument instanceof Document )
+				$theDocument->SetPersistentState( $theState, $this );
+		}
+
+		//
+		// Handle sets.
+		//
+		else
+		{
+			//
+			// Iterate document set.
+			//
+			foreach( $theDocument as $document )
+				$this->touchDocuments( $document, $theState, FALSE );
+
+		} // Document set.
+
+	} // touchDocuments.
 
 	
 	

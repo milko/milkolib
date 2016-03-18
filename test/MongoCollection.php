@@ -70,22 +70,89 @@ $test->Truncate();
 echo( "\n====================================================================================\n\n" );
 
 //
-// Insert one record.
+// Insert native document.
 //
-echo( "Insert one record:\n" );
-echo( '$result = $test->Insert( new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] ) );' . "\n" );
-$result = $test->Insert( new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] ) );
-print_r( $result );
+echo( "Insert native document:\n" );
+echo( '$document = new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] );' . "\n" );
+$document = new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
+var_dump( $result );
+print_r( $document );
 
 echo( "\n" );
 
 //
-// Insert many records.
+// Insert container.
 //
-echo( "Insert many records:\n" );
-echo( '$result = $test->Insert( [ ["_id" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", , "color" => "red" ], [ "_id" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ \'$doAll\' => TRUE ] );' . "\n" );
-$result = $test->Insert( [ ["_id" => "ID1", "data" => 1, "color" => "green" ], [ "data" => "XXX", "color" => "red" ], [ "_id" => "ID2", "data" => "XXX", "color" => "yellow" ] ], [ '$doAll' => TRUE ] );
+echo( "Insert container:\n" );
+echo( '$document = new Milko\PHPLib\Container( [kTAG_MONGO_KEY => "ID1", "data" => 1, "color" => "green" ] );' . "\n" );
+$document = new Milko\PHPLib\Container( [kTAG_MONGO_KEY => "ID1", "data" => 1, "color" => "green" ] );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
+var_dump( $result );
+print_r( $document );
+
+echo( "\n" );
+
+//
+// Insert document.
+//
+echo( "Insert document:\n" );
+echo( '$document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );' . "\n" );
+$document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
+var_dump( $result );
+print_r( $document );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Insert many array documents.
+//
+echo( "Insert many array documents:\n" );
+echo( '$document = [ [ kTAG_MONGO_KEY => "ID2", "data" => "XXX", "color" => "yellow" ], [ "name" => "Nati" ] ];' . "\n" );
+$document = [ [ kTAG_MONGO_KEY => "ID2", "data" => "XXX", "color" => "yellow" ], [ "name" => "Nati" ] ];
+echo( '$result = $test->Insert( $document, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
+$result = $test->Insert( $document, [ kTOKEN_OPT_MANY => TRUE ] );
+var_dump( $result );
+print_r( $document );
+
+echo( "\n" );
+
+//
+// Insert many documents.
+//
+echo( "Insert many documents:\n" );
+echo( '$documents = [ new Milko\PHPLib\Document( $test, [ kTAG_MONGO_KEY => 7, "name" => "Cangalovic" ] ), new Milko\PHPLib\Document( $test, [ "name" => "no" ] ), new Milko\PHPLib\Document( $test, [ "name" => "yes" ] ) ];' . "\n" );
+$documents = [ new Milko\PHPLib\Document( $test, [ kTAG_MONGO_KEY => 7, "name" => "Cangalovic" ] ), new Milko\PHPLib\Document( $test, [ "name" => "no" ] ), new Milko\PHPLib\Document( $test, [ "name" => "yes" ] ) ];
+echo( '$result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
+$result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
 print_r( $result );
+print_r( $documents );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Delete one document.
+//
+echo( "Delete one document:\n" );
+echo( '$result = $test->Delete( $documents[ 0 ] );' . "\n" );
+$result = $test->Delete( $documents[ 0 ] );
+var_dump( $result );
+print_r( $documents[ 0 ] );
+
+echo( "\n" );
+
+//
+// Delete many documents.
+//
+echo( "Delete many documents:\n" );
+echo( '$result = $test->Delete( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
+$result = $test->Delete( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
+var_dump( $result );
+print_r( $documents );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -379,7 +446,7 @@ echo( "\n=======================================================================
 //
 echo( "Aggregate records:\n" );
 $project = [ "colour" => '$color' ];
-$group = [ "_id" => '$colour', "count" => [ '$sum' => 1 ] ];
+$group = [ kTAG_MONGO_KEY => '$colour', "count" => [ '$sum' => 1 ] ];
 $sort = [ "count" => 1 ];
 $pipeline = [ [ '$project' => $project ], [ '$group' => $group ], [ '$sort' => $sort ] ];
 echo( '$pipeline = ' );

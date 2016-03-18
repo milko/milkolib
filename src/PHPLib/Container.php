@@ -392,14 +392,14 @@ class Container extends \ArrayObject
 	 * following parameters:
 	 *
 	 * <ul>
-	 * 	<li><b>&$theAttribute</ul>: Reference of the attribute.
-	 * 	<li><b>$theValue</ul>: The switch new value or operation:
+	 * 	<li><b>&$theAttribute</b>: Reference of the attribute.
+	 * 	<li><b>$theValue</b>: The switch new value or operation:
 	 * 	 <ul>
 	 * 		<li><tt>NULL</tt>: Retrieve the current state.
 	 * 		<li><tt>TRUE</tt> Set the current state and return the previous state.
 	 * 		<li><tt>FALSE</tt>: Reset the current state and return the previous state.
 	 * 	 </ul>
-	 * 	<li><b>$theMask</ul>: The flag mask.
+	 * 	<li><b>$theMask</b>: The flag mask.
 	 * </ul>
 	 *
 	 * @param bitfield			   &$theAttribute		Bitfield attribute reference.

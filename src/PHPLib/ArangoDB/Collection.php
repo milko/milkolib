@@ -208,20 +208,25 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to return an ArangoDocument.
 	 *
-	 * @param Container				$theDocument		Document to be converted.
+	 * @param mixed					$theDocument		Document to be converted.
 	 * @return mixed				Database native object.
 	 *
 	 * @uses IdOffset()
 	 * @uses RevisionOffset()
 	 */
-	public function NewNativeDocument(\Milko\PHPLib\Container $theDocument )
+	public function NewNativeDocument( $theDocument )
 	{
 		//
 		// Clone document.
 		// We really don't need to do this, but in case an object was provided...
 		// Also, we work on a clone, not the original document.
 		//
-		$document = new \Milko\PHPLib\Container( $theDocument->toArray() );
+		if( $theDocument instanceof ArangoDocument )
+			return $theDocument;													// ==>
+		if( $theDocument instanceof Container )
+			$document = new \Milko\PHPLib\Container( $theDocument->toArray() );
+		else
+			$document = new \Milko\PHPLib\Container( (array)$theDocument );
 
 		//
 		// Save and remove revision.
@@ -570,75 +575,74 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	doInsert																		*
+	 *	doInsertOne																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert one or more records.</h4>
+	 * <h4>Insert a document.</h4>
 	 *
-	 * We overload the method to instantiate a document handler, we then check whether the
-	 * provided document parameter refers to many documents, in which case we iterate them
-	 * and save one by one; if not, we just save it.
+	 * We overload this method to use the {@link triagens\ArangoDb\DocumentHandler::save()}
+	 * method.
 	 *
-	 * @param mixed					$theDocument		The document(s) to be inserted.
-	 * @param array					$theOptions			Insert options.
-	 * @return mixed				The document's unique identifier(s).
+	 * @param mixed					$theDocument		The document to be inserted.
+	 * @return mixed				The document's key.
 	 *
 	 * @uses Database()
-	 * @uses Connection()
 	 * @uses NewNativeDocument()
-	 * @uses triagens\ArangoDb\Document::createFromArray()
-	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
-	protected function doInsert( $theDocument, array $theOptions )
+	protected function doInsertOne( $theDocument )
 	{
 		//
 		// Init local storage.
 		//
 		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
+		return $handler->save( $this->Connection(), $theDocument );					// ==>
+
+	} // doInsertOne.
+
+
+	/*===================================================================================
+	 *	doInsertMany																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a document.</h4>
+	 *
+	 * We overload this method to use the {@link triagens\ArangoDb\DocumentHandler::save()}
+	 * method.
+	 *
+	 * @param mixed					$theDocuments		The document to be inserted.
+	 * @return mixed				The document's key.
+	 *
+	 * @uses Database()
+	 * @uses NewNativeDocument()
+	 */
+	protected function doInsertMany( $theDocuments )
+	{
 		//
-		// Handle many documents.
+		// Iterate documents.
 		//
-		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		$ids = [];
+		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+		foreach( $theDocuments as $document )
 		{
 			//
-			// Init local storage.
+			// Convert to document.
 			//
-			$ids = [];
+			$record = ( $document instanceof \Milko\PHPLib\Container )
+					? $this->NewNativeDocument( $document )
+					: ArangoDocument::createFromArray( (array)$document );
 
 			//
-			// Iterate documents.
+			// Insert document.
 			//
-			foreach( $theDocument as $document )
-			{
-				//
-				// Convert to document.
-				//
-				$record = ( $document instanceof \Milko\PHPLib\Container )
-						? $this->NewNativeDocument( $document )
-						: ArangoDocument::createFromArray( (array)$document );
+			$ids[] = $handler->save( $this->Connection(), $record );
+		}
 
-				//
-				// Insert document.
-				//
-				$ids[] = $handler->save( $this->Connection(), $record );
-			}
+		return $ids;																// ==>
 
-			return $ids;															// ==>
-
-		} // Many documents.
-
-		//
-		// Convert to document.
-		//
-		$record = ( $theDocument instanceof \Milko\PHPLib\Container )
-				? $this->NewNativeDocument( $theDocument )
-				: ArangoDocument::createFromArray( (array)$theDocument );
-
-		return $handler->save( $this->Connection(), $record );						// ==>
-
-	} // doInsert.
+	} // doInsertMany.
 
 
 	/*===================================================================================
@@ -829,206 +833,6 @@ class Collection extends \Milko\PHPLib\Collection
 		return $count;																// ==>
 
 	} // doReplace.
-
-
-	/*===================================================================================
-	 *	doDeleteByKey																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete the first or all records by key.</h4>
-	 *
-	 * We overload this method to use the {@link FindByKey()} method and pass the resulting
-	 * cursor to the protected {@link doDeleteByCursor()}.
-	 *
-	 * @param mixed					$theKey				The document key(s).
-	 * @param array					$theOptions			Find options.
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses Database()
-	 * @uses FindByKey()
-	 * @uses doDeleteByCursor()
-	 * @uses triagens\ArangoDb\DocumentHandler::remove()
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_NATIVE
-	 */
-	protected function doDeleteByKey( $theKey, array $theOptions )
-	{
-		//
-		// Normalise options.
-		//
-		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
-
-		//
-		// Make selection.
-		//
-		$cursor = $this->FindByKey( $theKey, $theOptions );
-		if( $cursor instanceof ArangoCursor )
-			return $this->doDeleteByCursor( $cursor, $theOptions );					// ==>
-		if( $cursor !== NULL )
-		{
-			//
-			// Instantiate document handler.
-			//
-			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
-
-			//
-			// Remove document.
-			//
-			$handler->remove( $cursor );
-
-			return 1;																// ==>
-		}
-
-		return 0;																	// ==>
-
-	} // doDeleteByKey.
-
-
-	/*===================================================================================
-	 *	doDeleteByExample																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete the first or all records by example.</h4>
-	 *
-	 * We overload this method to use the {@link FindByExample()} method and pass the
-	 * resulting cursor to the protected {@link doDeleteByCursor()}.
-	 *
-	 * @param mixed					$theDocument		The example document.
-	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses FindByExample()
-	 * @uses doDeleteByCursor()
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_NATIVE
-	 */
-	protected function doDeleteByExample( $theDocument, array $theOptions )
-	{
-		//
-		// Normalise options.
-		//
-		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
-
-		return
-			$this->doDeleteByCursor(
-				$this->FindByExample( $theDocument, $theOptions ),
-				$theOptions );														// ==>
-
-	} // doDeleteByExample.
-
-
-	/*===================================================================================
-	 *	doDeleteByQuery																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete the first or all records by query.</h4>
-	 *
-	 * We overload this method to use the {@link FindByExample()} method and pass the
-	 * resulting cursor to the protected {@link doDeleteByCursor()}.
-	 *
-	 * Note that you can delete using AQL, try to use the dedicated methods, so the workflow
-	 * will be more consistent.
-	 *
-	 * @param mixed					$theQuery			The selection criteria.
-	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses FindByQuery()
-	 * @uses doDeleteByCursor()
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_NATIVE
-	 */
-	protected function doDeleteByQuery( $theQuery, array $theOptions )
-	{
-		//
-		// Normalise options.
-		//
-		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
-
-		return
-			$this->doDeleteByCursor(
-				$this->FindByQuery( $theQuery, $theOptions ),
-				$theOptions );														// ==>
-
-	} // doDeleteByQuery.
-
-
-	/*===================================================================================
-	 *	doDeleteByCursor																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete the the documents from a cursor.</h4>
-	 *
-	 * This method will delete the first or all documents contained in the provided cursor,
-	 * the method expects the following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theCursor</b>: The cursor.
-	 *	<li><b>$theOptions</b>: An array of options:
-	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
-	 *			only the first selected record or all:
-	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
-	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
-	 * 		 </ul>
-	 * 	 </ul>
-	 * </ul>
-	 *
-	 * The method will return the number of deleted records.
-	 *
-	 * @param mixed					$theCursor			The cursor.
-	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses Database()
-	 * @uses collectionName()
-	 * @uses triagens\ArangoDb\DocumentHandler::remove()
-	 */
-	protected function doDeleteByCursor( ArangoCursor $theCursor, array $theOptions )
-	{
-		//
-		// Get count.
-		//
-		$count = $theCursor->getCount();
-
-		//
-		// Handle selection.
-		//
-		if( $count )
-		{
-			//
-			// Instantiate document handler.
-			//
-			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
-
-			//
-			// Process selection.
-			//
-			foreach( $theCursor as $document )
-			{
-				//
-				// Remove document.
-				//
-				$handler->remove( $document );
-
-				//
-				// Handle only first.
-				//
-				if( ! $theOptions[ kTOKEN_OPT_MANY ] )
-					return 1;														// ==>
-
-			} // Iterating documents.
-
-		} // Non empty selection.
-
-		return $count;																// ==>
-
-	} // doDeleteByCursor.
 
 
 	/*===================================================================================
@@ -1259,6 +1063,214 @@ class Collection extends \Milko\PHPLib\Collection
 			$statement->execute(), $theOptions[ kTOKEN_OPT_FORMAT ] );				// ==>
 
 	} // doFindByQuery.
+
+
+	/*===================================================================================
+	 *	doDeleteByKey																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by key.</h4>
+	 *
+	 * We overload this method to use the {@link FindByKey()} method and pass the resulting
+	 * cursor to the protected {@link doDeleteByCursor()}.
+	 *
+	 * @param mixed					$theKey				The document key(s).
+	 * @param array					$theOptions			Find options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Database()
+	 * @uses FindByKey()
+	 * @uses doDeleteByCursor()
+	 * @uses triagens\ArangoDb\DocumentHandler::remove()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	protected function doDeleteByKey( $theKey, array $theOptions )
+	{
+		//
+		// Normalise options.
+		//
+		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
+
+		//
+		// Make selection.
+		//
+		$cursor = $this->FindByKey( $theKey, $theOptions );
+
+		//
+		// Handle cursor.
+		//
+		if( $cursor instanceof ArangoCursor )
+			return $this->doDeleteByCursor( $cursor, $theOptions );					// ==>
+
+		//
+		// Handle document.
+		//
+		if( $cursor !== NULL )
+		{
+			//
+			// Instantiate document handler.
+			//
+			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+
+			//
+			// Remove document.
+			//
+			$handler->remove( $cursor );
+
+			return 1;																// ==>
+		}
+
+		return 0;																	// ==>
+
+	} // doDeleteByKey.
+
+
+	/*===================================================================================
+	 *	doDeleteByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by example.</h4>
+	 *
+	 * We overload this method to use the {@link FindByExample()} method and pass the
+	 * resulting cursor to the protected {@link doDeleteByCursor()}.
+	 *
+	 * @param mixed					$theDocument		The example document.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses FindByExample()
+	 * @uses doDeleteByCursor()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	protected function doDeleteByExample( $theDocument, array $theOptions )
+	{
+		//
+		// Normalise options.
+		//
+		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
+
+		return
+			$this->doDeleteByCursor(
+				$this->FindByExample( $theDocument, $theOptions ),
+				$theOptions );														// ==>
+
+	} // doDeleteByExample.
+
+
+	/*===================================================================================
+	 *	doDeleteByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by query.</h4>
+	 *
+	 * We overload this method to use the {@link FindByExample()} method and pass the
+	 * resulting cursor to the protected {@link doDeleteByCursor()}.
+	 *
+	 * Note that you can delete using AQL, try to use the dedicated methods, so the workflow
+	 * will be more consistent.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses FindByQuery()
+	 * @uses doDeleteByCursor()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	protected function doDeleteByQuery( $theQuery, array $theOptions )
+	{
+		//
+		// Normalise options.
+		//
+		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
+
+		return
+			$this->doDeleteByCursor(
+				$this->FindByQuery( $theQuery, $theOptions ),
+				$theOptions );														// ==>
+
+	} // doDeleteByQuery.
+
+
+	/*===================================================================================
+	 *	doDeleteByCursor																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the the documents from a cursor.</h4>
+	 *
+	 * This method will delete the first or all documents contained in the provided cursor,
+	 * the method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theCursor</b>: The cursor.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
+	 *			only the first selected record or all:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
+	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The method will return the number of deleted records.
+	 *
+	 * @param mixed					$theCursor			The cursor.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Database()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::remove()
+	 */
+	protected function doDeleteByCursor( ArangoCursor $theCursor, array $theOptions )
+	{
+		//
+		// Get count.
+		//
+		$count = $theCursor->getCount();
+
+		//
+		// Handle selection.
+		//
+		if( $count )
+		{
+			//
+			// Instantiate document handler.
+			//
+			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+
+			//
+			// Process selection.
+			//
+			foreach( $theCursor as $document )
+			{
+				//
+				// Remove document.
+				//
+				$handler->remove( $document );
+
+				//
+				// Handle only first.
+				//
+				if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+					return 1;														// ==>
+
+			} // Iterating documents.
+
+		} // Non empty selection.
+
+		return $count;																// ==>
+
+	} // doDeleteByCursor.
 
 
 
