@@ -2,326 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8bc12787-e3d0-41d0-b0bd-e8bf5e92355d" name="Default" comment="&#10;">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/docs/class-ComposerAutoloaderInitcea8eb84f11c06ea11353c3abbc33142.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/docs/function-composerRequirecea8eb84f11c06ea11353c3abbc33142.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/docs/source-class-ComposerAutoloaderInitcea8eb84f11c06ea11353c3abbc33142.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/docs/source-function-composerRequirecea8eb84f11c06ea11353c3abbc33142.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/-API-documentation.zip" afterPath="$PROJECT_DIR$/docs/-API-documentation.zip" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/404.html" afterPath="$PROJECT_DIR$/docs/404.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/annotation-group-todo.html" afterPath="$PROJECT_DIR$/docs/annotation-group-todo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.ArangoDB.Collection.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.ArangoDB.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.ArangoDB.DataServer.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.ArangoDB.DataServer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.ArangoDB.Database.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.ArangoDB.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Collection.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Container.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Container.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.DataServer.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.DataServer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.DataSource.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.DataSource.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Database.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Document.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Document.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.DocumentSet.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.DocumentSet.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.MongoDB.Collection.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.MongoDB.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.MongoDB.DataServer.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.MongoDB.DataServer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.MongoDB.Database.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.MongoDB.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Server.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Server.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Term.html" afterPath="$PROJECT_DIR$/docs/class-Milko.PHPLib.Term.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/class-triagens.ArangoDb.Document.html" afterPath="$PROJECT_DIR$/docs/class-triagens.ArangoDb.Document.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_AUTH_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_AUTH_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_CLIENT_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_CLIENT_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_CREATE_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_CREATE_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_PERSIST_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_PERSIST_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_RECONNECT_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_RECONNECT_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_TIMEOUT_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/constant-kARANGO_OPTS_TIMEOUT_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kMONGO_OPTS_CLIENT_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/constant-kMONGO_OPTS_CLIENT_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_ARANGO_CLASS.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_ARANGO_CLASS.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_ARANGO_KEY.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_ARANGO_KEY.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_ARANGO_REVISION.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_ARANGO_REVISION.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_DESCRIPTION.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_DESCRIPTION.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_GID.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_GID.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_LID.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_LID.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_MONGO_CLASS.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_MONGO_CLASS.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_MONGO_KEY.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_MONGO_KEY.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_MONGO_REVISION.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_MONGO_REVISION.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_NAME.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_NAME.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTAG_NS.html" afterPath="$PROJECT_DIR$/docs/constant-kTAG_NS.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_NAMESPACE_SEPARATOR.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_NAMESPACE_SEPARATOR.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_FORMAT.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_FORMAT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_FORMAT_HANDLE.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_FORMAT_HANDLE.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_FORMAT_NATIVE.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_FORMAT_NATIVE.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_FORMAT_STANDARD.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_FORMAT_STANDARD.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_LIMIT.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_LIMIT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_MANY.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_MANY.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_SKIP.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_OPT_SKIP.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/constant-kTOKEN_TAG_PREFIX.html" afterPath="$PROJECT_DIR$/docs/constant-kTOKEN_TAG_PREFIX.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/elementlist.js" afterPath="$PROJECT_DIR$/docs/elementlist.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/function-Composer.Autoload.includeFile.html" afterPath="$PROJECT_DIR$/docs/function-Composer.Autoload.includeFile.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/function-dumpCollection.html" afterPath="$PROJECT_DIR$/docs/function-dumpCollection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/function-dumpWriteResults.html" afterPath="$PROJECT_DIR$/docs/function-dumpWriteResults.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/function-triagens.ArangoDb.getConnection.html" afterPath="$PROJECT_DIR$/docs/function-triagens.ArangoDb.getConnection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/function-triagens.ArangoDb.getConnectionOptions.html" afterPath="$PROJECT_DIR$/docs/function-triagens.ArangoDb.getConnectionOptions.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/function-triagens.ArangoDb.isCluster.html" afterPath="$PROJECT_DIR$/docs/function-triagens.ArangoDb.isCluster.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/index.html" afterPath="$PROJECT_DIR$/docs/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-Composer.Autoload.html" afterPath="$PROJECT_DIR$/docs/namespace-Composer.Autoload.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-Composer.html" afterPath="$PROJECT_DIR$/docs/namespace-Composer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-Milko.PHPLib.ArangoDB.html" afterPath="$PROJECT_DIR$/docs/namespace-Milko.PHPLib.ArangoDB.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-Milko.PHPLib.MongoDB.html" afterPath="$PROJECT_DIR$/docs/namespace-Milko.PHPLib.MongoDB.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-Milko.PHPLib.html" afterPath="$PROJECT_DIR$/docs/namespace-Milko.PHPLib.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-Milko.html" afterPath="$PROJECT_DIR$/docs/namespace-Milko.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.Exception.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.Exception.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.Model.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.Model.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.Operation.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.Operation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.Collection.CrudSpec.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.Collection.CrudSpec.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.Collection.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.Database.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.Operation.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.Operation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.Tests.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-MongoDB.html" afterPath="$PROJECT_DIR$/docs/namespace-MongoDB.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-None.html" afterPath="$PROJECT_DIR$/docs/namespace-None.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-PHP.html" afterPath="$PROJECT_DIR$/docs/namespace-PHP.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-triagens.ArangoDb.html" afterPath="$PROJECT_DIR$/docs/namespace-triagens.ArangoDb.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/namespace-triagens.html" afterPath="$PROJECT_DIR$/docs/namespace-triagens.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Composer.Autoload.ClassLoader.html" afterPath="$PROJECT_DIR$/docs/source-class-Composer.Autoload.ClassLoader.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.ArangoDB.Collection.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.ArangoDB.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.ArangoDB.DataServer.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.ArangoDB.DataServer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.ArangoDB.Database.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.ArangoDB.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Collection.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Container.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Container.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.DataServer.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.DataServer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.DataSource.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.DataSource.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Database.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Document.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Document.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.DocumentSet.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.DocumentSet.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.MongoDB.Collection.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.MongoDB.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.MongoDB.DataServer.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.MongoDB.DataServer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.MongoDB.Database.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.MongoDB.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Server.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Server.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Term.html" afterPath="$PROJECT_DIR$/docs/source-class-Milko.PHPLib.Term.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.BulkWriteResult.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.BulkWriteResult.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Client.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Client.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Collection.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Database.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.DeleteResult.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.DeleteResult.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.BadMethodCallException.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.BadMethodCallException.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.Exception.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.Exception.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.InvalidArgumentException.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.InvalidArgumentException.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.RuntimeException.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.RuntimeException.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.UnexpectedValueException.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Exception.UnexpectedValueException.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.InsertManyResult.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.InsertManyResult.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.InsertOneResult.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.InsertOneResult.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.BSONArray.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.BSONArray.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.BSONDocument.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.BSONDocument.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.CollectionInfo.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.CollectionInfo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.CollectionInfoIterator.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.CollectionInfoIterator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.DatabaseInfo.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.DatabaseInfo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.DatabaseInfoIterator.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.DatabaseInfoIterator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.IndexInfo.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.IndexInfo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.IndexInfoIterator.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Model.IndexInfoIterator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.Aggregate.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.Aggregate.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.BulkWrite.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.BulkWrite.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.Count.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.Count.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.CreateCollection.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.CreateCollection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.CreateIndexes.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.CreateIndexes.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DatabaseCommand.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DatabaseCommand.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DeleteMany.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DeleteMany.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DeleteOne.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DeleteOne.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.Distinct.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.Distinct.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DropCollection.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DropCollection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DropDatabase.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DropDatabase.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DropIndexes.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.DropIndexes.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.Find.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.Find.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.FindOne.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.FindOne.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.FindOneAndDelete.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.FindOneAndDelete.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.FindOneAndReplace.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.FindOneAndReplace.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.FindOneAndUpdate.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.FindOneAndUpdate.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.InsertMany.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.InsertMany.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.InsertOne.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.InsertOne.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.ListCollections.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.ListCollections.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.ListDatabases.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.ListDatabases.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.ListIndexes.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.ListIndexes.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.ReplaceOne.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.ReplaceOne.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.UpdateMany.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.UpdateMany.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.UpdateOne.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Operation.UpdateOne.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.BSONArrayTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.BSONArrayTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.BSONDocumentTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.BSONDocumentTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.ClientFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.ClientFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.ClientTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.ClientTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.BulkWriteFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.BulkWriteFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CollectionFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CollectionFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.AggregateFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.AggregateFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.CountFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.CountFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.DeleteManyFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.DeleteManyFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.DeleteOneFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.DeleteOneFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.DistinctFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.DistinctFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FindFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FindFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndDeleteFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndDeleteFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndReplaceFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndUpdateFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FindOneAndUpdateFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FunctionalTestCase.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.FunctionalTestCase.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.InsertManyFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.InsertManyFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.InsertOneFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.InsertOneFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.ReplaceOneFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.ReplaceOneFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.UpdateManyFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.UpdateManyFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.UpdateOneFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.CrudSpec.UpdateOneFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.DeleteFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.DeleteFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.FunctionalTestCase.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.FunctionalTestCase.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.InsertManyFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.InsertManyFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.InsertOneFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.InsertOneFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.UpdateFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Collection.UpdateFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.CollectionInfoTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.CollectionInfoTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Database.CollectionManagementFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Database.CollectionManagementFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Database.DatabaseFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Database.DatabaseFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Database.FunctionalTestCase.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Database.FunctionalTestCase.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.DatabaseInfoTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.DatabaseInfoTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.FunctionalTestCase.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.FunctionalTestCase.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.FunctionsTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.FunctionsTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.IndexInfoTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.IndexInfoTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.IndexInputTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.IndexInputTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.AggregateFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.AggregateFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.AggregateTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.AggregateTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.BulkWriteTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.BulkWriteTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.CountTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.CountTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.CreateCollectionTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.CreateCollectionTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.CreateIndexesFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.CreateIndexesFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.CreateIndexesTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.CreateIndexesTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DatabaseCommandTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DatabaseCommandTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DeleteTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DeleteTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DistinctTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DistinctTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropCollectionFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropCollectionFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropCollectionTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropCollectionTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropDatabaseFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropDatabaseFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropDatabaseTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropDatabaseTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropIndexesFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropIndexesFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropIndexesTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.DropIndexesTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindAndModifyTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindAndModifyTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindOneAndDeleteTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindOneAndDeleteTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindOneAndReplaceTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindOneAndReplaceTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindOneAndUpdateTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindOneAndUpdateTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindOneFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindOneFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FindTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FunctionalTestCase.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.FunctionalTestCase.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.InsertManyTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.InsertManyTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.InsertOneTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.InsertOneTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ListCollectionsFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ListCollectionsFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ListDatabasesTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ListDatabasesTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ListIndexesFunctionalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ListIndexesFunctionalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ListIndexesTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ListIndexesTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ReplaceOneTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.ReplaceOneTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.TestCase.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.TestCase.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.UpdateManyTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.UpdateManyTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.UpdateOneTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.UpdateOneTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.UpdateTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.Operation.UpdateTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.PedantryTest.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.PedantryTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.TestCase.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.Tests.TestCase.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-MongoDB.UpdateResult.html" afterPath="$PROJECT_DIR$/docs/source-class-MongoDB.UpdateResult.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.AdminHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.AdminHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.AdminTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.AdminTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.AqlUserFunction.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.AqlUserFunction.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.AqlUserFunctionTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.AqlUserFunctionTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Autoloader.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Autoloader.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Batch.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Batch.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.BatchPart.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.BatchPart.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.BatchTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.BatchTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.BindVars.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.BindVars.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ClientException.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ClientException.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Collection.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Collection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.CollectionBasicTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.CollectionBasicTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.CollectionExtendedTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.CollectionExtendedTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.CollectionHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.CollectionHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ConnectException.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ConnectException.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Connection.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Connection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ConnectionOptions.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ConnectionOptions.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ConnectionTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ConnectionTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Cursor.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Cursor.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Database.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Database.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DatabaseTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DatabaseTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DefaultValues.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DefaultValues.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Document.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Document.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DocumentBasicTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DocumentBasicTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DocumentExtendedTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DocumentExtendedTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DocumentHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.DocumentHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Edge.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Edge.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.EdgeBasicTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.EdgeBasicTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.EdgeDefinition.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.EdgeDefinition.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.EdgeExtendedTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.EdgeExtendedTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.EdgeHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.EdgeHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Endpoint.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Endpoint.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Exception.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Exception.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Export.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Export.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ExportCursor.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ExportCursor.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ExportTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ExportTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.GeneralGraphExtendedTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.GeneralGraphExtendedTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Graph.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Graph.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.GraphBasicTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.GraphBasicTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.GraphExtendedTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.GraphExtendedTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.GraphHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.GraphHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Handler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Handler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.HttpHelper.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.HttpHelper.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.HttpResponse.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.HttpResponse.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueryCacheHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueryCacheHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueryCacheTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueryCacheTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueryHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueryHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueryTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueryTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueueTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.QueueTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ServerException.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ServerException.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Statement.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Statement.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.StatementTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.StatementTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.TraceRequest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.TraceRequest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.TraceResponse.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.TraceResponse.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Transaction.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Transaction.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.TransactionTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.TransactionTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Traversal.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Traversal.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.TraversalTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.TraversalTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.UpdatePolicy.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.UpdatePolicy.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.UrlHelper.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.UrlHelper.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Urls.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Urls.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.User.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.User.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.UserBasicTest.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.UserBasicTest.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.UserHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.UserHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ValueValidator.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.ValueValidator.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Vertex.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.Vertex.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.VertexHandler.html" afterPath="$PROJECT_DIR$/docs/source-class-triagens.ArangoDb.VertexHandler.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_AUTH_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_AUTH_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_CLIENT_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_CLIENT_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_CREATE_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_CREATE_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_PERSIST_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_PERSIST_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_RECONNECT_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_RECONNECT_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_TIMEOUT_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kARANGO_OPTS_TIMEOUT_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kMONGO_OPTS_CLIENT_DEFAULT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kMONGO_OPTS_CLIENT_DEFAULT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_ARANGO_CLASS.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_ARANGO_CLASS.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_ARANGO_KEY.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_ARANGO_KEY.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_ARANGO_REVISION.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_ARANGO_REVISION.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_DESCRIPTION.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_DESCRIPTION.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_GID.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_GID.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_LID.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_LID.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_MONGO_CLASS.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_MONGO_CLASS.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_MONGO_KEY.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_MONGO_KEY.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_MONGO_REVISION.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_MONGO_REVISION.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_NAME.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_NAME.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTAG_NS.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTAG_NS.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_NAMESPACE_SEPARATOR.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_NAMESPACE_SEPARATOR.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_FORMAT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_FORMAT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_FORMAT_HANDLE.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_FORMAT_HANDLE.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_FORMAT_NATIVE.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_FORMAT_NATIVE.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_FORMAT_STANDARD.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_FORMAT_STANDARD.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_LIMIT.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_LIMIT.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_MANY.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_MANY.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_SKIP.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_OPT_SKIP.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-constant-kTOKEN_TAG_PREFIX.html" afterPath="$PROJECT_DIR$/docs/source-constant-kTOKEN_TAG_PREFIX.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-function-Composer.Autoload.includeFile.html" afterPath="$PROJECT_DIR$/docs/source-function-Composer.Autoload.includeFile.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-function-dumpCollection.html" afterPath="$PROJECT_DIR$/docs/source-function-dumpCollection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-function-dumpWriteResults.html" afterPath="$PROJECT_DIR$/docs/source-function-dumpWriteResults.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-function-triagens.ArangoDb.getConnection.html" afterPath="$PROJECT_DIR$/docs/source-function-triagens.ArangoDb.getConnection.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-function-triagens.ArangoDb.getConnectionOptions.html" afterPath="$PROJECT_DIR$/docs/source-function-triagens.ArangoDb.getConnectionOptions.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/source-function-triagens.ArangoDb.isCluster.html" afterPath="$PROJECT_DIR$/docs/source-function-triagens.ArangoDb.isCluster.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/tree.html" afterPath="$PROJECT_DIR$/docs/tree.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php" afterPath="$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/Collection.php" afterPath="$PROJECT_DIR$/src/PHPLib/Collection.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/Container.php" afterPath="$PROJECT_DIR$/src/PHPLib/Container.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/Document.php" afterPath="$PROJECT_DIR$/src/PHPLib/Document.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php" afterPath="$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/ArangoCollection.php" afterPath="$PROJECT_DIR$/test/ArangoCollection.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/MongoCollection.php" afterPath="$PROJECT_DIR$/test/MongoCollection.php" />
     </list>
     <ignored path="milkolib.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -342,18 +27,96 @@
     <favorites_list name="milkolib" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="Collection.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16">
-              <caret line="43" column="20" selection-start-line="43" selection-start-column="20" selection-end-line="43" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.33620298">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="Collection.php" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/PHPLib/Collection.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="84">
+                  <caret line="1449" column="4" selection-start-line="1449" selection-start-column="4" selection-end-line="1449" selection-end-column="4" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Document.php" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="2010">
+                  <caret line="138" column="0" selection-start-line="138" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="DocumentHandler.php" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/DocumentHandler.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="11580">
+                  <caret line="779" column="64" selection-start-line="779" selection-start-column="64" selection-end-line="779" selection-end-column="64" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <splitter split-orientation="horizontal" split-proportion="0.49624574">
+          <split-first>
+            <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+              <file leaf-file-name="Collection.php" pinned="false" current-in-tab="true">
+                <entry file="file://$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php">
+                  <provider selected="true" editor-type-id="text-editor">
+                    <state relative-caret-position="150">
+                      <caret line="873" column="6" selection-start-line="873" selection-start-column="6" selection-end-line="873" selection-end-column="6" />
+                      <folding />
+                    </state>
+                  </provider>
+                </entry>
+              </file>
+              <file leaf-file-name="MongoCollection.php" pinned="false" current-in-tab="false">
+                <entry file="file://$PROJECT_DIR$/test/MongoCollection.php">
+                  <provider selected="true" editor-type-id="text-editor">
+                    <state relative-caret-position="7350">
+                      <caret line="497" column="0" selection-start-line="497" selection-start-column="0" selection-end-line="497" selection-end-column="0" />
+                      <folding />
+                    </state>
+                  </provider>
+                </entry>
+              </file>
+            </leaf>
+          </split-first>
+          <split-second>
+            <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+              <file leaf-file-name="Collection.php" pinned="false" current-in-tab="true">
+                <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
+                  <provider selected="true" editor-type-id="text-editor">
+                    <state relative-caret-position="234">
+                      <caret line="1040" column="30" selection-start-line="1040" selection-start-column="30" selection-end-line="1040" selection-end-column="30" />
+                      <folding />
+                    </state>
+                  </provider>
+                </entry>
+              </file>
+              <file leaf-file-name="ArangoCollection.php" pinned="false" current-in-tab="false">
+                <entry file="file://$PROJECT_DIR$/test/ArangoCollection.php">
+                  <provider selected="true" editor-type-id="text-editor">
+                    <state relative-caret-position="7350">
+                      <caret line="498" column="0" selection-start-line="498" selection-start-column="0" selection-end-line="498" selection-end-column="0" />
+                      <folding>
+                        <element signature="e#389#425#0#PHP" expanded="true" />
+                      </folding>
+                    </state>
+                  </provider>
+                </entry>
+              </file>
+            </leaf>
+          </split-second>
+        </splitter>
+      </split-second>
+    </splitter>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -406,12 +169,12 @@
         <option value="$PROJECT_DIR$/src/PHPLib/Term.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Container.php" />
         <option value="$PROJECT_DIR$/test/Document.php" />
-        <option value="$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Document.php" />
         <option value="$PROJECT_DIR$/test/MongoCollection.php" />
         <option value="$PROJECT_DIR$/test/ArangoCollection.php" />
-        <option value="$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Collection.php" />
+        <option value="$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php" />
+        <option value="$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php" />
       </list>
     </option>
   </component>
@@ -426,8 +189,8 @@
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1280" />
-    <option name="height" value="777" />
+    <option name="width" value="2560" />
+    <option name="height" value="1413" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -470,6 +233,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -478,10 +242,165 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vendor" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vendor" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="triagens" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="arangodb" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vendor" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="triagens" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="arangodb" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="triagens" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ArangoDb" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PHPLib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PHPLib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MongoDB" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="milkolib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PHPLib" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ArangoDB" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -492,15 +411,15 @@
     <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/scrap" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/PHPLib/MongoDB" />
       <recent name="$PROJECT_DIR$/src/PHPLib/ArangoDB" />
       <recent name="$PROJECT_DIR$/defines" />
       <recent name="$PROJECT_DIR$/src/PHPLib" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scrap" />
     </key>
   </component>
   <component name="RunManager" selected="JavaScript Debug.MongoDataServer.php">
@@ -561,23 +480,26 @@
       <updated>1455553357651</updated>
       <workItem from="1458295283123" duration="10000" />
       <workItem from="1458295307691" duration="26837000" />
+      <workItem from="1458334275732" duration="9332000" />
+      <workItem from="1458352484688" duration="24000" />
+      <workItem from="1458352525990" duration="62000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26847000" />
+    <option name="totallyTimeSpent" value="36265000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="777" extended-state="6" />
+    <frame x="0" y="23" width="2560" height="1413" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3085622" sideWeight="0.49467275" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.090150915" sideWeight="0.49467275" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.55212355" sideWeight="0.5015886" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33198708" sideWeight="0.49467275" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12509929" sideWeight="0.49467275" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23438704" sideWeight="0.49841145" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24878837" sideWeight="0.5053272" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -627,6 +549,32 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/ArangoCollection.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7350">
+          <caret line="498" column="0" selection-start-line="498" selection-start-column="0" selection-end-line="498" selection-end-column="0" />
+          <folding>
+            <element signature="e#389#425#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/composer.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -862,7 +810,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="401" column="26" selection-start-line="401" selection-start-column="26" selection-end-line="401" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -870,15 +817,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="474">
           <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="119" column="0" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -898,19 +836,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/CollectionHandler.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="967" column="20" selection-start-line="967" selection-start-column="20" selection-end-line="967" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/Handler.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -918,15 +847,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
           <caret line="45" column="20" selection-start-line="45" selection-start-column="6" selection-end-line="45" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/DocumentHandler.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1057">
-          <caret line="399" column="20" selection-start-line="399" selection-start-column="20" selection-end-line="399" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -938,44 +858,68 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/CollectionHandler.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="21" column="3" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/ArangoCollection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+        <state relative-caret-position="7350">
+          <caret line="498" column="0" selection-start-line="498" selection-start-column="0" selection-end-line="498" selection-end-column="0" />
           <folding>
             <element signature="e#389#425#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test/MongoCollection.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7350">
+          <caret line="497" column="0" selection-start-line="497" selection-start-column="0" selection-end-line="497" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/DocumentHandler.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11580">
+          <caret line="779" column="64" selection-start-line="779" selection-start-column="64" selection-end-line="779" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2010">
+          <caret line="138" column="0" selection-start-line="138" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="546" column="27" selection-start-line="546" selection-start-column="27" selection-end-line="546" selection-end-column="27" />
+        <state relative-caret-position="84">
+          <caret line="1449" column="4" selection-start-line="1449" selection-start-column="4" selection-end-line="1449" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="802" column="14" selection-start-line="802" selection-start-column="14" selection-end-line="802" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/MongoCollection.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6605">
-          <caret line="452" column="21" selection-start-line="452" selection-start-column="21" selection-end-line="452" selection-end-column="21" />
+        <state relative-caret-position="150">
+          <caret line="873" column="6" selection-start-line="873" selection-start-column="6" selection-end-line="873" selection-end-column="6" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="43" column="20" selection-start-line="43" selection-start-column="20" selection-end-line="43" selection-end-column="20" />
+        <state relative-caret-position="234">
+          <caret line="1040" column="30" selection-start-line="1040" selection-start-column="30" selection-end-line="1040" selection-end-column="30" />
           <folding />
         </state>
       </provider>

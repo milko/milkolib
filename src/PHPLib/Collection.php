@@ -593,6 +593,15 @@ abstract class Collection extends Container
 			// Handle document.
 			//
 			if( $theDocument instanceof Document )
+///
+/// MILKO - Unable to set revision:
+///			this is what should be done, the problem is that the documents are not sent
+///			to this method by reference, so there is no way to set the reference in
+///			the documents.
+//			{
+//				$theDocument = $this->NewDocument( $data, get_class( $theDocument ) );
+//				$theDocument->SetKey( $key, $this );
+//			}
 				$theDocument->SetKey( $key, $this );
 		}
 		else
@@ -618,6 +627,15 @@ abstract class Collection extends Container
 				// Handle document.
 				//
 				if( $document instanceof Document )
+///
+/// MILKO - Unable to set revision:
+///			this is what should be done, the problem is that the documents are not sent
+///			to this method by reference, so there is no way to set the reference in
+///			the documents.
+//				{
+//					$document = $this->NewDocument( array_shift( $data ), get_class( $document ) );
+//					$document->SetKey( $current, $this );
+//				}
 					$document->SetKey( $current, $this );
 			}
 		}
@@ -1446,12 +1464,11 @@ abstract class Collection extends Container
 	 * <h4>Insert a document.</h4>
 	 *
 	 * This method should insert a document in the collection and return its key
-	 * ({@link KeyOffset()}), the method expects a document provided as a {@link Container}
-	 * object, an object in the database native format, or an array.
+	 * ({@link KeyOffset()}), the method expects a document in the native database format.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theDocument		The document to be inserted.
+	 * @param mixed					$theDocument		The native document.
 	 * @return mixed				The document's key.
 	 */
 	abstract protected function doInsertOne( $theDocument );
@@ -1465,12 +1482,12 @@ abstract class Collection extends Container
 	 * <h4>Insert a list of documents.</h4>
 	 *
 	 * This method should insert a list of documents in the collection and return their keys
-	 * ({@link KeyOffset()}), the method expects an iterable list of elements expressed as
-	 * a {@link Container} object, an object in the database native format, or an array.
+	 * ({@link KeyOffset()}), the method expects an iterable list of elements expressed in
+	 * the database native format, or an array.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theDocuments		The documents list.
+	 * @param mixed					$theDocuments		The native documents list.
 	 * @return array				The document keys.
 	 */
 	abstract protected function doInsertMany( $theDocuments );

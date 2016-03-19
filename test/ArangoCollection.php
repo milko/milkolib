@@ -98,7 +98,6 @@ echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
 print_r( $document );
-exit;
 
 echo( "\n" );
 
@@ -112,6 +111,54 @@ echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
 print_r( $document );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Insert many array documents.
+//
+echo( "Insert many array documents:\n" );
+echo( '$document = [ [ kTAG_MONGO_KEY => "ID2", "data" => "XXX", "color" => "yellow" ], [ "name" => "Nati" ] ];' . "\n" );
+$document = [ [ kTAG_ARANGO_KEY => "ID2", "data" => "XXX", "color" => "yellow" ], [ "name" => "Nati" ] ];
+echo( '$result = $test->Insert( $document, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
+$result = $test->Insert( $document, [ kTOKEN_OPT_MANY => TRUE ] );
+var_dump( $result );
+print_r( $document );
+
+echo( "\n" );
+
+//
+// Insert many documents.
+//
+echo( "Insert many documents:\n" );
+echo( '$documents = [ new Milko\PHPLib\Document( $test, [ kTAG_MONGO_KEY => 7, "name" => "Cangalovic" ] ), new Milko\PHPLib\Document( $test, [ "name" => "no" ] ), new Milko\PHPLib\Document( $test, [ "name" => "yes" ] ) ];' . "\n" );
+$documents = [ new Milko\PHPLib\Document( $test, [ kTAG_ARANGO_KEY => 7, "name" => "Cangalovic" ] ), new Milko\PHPLib\Document( $test, [ "name" => "no" ] ), new Milko\PHPLib\Document( $test, [ "name" => "yes" ] ) ];
+echo( '$result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
+$result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
+print_r( $result );
+print_r( $documents );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Delete one document.
+//
+echo( "Delete one document:\n" );
+echo( '$result = $test->Delete( $documents[ 0 ] );' . "\n" );
+$result = $test->Delete( $documents[ 0 ] );
+var_dump( $result );
+print_r( $documents[ 0 ] );
+
+echo( "\n" );
+
+//
+// Delete many documents.
+//
+echo( "Delete many documents:\n" );
+echo( '$result = $test->Delete( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
+$result = $test->Delete( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
+var_dump( $result );
+print_r( $documents );
 
 echo( "\n====================================================================================\n\n" );
 

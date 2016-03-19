@@ -500,11 +500,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to use the {@link \MongoDB\Collection::insertOne()} method.
 	 *
-	 * @param mixed					$theDocument		The document to be inserted.
+	 * @param mixed					$theDocument		The native document.
 	 * @return mixed				The document's key.
 	 *
 	 * @uses Connection()
-	 * @uses NewNativeDocument()
 	 */
 	protected function doInsertOne( $theDocument )
 	{
@@ -524,11 +523,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to use the {@link \MongoDB\Collection::insertMany()} method.
 	 *
-	 * @param mixed					$theDocuments		The document to be inserted.
+	 * @param mixed					$theDocuments		The native documents list.
 	 * @return mixed				The document's key.
 	 *
 	 * @uses Connection()
-	 * @uses NewNativeDocument()
 	 */
 	protected function doInsertMany( $theDocuments )
 	{
@@ -672,7 +670,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses KeyOffset()
 	 * @uses Connection()
-	 * @uses cursorToArray()
+	 * @uses formatCursor()
+	 * @uses NewDocument()
+	 * @uses NewDocumentHandle()
 	 * @uses \MongoDB\Collection::find()
 	 * @uses \MongoDB\Collection::findOne()
 	 * @see kTOKEN_OPT_MANY
@@ -756,16 +756,17 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to use the {@link \MongoDB\Collection::find()} method, the
 	 * provided example document will be used as the actual selection criteria.
 	 *
-	 * We strip the <tt>'$start'</tt> and <tt>'$limit'</tt> parameters from the provided
-	 * options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 * We convert the {@link kTOKEN_OPT_SKIP} and {@link kTOKEN_OPT_LIMIT} parameters into
+	 * respectively the <tt>skip</tt> and <tt>limit</tt> native options.
 	 *
 	 * @param mixed					$theDocument		The example document.
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
 	 * @throws \InvalidArgumentException
 	 *
+	 * @uses Database()
 	 * @uses Connection()
-	 * @uses cursorToArray()
+	 * @uses formatCursor()
 	 * @uses \MongoDB\Collection::find()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
