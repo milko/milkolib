@@ -164,9 +164,9 @@ class Collection extends \Milko\PHPLib\Collection
 		// Handle container.
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Container )
-			return $theDocument->toArray();											// ==>
+			return new \MongoDB\Model\BSONDocument( $theDocument->toArray() );		// ==>
 
-		return (array)$theDocument;													// ==>
+		return new \MongoDB\Model\BSONDocument( (array)$theDocument );				// ==>
 
 	} // NewNativeDocument.
 
@@ -352,6 +352,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theQuery			The selection criteria.
 	 * @return int					The found records count.
+	 *
+	 * @uses CountByExample()
 	 */
 	public function CountByQuery( $theQuery = NULL )
 	{
@@ -376,7 +378,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return array				The result set.
 	 *
-	 * @uses doMapReduce()
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::aggregate()
 	 */
 	public function MapReduce( $thePipeline, $theOptions = [] )
 	{
@@ -504,6 +507,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The document's key.
 	 *
 	 * @uses Connection()
+	 * @uses \MongoDB\Collection::insertOne()
+	 * @uses \MongoDB\Cursor::getInsertedId()
 	 */
 	protected function doInsertOne( $theDocument )
 	{
@@ -527,6 +532,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The document's key.
 	 *
 	 * @uses Connection()
+	 * @uses \MongoDB\Collection::insertMany()
+	 * @uses \MongoDB\Cursor::getInsertedIds()
 	 */
 	protected function doInsertMany( $theDocuments )
 	{
@@ -674,6 +681,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocument()
 	 * @uses NewDocumentHandle()
 	 * @uses \MongoDB\Collection::find()
+	 * @uses \MongoDB\Collection::count()
 	 * @uses \MongoDB\Collection::findOne()
 	 * @see kTOKEN_OPT_MANY
 	 * @see kTOKEN_OPT_FORMAT
@@ -764,7 +772,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The found records.
 	 * @throws \InvalidArgumentException
 	 *
-	 * @uses Database()
 	 * @uses Connection()
 	 * @uses formatCursor()
 	 * @uses \MongoDB\Collection::find()
@@ -878,6 +885,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses KeyOffset()
 	 * @uses Connection()
+	 * @uses \MongoDB\Collection::deleteOne()
+	 * @uses \MongoDB\Collection::deleteMany()
 	 * @see kTOKEN_OPT_MANY
 	 */
 	protected function doDeleteByKey( $theKey, array $theOptions )
@@ -916,8 +925,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Delete options.
 	 * @return int					The number of deleted records.
 	 *
-	 * @uses KeyOffset()
 	 * @uses Connection()
+	 * @uses \MongoDB\Collection::deleteOne()
+	 * @uses \MongoDB\Collection::deleteMany()
 	 * @see kTOKEN_OPT_MANY
 	 */
 	protected function doDeleteByExample( $theDocument, array $theOptions )

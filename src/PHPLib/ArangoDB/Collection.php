@@ -153,9 +153,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return \Milko\PHPLib\Container	Standard document object.
 	 *
 	 * @uses ClassOffset()
-	 * @uses RevisionOffset()
 	 */
-	public function NewDocument($theData, $theClass = NULL )
+	public function NewDocument( $theData, $theClass = NULL )
 	{
 		//
 		// Convert document to array.
@@ -170,31 +169,19 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theClass !== NULL )
 		{
 			$theClass = (string)$theClass;
-			$document = new $theClass( $this, $document );
+			return new $theClass( $this, $document );								// ==>
 		}
 
 		//
 		// Use class in data.
 		//
-		elseif( array_key_exists( $this->ClassOffset(), $document ) )
+		if( array_key_exists( $this->ClassOffset(), $document ) )
 		{
 			$class = $document[ $this->ClassOffset() ];
-			$document = new $class( $this, $document );
+			return new $class( $this, $document );									// ==>
 		}
 
-		//
-		// Instantiate default container.
-		//
-		else
-			$document = new \Milko\PHPLib\Container( $document );
-
-		//
-		// Set revision.
-		//
-		if( $theData instanceof ArangoDocument )
-			$document[ $this->RevisionOffset() ] = $theData->getRevision();
-
-		return $document;															// ==>
+		return new \Milko\PHPLib\Container( $document );							// ==>
 
 	} // NewDocument.
 
@@ -210,9 +197,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theDocument		Document to be converted.
 	 * @return mixed				Database native object.
-	 *
-	 * @uses IdOffset()
-	 * @uses RevisionOffset()
 	 */
 	public function NewNativeDocument( $theDocument )
 	{
@@ -381,8 +365,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theDocument		The example document.
 	 * @return int					The found records count.
 	 *
+	 * @uses Database()
 	 * @uses Connection()
-	 * @uses triagens\ArangoDb\Cursor::count()
+	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
+	 * @uses triagens\ArangoDb\Cursor::getCount()
 	 */
 	public function CountByExample( $theDocument = NULL )
 	{
@@ -401,7 +387,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return $handler->byExample(
 			$this->Connection()->getId(), $theDocument )
-			->getCount();													// ==>
+				->getCount();													// ==>
 
 	} // CountByExample.
 
@@ -420,6 +406,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 * @uses triagens\ArangoDb\Cursor::getCount()
 	 */
 	public function CountByQuery( $theQuery = NULL )
 	{
@@ -563,6 +551,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
+	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	protected function doInsertOne( $theDocument )
 	{
@@ -591,6 +580,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
+	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	protected function doInsertMany( $theDocuments )
 	{
@@ -626,7 +616,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
-	 * @uses triagens\ArangoDb\DocumentHandler::update()
+	 * @uses triagens\ArangoDb\DocumentHandler::set()
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 * @uses triagens\ArangoDb\Cursor::getCount()
 	 * @see kTOKEN_OPT_MANY
 	 */
 	protected function doUpdate( $theFilter, $theCriteria, array $theOptions )
@@ -725,6 +717,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses RevisionOffset()
 	 * @uses collectionName()
 	 * @uses triagens\ArangoDb\DocumentHandler::replace()
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 * @uses triagens\ArangoDb\Cursor::getCount()
 	 * @see kTOKEN_OPT_MANY
 	 */
 	protected function doReplace( $theFilter, $theDocument, array $theOptions )

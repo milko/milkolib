@@ -19,6 +19,7 @@ require_once( 'tags.inc.php' );
 require_once( 'tokens.inc.php' );
 
 use Milko\PHPLib\Container;
+use Milko\PHPLib\Collection;
 
 /*=======================================================================================
  *																						*
@@ -55,40 +56,38 @@ use Milko\PHPLib\Container;
  * instantiating ({@link Collection::NewDocument()} and serialising
  * {@link Collection::NewNativeDocument()} the document: this is because the above property
  * tags depend on the native database engine and may also depend on the business logic of
- * the collection.
+ * the collection; for this reason, when a document is instantiated by a collection, the
+ * latter is stored in an attribute.
  *
  * The class also features a method, {@link Validate()}, which should check whether the
  * object has all the required attributes and is fit to be stored in the database, if that
  * is not the case, the method should raise an exception; this method must be called before
  * storing documents in the database. In this class we assume the object is valid.
  *
- * Documents store their status in a data member, a public interface is provided to set and
+ * Documents store their state in a data member, a public interface is provided to set and
  * probe a series of states:
  *
  * <ul>
- * 	<li><em>Persistent state</em>: This state indicates whether the the document is stored
- * 		or was retrieved from a collection, <em>only {@link Collection} objects may set this
- * 		state, probing the state is public</em>.
- * 	 <ul>
- * 		<li><b>{@link SetPersistentState()}</b>: Set the persistent state; requires
- * 			providing the <tt>$this</tt> of the instance that is setting the state.
- * 		<li><b>{@link GetPersistentState()}</b>: Get the persistent state.
- * 	 </ul>
- * 	<li><em>Modification state</em>: This state indicates whether the document was modified
- * 		since it was instantiated, <em>only the current object or a {@link Collection}
- * 		instance may set this state, probing the state is public</em>.
- * 	 <ul>
- * 		<li><b>{@link SetModificationState()}</b>: Set the modification state.
- * 		<li><b>{@link GetModificationState()}</b>: Get the modification state.
- * 	 </ul>
+ * 	<li><tt>{@link IsModified()}</tt>: Handle the modification state of the document, when
+ * 		changing the state, you must provide the <tt>$this</tt> of the calling object: only
+ * 		the current document collection is allowed to change the modification state (handle
+ * 		the object attribute directly within this class to manage this state).
+ * 	<li><tt>{@link IsPersistent()}</tt>: Handle the persistent state of the document, when
+ * 		changing the state, you must provide the <tt>$this</tt> of the calling object: only
+ * 		the document collection is allowed to change the persistent state (this state should
+ * 		effectively only be changed by the document collection).
  * </ul>
  *
  * A special public method, {@link SetKey()}, is used by {@link Collection} instances to set
- * the document key (@link Collection::JeyOffset()}) after it was inserted, this is useful
+ * the document key (@link Collection::KeyOffset()}) after it was inserted, this is useful
  * when the key was not provided and the database generated one automatically; this method
  * will reset the modification state ({@link IsModified()}) after setting the key, so that
  * the object will result clean after being inserted, this method can be called only by
- * {@link Collection} instances.
+ * the document {@link Collection}.
+ *
+ * Two protected methods, {@link lockedOffsets()} and {@link requiredOffsets()}, are used
+ * to return respectively the list of offsets that cannot be changed once the document is
+ * persistent and those which are required prior to saving the object.
  *
  *	@package	Core
  *
@@ -137,6 +136,15 @@ class Document extends Container
 	 */
 	protected $mStatus = self::kFLAG_DEFAULT;
 
+	/**
+	 * Collection.
+	 *
+	 * This attribute stores the document collection.
+	 *
+	 * @var Collection
+	 */
+	protected $mCollection = NULL;
+
 
 
 /*=======================================================================================
@@ -154,13 +162,18 @@ class Document extends Container
 	/**
 	 * <h4>Instantiate class.</h4>
 	 *
-	 * We override the inherited constructor to set the class offset, for this reason we
-	 * need to provide the collection.
+	 * We override the inherited constructor in order to set the document class and set the
+	 * enclosing collection in a document's attribute.
+	 *
+	 * The collection is required, because it is the collection that knows which offsets
+	 * corresponds to the class, key and revision.
 	 *
 	 * Derived classes should first call their parent constructor.
 	 *
 	 * @param Collection			$theCollection		Collection name.
 	 * @param array					$theData			Document data.
+	 *
+	 * @see kFLAG_DOC_MODIFIED
 	 */
 	public function __construct( Collection $theCollection, $theData = [] )
 	{
@@ -170,22 +183,28 @@ class Document extends Container
 		parent::__construct( $theData );
 
 		//
-		// Save class in data.
+		// Set collection.
 		//
-		$class = $this->offsetGet( $theCollection->ClassOffset() );
+		$this->mCollection = $theCollection;
+
+		//
+		// Save old class.
+		//
+		$class = $this->offsetGet( $this->mCollection->ClassOffset() );
 
 		//
 		// Add class.
 		// Note that we overwrite the eventual existing class name
 		// and we use the ancestor class method, since the class property is locked.
 		//
-		\ArrayObject::offsetSet( $theCollection->ClassOffset(), get_class( $this ) );
+		\ArrayObject::offsetSet(
+			$this->mCollection->ClassOffset(), get_class( $this ) );
 
 		//
 		// Reset modification state.
 		//
-		if( $class == get_class( $this ) )
-			$this->SetModificationState( FALSE, $this );
+		if( $class == $this->offsetGet( $this->mCollection->ClassOffset() ) )
+			$this->mStatus &= (~ self::kFLAG_DOC_MODIFIED);
 
 	} // Constructor.
 
@@ -206,29 +225,55 @@ class Document extends Container
 	/**
 	 * <h4>Set a value at a given offset.</h4>
 	 *
-	 * We override this method to set the modified flag ({@link kFLAG_DOC_MODIFIED}, it will
-	 * only be set for new values.
+	 * We overload this method to perform the following operations:
+	 *
+	 * <ul>
+	 * 	<li>We prevent modifying the document class, {@link Collection::ClassOffset()}.
+	 * 	<li>We prevent modifying locked offsets, {@link lockedOffsets()}.
+	 * 	<li>We set the modification state of the document, {@link SetModificationState()}.
+	 * </ul>
 	 *
 	 * @param string				$theOffset			Offset.
 	 * @param mixed					$theValue			Value to set at offset.
-	 * @return void
+	 * @throws \RuntimeException
+	 *
+	 * @uses lockedOffsets()
+	 * @see kFLAG_DOC_MODIFIED
 	 */
 	public function offsetSet( $theOffset, $theValue )
 	{
 		//
-		// Skip deletions.
+		// Skip unset.
 		//
 		if( $theValue !== NULL )
 		{
-			$this->SetModificationState( TRUE, $this );
-			parent::offsetSet( $theOffset, $theValue );
-		}
+			//
+			// Prevent modifying class.
+			//
+			if( $theOffset == $this->mCollection->ClassOffset() )
+				throw new \RuntimeException(
+					"You cannot modify the document's class." );				// !@! ==>
+
+			//
+			// Check locked offsets.
+			//
+			if( ($this->mStatus & self::kFLAG_DOC_PERSISTENT)
+			 && in_array( $theOffset, $this->lockedOffsets() ) )
+				throw new \RuntimeException (
+					"The property $theOffset cannot be modified: "
+					."the object is persistet.");								// !@! ==>
+
+			//
+			// Set modification state.
+			//
+			$this->mStatus |= self::kFLAG_DOC_MODIFIED;
+
+		} // Not unsetting.
 
 		//
-		// Handle delete.
+		// Set offset.
 		//
-		else
-			$this->offsetUnset( $theOffset );
+		parent::offsetSet( $theOffset, $theValue );
 
 	} // offsetSet.
 
@@ -240,22 +285,55 @@ class Document extends Container
 	/**
 	 * <h4>Reset a value at a given offset.</h4>
 	 *
-	 * We override this method to set the modified flag ({@link kFLAG_DOC_MODIFIED}, it will
-	 * only be set if the offset exists.
+	 * We overload this method to perform the following operations:
+	 *
+	 * <ul>
+	 * 	<li>We prevent deleting the document class, {@link Collection::ClassOffset()}.
+	 * 	<li>We prevent deleting locked offsets, {@link lockedOffsets()}.
+	 * 	<li>We set the modification state of the document, {@link SetModificationState()},
+	 * 		only if the offset matches an existing property.
+	 * </ul>
 	 *
 	 * @param string				$theOffset			Offset.
 	 * @return void
+	 *
+	 * @uses lockedOffsets()
+	 * @see kFLAG_DOC_MODIFIED
+	 * @see kFLAG_DOC_PERSISTENT
 	 */
 	public function offsetUnset( $theOffset )
 	{
 		//
-		// Delete value.
+		// Check if offset exists.
 		//
 		if( parent::offsetExists( $theOffset ) )
 		{
-			$this->SetModificationState( TRUE, $this );
-			parent::offsetUnset( $theOffset );
+			//
+			// Prevent modifying class.
+			//
+			if( $theOffset == $this->mCollection->ClassOffset() )
+				throw new \RuntimeException (
+					"You cannot modify the document's class.");						// !@! ==>
+
+			//
+			// Check locked offsets.
+			//
+			if( ($this->mStatus & self::kFLAG_DOC_PERSISTENT)
+			 && in_array( $theOffset, $this->lockedOffsets() ) )
+				throw new \RuntimeException (
+					"The property $theOffset cannot be modified: "
+					."the object is persistet.");								// !@! ==>
+
+			//
+			// Set modification state.
+			//
+			$this->mStatus |= self::kFLAG_DOC_MODIFIED;
 		}
+
+		//
+		// Unset offset.
+		//
+		parent::offsetUnset( $theOffset );
 
 	} // offsetUnset.
 
@@ -275,14 +353,33 @@ class Document extends Container
 
 	/**
 	 * <h4>Validate object.</h4>
+	 * This method should check whether the document is valid and ready to be stored in its
+	 * collection, if that is not the case, the method should raise an exception.
 	 *
-	 * This method should check whether the current object's required attributes are present
-	 * and if it is structurally and referentially valid; if that is not the case, the
-	 * method should raise an exception.
+	 * In this class we check whether all the required properties are there, in derived
+	 * classes you should first call this method, then do any other type of validation.
 	 *
-	 * In this class we assume the object to be valid.
+	 * @throws \RuntimeException
+	 *
+	 * @uses requiredOffsets()
 	 */
-	public function Validate()														   {}
+	public function Validate()
+	{
+		//
+		// Get required properties.
+		//
+		$required = $this->requiredOffsets();
+
+		//
+		// Check if all required offsets are there.
+		//
+		if( count( $required )
+			!= count( $missing = array_intersect( $required, $this->arrayKeys() ) ) )
+			throw new \RuntimeException(
+				"Document is missing the following required properties: "
+			   .implode( ', ', $missing ) );									// !@! ==>
+
+	} // Validate.
 
 
 
@@ -295,33 +392,44 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	SetKey																		*
+	 *	SetKey																			*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Set document key.</h4>
 	 *
 	 * This method will be used by {@link Collection} instances to set the document key,
-	 * after setting it, the method will reset the modification state; only
-	 * {@link Collection} instances are allowed to call this method, for this reason it
-	 * expects the <tt>$this</tt> value as parameter.
+	 * after setting it, the method will reset the modification state; only the document
+	 * {@link Collection} instance is allowed to call this method, for this reason it
+	 * expects the caller's <tt>$this</tt> value as parameter. This is because the key is
+	 * locked once the document becomes persistent.
 	 *
 	 * @param mixed					$theKey				The document key.
 	 * @param Collection			$theSetter			The instance calling the method.
+	 * @throws \RuntimeException
 	 *
-	 * @uses SetModificationState()
+	 * @see kFLAG_DOC_MODIFIED
 	 */
 	public function SetKey( $theKey, Collection $theSetter )
 	{
 		//
+		// Handle persistent object and assert caller
+		//
+		if( ($this->mStatus & self::kFLAG_DOC_PERSISTENT)
+		 && ($theSetter !== $this->mCollection) )
+			throw new \RuntimeException (
+				"Only the document's collection may set its key "
+			   ."once the document is persistent.");							// !@! ==>
+
+		//
 		// Set document key.
 		//
-		$this->offsetSet( $theSetter->KeyOffset(), $theKey );
+		\ArrayObject::offsetSet( $theSetter->KeyOffset(), $theKey );
 
 		//
 		// Reset modification state.
 		//
-		$this->SetModificationState( FALSE, $this );
+		$this->mStatus &= (~ self::kFLAG_DOC_MODIFIED);
 
 	} // SetKey.
 
@@ -336,22 +444,31 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	SetModificationState															*
+	 *	IsModified																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Set the document modified state.</h4>
+	 * <h4>Handle the document modification state.</h4>
 	 *
-	 * This method can be used to set or reset the document modification state, it can only
-	 * be called by the current object or by a {@link Collection} instance, or an exception
-	 * will be raised.
+	 * This method can be used to set or reset the document modification state, the state
+	 * can only be changed by the current object or by its {@link Collection}, or an
+	 * exception will be raised.
 	 *
-	 * Provide <tt>TRUE</tt> to set the <em>dirty</em> state and <tt>FALSE</tt> to set the
-	 * <em>clean</em> state.
+	 * The method expects the following parameters:
 	 *
-	 * The second parameter is the <tt>$this</tt> value of the object calling the method,
-	 * Only a {@link Collection} instance or the current object are allowed to call the
-	 * method.
+	 * <ul>
+	 * 	<li><b>$theValue</b>: The new state or operation:
+	 * 	 <ul>
+	 * 		<li><tt>NULL</tt>: Return the current state; the other parameter is ignored.
+	 * 		<li><tt>TRUE</tt>: Set the current state; in this case the second parameter is
+	 * 			required.
+	 * 		<li><tt>TRUE</tt>: Reset the current state; in this case the second parameter is
+	 * 			required.
+	 * 	 </ul>
+	 * 	<li><b>$theSetter</b>: This parameter is required when modifying the current state,
+	 * 		it should be the <tt>$this</tt> value of the object calling the method, which
+	 * 		can either be the current object itself, or the document's collection.
+	 * </ul>
 	 *
 	 * The method will return the state <em>before</em> it was set or reset.
 	 *
@@ -363,97 +480,154 @@ class Document extends Container
 	 * @uses manageFlagAttribute()
 	 * @see kFLAG_DOC_MODIFIED
 	 */
-	public function SetModificationState( $theValue, $theSetter )
+	public function IsModified( $theValue = NULL, $theSetter = NULL )
 	{
 		//
-		// Let only this or a collection call it.
+		// Return current state.
 		//
-		if( ($theSetter === $this)
-		 || ($theSetter instanceof Collection) )
-			return
-				$this->manageFlagAttribute(
-					$this->mStatus, self::kFLAG_DOC_MODIFIED, $theValue );			// ==>
+		if( $theValue === NULL )
+			return (bool) ($this->mStatus & self::kFLAG_DOC_MODIFIED);				// ==>
 
-		throw new \RuntimeException (
-			"Only collections or the current document " .
-			"are allowed to call this method." );								// !@! ==>
+		//
+		// Assert setter.
+		//
+		if( ($theSetter !== $this)
+		 && ($theSetter !== $this->mCollection) )
+			throw new \RuntimeException (
+				"Only the current document and its collection " .
+				"are allowed to change the state." );							// !@! ==>
 
-	} // SetModificationState.
+		return
+			$this->manageFlagAttribute(
+				$this->mStatus, self::kFLAG_DOC_MODIFIED, $theValue );				// ==>
+
+	} // IsModified.
 
 
 	/*===================================================================================
-	 *	GetModificationState															*
+	 *	IsPersistent																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Get the document current modified state.</h4>
+	 * <h4>Handle the document persistent state.</h4>
 	 *
-	 * This method can be used to get the document current modification state, it returns
-	 * a boolean, <tt>TRUE</tt> for the <em>dirty</em> state and <tt>FALSE</tt> for the
-	 * <em>clean</em> state.
+	 * This method can be used to set or reset the document persistent state, the state can
+	 * only be changed by the document's {@link Collection}, or an exception will be raised.
 	 *
-	 * @return bool					Current state.
+	 * The method expects the following parameters:
 	 *
-	 * @see kFLAG_DOC_MODIFIED
-	 */
-	public function GetModificationState()
-	{
-		return $this->mStatus & self::kFLAG_DOC_MODIFIED;							// ==>
-
-	} // GetModificationState.
-
-
-	/*===================================================================================
-	 *	SetPersistentState																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Set the document persistent state.</h4>
-	 *
-	 * This method can be used to set or reset the document persistent state, it can only
-	 * be called by {@link Collection} instances.
-	 *
-	 * Provide <tt>TRUE</tt> after storing and after retrieving the document from its
-	 * collection, and <tt>FALSE</tt> after deleting the document.
+	 * <ul>
+	 * 	<li><b>$theValue</b>: The new state or operation:
+	 * 	 <ul>
+	 * 		<li><tt>NULL</tt>: Return the current state; the other parameter is ignored.
+	 * 		<li><tt>TRUE</tt>: Set the current state; in this case the second parameter is
+	 * 			required.
+	 * 		<li><tt>TRUE</tt>: Reset the current state; in this case the second parameter is
+	 * 			required.
+	 * 	 </ul>
+	 * 	<li><b>$theSetter</b>: This parameter is required when modifying the current state,
+	 * 		it should be the <tt>$this</tt> value of the collection setting the state, it
+	 * 		must match the collection set in the constructor.
+	 * </ul>
 	 *
 	 * The method will return the state <em>before</em> it was set or reset.
 	 *
 	 * @param mixed					$theValue			<tt>TRUE</tt> or <tt>FALSE</tt>.
-	 * @param Collection			$theSetter			Setting object.
+	 * @param mixed					$theSetter			Setting object.
 	 * @return bool					New or old state.
+	 * @throws RuntimeException
 	 *
 	 * @uses manageFlagAttribute()
 	 * @see kFLAG_DOC_PERSISTENT
 	 */
-	public function SetPersistentState( $theValue, Collection $theSetter )
+	public function IsPersistent( $theValue = NULL, $theSetter = NULL )
 	{
+		//
+		// Return current state.
+		//
+		if( $theValue === NULL )
+			return (bool) ($this->mStatus & self::kFLAG_DOC_PERSISTENT);			// ==>
+
+		//
+		// Assert setter.
+		//
+		if( $theSetter !== $this )
+			throw new \RuntimeException (
+				"Only the document's collection " .
+				"is allowed to change the state." );							// !@! ==>
+
 		return
 			$this->manageFlagAttribute(
 				$this->mStatus, self::kFLAG_DOC_PERSISTENT, $theValue );			// ==>
 
-	} // SetPersistentState.
+	} // IsPersistent.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED VALIDATION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
-	 *	GetPersistentState																*
+	 *	lockedOffsets																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Get the document persistent state.</h4>
+	 * <h4>Return the list of locked offsets.</h4>
 	 *
-	 * This method can be used to get the document persistent state, it returns a boolean
-	 * a boolean, <tt>TRUE</tt> if the object resides in a collection or <tt>FALSE</tt> if
-	 * it doesn't (yet).
+	 * This method should return the list of offsets which cannot be modified once the
+	 * object has been committed to its {@link Container}.
 	 *
-	 * @return bool					Current state.
+	 * By default the key, revision and class should be locked.
 	 *
-	 * @see kFLAG_DOC_PERSISTENT
+	 * @return array				List of locked offsets.
+	 *
+	 * @uses Collection::KeyOffset()
+	 * @uses Collection::ClassOffset()
+	 * @uses Collection::RevisionOffset()
 	 */
-	public function GetPersistentState()
+	public function lockedOffsets()
 	{
-		return $this->mStatus & self::kFLAG_DOC_PERSISTENT;							// ==>
+		return [ $this->mCollection->KeyOffset(),
+				 $this->mCollection->ClassOffset(),
+				 $this->mCollection->RevisionOffset() ];							// ==>
 
-	} // GetPersistentState.
+		//
+		// In derived classes:
+		//
+	//	return array_merge( parent::lockedOffsets(), [ ... ] );
+
+	} // lockedOffsets.
+
+
+	/*===================================================================================
+	 *	requiredOffsets																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the list of required offsets.</h4>
+	 *
+	 * This method should return the list of offsets which are required prior to saving the
+	 * document in its collection.
+	 *
+	 * This class doesn't feature any required offsets.
+	 *
+	 * @return array				List of required offsets.
+	 */
+	public function requiredOffsets()
+	{
+		return [];															// ==>
+
+		//
+		// In derived classes:
+		//
+	//	return array_merge( parent::lockedOffsets(), [ ... ] );
+
+	} // requiredOffsets.
 
 
 
