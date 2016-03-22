@@ -94,6 +94,14 @@ const kTOKEN_OPT_FORMAT_STANDARD = 'S';
 const kTOKEN_OPT_FORMAT_HANDLE = 'H';
 
 /**
+ * Document key result format.
+ *
+ * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
+ * indicates that a query result should be returned as a set of document keys.
+ */
+const kTOKEN_OPT_FORMAT_KEY = 'K';
+
+/**
  * Skip.
  *
  * This token represents the number of elements to skip before returning a list of values.

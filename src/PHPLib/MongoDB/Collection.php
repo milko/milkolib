@@ -95,14 +95,49 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
+	 *	NewNativeDocument																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a native database document.</h4>
+	 *
+	 * We overload this method to return BSONDocument.
+	 *
+	 * @param mixed					$theData			Document data.
+	 * @return mixed				Database native object.
+	 *
+	 * @uses \Milko\PHPLib\Container::toArray()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	public function NewNativeDocument( $theData )
+	{
+		//
+		// Handle native type.
+		//
+		if( $theDocument instanceof \MongoDB\Model\BSONDocument )
+			return $theDocument;													// ==>
+
+		//
+		// Handle container.
+		//
+		if( $theDocument instanceof \Milko\PHPLib\Container )
+			return new \MongoDB\Model\BSONDocument( $theDocument->toArray() );		// ==>
+
+		return new \MongoDB\Model\BSONDocument( (array)$theDocument );				// ==>
+
+	} // NewNativeDocument.
+
+
+	/*===================================================================================
 	 *	NewDocument																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Convert native data to standard document.</h4>
+	 * <h4>Return a {@link Document} instance.</h4>
 	 *
-	 * We overload this method by casting the provided data into an array, since MongoDB
-	 * documents are derived from the ArrayObject class.
+	 * We overload this method to return a {@link \Milko\PHPLib\Document} instance of the
+	 * correct class, or a {@link \Milko\PHPLib\Container} instance.
 	 *
 	 * @param mixed						$theData			Database native document.
 	 * @param string					$theClass			Expected class name.
@@ -110,12 +145,14 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses ClassOffset()
 	 */
-	public function NewDocument($theData, $theClass = NULL )
+	public function NewDocument( $theData, $theClass = NULL )
 	{
 		//
 		// Convert document to array.
 		//
-		$document = (array)$theData;
+		$document = ( $theData instanceof Container )
+				  ? $theData->toArray()
+				  : (array)$theData;
 
 		//
 		// Use provided class name.
@@ -138,37 +175,6 @@ class Collection extends \Milko\PHPLib\Collection
 		return new \Milko\PHPLib\Container( $document );							// ==>
 
 	} // NewDocument.
-
-
-	/*===================================================================================
-	 *	NewNativeDocument																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert a standard document to native data.</h4>
-	 *
-	 * We overload this method to return BSONDocument.
-	 *
-	 * @param mixed					$theDocument		Document to be converted.
-	 * @return mixed				Database native object.
-	 */
-	public function NewNativeDocument( $theDocument )
-	{
-		//
-		// Handle native type.
-		//
-		if( $theDocument instanceof \MongoDB\Model\BSONDocument )
-			return $theDocument;													// ==>
-
-		//
-		// Handle container.
-		//
-		if( $theDocument instanceof \Milko\PHPLib\Container )
-			return new \MongoDB\Model\BSONDocument( $theDocument->toArray() );		// ==>
-
-		return new \MongoDB\Model\BSONDocument( (array)$theDocument );				// ==>
-
-	} // NewNativeDocument.
 
 
 	/*===================================================================================
@@ -201,13 +207,76 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Convert to container.
 		//
-		$document = new \Milko\PHPLib\Container( (array)$theDocument );
+		$document =
+			new \Milko\PHPLib\Container(
+				( $theData instanceof Container ) ? $theData->toArray()
+					: (array)$theData );
 
 		//
 		// Check document key.
 		//
-		$key = $document[ $this->KeyOffset() ];
-		if( $key === NULL )
+		if( ($key = $document[ $this->KeyOffset() ]) === NULL )
+			throw new \InvalidArgumentException (
+				"Data is missing the document key." );							// !@! ==>
+
+		//
+		// Add document key.
+		//
+		$handle[] = $key;
+
+		return $handle;																// ==>
+
+	} // NewDocumentHandle.
+
+
+	/*===================================================================================
+	 *	NewDocumentKey																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return document key.</h4>
+	 *
+	 * We overload this method to extract the document key from the provided data.
+	 *
+	 * @param mixed					$theDocument		Document to reference.
+	 * @return mixed				Document handle.
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses KeyOffset()
+	 * @uses collectionName()
+	 */
+	public function NewDocumentKey( $theDocument )
+	{
+		//
+		// Convert document to array.
+		//
+		$document = ( $theData instanceof Container )
+				  ? $theData->toArray()
+				  : (array)$theData;
+
+		//
+		// Return key.
+		//
+		if( )
+
+
+		//
+		// Init handle collection.
+		//
+		$handle = [ $this->collectionName() ];
+
+		//
+		// Convert to container.
+		//
+		$document =
+			new \Milko\PHPLib\Container(
+				( $theData instanceof Container ) ? $theData->toArray()
+					: (array)$theData );
+
+		//
+		// Check document key.
+		//
+		if( ($key = $document[ $this->KeyOffset() ]) === NULL )
 			throw new \InvalidArgumentException (
 				"Data is missing the document key." );							// !@! ==>
 

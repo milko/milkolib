@@ -339,11 +339,11 @@ class Document extends Container
 
 
 
-/*=======================================================================================
- *																						*
- *								PUBLIC VALIDATION INTERFACE								*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *								PUBLIC VALIDATION INTERFACE								*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -353,6 +353,7 @@ class Document extends Container
 
 	/**
 	 * <h4>Validate object.</h4>
+	 *
 	 * This method should check whether the document is valid and ready to be stored in its
 	 * collection, if that is not the case, the method should raise an exception.
 	 *
@@ -377,7 +378,7 @@ class Document extends Container
 			!= count( $missing = array_intersect( $required, $this->arrayKeys() ) ) )
 			throw new \RuntimeException(
 				"Document is missing the following required properties: "
-			   .implode( ', ', $missing ) );									// !@! ==>
+				.implode( ', ', $missing ) );									// !@! ==>
 
 	} // Validate.
 
