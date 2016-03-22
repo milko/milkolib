@@ -379,7 +379,7 @@ abstract class Collection extends Container
 	 * 		<em>must</em> be derived from the {@link Document} class.
 	 * 	<li><em>Data has {@link ClassOffset()}</em>: We instantiate the referenced class.
 	 * 	<li><em>No class specified either in parameter or data</em>: we instantiate a
-	 * 		{@link Document} object.
+	 * 		{@link Container} object.
 	 * </ul>
 	 *
 	 * The method features these parameters:
@@ -717,13 +717,19 @@ abstract class Collection extends Container
 		foreach( $theList as $document )
 		{
 			//
+			// Handle array.
+			//
+			if( is_array( $document ) )
+				$list[] = $document;
+			
+			//
 			// Handle container.
 			//
-			if( $document instanceof Container )
+			elseif( $document instanceof Container )
 				$list[] = $document->toArray();
 
 			//
-			// Handle other types.
+			// Handle object.
 			//
 			else
 				$list[] = (array)$document;
@@ -930,10 +936,11 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Delete by example.</h4>
 	 *
-	 * This method can be used to delete all documents matching the provided example
-	 * document. The method will select all documents in the collection whose properties
-	 * match all the properties of the provided example document, this means that the method
-	 * will generate a query that puts in <tt>AND</tt> all the provided document offsets.
+	 * This method can be used to delete the first or all documents matching the provided
+	 * example document. The method will select all documents in the collection whose
+	 * properties match all the properties of the provided example document, this means that
+	 * the method will generate a query that puts in <tt>AND</tt> all the provided document
+	 * offsets.
 	 *
 	 * The method expects the following parameters:
 	 *
@@ -942,16 +949,16 @@ abstract class Collection extends Container
 	 * 		{@link Document} instance, or a native database document.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_SKIP}</b>: This option determines how many records to
-	 * 			skip in the results selection, it is equivalent to the SQL <tt>START</tt>
-	 * 			directive, it is zero based and expressed as an integer.
-	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
-	 * 			consider, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
-	 * 			as an integer.
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete the
+	 *			first or all selected documents:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete all selected documents.
+	 * 			<li><tt>FALSE</tt>: Delete the first document.
+	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * By default, the method will delete all selected records and will return the number
+	 * By default, the method will delete all selected documents and will return the number
 	 * of deleted records.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
@@ -969,26 +976,12 @@ abstract class Collection extends Container
 		//
 		// Normalise options.
 		//
-		if( ! is_array( $theOptions ) )
-			$this->normaliseOptions(
-				kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_KEY, $theOptions );
-		else
-			$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_KEY;
-		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-		 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
-			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
+		$this->normaliseOptions( kTOKEN_OPT_MANY, TRUE, $theOptions );
 
 		//
 		// Match example documents.
 		//
-		$keys = $this->FindByExample( $theDocument, $theOptions );
-
-		//
-		// Normalise options.
-		//
-		$theOptions[ kTOKEN_OPT_MANY ] = TRUE;
-
-		return $this->doDeleteByKey( $keys, $theOptions );							// ==>
+		return $this->doDeleteByExample( $theDocument, $theOptions );				// ==>
 
 	} // DeleteByExample.
 
@@ -1179,11 +1172,6 @@ abstract class Collection extends Container
 		//
 		$result = $this->doReplace( $theFilter, $theDocument, $theOptions );
 
-		//
-		// Set document(s) persistent state.
-		//
-		$this->touchDocuments( $theDocument, TRUE, $theOptions[ kTOKEN_OPT_MANY ] );
-
 		return $result;																// ==>
 
 	} // Replace.
@@ -1270,14 +1258,20 @@ abstract class Collection extends Container
 		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_STANDARD )
 		{
 			//
-			// Set document(s) persistent state.
+			// Set document(s) state.
 			//
 			if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			{
 				$result->IsPersistent( TRUE, $this );
+				$result->IsModified( FALSE, $this );
+			}
 			else
 			{
 				foreach( $result as $document )
+				{
 					$document->IsPersistent( TRUE, $this );
+					$document->IsModified( FALSE, $this );
+				}
 			}
 		}
 
@@ -1372,7 +1366,10 @@ abstract class Collection extends Container
 			// Set document(s) persistent state.
 			//
 			foreach( $result as $document )
+			{
 				$document->IsPersistent( TRUE, $this );
+				$document->IsModified( FALSE, $this );
+			}
 		}
 
 		return $result;																// ==>
@@ -1453,7 +1450,10 @@ abstract class Collection extends Container
 			// Set document(s) persistent state.
 			//
 			foreach( $result as $document )
+			{
 				$document->IsPersistent( TRUE, $this );
+				$document->IsModified( FALSE, $this );
+			}
 		}
 
 		return $result;																// ==>
@@ -1515,7 +1515,7 @@ abstract class Collection extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Count by example.</h4>
+	 * <h4>Count by query.</h4>
 	 *
 	 * This method can be used to return the record count matching the provided query.
 	 *
@@ -1635,11 +1635,11 @@ abstract class Collection extends Container
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *							PROTECTED DOCUMENT INSERT INTERFACE							*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *							PROTECTED DOCUMENT INSERT INTERFACE							*
+ *																						*
+ *======================================================================================*/
 
 
 
