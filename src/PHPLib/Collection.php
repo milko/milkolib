@@ -531,19 +531,19 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	InsertDocument																	*
+	 *	Insert																			*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert documents.</h4>
+	 * <h4>Insert document(s).</h4>
 	 *
-	 * This method can be used to insert one or more documents in the collection, the method
-	 * expects the following parameters:
+	 * This method can be used to insert a single or a set of documents into the current
+	 * collection, the method expects the following parameters:
 	 *
 	 * <ul>
 	 *	<li><b>$theDocument</b>: The document or documents to be inserted, they should
-	 * 		either be {@link Container) instances, arrays or objects that can be cast to
-	 * 		an array.
+	 * 		either be in the native database format, {@link Container) instances, arrays or
+	 * 		objects that can be cast to an array.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
 	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
@@ -557,28 +557,16 @@ abstract class Collection extends Container
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The method will make use of two protected methods for performing the actual insert:
-	 * {@link doInsertArray()} for documents provided as arrays or objects and
-	 * {@link doInsertContainer()} for documents provided as {@link Container} instances.
+	 * Two protected methods, {@link doInsertOne()} and {@link doInsertMany()}, will take
+	 * care of performing the actual insertions of, respectively, a single or a set of
+	 * documents.
 	 *
-	 * The main workflow is as follows:
+	 * When inserting {@link Document} instances this method will call a protected method,
+	 * {@link normaliseInsertedDocument()}, which will update the inserted key, set the
+	 * document's persistent state and reset the document's modification state.
 	 *
-	 * <ul>
-	 * 	<li>If the document is a {@link Document} instance, its {@link Document::Validate()}
-	 * 		method will be called.
-	 * 	<li>If the document is a {@link Container} instance, the {@link doInsertContainer()}
-	 * 		method will be called, it will insert the document into the current collection
-	 * 		and eventually set the document's revision ({@link RevisionOffset()}) property.
-	 * 	<li>If the document is not a {@link Container} instance, the {@link doInsertArray()}
-	 * 		method will be called and the resulting key will be returned.
-	 * 	<li>The document key ({@link KeyOffset()}) will be set in the document.
-	 * 	<li>The document persistent ({@link Document::IsPersistent()}) state will be set.
-	 * 	<li>The document modification ({@link Document::IsModified()}) state will be reset.
-	 * 	<li>The document key will be returned.
-	 * </ul>
-	 *
-	 * If you provided a set of documents, the method will return an array of keys, if not,
-	 * it will return a single key.
+	 * The method will return the newly inserted document key or an array of document keys
+	 * if provided with a set of documents.
 	 *
 	 * By default the operation will assume we provided a single document.
 	 *
@@ -588,100 +576,28 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Insert options.
 	 * @return mixed				The document's unique identifier(s).
 	 *
-	 * @uses normaliseOptions()
-	 * @uses KeyOffset()
-	 * @uses doInsertContainer()
-	 * @uses doInsertArray()
-	 * @uses Document::Validate()
-	 * @uses Document::SetKey()
-	 * @uses Document::IsPersistent()
-	 * @uses Document::IsModified()
-	 * @see kTOKEN_OPT_MANY
-	 *
 	 * @example
 	 * // Insert a single document.<br/>
-	 * $id = $collection->InsertDocument( $document );<br/>
+	 * $id = $collection->Insert( $document );<br/>
 	 * // Insert a list of documents.<br/>
-	 * $ids = $collection->InsertDocument( $list, [ kTOKEN_OPT_MANY => TRUE ] );
+	 * $ids = $collection->Insert( $list, [ kTOKEN_OPT_MANY => TRUE ] );
 	 */
-	public function InsertDocument( $theDocument, $theOptions = NULL )
+	public function Insert( $theDocument, $theOptions = NULL )
 	{
 		//
-		// Normalise options.
+		// Assume, if nor stated, a scalar document was provided.
 		//
 		$this->normaliseOptions( kTOKEN_OPT_MANY, FALSE, $theOptions );
-
+		
 		//
-		// Handle single document.
+		// Insert document set.
 		//
-		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
-		{
-			//
-			// Handle containers.
-			//
-			if( $theDocument instanceof Container )
-			{
-				//
-				// Validate document.
-				//
-				if( $theDocument instanceof Document )
-					$theDocument->Validate();
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+			return $this->doInsertMany( $theDocument );								// ==>
+		
+		return $this->doInsertOne( $theDocument );									// ==>
 
-				//
-				// Insert document.
-				//
-				$key = $this->doInsertContainer( $theDocument );
-
-				//
-				// Handle document.
-				//
-				if( $theDocument instanceof Document )
-				{
-					//
-					// Set key.
-					//
-					$theDocument->SetKey( $key, $this );
-
-					//
-					// Set persistent state.
-					//
-					$theDocument->IsPersistent( TRUE, $this );
-
-					//
-					// Reset modification state.
-					//
-					$theDocument->IsModified( FALSE, $this );
-
-				} // Document.
-
-				//
-				// Handle container.
-				//
-				else
-					$theDocument[ $this->KeyOffset() ] = $key;
-
-				return $key;														// ==>
-
-			} // Containers.
-
-			//
-			// Handle other document types.
-			//
-			else
-				return $this->doInsertArray( (array)$document );					// ==>
-
-		} // Single document.
-
-		//
-		// Iterate documents.
-		//
-		$keys = [];
-		foreach( $theDocument as $document )
-			$keys[] = $this->Insert( $document, $theOptions );
-
-		return $keys;																// ==>
-
-	} // InsertDocument.
+	} // Insert.
 
 
 	/*===================================================================================
@@ -691,15 +607,12 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Insert a set of documents.</h4>
 	 *
-	 * This method can be used to insert a set of documents, it will return the list of
-	 * inserted document keys.
-	 *
 	 * The method expects a single parameter which represents the list of documents, these
-	 * should either be {@link Container) instances, arrays, or objects that can be cast to
-	 * an array. The parameter should be an iterable object or an array.
+	 * should either be in the native database format, {@link Container) instances, arrays,
+	 * or objects that can be cast to an array. The parameter should be an array.
 	 *
-	 * The method will not modify the provided document set, use {@link InsertDocument()}
-	 * for that matter.
+	 * The method will not modify the provided document set, use {@link Insert()} for that
+	 * matter.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
@@ -715,25 +628,7 @@ abstract class Collection extends Container
 		//
 		$list = [];
 		foreach( $theList as $document )
-		{
-			//
-			// Handle array.
-			//
-			if( is_array( $document ) )
-				$list[] = $document;
-			
-			//
-			// Handle container.
-			//
-			elseif( $document instanceof Container )
-				$list[] = $document->toArray();
-
-			//
-			// Handle object.
-			//
-			else
-				$list[] = (array)$document;
-		}
+			$list[] = $this->NewNativeDocument( $document );
 
 		return $this->doInsertBulk( $list );										// ==>
 
@@ -750,19 +645,19 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	DeleteDocument																	*
+	 *	Delete																			*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete documents.</h4>
+	 * <h4>Delete document(s).</h4>
 	 *
-	 * This method can be used to delete one or more documents from the collection, the
-	 * method expects the following parameters:
+	 * This method can be used to delete a single or a set of documents from the current
+	 * collection, the method expects the following parameters:
 	 *
 	 * <ul>
 	 *	<li><b>$theDocument</b>: The document or documents to be deleted, they should
-	 * 		either be {@link Container) instances, arrays or objects that can be cast to
-	 * 		an array.
+	 * 		either be in the native database format, {@link Container) instances, arrays or
+	 * 		objects that can be cast to an array.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
 	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
@@ -771,110 +666,51 @@ abstract class Collection extends Container
 	 * 			<li><tt>TRUE</tt>: Delete a set of documents, in this case the provided
 	 * 				parameter should be an iterable object as an array or cursor.
 	 * 			<li><tt>FALSE</tt>: Delete a single document, in this case the provided
-	 * 				parameter will be considered the data to be deleted.
+	 * 				parameter will be considered the data to be inserted.
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The method will make use of two protected methods for performing the actual delete:
-	 * {@link doDeleteArray()} for documents provided as arrays or objects and
-	 * {@link doDeleteContainer()} for documents provided as {@link Container} instances.
+	 * Two protected methods, {@link doDeleteOne()} and {@link doDeleteMany()}, will take
+	 * care of performing the actual deletions of, respectively, a single or a set of
+	 * documents.
 	 *
-	 * The main workflow is as follows:
+	 * When deleting {@link Document} instances this method will call a protected method,
+	 * {@link normaliseDeletedDocument()}, which will reset the document's persistent state
+	 * and set the document's modification state.
 	 *
-	 * <ul>
-	 * 	<li>If the document is a {@link Container} instance, the {@link doDeleteContainer()}
-	 * 		method will be called, it will delete the document from the current collection.
-	 * 	<li>If the document is not a {@link Container} instance, the {@link doDeleteArray()}
-	 * 		method will be called.
-	 * 	<li>If the document is a {@link Document} instance, the document persistent
-	 * 		({@link Document::IsPersistent()}) state will be reset.
-	 * 	<li>If the document is a {@link Document} instance, the document modification
-	 * 		({@link Document::IsModified()}) state will be set.
-	 * 	<li>The number of deleted documents will be returned.
-	 * </ul>
+	 * The method will return the number of deleted documents.
 	 *
 	 * By default the operation will assume we provided a single document.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param mixed					$theDocument		The document(s) to be deleted.
-	 * @param array					$theOptions			Delete options.
-	 * @return mixed				The number of deleted documents.
-	 *
-	 * @uses normaliseOptions()
-	 * @uses doDeleteContainer()
-	 * @uses doDeleteArray()
-	 * @uses Document::IsPersistent()
-	 * @uses Document::IsModified()
-	 * @see kTOKEN_OPT_MANY
+	 * @param array					$theOptions			Insert options.
+	 * @return int					Number of deleted documents.
 	 *
 	 * @example
 	 * // Delete a single document.<br/>
-	 * $id = $collection->DeleteDocument( $document );<br/>
+	 * $count = $collection->Delete( $document );<br/>
 	 * // Delete a list of documents.<br/>
-	 * $ids = $collection->DeleteDocument( $list, [ kTOKEN_OPT_MANY => TRUE ] );
+	 * $count = $collection->Delete( $list, [ kTOKEN_OPT_MANY => TRUE ] );
 	 */
-	public function DeleteDocument( $theDocument, $theOptions = NULL )
+	public function Delete( $theDocument, $theOptions = NULL )
 	{
 		//
-		// Normalise options.
+		// Assume, if nor stated, a scalar document was provided.
 		//
 		$this->normaliseOptions( kTOKEN_OPT_MANY, FALSE, $theOptions );
 
 		//
-		// Handle single document.
+		// Delete document set.
 		//
-		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
-		{
-			//
-			// Handle containers.
-			//
-			if( $theDocument instanceof Container )
-			{
-				//
-				// Insert document.
-				//
-				$count = $this->doDeleteContainer( $theDocument );
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+			return $this->doDeleteMany( $theDocument );								// ==>
 
-				//
-				// Handle document.
-				//
-				if( $theDocument instanceof Document )
-				{
-					//
-					// Reset persistent state.
-					//
-					$theDocument->IsPersistent( FALSE, $this );
+		return $this->doDeleteOne( $theDocument );									// ==>
 
-					//
-					// Set modification state.
-					//
-					$theDocument->IsModified( TRUE, $this );
-
-				} // Document.
-
-				return $count;														// ==>
-
-			} // Containers.
-
-			//
-			// Handle other document types.
-			//
-			return $this->doDeleteArray( (array)$document );						// ==>
-
-		} // Single document.
-
-		//
-		// Iterate documents.
-		//
-		$count = 0;
-		foreach( $theDocument as $document )
-			$count += $this->DeleteDocument( $document, $theOptions );
-
-		return $count;																// ==>
-
-	} // DeleteDocument.
+	} // Delete.
 
 
 	/*===================================================================================
@@ -890,13 +726,14 @@ abstract class Collection extends Container
 	 * The method features two parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theKey</b>: The document key(s) to match, it should be an iterable object.
+	 *	<li><b>$theKey</b>: The document key(s) to match.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
 	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
 	 * 			parameter is a set of keys or a single key:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Provided a set of keys.
+	 * 			<li><tt>TRUE</tt>: Provided a set of keys; the first parameter should be
+	 * 				iterable.
 	 * 			<li><tt>FALSE</tt>: Provided a single key.
 	 * 		 </ul>
 	 * 	 </ul>
@@ -946,13 +783,14 @@ abstract class Collection extends Container
 	 *
 	 * <ul>
 	 *	<li><b>$theDocument</b>: The example document; it must be either an array, a
-	 * 		{@link Document} instance, or a native database document.
+	 * 		{@link Container} instance, or a native database document.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
 	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete the
 	 *			first or all selected documents:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Delete all selected documents.
+	 * 			<li><tt>TRUE</tt>: Delete all selected documents; the first parameter should
+	 * 				be iterable.
 	 * 			<li><tt>FALSE</tt>: Delete the first document.
 	 * 		 </ul>
 	 * 	 </ul>
@@ -978,9 +816,6 @@ abstract class Collection extends Container
 		//
 		$this->normaliseOptions( kTOKEN_OPT_MANY, TRUE, $theOptions );
 
-		//
-		// Match example documents.
-		//
 		return $this->doDeleteByExample( $theDocument, $theOptions );				// ==>
 
 	} // DeleteByExample.
@@ -1003,12 +838,13 @@ abstract class Collection extends Container
 	 *	<li><b>$theQuery</b>: The selection query in the native database format.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_SKIP}</b>: This option determines how many records to
-	 * 			skip in the results selection, it is equivalent to the SQL <tt>START</tt>
-	 * 			directive, it is zero based and expressed as an integer.
-	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
-	 * 			consider, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
-	 * 			as an integer.
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete the
+	 *			first or all selected documents:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete all selected documents; the first parameter should
+	 * 				be iterable.
+	 * 			<li><tt>FALSE</tt>: Delete the first document.
+	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
 	 *
@@ -1030,26 +866,9 @@ abstract class Collection extends Container
 		//
 		// Normalise options.
 		//
-		if( ! is_array( $theOptions ) )
-			$this->normaliseOptions(
-				kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_KEY, $theOptions );
-		else
-			$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_KEY;
-		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-			&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
-			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
+		$this->normaliseOptions( kTOKEN_OPT_MANY, TRUE, $theOptions );
 
-		//
-		// Match query documents.
-		//
-		$keys = $this->FindByQuery( $theQuery, $theOptions );
-
-		//
-		// Normalise options.
-		//
-		$theOptions[ kTOKEN_OPT_MANY ] = TRUE;
-
-		return $this->doDeleteByKey( $keys, $theOptions );							// ==>
+		return $this->doDeleteByQuery( $theQuery, $theOptions );					// ==>
 
 	} // DeleteByQuery.
 
@@ -1074,8 +893,8 @@ abstract class Collection extends Container
 	 * expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theCriteria</b>: The modification criteria.
-	 *	<li><b>$theFilter</b>: The selection criteria.
+	 *	<li><b>$theCriteria</b>: The modification criteria in the native database format.
+	 *	<li><b>$theFilter</b>: The selection criteria in the native database format.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
 	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to update
@@ -1125,34 +944,24 @@ abstract class Collection extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Replace a record.</h4>
+	 * <h4>Replace a document.</h4>
 	 *
 	 * This method can be used to replace the first selected document in a collection, the
 	 * method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theDocument</b>: The replacement document.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options:
-	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to replace
-	 * 			the first selected document, or all the selected documents:
-	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Replace all records selected by the filter.
-	 * 			<li><tt>FALSE</tt>: Replace the first record selected by the filter.
-	 * 		 </ul>
-	 * 	 </ul>
+	 *	<li><b>$theDocument</b>: The replacement document in the native database format,
+	 * 		as a {@link Container) instance, as an array or as an object that can be cast to
+	 * 		an array.
+	 *	<li><b>$theFilter</b>: The selection criteria in the native database format.
 	 * </ul>
 	 *
-	 * The filter must be provided in the native database format and the document can be
-	 * provided either as a {@link Container} instance, or in the native database format; if
-	 * no options are provided, the operation will process all documents in the selection.
+	 * The provided replacement document will not be updated by the method.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param mixed					$theDocument		The replacement document.
 	 * @param mixed					$theFilter			The selection criteria.
-	 * @param array					$theOptions			Replace options.
 	 * @return int					The number of replaced records.
 	 *
 	 * @uses doReplace()
@@ -1160,19 +969,9 @@ abstract class Collection extends Container
 	 * @uses normaliseOptions()
 	 * @see kTOKEN_OPT_MANY
 	 */
-	public function Replace( $theDocument, $theFilter = NULL, $theOptions = NULL )
+	public function Replace( $theDocument, $theFilter = NULL )
 	{
-		//
-		// Normalise options.
-		//
-		$this->normaliseOptions( kTOKEN_OPT_MANY, TRUE, $theOptions );
-
-		//
-		// Replace document(s).
-		//
-		$result = $this->doReplace( $theFilter, $theDocument, $theOptions );
-
-		return $result;																// ==>
+		return $this->doReplace( $theFilter, $theDocument );						// ==>
 
 	} // Replace.
 
@@ -1210,7 +1009,7 @@ abstract class Collection extends Container
 	 * 		 <ul>
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return {@link Document}
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return {@link Container}
 	 * 				instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return
 	 * 				(@link NewDocumentHandle()}) instances.
@@ -1220,10 +1019,10 @@ abstract class Collection extends Container
 	 * </ul>
 	 *
 	 * If the provided {@link kTOKEN_OPT_MANY} option is <tt>FALSE</tt>, the method will
-	 * return a scalar result, if not, it will return an array of results (except if the
-	 * {@link kTOKEN_OPT_FORMAT} is {@link kTOKEN_OPT_FORMAT_NATIVE}).
+	 * return a scalar result (except if the {@link kTOKEN_OPT_FORMAT} is
+	 * {@link kTOKEN_OPT_FORMAT_NATIVE}), if not, it will return an array of results.
 	 *
-	 * By default the method will use the {@link kTOKEN_OPT_FORMAT_STANDARD} option and
+	 * By default the method will return documents as {@link Document} derived instances and
 	 * assume the provided key is a scalar.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
@@ -1247,35 +1046,7 @@ abstract class Collection extends Container
 		$this->normaliseOptions(
 			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
 
-		//
-		// Find document(s).
-		//
-		$result = $this->doFindByKey( $theKey, $theOptions );
-
-		//
-		// Handle documents.
-		//
-		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_STANDARD )
-		{
-			//
-			// Set document(s) state.
-			//
-			if( ! $theOptions[ kTOKEN_OPT_MANY ] )
-			{
-				$result->IsPersistent( TRUE, $this );
-				$result->IsModified( FALSE, $this );
-			}
-			else
-			{
-				foreach( $result as $document )
-				{
-					$document->IsPersistent( TRUE, $this );
-					$document->IsModified( FALSE, $this );
-				}
-			}
-		}
-
-		return $result;																// ==>
+		return $this->doFindByKey( $theKey, $theOptions );							// ==>
 
 	} // FindByKey.
 
@@ -1498,6 +1269,9 @@ abstract class Collection extends Container
 	 * match all the properties of the provided example document, this means that the method
 	 * will generate a query that puts in <tt>AND</tt> all the provided document offsets.
 	 *
+	 * The provided document must be either an array, a {@link Container} instance, or a
+	 * native database document.
+	 *
 	 * This method must be implemented in concrete derived classes.
 	 *
 	 * @param mixed					$theDocument		The example document.
@@ -1517,7 +1291,8 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Count by query.</h4>
 	 *
-	 * This method can be used to return the record count matching the provided query.
+	 * This method can be used to return the record count matching the provided query, the
+	 * query should be provided in the database native format.
 	 *
 	 * This method must be implemented in concrete derived classes.
 	 *
@@ -1571,7 +1346,7 @@ abstract class Collection extends Container
 	 *
 	 * @uses doMapReduce()
 	 */
-	abstract public function MapReduce( $thePipeline, $theOptions = [] );
+	abstract public function MapReduce( $thePipeline, $theOptions = NULL );
 
 	
 	
@@ -1644,44 +1419,73 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	doInsertContainer																*
+	 *	doInsertOne																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert a container.</h4>
+	 * <h4>Insert a document.</h4>
 	 *
-	 * This method should insert the provided {@link Container} instance into the current
-	 * collection, the method should return the document's key ({@link KeyOffset()}).
+	 * This method should insert the provided document into the current collection, the
+	 * document should be provided in a format compatible with the
+	 * {@link NewNativeDocument()} method.
 	 *
-	 * Besides using the native database driver to insert the document in the current
-	 * collection, this method should also store the document revision back into the
-	 * provided object, if the native database driver supports it.
+	 * When implementing the method you <em>must</em> follow this workflow:
+	 *
+	 * <ul>
+	 * 	<li>If the provided document is a {@link Document} instance, call its
+	 * 		{@link Validate()} method to ensure it is valid.
+	 * 	<li>Prepare the document to be inserted, generally by calling the protected method
+	 * 		{@link NewNativeDocument()}.
+	 * 	<li>Insert the document.
+	 * 	<li>Call the protected method {@link normalistInsertedDocument()}.
+	 * 	<li>Return the document key.
+	 * </ul>
+	 *
+	 * The method should return the newly inserted document's key ({@link KeyOffset()}).
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param Document				$theDocument		The document to insert.
-	 * @return mixed				The document's key.
+	 * @param mixed					$theDocument		The document to be inserted.
+	 * @return mixed				The inserted document's key.
 	 */
-	abstract protected function doInsertContainer( Container $theDocument );
+	abstract protected function doInsertOne( $theDocument );
 
 
 	/*===================================================================================
-	 *	doInsertArray																	*
+	 *	doInsertMany																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert an array.</h4>
+	 * <h4>Insert a list of documents.</h4>
 	 *
-	 * This method should insert the provided document expressed as an array into the
-	 * current collection, the method should return the document's key
-	 * ({@link KeyOffset()}) property.
+	 * This method should insert the provided list of documents into the current collection,
+	 * the documents in the list should be provided in the database native format, as
+	 * returned by the {@link NewNativeDocument()} method.
 	 *
-	 * This method must be implemented by derived concrete classes.
+	 * The provided list should either be an array or an iterable object.
 	 *
-	 * @param array					$theDocument		The document to insert.
-	 * @return mixed				The document's key.
+	 * The method should return the list of newly inserted document keys
+	 * ({@link KeyOffset()}) as an array.
+	 *
+	 * We implement the method in this class to iteratively call the {@link doInsertOne}
+	 * method, in derived classes you may overload this method if necessary.
+	 *
+	 * @param mixed					$theList			An iterable list of documents in
+	 * 													native database format.
+	 * @return array				The list of inserted document keys.
 	 */
-	abstract protected function doInsertArray( array $theDocument );
+	protected function doInsertMany( $theList )
+	{
+		//
+		// Iterate list.
+		//
+		$keys = [];
+		foreach( $theList as $document )
+			$keys[] = $this->doInsertOne( $document );
+
+		return $keys;																// ==>
+
+	} // doInsertMany.
 
 
 	/*===================================================================================
@@ -1691,10 +1495,11 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Insert a list of documents.</h4>
 	 *
-	 * This method should insert the provided list of documents and return an array of
-	 * document keys.
+	 * This method should insert the provided list of documents into the current collection,
+	 * the provided list of documents should be in the native database format.
 	 *
-	 * The document expects an array of arrays.
+	 * This method will return an array of the newly inserted document keys and will not
+	 * update the provided list.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
@@ -1714,41 +1519,72 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	doDeleteContainer																*
+	 *	doDeleteOne																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete a container.</h4>
+	 * <h4>Delete a document.</h4>
 	 *
-	 * This method should delete the provided {@link Container} instance from the current
-	 * collection, the method should return the number of deleted documents (<tt>1</tt> or
-	 * <tt>0</tt>).
+	 * This method should delete the provided document from the current collection, the
+	 * document should be provided in a format compatible with the
+	 * {@link NewNativeDocument()} method.
+	 *
+	 * When implementing the method you <em>must</em> follow this workflow:
+	 *
+	 * <ul>
+	 * 	<li>Prepare the document to be deleted, generally by calling the protected method
+	 * 		{@link NewNativeDocument()}, or by retrieving its key.
+	 * 	<li>Check the document key ({@link KeyOffset()}): if it is missing raise an
+	 * 		exception.
+	 * 	<li>Delete the document.
+	 * 	<li>Call the protected method {@link normalistDeletedDocument()}.
+	 * 	<li>Return the number of deleted documents.
+	 * </ul>
+	 *
+	 * The method should return the number of deleted documents, normally <tt>1</tt>.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param Document				$theDocument		The document to delete.
-	 * @return int					The number of deleted documents.
+	 * @param mixed					$theDocument		The document to be deleted.
+	 * @return mixed				The number of deleted documents.
 	 */
-	abstract protected function doDeleteContainer( Container $theDocument );
+	abstract protected function doDeleteOne( $theDocument );
 
 
 	/*===================================================================================
-	 *	doDeleteArray																	*
+	 *	doDeleteMany																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete an array.</h4>
+	 * <h4>Delete a list of documents.</h4>
 	 *
-	 * This method should delete the provided document, expressed as an array, from the
-	 * current collection, the method should return the number of deleted documents
-	 * (<tt>1</tt> or <tt>0</tt>).
+	 * This method should delete the provided list of documents from the current collection,
+	 * the documents in the list should be provided in the database native format, as
+	 * returned by the {@link NewNativeDocument()} method.
 	 *
-	 * This method must be implemented by derived concrete classes.
+	 * The provided list should either be an array or an iterable object.
 	 *
-	 * @param array					$theDocument		The document to delete.
-	 * @return int					The number of deleted documents.
+	 * The method should return the number of deleted documents.
+	 *
+	 * We implement the method in this class to iteratively call the {@link doDeleteOne}
+	 * method, in derived classes you may overload this method if necessary.
+	 *
+	 * @param mixed					$theList			An iterable list of documents in
+	 * 													native database format.
+	 * @return array				Number of deleted methods.
 	 */
-	abstract protected function doDeleteArray( array $theDocument );
+	protected function doDeleteMany( $theList )
+	{
+		//
+		// Iterate list.
+		//
+		$count = 0;
+		foreach( $theList as $document )
+			$count += $this->doDeleteOne( $document );
+
+		return $count;																// ==>
+
+	} // doDeleteMany.
 
 
 	/*===================================================================================
@@ -1800,12 +1636,12 @@ abstract class Collection extends Container
 	 * 		{@link Document} instance, or a native database document.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
-	 *			only the first selected record or all:
-	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
-	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
-	 * 		 </ul>
+	 * 		<li><b>{@link kTOKEN_OPT_SKIP}</b>: This option determines how many records to
+	 * 			skip in the selection, it is equivalent to the SQL <tt>START</tt> directive,
+	 * 			it is zero based and expressed as an integer.
+	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
+	 * 			delete, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
+	 * 			as an integer.
 	 * 	 </ul>
 	 * </ul>
 	 *
@@ -1831,16 +1667,15 @@ abstract class Collection extends Container
 	 * method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theDocument</b>: The example document; it must be either an array, a
-	 * 		{@link Document} instance, or a native database document.
+	 *	<li><b>$theQuery</b>: The selection query.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
-	 *			only the first selected record or all:
-	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
-	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
-	 * 		 </ul>
+	 * 		<li><b>{@link kTOKEN_OPT_SKIP}</b>: This option determines how many records to
+	 * 			skip in the selection, it is equivalent to the SQL <tt>START</tt> directive,
+	 * 			it is zero based and expressed as an integer.
+	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
+	 * 			delete, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
+	 * 			as an integer.
 	 * 	 </ul>
 	 * </ul>
 	 *
@@ -1875,8 +1710,8 @@ abstract class Collection extends Container
 	 * criteria, the method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theCriteria</b>: The modification criteria.
-	 *	<li><b>$theFilter</b>: The selection criteria.
+	 *	<li><b>$theCriteria</b>: The modification criteria in the native database format.
+	 *	<li><b>$theFilter</b>: The selection criteria in the native database format.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
 	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to update
@@ -1911,17 +1746,10 @@ abstract class Collection extends Container
 	 * following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theDocument</b>: The replacement document.
-	 *	<li><b>$theFilter</b>: The selection criteria.
-	 *	<li><b>$theOptions</b>: An array of options:
-	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to replace
-	 * 			the first selected document, or all the selected documents:
-	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Replace all records selected by the filter.
-	 * 			<li><tt>FALSE</tt>: Replace the first record selected by the filter.
-	 * 		 </ul>
-	 * 	 </ul>
+	 *	<li><b>$theFilter</b>: The selection criteria in the native database format.
+	 *	<li><b>$theDocument</b>: The replacement document in the native database format,
+	 * 		as a {@link Container) instance, as an array or as an object that can be cast to
+	 * 		an array.
 	 * </ul>
 	 *
 	 * The method should return the number of replaced documents.
@@ -1930,10 +1758,9 @@ abstract class Collection extends Container
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theDocument		The replacement document.
-	 * @param array					$theOptions			Replace options.
 	 * @return int					The number of replaced records.
 	 */
-	abstract protected function doReplace( $theFilter, $theDocument, array $theOptions );
+	abstract protected function doReplace( $theFilter, $theDocument );
 
 
 
@@ -1971,14 +1798,19 @@ abstract class Collection extends Container
 	 * 		 <ul>
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
-	 * 				an array of {@link Container} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: The resulting document(s)
+	 * 				will be {@link Container} instances resulting from the
+	 * 				{@link NewDocument()} method.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
 	 * 				an array of document handles (@link NewDocumentHandle()}).
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return document key(s).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
+	 *
+	 * If the {@link kTOKEN_OPT_FORMAT_STANDARD} {@link kTOKEN_OPT_FORMAT} option is set,
+	 * the resulting documents will be processed by the {@link normaliseSelectedDocument()}
+	 * method that will set the document persistent state and reset its modification state.
 	 *
 	 * If the provided {@link kTOKEN_OPT_MANY} option is <tt>FALSE</tt>, the method should
 	 * return a scalar result, if not, it should return an array of results (except if the
@@ -2004,8 +1836,9 @@ abstract class Collection extends Container
 	 * method expects the following parameters:
 	 *
 	 * <ul>
-	 *	<li><b>$theDocument</b>: The example document; it must be either an array, a
-	 * 		{@link Document} instance, or a native database document.
+	 *	<li><b>$theDocument</b>: The example document; it must be a document in the native
+	 * 		database format, a {@link Container) instance, an array or an object that can be
+	 * 		cast to an array.
 	 *	<li><b>$theOptions</b>: An array of options:
 	 * 	 <ul>
 	 * 		<li><b>{@link kTOKEN_OPT_SKIP}</b>: This option determines how many records to
@@ -2018,16 +1851,21 @@ abstract class Collection extends Container
 	 * 		 <ul>
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
-	 * 				an array of {@link Document} instances.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
-	 * 				an array of document handles (@link NewDocumentHandle()}).
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return document key(s).
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return an array of
+	 * 				{@link Container} instances ({@link NewDocument()}).
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return an array of document
+	 * 				handles (@link NewDocumentHandle()}).
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return selected document key(s)
+	 * 				({@link NewDocumentKey()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The result will always be an iterable object.
+	 * If the {@link kTOKEN_OPT_FORMAT_STANDARD} {@link kTOKEN_OPT_FORMAT} option is set,
+	 * the resulting documents will be processed by the {@link normaliseSelectedDocument()}
+	 * method that will set the document persistent state and reset its modification state.
+	 *
+	 * The result should always be an iterable object.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
@@ -2062,14 +1900,19 @@ abstract class Collection extends Container
 	 * 		 <ul>
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return either a scalar or
-	 * 				an array of {@link Document} instances.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
-	 * 				an array of document handles (@link NewDocumentHandle()}).
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return document key(s).
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return an array of
+	 * 				{@link Container} instances ({@link NewDocument()}).
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return an array of document
+	 * 				handles (@link NewDocumentHandle()}).
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return selected document key(s)
+	 * 				({@link NewDocumentKey()}).
 	 * 		 </ul>
 	 * 	 </ul>
 	 * </ul>
+	 *
+	 * If the {@link kTOKEN_OPT_FORMAT_STANDARD} {@link kTOKEN_OPT_FORMAT} option is set,
+	 * the resulting documents will be processed by the {@link normaliseSelectedDocument()}
+	 * method that will set the document persistent state and reset its modification state.
 	 *
 	 * The result will always be an iterable object.
 	 *
@@ -2135,6 +1978,189 @@ abstract class Collection extends Container
 			$theOptions[ $theToken ] = $theDefault;
 
 	} // normaliseOptions.
+
+
+	/*===================================================================================
+	 *	normaliseInsertedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise inserted document.</h4>
+	 *
+	 * This method will be called when a {@link Container} instance has been inserted, its
+	 * duty is to pass information back to the document, including eventual internal
+	 * native database properties.
+	 *
+	 * The method accepts the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The {@link Container} instance provided for insertion.
+	 *	<li><b>$theData</b>: The method in this class expects this parameter to contain the
+	 * 		document key ({@link KeyOffset()}), in derived classes you may pass the native
+	 * 		inserted document or other information containing database native internal
+	 * 		properties.
+	 * </ul>
+	 *
+	 * The method is implemented in this class to set global properties:
+	 *
+	 * <ul>
+	 *	<li><tt>{@link KeyOffset()}</tt>: The newly inserted key offset will be set back
+	 * 		into the document, this is necessary when the document key is automatically
+	 * 		generated by the database.
+	 *	<li><tt>{@link Document::IsPersistent()}</tt>: If the provided document is a
+	 * 		{@link Document} instance, the document's persistent state will be set.
+	 *	<li><tt>{@link Document::IsModified()}</tt>: If the provided document is a
+	 * 		{@link Document} instance, the document's modification state will be reset, this
+	 * 		should be the last operation performed on the object.
+	 * </ul>
+	 *
+	 * In derived classes you should first add internal database properties, such as the
+	 * revision ({@link RevisionOffset()}), then call the current method passing the
+	 * document key.
+	 *
+	 * @param Container				$theDocument		The inserted document.
+	 * @param mixed					$theData			The insert operation data.
+	 *
+	 * @uses Document::SetKey()
+	 * @uses Document::KeyOffset()
+	 * @uses Document::IsPersistent()
+	 * @uses Document::IsModified()
+	 */
+	protected function normaliseInsertedDocument( Container $theDocument, $theData )
+	{
+		//
+		// Handle documents.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Set key.
+			//
+			$theDocument->SetKey( $theData, $this );
+
+			//
+			// Set persistent state.
+			//
+			$theDocument->IsPersistent( TRUE, $this );
+
+			//
+			// Reset modification state.
+			//
+			$theDocument->IsModified( FALSE, $this );
+
+		} // Is a document.
+
+		//
+		// Handle containers.
+		//
+		else
+			$theDocument[ $this->KeyOffset() ] = $theData;
+
+	} // normaliseInsertedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseDeletedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise inserted document.</h4>
+	 *
+	 * This method will be called when a {@link Container} instance has been deleted, its
+	 * duty is to pass information back to the document, including eventual internal
+	 * native database properties.
+	 *
+	 * The method expects a single parameter which should be a {@link Container} instance.
+	 *
+	 * The method is implemented in this class to handle {@link Document} instances:
+	 *
+	 * <ul>
+	 *	<li><tt>{@link Document::IsPersistent()}</tt>: If the provided document is a
+	 * 		{@link Document} instance, the document's persistent state will be reset.
+	 *	<li><tt>{@link Document::IsModified()}</tt>: If the provided document is a
+	 * 		{@link Document} instance, the document's modification state will be set.
+	 * </ul>
+	 *
+	 * In derived classes you should first manage internal database properties, if relevant,
+	 * then call the current method.
+	 *
+	 * @param Container				$theDocument		The deleted document.
+	 *
+	 * @uses Document::IsPersistent()
+	 * @uses Document::IsModified()
+	 */
+	protected function normaliseDeletedDocument( Container $theDocument )
+	{
+		//
+		// Handle documents.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Set persistent state.
+			//
+			$theDocument->IsPersistent( FALSE, $this );
+
+			//
+			// Reset modification state.
+			//
+			$theDocument->IsModified( TRUE, $this );
+
+		} // Is a document.
+
+	} // normaliseDeletedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseSelectedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise selected document.</h4>
+	 *
+	 * This method will be called when a {@link Container} instance has been selected from
+	 * the current collection via a query, its duty is to pass information back to the
+	 * document, including eventual internal native database properties.
+	 *
+	 * The method expects a single parameter which should be a {@link Container} instance.
+	 *
+	 * The method is implemented in this class to handle {@link Document} instances:
+	 *
+	 * <ul>
+	 *	<li><tt>{@link Document::IsPersistent()}</tt>: If the provided document is a
+	 * 		{@link Document} instance, the document's persistent state will be set.
+	 *	<li><tt>{@link Document::IsModified()}</tt>: If the provided document is a
+	 * 		{@link Document} instance, the document's modification state will be reset.
+	 * </ul>
+	 *
+	 * In derived classes you should first manage internal database properties, if relevant,
+	 * then call the current method.
+	 *
+	 * @param Container				$theDocument		The selected document.
+	 *
+	 * @uses Document::IsPersistent()
+	 * @uses Document::IsModified()
+	 */
+	protected function normaliseSelectedDocument( Container $theDocument )
+	{
+		//
+		// Handle documents.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Set persistent state.
+			//
+			$theDocument->IsPersistent( TRUE, $this );
+
+			//
+			// Reset modification state.
+			//
+			$theDocument->IsModified( FALSE, $this );
+
+		} // Is a document.
+
+	} // normaliseSelectedDocument.
 
 	
 	

@@ -115,16 +115,16 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Handle native type.
 		//
-		if( $theDocument instanceof \MongoDB\Model\BSONDocument )
-			return $theDocument;													// ==>
+		if( $theData instanceof \MongoDB\Model\BSONDocument )
+			return $theData;														// ==>
 
 		//
 		// Handle container.
 		//
-		if( $theDocument instanceof \Milko\PHPLib\Container )
-			return new \MongoDB\Model\BSONDocument( $theDocument->toArray() );		// ==>
+		if( $theData instanceof \Milko\PHPLib\Container )
+			return new \MongoDB\Model\BSONDocument( $theData->toArray() );			// ==>
 
-		return new \MongoDB\Model\BSONDocument( (array)$theDocument );				// ==>
+		return new \MongoDB\Model\BSONDocument( (array)$theData );					// ==>
 
 	} // NewNativeDocument.
 
@@ -150,7 +150,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Convert document to array.
 		//
-		$document = ( $theData instanceof Container )
+		$document = ( $theData instanceof \Milko\PHPLib\Container )
 				  ? $theData->toArray()
 				  : (array)$theData;
 
@@ -209,8 +209,9 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$document =
 			new \Milko\PHPLib\Container(
-				( $theData instanceof \Milko\PHPLib\Container ) ? $theData->toArray()
-					: (array)$theData );
+				( $theDocument instanceof \Milko\PHPLib\Container )
+					? $theDocument->toArray()
+					: (array)$theDocument );
 
 		//
 		// Check document key.
@@ -247,10 +248,23 @@ class Collection extends \Milko\PHPLib\Collection
 	public function NewDocumentKey( $theDocument )
 	{
 		//
-		// Return key.
+		// Handle container.
 		//
-		if( array_key_exists( $this->KeyOffset(), $document = (array)$theDocument ) )
-			return $document[ $this->KeyOffset() ];									// ==>
+		if( $theDocument instanceof Container )
+		{
+			if( $theDocument->offsetExists( $this->KeyOffset() ) )
+				return $theDocument[ $this->KeyOffset() ];							// ==>
+		}
+
+		//
+		// Handle object or array.
+		//
+		else
+		{
+			$document = (array)$theDocument;
+			if( array_key_exists( $this->KeyOffset(), $document ) )
+				return $document[ $this->KeyOffset() ];								// ==>
+		}
 
 		throw new \InvalidArgumentException (
 			"Data is missing the document key." );								// !@! ==>
@@ -390,11 +404,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theQuery			The selection criteria.
 	 * @return int					The found records count.
 	 *
-	 * @uses CountByExample()
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::count()
 	 */
 	public function CountByQuery( $theQuery = NULL )
 	{
-		return $this->CountByExample( $theQuery );									// ==>
+		return $this->Connection()->count( $theQuery );								// ==>
 
 	} // CountByQuery.
 
@@ -427,12 +442,14 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Connection()
 	 * @uses \MongoDB\Collection::aggregate()
 	 */
-	public function MapReduce( $thePipeline, $theOptions = [] )
+	public function MapReduce( $thePipeline, $theOptions = NULL )
 	{
 		//
 		// Init local storage.
 		//
 		$options = [];
+		if( $theOptions === NULL )
+			$theOptions = [];
 
 		//
 		// Handle options.
@@ -536,53 +553,49 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	doInsertContainer																*
+	 *	doInsertOne																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert a container.</h4>
+	 * <h4>Insert a document.</h4>
 	 *
 	 * We overload this method to use the {@link \MongoDB\Collection::insertOne()} method.
 	 *
-	 * @param \Milko\PHPLib\Container	$theDocument		The document to insert.
-	 * @return mixed					The document's key.
+	 * @param mixed					$theDocument		The document to be inserted.
+	 * @return mixed				The inserted document's key.
 	 *
 	 * @uses Connection()
+	 * @uses NewNativeDocument()
+	 * @uses normalistInsertedDocument()
+	 * @uses \Milko\PHPLib\Document::Validate()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\Cursor::getInsertedId()
 	 */
-	protected function doInsertContainer( \Milko\PHPLib\Container $theDocument )
+	protected function doInsertOne( $theDocument )
 	{
-		return
-			$this->Connection()->insertOne( $theDocument->toArray() )
-				->getInsertedId();													// ==>
+		//
+		// Validate document.
+		//
+		if( $theDocument instanceof \Milko\PHPLib\Document )
+			$theDocument->Validate();
 
-	} // doInsertContainer.
+		//
+		// Insert document.
+		//
+		$key =
+			$this->Connection()->insertOne(
+				$this->NewNativeDocument( $theDocument ) )
+					->getInsertedId();
 
+		//
+		// Normalise inserted document.
+		//
+		if( $theDocument instanceof \Milko\PHPLib\Container )
+			$this->normaliseInsertedDocument( $theDocument, $key );
 
-	/*===================================================================================
-	 *	doInsertArray																	*
-	 *==================================================================================*/
+		return $key;																// ==>
 
-	/**
-	 * <h4>Insert an array.</h4>
-	 *
-	 * We overload this method to use the {@link \MongoDB\Collection::insertOne()} method.
-	 *
-	 * @param array					$theDocument		The document to insert.
-	 * @return mixed				The document's key.
-	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Collection::insertOne()
-	 * @uses \MongoDB\Cursor::getInsertedId()
-	 */
-	protected function doInsertArray( array $theDocument )
-	{
-		return
-			$this->Connection()->insertOne( $theDocument )
-				->getInsertedId();													// ==>
-
-	} // doInsertArray.
+	} // doInsertOne.
 
 
 	/*===================================================================================
@@ -620,85 +633,57 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	doDeleteContainer																*
+	 *	doDeleteOne																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete a container.</h4>
+	 * <h4>Delete a document.</h4>
 	 *
 	 * We overload this method to call the {@link \MongoDB\Collection::deleteOne()} method;
 	 * we also check if the provided document has its key, if that is not the case, we
 	 * raise an exception.
 	 *
-	 * @param \Milko\PHPLib\Container	$theDocument		The document to delete.
-	 * @return int						The number of deleted documents.
-	 * @throws \InvalidArgumentException
-	 *
-	 * @uses Connection()
-	 * @uses KeyOffset()
-	 * @uses \MongoDB\Collection::deleteOne()
-	 * @uses \MongoDB\Cursor::getDeletedCount()
+	 * @param mixed					$theDocument		The document to be deleted.
+	 * @return mixed				The number of deleted documents.
 	 */
-	protected function doDeleteContainer( \Milko\PHPLib\Container $theDocument )
+	protected function doDeleteOne( $theDocument )
 	{
+		//
+		// Convert document.
+		//
+		$document = $this->NewNativeDocument( $theDocument );
+
 		//
 		// Check document key.
 		//
-		if( ($key = $theDocument[ $this->KeyOffset() ]) !== NULL )
+		if( $document->offsetExists( $this->KeyOffset() ) )
 		{
 			//
-			// Delete.
+			// Get key.
+			//
+			$key = $document->offsetGet( $this->KeyOffset() );
+
+			//
+			// Delete document.
 			//
 			$count =
 				$this->Connection()->deleteOne( [ $this->KeyOffset() => $key ] )
 					->getDeletedCount();
 
 			//
-			// Set document state.
+			// Normalise deleted document.
 			//
-			if( $count )
-			{
-				$theDocument->IsPersistent( FALSE, $this );
-				$theDocument->IsModified( TRUE, $this );
-			}
+			if( $theDocument instanceof \Milko\PHPLib\Container )
+				$this->normaliseDeletedDocument( $theDocument );
 
 			return $count;															// ==>
-		}
+
+		} // Has key.
 
 		throw new \InvalidArgumentException (
 			"Document is missing its key." );									// !@! ==>
 
-	} // doDeleteContainer.
-
-
-	/*===================================================================================
-	 *	doDeleteArray																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete an array.</h4>
-	 *
-	 * We overload this method to call the {@link \MongoDB\Collection::deleteOne()} method;
-	 * we also check if the provided document has its key, if that is not the case, we
-	 * raise an exception.
-	 *
-	 * @param array					$theDocument		The document to delete.
-	 * @return int					The number of deleted documents.
-	 */
-	protected function doDeleteArray( array $theDocument )
-	{
-		//
-		// Check document key.
-		//
-		if( ($key = $theDocument[ $this->KeyOffset() ]) !== NULL )
-			return
-				$this->Connection()->deleteOne( [ $this->KeyOffset() => $key ] )
-					->getDeletedCount();											// ==>
-
-		throw new \InvalidArgumentException (
-			"Document is missing its key." );									// !@! ==>
-
-	} // doDeleteArray.
+	} // doDeleteOne.
 
 
 	/*===================================================================================
@@ -776,7 +761,7 @@ class Collection extends \Milko\PHPLib\Collection
 			$document = (array)$theDocument;
 
 		//
-		// Delete one or more records.
+		// Delete.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
 				? $this->Connection()->deleteMany( $document )
@@ -805,7 +790,14 @@ class Collection extends \Milko\PHPLib\Collection
 	 */
 	protected function doDeleteByQuery( $theQuery, array $theOptions )
 	{
-		return $this->doDeleteByExample( $theQuery, $theOptions );					// ==>
+		//
+		// Delete.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+			? $this->Connection()->deleteMany( $theQuery )
+			: $this->Connection()->deleteOne( $theQuery );
+
+		return $result->getDeletedCount();											// ==>
 
 	} // doDeleteByQuery.
 
@@ -830,9 +822,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * to update a single document and {@link \MongoDB\Collection::updateMany()} method to
 	 * update many records.
 	 *
-	 * We strip the <tt>'$doAll'</tt> parameter from the options and keep the other options
-	 * as driver native parameters.
-	 *
 	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theCriteria		The modification criteria.
 	 * @param array					$theOptions			Update options.
@@ -854,9 +843,9 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Insert one or more records.
 		//
-		$result = ( ! $theOptions[ kTOKEN_OPT_MANY ] )
-				? $this->Connection()->updateOne( $theFilter, $theCriteria )
-				: $this->Connection()->updateMany( $theFilter, $theCriteria );
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? $this->Connection()->updateMany( $theFilter, $theCriteria )
+				: $this->Connection()->updateOne( $theFilter, $theCriteria );
 
 		return $result->getModifiedCount();											// ==>
 	
@@ -874,7 +863,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theDocument		The replacement document.
-	 * @param array					$theOptions			Replace options.
 	 * @return int					The number of replaced records.
 	 *
 	 * @uses Connection()
@@ -882,7 +870,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::replaceOne()
 	 * @see kTOKEN_OPT_MANY
 	 */
-	protected function doReplace( $theFilter, $theDocument, array $theOptions )
+	protected function doReplace( $theFilter, $theDocument )
 	{
 		//
 		// Normalise filter.
@@ -890,57 +878,21 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theFilter === NULL )
 			$theFilter = [];
 
-		//
-		// Normalise container.
-		//
-		if( $theDocument instanceof \Milko\PHPLib\Container )
-			$document = $theDocument->toArray();
-		else
-			$document = (array)$theDocument;
+		return
+			$this->Connection()->replaceOne(
+				$theFilter, $this->NewNativeDocument( $theDocument ) )
+					->getModifiedCount();											// ==>
 
-		//
-		// Replace many records.
-		//
-		if( $theOptions[ kTOKEN_OPT_MANY ] )
-		{
-			//
-			// Replace selection.
-			//
-			$count = 0;
-			$cursor = $this->Connection()->find( $theFilter );
-			foreach( $cursor as $record )
-			{
-				//
-				// Convert to container.
-				//
-				$record = new \Milko\PHPLib\Container( (array)$record );
-
-				//
-				// Replace document.
-				//
-				$result =
-					$this->Connection()->replaceOne(
-						[ $this->KeyOffset() => $record[ $this->KeyOffset() ] ],
-						$theDocument );
-
-				//
-				// Increment replaced count.
-				//
-				$count++;
-			}
-
-			return $count;															// ==>
-
-		} // Many documents.
-
-		//
-		// Replace a single record.
-		//
-		$result = $this->Connection()->replaceOne( $theFilter, $theDocument );
-
-		return $result->getModifiedCount();											// ==>
-	
 	} // doReplace.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED SELECTION MANAGEMENT INTERFACE					*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -959,16 +911,17 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses KeyOffset()
 	 * @uses Connection()
-	 * @uses formatCursor()
 	 * @uses NewDocument()
+	 * @uses NewDocumentKey()
 	 * @uses NewDocumentHandle()
+	 * @uses normaliseSelectedDocument()
 	 * @uses \MongoDB\Collection::find()
 	 * @uses \MongoDB\Collection::count()
 	 * @uses \MongoDB\Collection::findOne()
 	 * @see kTOKEN_OPT_MANY
 	 * @see kTOKEN_OPT_FORMAT
 	 */
-	protected function doFindByKey($theKey, array $theOptions )
+	protected function doFindByKey( $theKey, array $theOptions )
 	{
 		//
 		// Set selection filter.
@@ -981,8 +934,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Make selection.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-			? $this->Connection()->find( $filter )
-			: $this->Connection()->findOne( $filter );
+				? $this->Connection()->find( $filter )
+				: $this->Connection()->findOne( $filter );
 
 		//
 		// Handle native result.
@@ -991,75 +944,83 @@ class Collection extends \Milko\PHPLib\Collection
 			return $result;															// ==>
 
 		//
-		// Handle multiple results.
+		// Handle single document.
 		//
-		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
 		{
 			//
-			// Handle no results.
-			// For some reason the cursor doesn't seem to have the count() method.
+			// Handle found document.
 			//
-			if( ! $this->Connection()->count( $filter ) )
-				return [];															// ==>
-
-			//
-			// Iterate cursor.
-			//
-			$list = [];
-			foreach( $result as $document )
+			if( $result !== NULL )
 			{
+				//
+				// Format document.
+				//
 				switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
 				{
 					case kTOKEN_OPT_FORMAT_STANDARD:
-						$list[] = $this->NewDocument( $document );
-						break;
+						$document = $this->NewDocument( $result );
+						$this->normaliseSelectedDocument( $document );
+						return $document;											// ==>
 
 					case kTOKEN_OPT_FORMAT_HANDLE:
-						$list[] = $this->NewDocumentHandle( $document );
-						break;
+						return $this->NewDocumentHandle( $result );					// ==>
 
 					case kTOKEN_OPT_FORMAT_KEY:
-						$list[] = $this->NewDocumentKey( $document );
-						break;
-
-					default:
-						throw new \InvalidArgumentException (
-							"Invalid conversion format code." );				// !@! ==>
+						return $this->NewDocumentKey( $result );					// ==>
 				}
-			}
 
-			return $list;															// ==>
-		}
+				//
+				// Invalid format code.
+				//
+				throw new \InvalidArgumentException (
+					"Invalid conversion format code." );						// !@! ==>
+
+			} // Found document.
+
+			return NULL;															// ==>
+
+		} // Single document.
 
 		//
-		// Handle found document.
+		// Handle no results.
+		// For some reason the cursor doesn't seem to have the count() method.
 		//
-		if( $result !== NULL )
+		if( ! $this->Connection()->count( $filter ) )
+			return [];																// ==>
+
+		//
+		// Iterate cursor.
+		//
+		$list = [];
+		foreach( $result as $document )
 		{
 			//
-			// Format result.
+			// Format document.
 			//
 			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
 			{
 				case kTOKEN_OPT_FORMAT_STANDARD:
-					return $this->NewDocument( $result );							// ==>
+					$tmp = $this->NewDocument( $document );
+					$this->normaliseSelectedDocument( $tmp );
+					$list[] = $tmp;
+					break;
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
-					return $this->NewDocumentHandle( $result );						// ==>
+					$list[] = $this->NewDocumentHandle( $document );
+					break;
 
 				case kTOKEN_OPT_FORMAT_KEY:
-					return $this->NewDocumentKey( $result );						// ==>
+					$list[] = $this->NewDocumentKey( $document );
+					break;
+
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid conversion format code." );					// !@! ==>
 			}
+		}
 
-			//
-			// Invalid format code.
-			//
-			throw new \InvalidArgumentException (
-				"Invalid conversion format code." );							// !@! ==>
-
-		} // Found document.
-
-		return NULL;																// ==>
+		return $list;																// ==>
 
 	} // doFindByKey.
 
@@ -1083,7 +1044,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @throws \InvalidArgumentException
 	 *
 	 * @uses Connection()
-	 * @uses formatCursor()
+	 * @uses NewDocument()
+	 * @uses NewDocumentKey()
+	 * @uses NewDocumentHandle()
+	 * @uses normaliseSelectedDocument()
 	 * @uses \MongoDB\Collection::find()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
@@ -1100,11 +1064,11 @@ class Collection extends \Milko\PHPLib\Collection
 		// Normalise filter.
 		//
 		if( $theDocument === NULL )
-			$theDocument = [];
+			$filter = [];
 		elseif( $theDocument instanceof \Milko\PHPLib\Container )
-			$theDocument = $theDocument->toArray();
-		elseif( ! is_array( $theDocument ) )
-			$theDocument = (array)$theDocument;
+			$filter = $theDocument->toArray();
+		else
+			$filter = (array)$theDocument;
 
 		//
 		// Handle options.
@@ -1130,7 +1094,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Make selection.
 		//
-		$result = $this->Connection()->find( $theDocument, $options );
+		$result = $this->Connection()->find( $filter, $options );
 
 		//
 		// Handle native result.
@@ -1144,10 +1108,15 @@ class Collection extends \Milko\PHPLib\Collection
 		$list = [];
 		foreach( $result as $document )
 		{
+			//
+			// Format document.
+			//
 			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
 			{
 				case kTOKEN_OPT_FORMAT_STANDARD:
-					$list[] = $this->NewDocument( $document );
+					$tmp = $this->NewDocument( $document );
+					$this->normaliseSelectedDocument( $tmp );
+					$list[] = $tmp;
 					break;
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
@@ -1160,11 +1129,11 @@ class Collection extends \Milko\PHPLib\Collection
 
 				default:
 					throw new \InvalidArgumentException (
-						"Invalid conversion format code." );				// !@! ==>
+						"Invalid conversion format code." );					// !@! ==>
 			}
 		}
 
-		return $list;															// ==>
+		return $list;																// ==>
 
 	} // doFindByExample.
 
@@ -1176,18 +1145,97 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Query the collection.</h4>
 	 *
-	 * We overload this method to use the {@link doFind()} method, since the latter method
-	 * treats the example document as a query.
+	 * We overload this method to use the {@link \MongoDB\Collection::find()} method, the
+	 * provided example document will be used as the actual selection criteria.
+	 *
+	 * We convert the {@link kTOKEN_OPT_SKIP} and {@link kTOKEN_OPT_LIMIT} parameters into
+	 * respectively the <tt>skip</tt> and <tt>limit</tt> native options.
 	 *
 	 * @param mixed					$theQuery			The selection criteria.
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses doFindByExample()
+	 * @uses Connection()
+	 * @uses NewDocument()
+	 * @uses NewDocumentKey()
+	 * @uses NewDocumentHandle()
+	 * @uses normaliseSelectedDocument()
+	 * @uses \MongoDB\Collection::find()
+	 * @see kTOKEN_OPT_SKIP
+	 * @see kTOKEN_OPT_LIMIT
+	 * @see kTOKEN_OPT_FORMAT
 	 */
 	protected function doFindByQuery( $theQuery, array $theOptions )
 	{
-		return $this->doFindByExample( $theQuery, $theOptions );					// ==>
+		//
+		// Init local storage.
+		//
+		$options = [];
+
+		//
+		// Handle options.
+		//
+		if( count( $theOptions ) )
+		{
+			//
+			// Force skip if limit is there.
+			//
+			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
+				&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
+
+			//
+			// Convert to native options.
+			//
+			if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+				$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+				$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
+		}
+
+		//
+		// Make selection.
+		//
+		$result = $this->Connection()->find( $theQuery, $options );
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $result;															// ==>
+
+		//
+		// Iterate cursor.
+		//
+		$list = [];
+		foreach( $result as $document )
+		{
+			//
+			// Format document.
+			//
+			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+			{
+				case kTOKEN_OPT_FORMAT_STANDARD:
+					$tmp = $this->NewDocument( $document );
+					$this->normaliseSelectedDocument( $tmp );
+					$list[] = $tmp;
+					break;
+
+				case kTOKEN_OPT_FORMAT_HANDLE:
+					$list[] = $this->NewDocumentHandle( $document );
+					break;
+
+				case kTOKEN_OPT_FORMAT_KEY:
+					$list[] = $this->NewDocumentKey( $document );
+					break;
+
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid conversion format code." );					// !@! ==>
+			}
+		}
+
+		return $list;																// ==>
 
 	} // doFindByQuery.
 

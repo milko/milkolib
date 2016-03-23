@@ -73,8 +73,8 @@ echo( "\n=======================================================================
 // Insert native document.
 //
 echo( "Insert native document:\n" );
-echo( '$document = new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] );' . "\n" );
-$document = new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red", kTAG_MONGO_CLASS => "Milko\PHPLib\Document" ] );
+echo( '$document = new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red" ] );' . "\n" );
+$document = new MongoDB\Model\BSONDocument( ["data" => "Value 1", "color" => "red" ] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -105,6 +105,7 @@ echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
 print_r( $document );
+exit;
 
 echo( "\n====================================================================================\n\n" );
 
