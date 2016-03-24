@@ -1123,27 +1123,7 @@ abstract class Collection extends Container
 		 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
-		//
-		// Find documents.
-		//
-		$result = $this->doFindByExample( $theDocument, $theOptions );
-
-		//
-		// Handle documents.
-		//
-		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_STANDARD )
-		{
-			//
-			// Set document(s) persistent state.
-			//
-			foreach( $result as $document )
-			{
-				$document->IsPersistent( TRUE, $this );
-				$document->IsModified( FALSE, $this );
-			}
-		}
-
-		return $result;																// ==>
+		return $this->doFindByExample( $theDocument, $theOptions );					// ==>
 
 	} // FindByExample.
 
@@ -1207,27 +1187,7 @@ abstract class Collection extends Container
 			&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
-		//
-		// Find documents.
-		//
-		$result = $this->doFindByQuery( $theQuery, $theOptions );
-
-		//
-		// Handle documents.
-		//
-		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_STANDARD )
-		{
-			//
-			// Set document(s) persistent state.
-			//
-			foreach( $result as $document )
-			{
-				$document->IsPersistent( TRUE, $this );
-				$document->IsModified( FALSE, $this );
-			}
-		}
-
-		return $result;																// ==>
+		return $this->doFindByQuery( $theQuery, $theOptions );						// ==>
 
 	} // FindByQuery.
 

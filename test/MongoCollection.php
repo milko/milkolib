@@ -104,8 +104,10 @@ $document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
-print_r( $document );
-exit;
+echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $document->getArrayCopy() );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -131,7 +133,13 @@ $documents = [ new Milko\PHPLib\Document( $test, [ kTAG_MONGO_KEY => 7, "name" =
 echo( '$result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
 $result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
 print_r( $result );
-print_r( $documents );
+foreach( $documents as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -142,7 +150,10 @@ echo( "Delete one document:\n" );
 echo( '$result = $test->Delete( $documents[ 0 ] );' . "\n" );
 $result = $test->Delete( $documents[ 0 ] );
 var_dump( $result );
-print_r( $documents[ 0 ] );
+echo( "Modified:   " . (( $documents[ 0 ]->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $documents[ 0 ]->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $documents[ 0 ]->getArrayCopy() );
 
 echo( "\n" );
 
@@ -153,7 +164,13 @@ echo( "Delete many documents:\n" );
 echo( '$result = $test->Delete( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
 $result = $test->Delete( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
 var_dump( $result );
-print_r( $documents );
+foreach( $documents as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n====================================================================================\n\n" );
 

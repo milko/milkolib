@@ -552,7 +552,7 @@ class Document extends Container
 		//
 		// Assert setter.
 		//
-		if( $theSetter !== $this )
+		if( $theSetter !== $this->mCollection )
 			throw new \RuntimeException (
 				"Only the document's collection " .
 				"is allowed to change the state." );							// !@! ==>
