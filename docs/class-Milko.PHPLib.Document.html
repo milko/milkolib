@@ -213,25 +213,30 @@ information regarding identifiers, class and revisions:</p>
 instantiating (<a href="Collection::NewDocument()">Collection::NewDocument()</a> and serialising
 <a href="Collection::NewNativeDocument()">Collection::NewNativeDocument()</a> the document: this is because the above property
 tags depend on the native database engine and may also depend on the business logic of
-the collection.</p>
+the collection; for this reason, when a document is instantiated by a collection, the
+latter is stored in an attribute.</p>
 
 <p>The class also features a method, <code><a href="class-Milko.PHPLib.Document.html#_Validate">Milko\PHPLib\Document::Validate()</a></code>, which should check whether the
 object has all the required attributes and is fit to be stored in the database, if that
 is not the case, the method should raise an exception; this method must be called before
 storing documents in the database. In this class we assume the object is valid.</p>
 
-<p>Documents store their status in a data member, a public interface is provided to set and
+<p>Documents store their state in a data member, a public interface is provided to set and
 probe a series of states:</p>
 
-<ul> <li><em>Persistent state</em>: This state indicates whether the the document is stored or was retrieved from a collection, <em>only <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> objects may set this state, probing the state is public</em>. <ul> <li><b><code><a href="class-Milko.PHPLib.Document.html#_SetPersistentState">Milko\PHPLib\Document::SetPersistentState()</a></code></b>: Set the persistent state; requires providing the <tt>$this</tt> of the instance that is setting the state. <li><b><code><a href="class-Milko.PHPLib.Document.html#_GetPersistentState">Milko\PHPLib\Document::GetPersistentState()</a></code></b>: Get the persistent state. </ul> <li><em>Modification state</em>: This state indicates whether the document was modified since it was instantiated, <em>only the current object or a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instance may set this state, probing the state is public</em>. <ul> <li><b><code><a href="class-Milko.PHPLib.Document.html#_SetModificationState">Milko\PHPLib\Document::SetModificationState()</a></code></b>: Set the modification state. <li><b><code><a href="class-Milko.PHPLib.Document.html#_GetModificationState">Milko\PHPLib\Document::GetModificationState()</a></code></b>: Get the modification state. </ul>
+<ul> <li><tt><code><a href="class-Milko.PHPLib.Document.html#_IsModified">Milko\PHPLib\Document::IsModified()</a></code></tt>: Handle the modification state of the document, when changing the state, you must provide the <tt>$this</tt> of the calling object: only the current document collection is allowed to change the modification state (handle the object attribute directly within this class to manage this state). <li><tt><code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code></tt>: Handle the persistent state of the document, when changing the state, you must provide the <tt>$this</tt> of the calling object: only the document collection is allowed to change the persistent state (this state should effectively only be changed by the document collection).
 </ul>
 
 <p>A special public method, <code><a href="class-Milko.PHPLib.Document.html#_SetKey">Milko\PHPLib\Document::SetKey()</a></code>, is used by <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instances to set
-the document key (@link Collection::JeyOffset()}) after it was inserted, this is useful
+the document key (@link Collection::KeyOffset()}) after it was inserted, this is useful
 when the key was not provided and the database generated one automatically; this method
-will reset the modification state (IsModified()) after setting the key, so that
+will reset the modification state (<code><a href="class-Milko.PHPLib.Document.html#_IsModified">Milko\PHPLib\Document::IsModified()</a></code>) after setting the key, so that
 the object will result clean after being inserted, this method can be called only by
-<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instances.</p>
+the document <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code>.</p>
+
+<p>Two protected methods, <code><a href="class-Milko.PHPLib.Document.html#_lockedOffsets">Milko\PHPLib\Document::lockedOffsets()</a></code> and <code><a href="class-Milko.PHPLib.Document.html#_requiredOffsets">Milko\PHPLib\Document::requiredOffsets()</a></code>, are used
+to return respectively the list of offsets that cannot be changed once the document is
+persistent and those which are required prior to saving the object.</p>
 	</div>
 
 	<dl class="tree well">
@@ -291,7 +296,7 @@ the object will result clean after being inserted, this method can be called onl
 				1.00<br>
 				<b>Since:</b>
 				10/03/2016<br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#29-461" title="Go to source code">PHPLib/Document.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#30-636" title="Go to source code">PHPLib/Document.php</a>
 		<br>
 	</div>
 
@@ -311,7 +316,7 @@ the object will result clean after being inserted, this method can be called onl
 
 			<td class="name"><div>
 			<a class="anchor" href="#___construct">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#154-190" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>array <var>$theData</var> = [] </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#162-209" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>array <var>$theData</var> = [] </span> )</code>
 
 			<div class="description short">
 				<h4>Instantiate class.</h4>
@@ -320,8 +325,11 @@ the object will result clean after being inserted, this method can be called onl
 			<div class="description detailed hidden">
 				<h4>Instantiate class.</h4>
 
-<p>We override the inherited constructor to set the class offset, for this reason we
-need to provide the collection.</p>
+<p>We override the inherited constructor in order to set the document class and set the
+enclosing collection in a document's attribute.</p>
+
+<p>The collection is required, because it is the collection that knows which offsets
+corresponds to the class, key and revision.</p>
 
 <p>Derived classes should first call their parent constructor.</p>
 
@@ -336,6 +344,10 @@ need to provide the collection.</p>
 
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_MODIFIED">Milko\PHPLib\Document::<b>kFLAG_DOC_MODIFIED</b></a></code><br>
+					</div>
 
 					<h4>Overrides</h4>
 					<div class="list"><code><a href="class-ArrayObject.html#___construct">ArrayObject::__construct</a></code></div>
@@ -354,7 +366,7 @@ need to provide the collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_offsetSet">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#206-233" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#225-278" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
 
 			<div class="description short">
 				<h4>Set a value at a given offset.</h4>
@@ -363,8 +375,10 @@ need to provide the collection.</p>
 			<div class="description detailed hidden">
 				<h4>Set a value at a given offset.</h4>
 
-<p>We override this method to set the modified flag (<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_MODIFIED">Milko\PHPLib\Document::<b>kFLAG_DOC_MODIFIED</b></a></code>, it will
-only be set for new values.</p>
+<p>We overload this method to perform the following operations:</p>
+
+<ul> <li>We prevent modifying the document class, <a href="Collection::ClassOffset()">Collection::ClassOffset()</a>. <li>We prevent modifying locked offsets, <code><a href="class-Milko.PHPLib.Document.html#_lockedOffsets">Milko\PHPLib\Document::lockedOffsets()</a></code>. <li>We set the modification state of the document, SetModificationState().
+</ul>
 
 
 					<h4>Parameters</h4>
@@ -376,7 +390,19 @@ only be set for new values.</p>
 					</dl></div>
 
 
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+					</div>
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_MODIFIED">Milko\PHPLib\Document::<b>kFLAG_DOC_MODIFIED</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_lockedOffsets">Milko\PHPLib\Document::lockedOffsets()</a></code><br>
+					</div>
 
 					<h4>Overrides</h4>
 					<div class="list"><code><a href="class-Milko.PHPLib.Container.html#_offsetSet">Milko\PHPLib\Container::offsetSet</a></code></div>
@@ -395,7 +421,7 @@ only be set for new values.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_offsetUnset">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#240-260" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#285-338" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
 
 			<div class="description short">
 				<h4>Reset a value at a given offset.</h4>
@@ -404,8 +430,10 @@ only be set for new values.</p>
 			<div class="description detailed hidden">
 				<h4>Reset a value at a given offset.</h4>
 
-<p>We override this method to set the modified flag (<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_MODIFIED">Milko\PHPLib\Document::<b>kFLAG_DOC_MODIFIED</b></a></code>, it will
-only be set if the offset exists.</p>
+<p>We overload this method to perform the following operations:</p>
+
+<ul> <li>We prevent deleting the document class, <a href="Collection::ClassOffset()">Collection::ClassOffset()</a>. <li>We prevent deleting locked offsets, <code><a href="class-Milko.PHPLib.Document.html#_lockedOffsets">Milko\PHPLib\Document::lockedOffsets()</a></code>. <li>We set the modification state of the document, SetModificationState(), only if the offset matches an existing property.
+</ul>
 
 
 					<h4>Parameters</h4>
@@ -416,6 +444,15 @@ only be set if the offset exists.</p>
 
 
 
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_MODIFIED">Milko\PHPLib\Document::<b>kFLAG_DOC_MODIFIED</b></a></code><br>
+							<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_PERSISTENT">Milko\PHPLib\Document::<b>kFLAG_DOC_PERSISTENT</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_lockedOffsets">Milko\PHPLib\Document::lockedOffsets()</a></code><br>
+					</div>
 
 					<h4>Overrides</h4>
 					<div class="list"><code><a href="class-Milko.PHPLib.Container.html#_offsetUnset">Milko\PHPLib\Container::offsetUnset</a></code></div>
@@ -434,7 +471,7 @@ only be set if the offset exists.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Validate">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#276-285" title="Go to source code">Validate</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#354-383" title="Go to source code">Validate</a>( )</code>
 
 			<div class="description short">
 				<h4>Validate object.</h4>
@@ -443,16 +480,28 @@ only be set if the offset exists.</p>
 			<div class="description detailed hidden">
 				<h4>Validate object.</h4>
 
-<p>This method should check whether the current object's required attributes are present
-and if it is structurally and referentially valid; if that is not the case, the
-method should raise an exception.</p>
+<p>This method should check whether the document is valid and ready to be stored in its
+collection, if that is not the case, the method should raise an exception.</p>
 
-<p>In this class we assume the object to be valid.</p>
-
-
+<p>In this class we check whether all the required properties are there, in derived
+classes you should first call this method, then do any other type of validation.</p>
 
 
 
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+					</div>
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_requiredOffsets">Milko\PHPLib\Document::requiredOffsets()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doInsertOne">Milko\PHPLib\MongoDB\Collection::doInsertOne()</a></code><br>
+					</div>
 
 
 			</div>
@@ -469,7 +518,7 @@ method should raise an exception.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_SetKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#301-326" title="Go to source code">SetKey</a>( <span>mixed <var>$theKey</var></span>, <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theSetter</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#399-435" title="Go to source code">SetKey</a>( <span>mixed <var>$theKey</var></span>, <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theSetter</var></span> )</code>
 
 			<div class="description short">
 				<h4>Set document key.</h4>
@@ -479,9 +528,10 @@ method should raise an exception.</p>
 				<h4>Set document key.</h4>
 
 <p>This method will be used by <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instances to set the document key,
-after setting it, the method will reset the modification state; only
-<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instances are allowed to call this method, for this reason it
-expects the <tt>$this</tt> value as parameter.</p>
+after setting it, the method will reset the modification state; only the document
+<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instance is allowed to call this method, for this reason it
+expects the caller's <tt>$this</tt> value as parameter. This is because the key is
+locked once the document becomes persistent.</p>
 
 
 					<h4>Parameters</h4>
@@ -493,17 +543,25 @@ expects the <tt>$this</tt> value as parameter.</p>
 					</dl></div>
 
 
-
-					<h4>Uses</h4>
+					<h4>Throws</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Document.html#_SetModificationState">Milko\PHPLib\Document::SetModificationState()</a></code><br>
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+					</div>
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_MODIFIED">Milko\PHPLib\Document::<b>kFLAG_DOC_MODIFIED</b></a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseInsertedDocument">Milko\PHPLib\Collection::normaliseInsertedDocument()</a></code><br>
 					</div>
 
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="SetModificationState" id="_SetModificationState">
+		<tr data-order="IsModified" id="_IsModified">
 
 			<td class="attributes"><code>
 				 public 
@@ -513,26 +571,24 @@ expects the <tt>$this</tt> value as parameter.</p>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_SetModificationState">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#342-381" title="Go to source code">SetModificationState</a>( <span>mixed <var>$theValue</var></span>, <span>mixed <var>$theSetter</var></span> )</code>
+			<a class="anchor" href="#_IsModified">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#451-505" title="Go to source code">IsModified</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
-				<h4>Set the document modified state.</h4>
+				<h4>Handle the document modification state.</h4>
 			</div>
 
 			<div class="description detailed hidden">
-				<h4>Set the document modified state.</h4>
+				<h4>Handle the document modification state.</h4>
 
-<p>This method can be used to set or reset the document modification state, it can only
-be called by the current object or by a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instance, or an exception
-will be raised.</p>
+<p>This method can be used to set or reset the document modification state, the state
+can only be changed by the current object or by its <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code>, or an
+exception will be raised.</p>
 
-<p>Provide <tt>TRUE</tt> to set the <em>dirty</em> state and <tt>FALSE</tt> to set the
-<em>clean</em> state.</p>
+<p>The method expects the following parameters:</p>
 
-<p>The second parameter is the <tt>$this</tt> value of the object calling the method,
-Only a <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instance or the current object are allowed to call the
-method.</p>
+<ul> <li><b>$theValue</b>: The new state or operation: <ul> <li><tt>NULL</tt>: Return the current state; the other parameter is ignored. <li><tt>TRUE</tt>: Set the current state; in this case the second parameter is required. <li><tt>TRUE</tt>: Reset the current state; in this case the second parameter is required. </ul> <li><b>$theSetter</b>: This parameter is required when modifying the current state, it should be the <tt>$this</tt> value of the object calling the method, which can either be the current object itself, or the document's collection.
+</ul>
 
 <p>The method will return the state <em>before</em> it was set or reset.</p>
 
@@ -565,14 +621,16 @@ method.</p>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Document.html#_SetKey">Milko\PHPLib\Document::SetKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseInsertedDocument">Milko\PHPLib\Collection::normaliseInsertedDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseDeletedDocument">Milko\PHPLib\Collection::normaliseDeletedDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseSelectedDocument">Milko\PHPLib\Collection::normaliseSelectedDocument()</a></code><br>
 					</div>
 
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="GetModificationState" id="_GetModificationState">
+		<tr data-order="IsPersistent" id="_IsPersistent">
 
 			<td class="attributes"><code>
 				 public 
@@ -582,62 +640,23 @@ method.</p>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_GetModificationState">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#388-403" title="Go to source code">GetModificationState</a>( )</code>
+			<a class="anchor" href="#_IsPersistent">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#512-564" title="Go to source code">IsPersistent</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
-				<h4>Get the document current modified state.</h4>
+				<h4>Handle the document persistent state.</h4>
 			</div>
 
 			<div class="description detailed hidden">
-				<h4>Get the document current modified state.</h4>
+				<h4>Handle the document persistent state.</h4>
 
-<p>This method can be used to get the document current modification state, it returns
-a boolean, <tt>TRUE</tt> for the <em>dirty</em> state and <tt>FALSE</tt> for the
-<em>clean</em> state.</p>
+<p>This method can be used to set or reset the document persistent state, the state can
+only be changed by the document's <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code>, or an exception will be raised.</p>
 
+<p>The method expects the following parameters:</p>
 
-
-					<h4>Returns</h4>
-					<div class="list">
-						boolean<br>Current state.
-					</div>
-
-
-					<h4>See</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_MODIFIED">Milko\PHPLib\Document::<b>kFLAG_DOC_MODIFIED</b></a></code><br>
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="SetPersistentState" id="_SetPersistentState">
-
-			<td class="attributes"><code>
-				 public 
-				boolean
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_SetPersistentState">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#410-434" title="Go to source code">SetPersistentState</a>( <span>mixed <var>$theValue</var></span>, <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theSetter</var></span> )</code>
-
-			<div class="description short">
-				<h4>Set the document persistent state.</h4>
-			</div>
-
-			<div class="description detailed hidden">
-				<h4>Set the document persistent state.</h4>
-
-<p>This method can be used to set or reset the document persistent state, it can only
-be called by <code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> instances.</p>
-
-<p>Provide <tt>TRUE</tt> after storing and after retrieving the document from its
-collection, and <tt>FALSE</tt> after deleting the document.</p>
+<ul> <li><b>$theValue</b>: The new state or operation: <ul> <li><tt>NULL</tt>: Return the current state; the other parameter is ignored. <li><tt>TRUE</tt>: Set the current state; in this case the second parameter is required. <li><tt>TRUE</tt>: Reset the current state; in this case the second parameter is required. </ul> <li><b>$theSetter</b>: This parameter is required when modifying the current state, it should be the <tt>$this</tt> value of the collection setting the state, it must match the collection set in the constructor.
+</ul>
 
 <p>The method will return the state <em>before</em> it was set or reset.</p>
 
@@ -655,6 +674,10 @@ collection, and <tt>FALSE</tt> after deleting the document.</p>
 						boolean<br>New or old state.
 					</div>
 
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+					</div>
 
 					<h4>See</h4>
 					<div class="list">
@@ -666,48 +689,100 @@ collection, and <tt>FALSE</tt> after deleting the document.</p>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Collection.html#_touchDocuments">Milko\PHPLib\Collection::touchDocuments()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseInsertedDocument">Milko\PHPLib\Collection::normaliseInsertedDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseDeletedDocument">Milko\PHPLib\Collection::normaliseDeletedDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseSelectedDocument">Milko\PHPLib\Collection::normaliseSelectedDocument()</a></code><br>
 					</div>
 
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="GetPersistentState" id="_GetPersistentState">
+		<tr data-order="lockedOffsets" id="_lockedOffsets">
 
 			<td class="attributes"><code>
 				 public 
-				boolean
+				array
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_GetPersistentState">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#441-456" title="Go to source code">GetPersistentState</a>( )</code>
+			<a class="anchor" href="#_lockedOffsets">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#580-605" title="Go to source code">lockedOffsets</a>( )</code>
 
 			<div class="description short">
-				<h4>Get the document persistent state.</h4>
+				<h4>Return the list of locked offsets.</h4>
 			</div>
 
 			<div class="description detailed hidden">
-				<h4>Get the document persistent state.</h4>
+				<h4>Return the list of locked offsets.</h4>
 
-<p>This method can be used to get the document persistent state, it returns a boolean
-a boolean, <tt>TRUE</tt> if the object resides in a collection or <tt>FALSE</tt> if
-it doesn't (yet).</p>
+<p>This method should return the list of offsets which cannot be modified once the
+object has been committed to its <code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code>.</p>
+
+<p>By default the key, revision and class should be locked.</p>
 
 
 
 					<h4>Returns</h4>
 					<div class="list">
-						boolean<br>Current state.
+						array<br>List of locked offsets.
 					</div>
 
 
-					<h4>See</h4>
+					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.Document.html#kFLAG_DOC_PERSISTENT">Milko\PHPLib\Document::<b>kFLAG_DOC_PERSISTENT</b></a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_KeyOffset">Milko\PHPLib\Collection::KeyOffset()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_ClassOffset">Milko\PHPLib\Collection::ClassOffset()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_RevisionOffset">Milko\PHPLib\Collection::RevisionOffset()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_offsetSet">Milko\PHPLib\Document::offsetSet()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Document.html#_offsetUnset">Milko\PHPLib\Document::offsetUnset()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="requiredOffsets" id="_requiredOffsets">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_requiredOffsets">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#612-631" title="Go to source code">requiredOffsets</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the list of required offsets.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the list of required offsets.</h4>
+
+<p>This method should return the list of offsets which are required prior to saving the
+document in its collection.</p>
+
+<p>This class doesn't feature any required offsets.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						array<br>List of required offsets.
+					</div>
+
+
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_Validate">Milko\PHPLib\Document::Validate()</a></code><br>
 					</div>
 
 
@@ -768,7 +843,7 @@ it doesn't (yet).</p>
 				<td class="attributes"><code>bitfield</code></td>
 				<td class="name">
 					<code>
-						<a href="source-class-Milko.PHPLib.Document.html#101-108" title="Go to source code"><b>kFLAG_DEFAULT</b></a>
+						<a href="source-class-Milko.PHPLib.Document.html#100-107" title="Go to source code"><b>kFLAG_DEFAULT</b></a>
 					</code>
 
 					<div class="description short">
@@ -794,7 +869,7 @@ it doesn't (yet).</p>
 				<td class="attributes"><code>bitfield</code></td>
 				<td class="name">
 					<code>
-						<a href="source-class-Milko.PHPLib.Document.html#110-119" title="Go to source code"><b>kFLAG_DOC_MODIFIED</b></a>
+						<a href="source-class-Milko.PHPLib.Document.html#109-118" title="Go to source code"><b>kFLAG_DOC_MODIFIED</b></a>
 					</code>
 
 					<div class="description short">
@@ -822,7 +897,7 @@ from its collection.</p>
 				<td class="attributes"><code>bitfield</code></td>
 				<td class="name">
 					<code>
-						<a href="source-class-Milko.PHPLib.Document.html#121-129" title="Go to source code"><b>kFLAG_DOC_PERSISTENT</b></a>
+						<a href="source-class-Milko.PHPLib.Document.html#120-128" title="Go to source code"><b>kFLAG_DOC_PERSISTENT</b></a>
 					</code>
 
 					<div class="description short">
@@ -867,7 +942,7 @@ that the document was retrieved, or that it was stored in a collection.</p>
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-Milko.PHPLib.Document.html#131-138" title="Go to source code"><var>$mStatus</var></a>
+					<a href="source-class-Milko.PHPLib.Document.html#130-137" title="Go to source code"><var>$mStatus</var></a>
 
 				<div class="description short">
 					<p>Status.</p>
@@ -884,6 +959,33 @@ that the document was retrieved, or that it was stored in a collection.</p>
 				<div>
 					<a href="#$mStatus" class="anchor">#</a>
 					<code><code><a href="class-Milko.PHPLib.Document.html#kFLAG_DEFAULT">Milko\PHPLib\Document::<b>kFLAG_DEFAULT</b></a></code></code>
+				</div>
+			</td>
+		</tr>
+		<tr data-order="mCollection" id="$mCollection">
+			<td class="attributes"><code>
+				protected  
+				<code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code>
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-Milko.PHPLib.Document.html#139-146" title="Go to source code"><var>$mCollection</var></a>
+
+				<div class="description short">
+					<p>Collection.</p>
+				</div>
+
+				<div class="description detailed hidden">
+					<p>Collection.</p>
+
+<p>This attribute stores the document collection.</p>
+
+				</div>
+			</td>
+			<td class="value">
+				<div>
+					<a href="#$mCollection" class="anchor">#</a>
+					<code><span class="php-keyword1">NULL</span></code>
 				</div>
 			</td>
 		</tr>

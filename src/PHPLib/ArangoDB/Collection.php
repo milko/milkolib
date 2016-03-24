@@ -139,6 +139,42 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
+	 *	NewNativeDocument																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert a standard document to native data.</h4>
+	 *
+	 * We overload this method to return an ArangoDocument.
+	 *
+	 * @param mixed					$theDocument		Document to be converted.
+	 * @return mixed				Database native object.
+	 *
+	 * @uses triagens\ArangoDb\Document::createFromArray()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	public function NewNativeDocument( $theDocument )
+	{
+		//
+		// Handle native type.
+		//
+		if( $theDocument instanceof ArangoDocument )
+			return $theDocument;													// ==>
+		
+		//
+		// Convert to array.
+		//
+		$document = ( $theDocument instanceof \Milko\PHPLib\Container )
+				  ? $theDocument->toArray()
+				  : (array)$theDocument;
+
+		return ArangoDocument::createFromArray( $document );						// ==>
+
+	} // NewNativeDocument.
+
+
+	/*===================================================================================
 	 *	NewDocument																		*
 	 *==================================================================================*/
 
@@ -153,15 +189,42 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return \Milko\PHPLib\Container	Standard document object.
 	 *
 	 * @uses ClassOffset()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_STANDARD
 	 */
 	public function NewDocument( $theData, $theClass = NULL )
 	{
 		//
-		// Convert document to array.
+		// Convert ArangoDocument to aray.
 		//
-		$document = ( $theData instanceof ArangoDocument )
-			? $theData->getAll()
-			: (array)$theData;
+		if( $theData instanceof ArangoDocument )
+		{
+			//
+			// Get document data.
+			//
+			$document = $theData->getAll();
+
+			//
+			// Set key.
+			//
+			if( ($key = $theData->getId()) !== NULL )
+				$document[ $this->KeyOffset() ] = $key;
+
+			//
+			// Set revision.
+			//
+			if( ($revision = $theData->getRevision()) !== NULL )
+				$document[ $this->RevisionOffset() ] = $revision;
+
+		} // ArangoDocument.
+
+		//
+		// Convert other types of documents.
+		//
+		elseif( $theData instanceof \Milko\PHPLib\Container )
+			$document = $theData->toArray();
+		else
+			$document = (array)$theData;
 
 		//
 		// Use provided class name.
@@ -187,44 +250,14 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert a standard document to native data.</h4>
-	 *
-	 * We overload this method to return an ArangoDocument.
-	 *
-	 * @param mixed					$theDocument		Document to be converted.
-	 * @return mixed				Database native object.
-	 */
-	public function NewNativeDocument( $theDocument )
-	{
-		//
-		// Handle native type.
-		//
-		if( $theDocument instanceof ArangoDocument )
-			return $theDocument;													// ==>
-
-		//
-		// Handle container.
-		//
-		if( $theDocument instanceof \Milko\PHPLib\Container )
-			return ArangoDocument::createFromArray( $theDocument->toArray() );		// ==>
-
-		return ArangoDocument::createFromArray( (array)$theDocument );				// ==>
-
-	} // NewNativeDocument.
-
-
-	/*===================================================================================
 	 *	NewDocumentHandle																*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Convert a document to a document handle.</h4>
 	 *
-	 * We overload this method to return or compute the handle string.
+	 * We overload this method to return the handle string, if the provided document is an
+	 * ArangoDB document, or compute the string if not.
 	 *
 	 * Note that if the provided data doesn't feature the {@link KeyOffset()} property, the
 	 * method will raise an exception, since it will be impossible to resolve the document.
@@ -236,30 +269,105 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses KeyOffset()
 	 * @uses Connection()
 	 * @uses triagens\ArangoDb\Document::getHandle()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_HANDLE
 	 */
 	public function NewDocumentHandle( $theDocument )
 	{
 		//
+		// Init local storage.
+		//
+		$handle = NULL;
+
+		//
 		// Handle handle ;-)
 		//
 		if( $theDocument instanceof ArangoDocument )
-			return $theDocument->getHandle();										// ==>
+			$handle = $theDocument->getHandle();
 
 		//
-		// Convert to container.
+		// Handle other types of document.
 		//
-		$document = new \Milko\PHPLib\Container( (array)$theDocument );
+		else
+		{
+			//
+			// Convert document to array.
+			//
+			$document = (array)$theDocument;
 
-		//
-		// Check document key.
-		//
-		if( ($key = $document[ $this->KeyOffset() ]) !== NULL )
-			return $this->Connection()->getName() . '/' . $key;						// ==>
+			//
+			// Check document key.
+			//
+			if( array_key_exists( $this->KeyOffset(), $document ) )
+				$handle =
+					$this->Connection()->getName() .
+					'/' .
+					$document[ $this->KeyOffset() ];
+
+		} // Not an ArangoDocument.
+
+		if( $handle !== NULL )
+			return $handle;															// ==>
 
 		throw new \InvalidArgumentException (
 			"Data is missing the document key." );								// !@! ==>
 
 	} // NewDocumentHandle.
+
+
+	/*===================================================================================
+	 *	NewDocumentKey																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return document key.</h4>
+	 *
+	 * We overload this method to extract the document key from the provided data.
+	 *
+	 * @param mixed					$theDocument		Document to reference.
+	 * @return mixed				Document handle.
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses KeyOffset()
+	 * @uses triagens\ArangoDb\Document::getId()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_KEY
+	 */
+	public function NewDocumentKey( $theDocument )
+	{
+		//
+		// Handle ArangoDocument.
+		//
+		if( $theDocument instanceof ArangoDocument )
+			$key = $theDocument->getId();
+
+		//
+		// Handle container.
+		//
+		elseif( $theDocument instanceof Container )
+			$key = $theDocument[ $this->KeyOffset() ];
+
+		//
+		// Handle object or array.
+		//
+		else
+		{
+			$key = NULL;
+			$document = (array)$theDocument;
+			if( array_key_exists( $this->KeyOffset(), $document ) )
+				$key = $document[ $this->KeyOffset() ];
+		}
+
+		//
+		// Assert key.
+		//
+		if( $key !== NULL )
+			return $key;															// ==>
+
+		throw new \InvalidArgumentException (
+			"Data is missing the document key." );								// !@! ==>
+
+	} // NewDocumentKey.
 
 
 
@@ -373,21 +481,18 @@ class Collection extends \Milko\PHPLib\Collection
 	public function CountByExample( $theDocument = NULL )
 	{
 		//
-		// Convert document to array.
+		// Convert document to ArangoDocument.
 		//
-		if( $theDocument === NULL )
-			$theDocument = [];
-		elseif( $theDocument instanceof \Milko\PHPLib\Container )
-			$theDocument = $theDocument->toArray();
+		$document = $this->NewNativeDocument( $theDocument );
 
 		//
 		// Get collection handler.
 		//
 		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
 
-		return $handler->byExample(
-			$this->Connection()->getId(), $theDocument )
-				->getCount();													// ==>
+		return
+			$handler->byExample( $this->Connection()->getId(), $document )
+				->getCount();														// ==>
 
 	} // CountByExample.
 
@@ -428,6 +533,15 @@ class Collection extends \Milko\PHPLib\Collection
 		return $statement->execute()->getCount();									// ==>
 
 	} // CountByQuery.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC AGGREGATION FRAMEWORK INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -556,45 +670,343 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function doInsertOne( $theDocument )
 	{
 		//
+		// Validate document.
+		//
+		if( $theDocument instanceof \Milko\PHPLib\Document )
+			$theDocument->Validate();
+
+		//
 		// Init local storage.
 		//
+		$document = $this->NewNativeDocument( $theDocument );
 		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
-		return $handler->save( $this->Connection(), $theDocument );					// ==>
+		//
+		// Save document.
+		//
+		$key = $handler->save( $this->Connection(), $document );
+
+		//
+		// Normalise inserted document.
+		//
+		if( $theDocument instanceof \Milko\PHPLib\Container )
+			$this->normaliseInsertedDocument( $theDocument, $document );
+
+		return $key;																// ==>
 
 	} // doInsertOne.
 
 
 	/*===================================================================================
-	 *	doInsertMany																	*
+	 *	doInsertBulk																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Insert a document.</h4>
+	 * <h4>Insert a list of documents.</h4>
 	 *
-	 * We overload this method to use the {@link triagens\ArangoDb\DocumentHandler::save()}
-	 * method.
+	 * We overload this method to iterate the provided list and call the
+	 * {@link triagens\ArangoDb\DocumentHandler::save()} method on each document.
 	 *
-	 * @param mixed					$theDocuments		The native documents list.
-	 * @return mixed				The document's key.
+	 * @param array					$theList			The documents list.
+	 * @return array				The document keys.
 	 *
 	 * @uses Database()
 	 * @uses Connection()
+	 * @uses NewNativeDocument()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
-	protected function doInsertMany( $theDocuments )
+	protected function doInsertBulk( array $theList )
 	{
 		//
-		// Iterate documents.
+		// Init local storage.
 		//
 		$ids = [];
 		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
-		foreach( $theDocuments as $document )
-			$ids[] = $handler->save( $this->Connection(), $document );
+
+		//
+		// Iterate documents.
+		//
+		foreach( $theList as $document )
+			$ids[] =
+				$handler->save( $this->Connection(),
+								$this->NewNativeDocument( $document ) );
 
 		return $ids;																// ==>
 
-	} // doInsertMany.
+	} // doInsertBulk.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED DOCUMENT DELETE INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	doDeleteOne																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete a document.</h4>
+	 *
+	 * We overload this method to call the
+	 * {@link triagens\ArangoDb\DocumentHandler::removeById()} method; we also check if the
+	 * provided document has its key, if that is not the case, we raise an exception.
+	 *
+	 * @param mixed					$theDocument		The document to be deleted.
+	 * @return mixed				The number of deleted documents.
+	 *
+	 * @uses Connection()
+	 * @uses KeyOffset()
+	 * @uses NewNativeDocument()
+	 * @uses NewNativeDocument()
+	 * @uses triagens\ArangoDb\DocumentHandler::remove()
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 */
+	protected function doDeleteOne( $theDocument )
+	{
+		//
+		// Convert document.
+		//
+		$document = $this->NewNativeDocument( $theDocument );
+
+		//
+		// Check document key.
+		//
+		if( ($id = $document->getKey()) !== NULL )
+		{
+			//
+			// Instantiate document handler.
+			//
+			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+
+			//
+			// Remove document.
+			//
+			$count = 0;
+			try
+			{
+				//
+				// Try to delete document.
+				//
+				$handler->removeById(
+					$this->Connection()->getId(), $id, $document->getRevision() );
+
+				//
+				// Normalise deleted document.
+				//
+				if( $theDocument instanceof \Milko\PHPLib\Container )
+					$this->normaliseDeletedDocument( $theDocument );
+
+				return 1;															// ==>
+			}
+			catch( ArangoServerException $error )
+			{
+				//
+				// Handle not found.
+				//
+				if( $error->getCode() != 404 )
+					throw $error;												// !@! ==>
+			}
+
+			return 0;																// ==>
+
+		} // Has key.
+
+		throw new \InvalidArgumentException (
+			"Document is missing its key." );									// !@! ==>
+
+	} // doDeleteOne.
+
+
+	/*===================================================================================
+	 *	doDeleteByKey																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by key.</h4>
+	 *
+	 * We overload this method to use the
+	 * {@link triagens\ArangoDb\CollectionHandler::lookupByKeys()} method.
+	 *
+	 * @param mixed					$theKey				The document key(s).
+	 * @param array					$theOptions			Find options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Database()
+	 * @uses FindByKey()
+	 * @uses triagens\ArangoDb\DocumentHandler::remove()
+	 */
+	protected function doDeleteByKey( $theKey, array $theOptions )
+	{
+		//
+		// Normalise keys.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			$theKey = [ $theKey ];
+		else
+			$theKey = (array)$theKey;
+
+		//
+		// Get collection handler.
+		//
+		$collectionHandler = new ArangoCollectionHandler( $this->Database()->Connection() );
+
+		//
+		// Remove by keys.
+		//
+		$result = $collectionHandler->removeByKeys(
+			$this->Connection()->getId(), $theKey );
+
+		return $result[ 'removed' ];												// ==>
+
+	} // doDeleteByKey.
+
+
+	/*===================================================================================
+	 *	doDeleteByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by example.</h4>
+	 *
+	 * We overload this method to use the
+	 * {@link triagens\ArangoDb\CollectionHandler::removeByExample()} method when deleting
+	 * all selected records, and the {@link triagens\ArangoDb\DocumentHandler::remove()}
+	 * method when removing the first document.
+	 *
+	 * @param mixed					$theDocument		The example document.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Database()
+	 * @uses NewNativeDocument()
+	 * @uses triagens\ArangoDb\DocumentHandler::remove()
+	 * @uses triagens\ArangoDb\CollectionHandler::removeByExample()
+	 */
+	protected function doDeleteByExample( $theDocument, array $theOptions )
+	{
+		//
+		// Convert to native document.
+		//
+		$document = $this->NewNativeDocument( $theDocument );
+
+		//
+		// Get collection handler.
+		//
+		$collectionHandler = new ArangoCollectionHandler( $this->Database()->Connection() );
+
+		//
+		// Handle delete all.
+		//
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			return
+				$collectionHandler->removeByExample(
+					$this->Connection()->getId(), $document );						// ==>
+
+		} // Delete all.
+
+		//
+		// Select by example.
+		//
+		$cursor =
+			$collectionHandler->byExample(
+				$this->Connection()->getId(), $document, ['limit' => 1] );
+
+		//
+		// Iterate cursor.
+		//
+		$deleted = 0;
+		$documentHandler = new ArangoDocumentHandler( $this->Database()->Connection() );
+		foreach( $cursor as $document )
+		{
+			//
+			// Remove document.
+			//
+			$documentHandler->remove( $document );
+
+			//
+			// Increment counter.
+			//
+			$deleted++;
+		}
+
+		return $deleted;															// ==>
+
+	} // doDeleteByExample.
+
+
+	/*===================================================================================
+	 *	doDeleteByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete the first or all records by query.</h4>
+	 *
+	 * We overload this method to use the
+	 * {@link triagens\ArangoDb\CollectionHandler::removeByKeys()} method when deleting
+	 * all selected records, and the {@link triagens\ArangoDb\DocumentHandler::remove()}
+	 * method when removing the first document.
+	 *
+	 * @param mixed					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Delete options.
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Database()
+	 * @uses Connection()
+	 * @uses triagens\ArangoDb\CollectionHandler::removeByKeys()
+	 */
+	protected function doDeleteByQuery( $theQuery, array $theOptions )
+	{
+		//
+		// Perform query.
+		//
+		$statement = new ArangoStatement( $this->Database()->Connection(), $theQuery );
+		$cursor = $statement->execute();
+		$count = $cursor->getCount();
+
+		//
+		// Handle selection.
+		//
+		if( $count )
+		{
+			//
+			// Collect keys.
+			//
+			$keys = [];
+			foreach( $cursor as $document )
+				$keys[] = $document->getId();
+
+			//
+			// Get collection handler.
+			//
+			$collectionHandler =
+				new ArangoCollectionHandler( $this->Database()->Connection() );
+
+			//
+			// Remove by keys.
+			//
+			$collectionHandler->removeByKeys( $this->Connection()->getId(), $keys );
+
+		} // Selected something.
+
+		return $count;																// ==>
+
+	} // doDeleteByQuery.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED UPDATE MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -607,8 +1019,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload the method to instantiate and execute a statement selecting the documents
 	 * matching the provided filter and apply the modifications to each one.
 	 *
-	 * The options parameter is ignored here.
-	 *
 	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theCriteria		The modification criteria.
 	 * @param array					$theOptions			Update options.
@@ -616,9 +1026,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
-	 * @uses triagens\ArangoDb\DocumentHandler::set()
-	 * @uses triagens\ArangoDb\Statement::execute()
 	 * @uses triagens\ArangoDb\Cursor::getCount()
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 * @uses triagens\ArangoDb\DocumentHandler::set()
+	 * @uses triagens\ArangoDb\DocumentHandler::update()
 	 * @see kTOKEN_OPT_MANY
 	 */
 	protected function doUpdate( $theFilter, $theCriteria, array $theOptions )
@@ -700,98 +1111,99 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Replace a record.</h4>
 	 *
-	 * We overload the method to use native objects. We first make the selection, then we
-	 * replace the contents of the found documents with the contents of the provided
-	 * document.
+	 * We overload this method to read the document from the collection, matching its key,
+	 * then replacing its contents with the provided document and replacing the document in
+	 * the collection.
 	 *
-	 * When removing the contents of the found documents we ignode the identifier, key and
-	 * revision: be sure not to provide these in the replacement document.
+	 * If the provided document doesn't have its key ({@link KeyOffset()}), the method will
+	 * not perform the replacement and return <tt>0</tt>.
 	 *
-	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theDocument		The replacement document.
-	 * @param array					$theOptions			Replace options.
 	 * @return int					The number of replaced records.
 	 *
 	 * @uses Database()
+	 * @uses Connection()
 	 * @uses KeyOffset()
 	 * @uses RevisionOffset()
-	 * @uses collectionName()
+	 * @uses NewNativeDocument()
 	 * @uses triagens\ArangoDb\DocumentHandler::replace()
-	 * @uses triagens\ArangoDb\Statement::execute()
-	 * @uses triagens\ArangoDb\Cursor::getCount()
-	 * @see kTOKEN_OPT_MANY
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
 	 */
-	protected function doReplace( $theFilter, $theDocument, array $theOptions )
+	protected function doReplace( $theDocument )
 	{
 		//
-		// Normalise query.
-		// Note that we check both for null and empty array.
+		// Convert to native document.
 		//
-		if( ! $theFilter )
-			$theFilter =
-				[ 'query' => 'FOR r IN @@collection RETURN r',
-					'bindVars' => [ '@collection' => $this->collectionName() ] ];
+		$document = $this->NewNativeDocument( $theDocument );
 
 		//
-		// Select documents.
+		// Assert document key.
 		//
-		$statement = new ArangoStatement( $this->Database()->Connection(), $theFilter );
-		$cursor = $statement->execute();
-		$count = $cursor->getCount();
-
-		//
-		// Handle selection.
-		//
-		if( $count )
+		if( ($key = $document->getKey()) !== NULL )
 		{
 			//
-			// Instantiate document handler.
+			// Get document.
 			//
-			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
-
-			//
-			// Process selection.
-			//
-			foreach( $cursor as $document )
+			try
 			{
 				//
-				// Get field names except key and revision.
+				// Instantiate document handler.
 				//
-				$fields =
-					array_diff(
-						array_keys( $document->getAll() ),
-						[$this->KeyOffset(), $this->RevisionOffset()] );
+				$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
 				//
-				// Remove document contents.
+				// Find document.
 				//
-				foreach( $fields as $field )
-					unset( $document->$field );
+				$found = $handler->getById( $this->Connection()->getId(), $key );
 
 				//
-				// Update document contents.
+				// Reset document properties.
 				//
-				foreach( $theDocument as $key => $value )
-					$document->set( $key, $value );
+				$properties = array_keys( $found->getAll() );
+				$properties = array_diff(
+					$properties, [ $this->KeyOffset(), $this->RevisionOffset() ] );
+				foreach( $properties as $property )
+					unset( $found->$property );
+
+				//
+				// Set document properties.
+				//
+				$properties = array_keys( $document->getAll() );
+				$properties = array_diff(
+					$properties, [ $this->KeyOffset(), $this->RevisionOffset() ] );
+				foreach( $properties as $property )
+					$found->set( $property, $document->$property );
 
 				//
 				// Replace document.
 				//
-				$handler->replace( $document );
+				$handler->replace( $found );
 
+				return 1;															// ==>
+			}
+			catch( ArangoServerException $error )
+			{
 				//
-				// Handle only first.
+				// Handle not found.
 				//
-				if( ! $theOptions[ kTOKEN_OPT_MANY ] )
-					return 1;														// ==>
+				if( $error->getCode() != 404 )
+					throw $error;												// !@! ==>
+			}
 
-			} // Iterating documents.
+		} // Document has key.
 
-		} // Non empty selection.
-
-		return $count;																// ==>
+		return 0;																	// ==>
 
 	} // doReplace.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED SELECTION MANAGEMENT INTERFACE					*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -799,7 +1211,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Find by ID.</h4>
+	 * <h4>Find by key.</h4>
 	 *
 	 * We implement the method by using the
 	 * {@link triagens\ArangoDb\CollectionHandler::lookupByKeys()} method.
@@ -809,11 +1221,12 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The found document(s).
 	 * @throws \InvalidArgumentException
 	 *
-	 * @uses KeyOffset()
+	 * @uses Database()
 	 * @uses Connection()
-	 * @uses formatCursor()
 	 * @uses NewDocument()
+	 * @uses NewDocumentKey()
 	 * @uses NewDocumentHandle()
+	 * @uses normaliseSelectedDocument()
 	 * @uses triagens\ArangoDb\DocumentHandler::getById()
 	 * @uses triagens\ArangoDb\CollectionHandler::lookupByKeys()
 	 * @see kTOKEN_OPT_MANY
@@ -835,27 +1248,47 @@ class Collection extends \Milko\PHPLib\Collection
 			// Get documents.
 			//
 			$result =
-				$handler->lookupByKeys( $this->Connection()->getID(), (array)$theKey );
+				$handler->lookupByKeys(
+					$this->Connection()->getID(), (array)$theKey );
 
 			//
-			// Format result.
+			// Handle native result.
 			//
-			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+			if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+				return $result;														// ==>
+
+			//
+			// Iterate cursor.
+			//
+			$list = [];
+			foreach( $result as $document )
 			{
-				case kTOKEN_OPT_FORMAT_NATIVE:
-					return $result;													// ==>
+				//
+				// Format document.
+				//
+				switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+				{
+					case kTOKEN_OPT_FORMAT_STANDARD:
+						$tmp = $this->NewDocument( $document );
+						$this->normaliseSelectedDocument( $tmp, $document );
+						$list[] = $tmp;
+						break;
 
-				case kTOKEN_OPT_FORMAT_STANDARD:
-				case kTOKEN_OPT_FORMAT_HANDLE:
-					return $this->formatCursor(
-						$result, $theOptions[ kTOKEN_OPT_FORMAT ] );				// ==>
+					case kTOKEN_OPT_FORMAT_HANDLE:
+						$list[] = $this->NewDocumentHandle( $document );
+						break;
+
+					case kTOKEN_OPT_FORMAT_KEY:
+						$list[] = $this->NewDocumentKey( $document );
+						break;
+
+					default:
+						throw new \InvalidArgumentException (
+							"Invalid conversion format code." );				// !@! ==>
+				}
 			}
 
-			//
-			// Invalid format code.
-			//
-			throw new \InvalidArgumentException (
-				"Invalid conversion format code." );							// !@! ==>
+			return $list;															// ==>
 
 		} // List.
 
@@ -875,18 +1308,26 @@ class Collection extends \Milko\PHPLib\Collection
 			$result = $handler->getById( $this->Connection()->getId(), $theKey );
 
 			//
+			// Handle native result.
+			//
+			if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+				return $result;														// ==>
+
+			//
 			// Format result.
 			//
 			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
 			{
-				case kTOKEN_OPT_FORMAT_NATIVE:
-					return $result;													// ==>
-
 				case kTOKEN_OPT_FORMAT_STANDARD:
-					return $this->NewDocument( $result );							// ==>
+					$document = $this->NewDocument( $result );
+					$this->normaliseSelectedDocument( $document, $result );
+					return $document;												// ==>
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
 					return $this->NewDocumentHandle( $result );						// ==>
+
+				case kTOKEN_OPT_FORMAT_KEY:
+					return $this->NewDocumentKey( $result );						// ==>
 			}
 		}
 		catch( ArangoServerException $error )
@@ -944,10 +1385,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Normalise document.
 		//
-		if( $theDocument === NULL )
-			$theDocument = [];
-		elseif( $theDocument instanceof \Milko\PHPLib\Container )
-			$theDocument = $theDocument->toArray();
+		$document = $this->NewNativeDocument( $theDocument );
 
 		//
 		// Convert to native options.
@@ -966,7 +1404,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Select documents.
 		//
 		$cursor =
-			$handler->byExample( $this->Connection()->getId(), $theDocument, $options );
+			$handler->byExample(
+				$this->Connection()->getId(), $document, $options );
 
 		//
 		// Handle native result.
@@ -974,11 +1413,38 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
 			return $cursor;															// ==>
 
-		return
-			$this->formatCursor(
-				$handler->byExample(
-					$this->Connection()->getId(), $theDocument, $options ),
-				$theOptions[ kTOKEN_OPT_FORMAT ] );									// ==>
+		//
+		// Iterate cursor.
+		//
+		$list = [];
+		foreach( $cursor as $document )
+		{
+			//
+			// Format document.
+			//
+			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+			{
+				case kTOKEN_OPT_FORMAT_STANDARD:
+					$tmp = $this->NewDocument( $document );
+					$this->normaliseSelectedDocument( $tmp, $document );
+					$list[] = $tmp;
+					break;
+
+				case kTOKEN_OPT_FORMAT_HANDLE:
+					$list[] = $this->NewDocumentHandle( $document );
+					break;
+
+				case kTOKEN_OPT_FORMAT_KEY:
+					$list[] = $this->NewDocumentKey( $document );
+					break;
+
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid conversion format code." );					// !@! ==>
+			}
+		}
+
+		return $list;																// ==>
 
 	} // doFindByExample.
 
@@ -1001,7 +1467,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The found records.
 	 *
 	 * @uses Database()
-	 * @uses formatCursor()
+	 * @uses collectionName()
+	 * @uses NewDocument()
+	 * @uses NewDocumentKey()
+	 * @uses NewDocumentHandle()
 	 * @uses triagens\ArangoDb\Statement::execute()
 	 */
 	protected function doFindByQuery( $theQuery, array $theOptions )
@@ -1018,232 +1487,172 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$statement = new ArangoStatement( $this->Database()->Connection(), $theQuery );
 
-		return $this->formatCursor(
-			$statement->execute(), $theOptions[ kTOKEN_OPT_FORMAT ] );				// ==>
+		//
+		// Execute statement.
+		//
+		$cursor = $statement->execute();
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $cursor;															// ==>
+
+		//
+		// Iterate cursor.
+		//
+		$list = [];
+		foreach( $cursor as $document )
+		{
+			//
+			// Format document.
+			//
+			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+			{
+				case kTOKEN_OPT_FORMAT_STANDARD:
+					$tmp = $this->NewDocument( $document );
+					$this->normaliseSelectedDocument( $tmp, $document );
+					$list[] = $tmp;
+					break;
+
+				case kTOKEN_OPT_FORMAT_HANDLE:
+					$list[] = $this->NewDocumentHandle( $document );
+					break;
+
+				case kTOKEN_OPT_FORMAT_KEY:
+					$list[] = $this->NewDocumentKey( $document );
+					break;
+
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid conversion format code." );					// !@! ==>
+			}
+		}
+
+		return $list;																// ==>
 
 	} // doFindByQuery.
 
 
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED GENERIC UTILITIES								*
+ *																						*
+ *======================================================================================*/
+
+
+
 	/*===================================================================================
-	 *	doDeleteByKey																	*
+	 *	normaliseInsertedDocument														*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete the first or all records by key.</h4>
+	 * <h4>Normalise inserted document.</h4>
 	 *
-	 * We overload this method to use the {@link FindByKey()} method and pass the resulting
-	 * cursor to the protected {@link doDeleteByCursor()}.
+	 * We overload this method to retrieve and set the revision ({@link RevisionOffset()})
+	 * back into the object, for this reason we expect the newly inserted native document
+	 * as the second parameter, from which we will extract the identifier and pass it to
+	 * the parent method.
 	 *
-	 * @param mixed					$theKey				The document key(s).
-	 * @param array					$theOptions			Find options.
-	 * @return int					The number of deleted records.
+	 * @param \Milko\PHPLib\Container	$theDocument	The inserted document.
+	 * @param mixed						$theData		The insert operation data.
 	 *
-	 * @uses Database()
-	 * @uses FindByKey()
-	 * @uses doDeleteByCursor()
-	 * @uses triagens\ArangoDb\DocumentHandler::remove()
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 * @uses Document::RevisionOffset()
 	 */
-	protected function doDeleteByKey( $theKey, array $theOptions )
+	protected function normaliseInsertedDocument( \Milko\PHPLib\Container $theDocument,
+												  						  $theData )
 	{
 		//
-		// Normalise options.
+		// Set document revision.
 		//
-		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
+		if( $theDocument instanceof \Milko\PHPLib\Document )
+			$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
 
 		//
-		// Make selection.
+		// Call parent method.
 		//
-		$cursor = $this->FindByKey( $theKey, $theOptions );
+		parent::normaliseInsertedDocument( $theDocument, $theData->getId() );
 
-		//
-		// Handle cursor.
-		//
-		if( $cursor instanceof ArangoCursor )
-			return $this->doDeleteByCursor( $cursor, $theOptions );					// ==>
-
-		//
-		// Instantiate document handler.
-		//
-		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
-
-		//
-		// Handle array.
-		//
-		if( is_array( $cursor ) )
-		{
-			//
-			// Iterate aray.
-			//
-			foreach( $cursor as $document )
-				$handler->remove( $document );
-
-			return count( $cursor );												// ==>
-		}
-
-		//
-		// Handle document.
-		//
-		if( $cursor !== NULL )
-		{
-			//
-			// Remove document.
-			//
-			$handler->remove( $cursor );
-
-			return 1;																// ==>
-		}
-
-		return 0;																	// ==>
-
-	} // doDeleteByKey.
+	} // normaliseInsertedDocument.
 
 
 	/*===================================================================================
-	 *	doDeleteByExample																*
+	 *	normaliseDeletedDocument														*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete the first or all records by example.</h4>
+	 * <h4>Normalise inserted document.</h4>
 	 *
-	 * We overload this method to use the {@link FindByExample()} method and pass the
-	 * resulting cursor to the protected {@link doDeleteByCursor()}.
+	 * We overload this method to first call the parent method, which will reset the
+	 * document persistent state, allowing this method to remove the revision
+	 * ({@link RevisionOffset()}) from the document.
 	 *
-	 * @param mixed					$theDocument		The example document.
-	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
+	 * @param \Milko\PHPLib\Container	$theDocument	The deleted document.
 	 *
-	 * @uses FindByExample()
-	 * @uses doDeleteByCursor()
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_NATIVE
+	 * @uses Document::RevisionOffset()
 	 */
-	protected function doDeleteByExample( $theDocument, array $theOptions )
+	protected function normaliseDeletedDocument( \Milko\PHPLib\Container $theDocument )
 	{
 		//
-		// Normalise options.
+		// Call parent method.
 		//
-		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
+		parent::normaliseDeletedDocument( $theDocument );
 
-		return
-			$this->doDeleteByCursor(
-				$this->FindByExample( $theDocument, $theOptions ),
-				$theOptions );														// ==>
+		//
+		// Remove revision.
+		//
+		$theDocument->offsetUnset( $this->RevisionOffset() );
 
-	} // doDeleteByExample.
+	} // normaliseDeletedDocument.
 
 
 	/*===================================================================================
-	 *	doDeleteByQuery																	*
+	 *	normaliseSelectedDocument														*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete the first or all records by query.</h4>
+	 * <h4>Normalise selected document.</h4>
 	 *
-	 * We overload this method to use the {@link FindByExample()} method and pass the
-	 * resulting cursor to the protected {@link doDeleteByCursor()}.
+	 * This method will be called when a {@link Container} instance has been selected from
+	 * the current collection via a query, its duty is to pass information back to the
+	 * document, including eventual internal native database properties.
 	 *
-	 * Note that you can delete using AQL, try to use the dedicated methods, so the workflow
-	 * will be more consistent.
+	 * The method expects a single parameter which should be a {@link Container} instance.
 	 *
-	 * @param mixed					$theQuery			The selection criteria.
-	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses FindByQuery()
-	 * @uses doDeleteByCursor()
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_NATIVE
-	 */
-	protected function doDeleteByQuery( $theQuery, array $theOptions )
-	{
-		//
-		// Normalise options.
-		//
-		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_NATIVE;
-
-		return
-			$this->doDeleteByCursor(
-				$this->FindByQuery( $theQuery, $theOptions ),
-				$theOptions );														// ==>
-
-	} // doDeleteByQuery.
-
-
-	/*===================================================================================
-	 *	doDeleteByCursor																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete the the documents from a cursor.</h4>
-	 *
-	 * This method will delete the first or all documents contained in the provided cursor,
-	 * the method expects the following parameters:
+	 * The method is implemented in this class to handle {@link Document} instances:
 	 *
 	 * <ul>
-	 *	<li><b>$theCursor</b>: The cursor.
-	 *	<li><b>$theOptions</b>: An array of options:
-	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
-	 *			only the first selected record or all:
-	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Delete the whole selection.
-	 * 			<li><tt>FALSE</tt>: Delete only the first selected record.
-	 * 		 </ul>
-	 * 	 </ul>
+	 *	<li><tt>{@link Document::IsPersistent()}</tt>: If the provided document is a
+	 * 		{@link Document} instance, the document's persistent state will be set.
+	 *	<li><tt>{@link Document::IsModified()}</tt>: If the provided document is a
+	 * 		{@link Document} instance, the document's modification state will be reset.
 	 * </ul>
 	 *
-	 * The method will return the number of deleted records.
+	 * In derived classes you should first manage internal database properties, if relevant,
+	 * then call the current method.
 	 *
-	 * @param mixed					$theCursor			The cursor.
-	 * @param array					$theOptions			Delete options.
-	 * @return int					The number of deleted records.
+	 * @param Container				$theDocument		The selected document.
+	 * @param mixed					$theData			The native database document.
 	 *
-	 * @uses Database()
-	 * @uses collectionName()
-	 * @uses triagens\ArangoDb\DocumentHandler::remove()
+	 * @uses Document::RevisionOffset()
 	 */
-	protected function doDeleteByCursor( ArangoCursor $theCursor, array $theOptions )
+	protected function normaliseSelectedDocument( \Milko\PHPLib\Container $theDocument,
+																		  $theData )
 	{
 		//
-		// Get count.
+		// Set document revision.
 		//
-		$count = $theCursor->getCount();
+		if( $theDocument instanceof \Milko\PHPLib\Document )
+			$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
 
 		//
-		// Handle selection.
+		// Call parent method.
 		//
-		if( $count )
-		{
-			//
-			// Instantiate document handler.
-			//
-			$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+		parent::normaliseSelectedDocument( $theDocument, $theData );
 
-			//
-			// Process selection.
-			//
-			foreach( $theCursor as $document )
-			{
-				//
-				// Remove document.
-				//
-				$handler->remove( $document );
-
-				//
-				// Handle only first.
-				//
-				if( ! $theOptions[ kTOKEN_OPT_MANY ] )
-					return 1;														// ==>
-
-			} // Iterating documents.
-
-		} // Non empty selection.
-
-		return $count;																// ==>
-
-	} // doDeleteByCursor.
+	} // normaliseSelectedDocument.
 
 
 

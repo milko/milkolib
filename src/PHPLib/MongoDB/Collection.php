@@ -417,7 +417,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
- *							PUBLIC AGGREGATION MANAGEMENT INTERFACE						*
+ *							PUBLIC AGGREGATION FRAMEWORK INTERFACE						*
  *																						*
  *======================================================================================*/
 
@@ -460,7 +460,7 @@ class Collection extends \Milko\PHPLib\Collection
 			// Force skip if limit is there.
 			//
 			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-			 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+				&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
 			//
@@ -539,7 +539,7 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function collectionName()
 	{
 		return $this->Connection()->getCollectionName();							// ==>
-	
+
 	} // collectionName.
 
 
@@ -794,8 +794,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Delete.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-			? $this->Connection()->deleteMany( $theQuery )
-			: $this->Connection()->deleteOne( $theQuery );
+				? $this->Connection()->deleteMany( $theQuery )
+				: $this->Connection()->deleteOne( $theQuery );
 
 		return $result->getDeletedCount();											// ==>
 
@@ -848,7 +848,7 @@ class Collection extends \Milko\PHPLib\Collection
 				: $this->Connection()->updateOne( $theFilter, $theCriteria );
 
 		return $result->getModifiedCount();											// ==>
-	
+
 	} // doUpdate.
 
 
@@ -861,7 +861,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to use the {@link \MongoDB\Collection::replaceOne()} method.
 	 *
-	 * @param mixed					$theFilter			The selection criteria.
+	 * If the provided document doesn't have its key ({@link KeyOffset()}), the method will
+	 * not perform the replacement and return <tt>0</tt>.
+	 *
 	 * @param mixed					$theDocument		The replacement document.
 	 * @return int					The number of replaced records.
 	 *
@@ -870,18 +872,20 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::replaceOne()
 	 * @see kTOKEN_OPT_MANY
 	 */
-	protected function doReplace( $theFilter, $theDocument )
+	protected function doReplace( $theDocument )
 	{
 		//
-		// Normalise filter.
+		// Convert document.
 		//
-		if( $theFilter === NULL )
-			$theFilter = [];
+		$document = $this->NewNativeDocument( $theDocument );
+		if( $document->offsetExists( $this->KeyOffset() ) )
+			return
+				$this->Connection()->replaceOne(
+					[ $this->KeyOffset() => $document->offsetGet( $this->KeyOffset() ) ],
+					$document )
+						->getModifiedCount();										// ==>
 
-		return
-			$this->Connection()->replaceOne(
-				$theFilter, $this->NewNativeDocument( $theDocument ) )
-					->getModifiedCount();											// ==>
+		return 0;																	// ==>
 
 	} // doReplace.
 
@@ -927,8 +931,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Set selection filter.
 		//
 		$filter = ( $theOptions[ kTOKEN_OPT_MANY ] )
-				? [ $this->KeyOffset() => [ '$in' => (array)$theKey ] ]
-				: [ $this->KeyOffset() => $theKey ];
+			? [ $this->KeyOffset() => [ '$in' => (array)$theKey ] ]
+			: [ $this->KeyOffset() => $theKey ];
 
 		//
 		// Make selection.
@@ -960,7 +964,7 @@ class Collection extends \Milko\PHPLib\Collection
 				{
 					case kTOKEN_OPT_FORMAT_STANDARD:
 						$document = $this->NewDocument( $result );
-						$this->normaliseSelectedDocument( $document );
+						$this->normaliseSelectedDocument( $document, $result );
 						return $document;											// ==>
 
 					case kTOKEN_OPT_FORMAT_HANDLE:
@@ -1002,7 +1006,7 @@ class Collection extends \Milko\PHPLib\Collection
 			{
 				case kTOKEN_OPT_FORMAT_STANDARD:
 					$tmp = $this->NewDocument( $document );
-					$this->normaliseSelectedDocument( $tmp );
+					$this->normaliseSelectedDocument( $tmp, $document );
 					$list[] = $tmp;
 					break;
 
@@ -1079,7 +1083,7 @@ class Collection extends \Milko\PHPLib\Collection
 			// Force skip if limit is there.
 			//
 			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-			 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+				&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
 			//
@@ -1115,7 +1119,7 @@ class Collection extends \Milko\PHPLib\Collection
 			{
 				case kTOKEN_OPT_FORMAT_STANDARD:
 					$tmp = $this->NewDocument( $document );
-					$this->normaliseSelectedDocument( $tmp );
+					$this->normaliseSelectedDocument( $tmp, $document );
 					$list[] = $tmp;
 					break;
 
@@ -1217,7 +1221,7 @@ class Collection extends \Milko\PHPLib\Collection
 			{
 				case kTOKEN_OPT_FORMAT_STANDARD:
 					$tmp = $this->NewDocument( $document );
-					$this->normaliseSelectedDocument( $tmp );
+					$this->normaliseSelectedDocument( $tmp, $document );
 					$list[] = $tmp;
 					break;
 

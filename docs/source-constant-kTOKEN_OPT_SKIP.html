@@ -421,6 +421,7 @@
 				<li><a href="constant-kTOKEN_NAMESPACE_SEPARATOR.html">kTOKEN_NAMESPACE_SEPARATOR</a></li>
 				<li><a href="constant-kTOKEN_OPT_FORMAT.html">kTOKEN_OPT_FORMAT</a></li>
 				<li><a href="constant-kTOKEN_OPT_FORMAT_HANDLE.html">kTOKEN_OPT_FORMAT_HANDLE</a></li>
+				<li><a href="constant-kTOKEN_OPT_FORMAT_KEY.html">kTOKEN_OPT_FORMAT_KEY</a></li>
 				<li><a href="constant-kTOKEN_OPT_FORMAT_NATIVE.html">kTOKEN_OPT_FORMAT_NATIVE</a></li>
 				<li><a href="constant-kTOKEN_OPT_FORMAT_STANDARD.html">kTOKEN_OPT_FORMAT_STANDARD</a></li>
 				<li><a href="constant-kTOKEN_OPT_LIMIT.html">kTOKEN_OPT_LIMIT</a></li>
@@ -543,22 +544,30 @@
 </span><span id="94" class="l"><a href="#94"> 94 </a><span class="php-keyword1">const</span> kTOKEN_OPT_FORMAT_HANDLE = <span class="php-quote">'H'</span>;
 </span><span id="95" class="l"><a href="#95"> 95 </a>
 </span><span id="96" class="l"><a href="#96"> 96 </a><span class="php-comment">/**
-</span></span><span id="97" class="l"><a href="#97"> 97 </a><span class="php-comment"> * Skip.
+</span></span><span id="97" class="l"><a href="#97"> 97 </a><span class="php-comment"> * Document key result format.
 </span></span><span id="98" class="l"><a href="#98"> 98 </a><span class="php-comment"> *
-</span></span><span id="99" class="l"><a href="#99"> 99 </a><span class="php-comment"> * This token represents the number of elements to skip before returning a list of values.
-</span></span><span id="100" class="l"><a href="#100">100 </a><span class="php-comment"> */</span>
-</span><span id="101" class="l"><a href="#101">101 </a><span class="php-keyword1">const</span> kTOKEN_OPT_SKIP = <span class="php-quote">'$skip'</span>;
-</span><span id="102" class="l"><a href="#102">102 </a>
-</span><span id="103" class="l"><a href="#103">103 </a><span class="php-comment">/**
-</span></span><span id="104" class="l"><a href="#104">104 </a><span class="php-comment"> * Limit.
-</span></span><span id="105" class="l"><a href="#105">105 </a><span class="php-comment"> *
-</span></span><span id="106" class="l"><a href="#106">106 </a><span class="php-comment"> * This token represents the number of elements to select from a list of values.
-</span></span><span id="107" class="l"><a href="#107">107 </a><span class="php-comment"> */</span>
-</span><span id="108" class="l"><a href="#108">108 </a><span class="php-keyword1">const</span> kTOKEN_OPT_LIMIT = <span class="php-quote">'$limit'</span>;
-</span><span id="109" class="l"><a href="#109">109 </a>
+</span></span><span id="99" class="l"><a href="#99"> 99 </a><span class="php-comment"> * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
+</span></span><span id="100" class="l"><a href="#100">100 </a><span class="php-comment"> * indicates that a query result should be returned as a set of document keys.
+</span></span><span id="101" class="l"><a href="#101">101 </a><span class="php-comment"> */</span>
+</span><span id="102" class="l"><a href="#102">102 </a><span class="php-keyword1">const</span> kTOKEN_OPT_FORMAT_KEY = <span class="php-quote">'K'</span>;
+</span><span id="103" class="l"><a href="#103">103 </a>
+</span><span id="104" class="l"><a href="#104">104 </a><span class="php-comment">/**
+</span></span><span id="105" class="l"><a href="#105">105 </a><span class="php-comment"> * Skip.
+</span></span><span id="106" class="l"><a href="#106">106 </a><span class="php-comment"> *
+</span></span><span id="107" class="l"><a href="#107">107 </a><span class="php-comment"> * This token represents the number of elements to skip before returning a list of values.
+</span></span><span id="108" class="l"><a href="#108">108 </a><span class="php-comment"> */</span>
+</span><span id="109" class="l"><a href="#109">109 </a><span class="php-keyword1">const</span> kTOKEN_OPT_SKIP = <span class="php-quote">'$skip'</span>;
 </span><span id="110" class="l"><a href="#110">110 </a>
-</span><span id="111" class="l"><a href="#111">111 </a><span class="xlang">?&gt;</span>
-</span><span id="112" class="l"><a href="#112">112 </a></span></code></pre>
+</span><span id="111" class="l"><a href="#111">111 </a><span class="php-comment">/**
+</span></span><span id="112" class="l"><a href="#112">112 </a><span class="php-comment"> * Limit.
+</span></span><span id="113" class="l"><a href="#113">113 </a><span class="php-comment"> *
+</span></span><span id="114" class="l"><a href="#114">114 </a><span class="php-comment"> * This token represents the number of elements to select from a list of values.
+</span></span><span id="115" class="l"><a href="#115">115 </a><span class="php-comment"> */</span>
+</span><span id="116" class="l"><a href="#116">116 </a><span class="php-keyword1">const</span> kTOKEN_OPT_LIMIT = <span class="php-quote">'$limit'</span>;
+</span><span id="117" class="l"><a href="#117">117 </a>
+</span><span id="118" class="l"><a href="#118">118 </a>
+</span><span id="119" class="l"><a href="#119">119 </a><span class="xlang">?&gt;</span>
+</span><span id="120" class="l"><a href="#120">120 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
@@ -566,6 +575,6 @@
 	</div>
 </div>
 <script src="resources/combined.js?533e23ef2f02bd4b20548834a028566b6eb403e0"></script>
-<script src="elementlist.js?677af8f4ba8b697e106368448750ce22bb68cb96"></script>
+<script src="elementlist.js?cc616a877e81cb0ca6cdafec76fdb18c0788d6b7"></script>
 </body>
 </html>

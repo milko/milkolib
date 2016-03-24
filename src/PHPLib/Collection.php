@@ -946,32 +946,22 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Replace a document.</h4>
 	 *
-	 * This method can be used to replace the first selected document in a collection, the
-	 * method expects the following parameters:
+	 * This method can be used to replace the provided document in a collection, the method
+	 * expects the document in the native database format, as a {@link Container) instance,
+	 * as an array or as an object that can be cast to an array.
 	 *
-	 * <ul>
-	 *	<li><b>$theDocument</b>: The replacement document in the native database format,
-	 * 		as a {@link Container) instance, as an array or as an object that can be cast to
-	 * 		an array.
-	 *	<li><b>$theFilter</b>: The selection criteria in the native database format.
-	 * </ul>
-	 *
-	 * The provided replacement document will not be updated by the method.
+	 * The provided replacement document state will not be updated in this method.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
 	 * @param mixed					$theDocument		The replacement document.
-	 * @param mixed					$theFilter			The selection criteria.
 	 * @return int					The number of replaced records.
 	 *
 	 * @uses doReplace()
-	 * @uses touchDocuments()
-	 * @uses normaliseOptions()
-	 * @see kTOKEN_OPT_MANY
 	 */
-	public function Replace( $theDocument, $theFilter = NULL )
+	public function Replace( $theDocument )
 	{
-		return $this->doReplace( $theFilter, $theDocument );						// ==>
+		return $this->doReplace( $theDocument );									// ==>
 
 	} // Replace.
 
@@ -1265,7 +1255,7 @@ abstract class Collection extends Container
 
 /*=======================================================================================
  *																						*
- *							PUBLIC AGGREGATION MANAGEMENT INTERFACE						*
+ *							PUBLIC AGGREGATION FRAMEWORK INTERFACE						*
  *																						*
  *======================================================================================*/
 
@@ -1702,25 +1692,18 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Replace a record.</h4>
 	 *
-	 * This method should replace the matching provided record, the method expects the
-	 * following parameters:
-	 *
-	 * <ul>
-	 *	<li><b>$theFilter</b>: The selection criteria in the native database format.
-	 *	<li><b>$theDocument</b>: The replacement document in the native database format,
-	 * 		as a {@link Container) instance, as an array or as an object that can be cast to
-	 * 		an array.
-	 * </ul>
+	 * This method should replace the provided document in the current collection, the
+	 * document should be provided in the native database format, as a {@link Container)
+	 * instance, as an array or as an object that can be cast to an array.
 	 *
 	 * The method should return the number of replaced documents.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param mixed					$theFilter			The selection criteria.
 	 * @param mixed					$theDocument		The replacement document.
 	 * @return int					The number of replaced records.
 	 */
-	abstract protected function doReplace( $theFilter, $theDocument );
+	abstract protected function doReplace( $theDocument );
 
 
 
@@ -2082,7 +2065,8 @@ abstract class Collection extends Container
 	 * the current collection via a query, its duty is to pass information back to the
 	 * document, including eventual internal native database properties.
 	 *
-	 * The method expects a single parameter which should be a {@link Container} instance.
+	 * The method expects a parameter which should be a {@link Container} instance and the
+	 * native database document returned by the selection.
 	 *
 	 * The method is implemented in this class to handle {@link Document} instances:
 	 *
@@ -2097,11 +2081,12 @@ abstract class Collection extends Container
 	 * then call the current method.
 	 *
 	 * @param Container				$theDocument		The selected document.
+	 * @param mixed					$theData			The native database document.
 	 *
 	 * @uses Document::IsPersistent()
 	 * @uses Document::IsModified()
 	 */
-	protected function normaliseSelectedDocument( Container $theDocument )
+	protected function normaliseSelectedDocument( Container $theDocument, $theData )
 	{
 		//
 		// Handle documents.

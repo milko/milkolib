@@ -271,6 +271,14 @@ $result = $collection->getType();
 var_dump( $result );
 echo( "\n" );
 
+//
+// Truncate collection.
+//
+echo( "Truncate collection:\n" );
+$collectionHandler = new ArangoCollectionHandler( $connection );
+$collectionHandler->truncate( $collection );
+echo( "\n" );
+
 echo( "\n====================================================================================\n\n" );
 
 //
@@ -291,9 +299,9 @@ print_r( $document );
 echo( "\n" );
 
 //
-// Add a document.
+// Add a document without key.
 //
-echo( "Add a document:\n" );
+echo( "Add a document without key:\n" );
 $id = $documentHandler->save( $collection, $document );
 echo( "Document: " );
 print_r( $document );
@@ -307,8 +315,56 @@ echo( "getKey: " );
 var_dump( $document->getKey() );
 echo( "getInternalKey: " );
 var_dump( $document->getInternalKey() );
+echo( "getRevision: " );
+var_dump( $document->getRevision() );
 echo( "\n" );
 
+//
+// Add a document with key.
+//
+echo( "Add a document with key:\n" );
+echo( '$document = ArangoDocument::createFromArray( [ \"_key\" => \"pippo\", \"data\" => \"The data\" ] );' . "\n" );
+$document = ArangoDocument::createFromArray( [ "_key" => "pippo", "data" => "The data" ] );
+$id = $documentHandler->save( $collection, $document );
+echo( "Document: " );
+print_r( $document );
+echo( "ID: " );
+var_dump( $id );
+echo( "getId: " );
+var_dump( $document->getId() );
+echo( "getInternalId: " );
+var_dump( $x = $document->getInternalId() );
+echo( "getKey: " );
+var_dump( $document->getKey() );
+echo( "getInternalKey: " );
+var_dump( $document->getInternalKey() );
+echo( "getRevision: " );
+var_dump( $document->getRevision() );
+echo( "\n" );
+
+//
+// Create a document with key and revision.
+//
+echo( "Create a document with key and revision:\n" );
+echo( '$document = ArangoDocument::createFromArray( [ \"_key\" => \"pippo\", \"_rev\" => $document->getRevision(), \"data\" => \"The data\" ] );' . "\n" );
+$document = ArangoDocument::createFromArray( [ "_key" => "pippo", "_rev" => $document->getRevision(), "data" => "The data" ] );
+echo( "Document: " );
+print_r( $document );
+echo( "ID: " );
+var_dump( $id );
+echo( "getId: " );
+var_dump( $document->getId() );
+echo( "getInternalId: " );
+var_dump( $x = $document->getInternalId() );
+echo( "getKey: " );
+var_dump( $document->getKey() );
+echo( "getInternalKey: " );
+var_dump( $document->getInternalKey() );
+echo( "getRevision: " );
+var_dump( $document->getRevision() );
+echo( "getAll: " );
+print_r( $document->getAll() );
+echo( "\n" );
 //
 // Get the document.
 //

@@ -420,8 +420,8 @@ echo( "\n=======================================================================
 // Replace a record.
 //
 echo( "Replace a record:\n" );
-echo( '$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], [ "color" => "blue" ] );' . "\n" );
-$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], [ "color" => "blue" ] );
+echo( '$result = $test->Replace( [ "_id" => "ID1", "color" => "pink", "status" => "replaced" ] );' . "\n" );
+$result = $test->Replace( [ "_id" => "ID1", "color" => "pink", "status" => "replaced" ] );
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "replaced" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "replaced" ] );

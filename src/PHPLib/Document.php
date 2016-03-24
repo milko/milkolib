@@ -339,11 +339,11 @@ class Document extends Container
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *								PUBLIC VALIDATION INTERFACE								*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *								PUBLIC VALIDATION INTERFACE								*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -626,7 +626,7 @@ class Document extends Container
 		//
 		// In derived classes:
 		//
-	//	return array_merge( parent::lockedOffsets(), [ ... ] );
+	//	return array_merge( parent::requiredOffsets(), [ ... ] );
 
 	} // requiredOffsets.
 

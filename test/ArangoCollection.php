@@ -29,7 +29,7 @@ use triagens\ArangoDb\Exception as ArangoException;
 //
 // Enable exception logging.
 //
-ArangoException::enableLogging();
+//ArangoException::enableLogging();
 
 //
 // Instantiate object.
@@ -110,7 +110,10 @@ $document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
-print_r( $document );
+echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $document->getArrayCopy() );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -136,7 +139,13 @@ $documents = [ new Milko\PHPLib\Document( $test, [ kTAG_ARANGO_KEY => 7, "name" 
 echo( '$result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
 $result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
 print_r( $result );
-print_r( $documents );
+foreach( $documents as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -147,7 +156,10 @@ echo( "Delete one document:\n" );
 echo( '$result = $test->Delete( $documents[ 0 ] );' . "\n" );
 $result = $test->Delete( $documents[ 0 ] );
 var_dump( $result );
-print_r( $documents[ 0 ] );
+echo( "Modified:   " . (( $documents[ 0 ]->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $documents[ 0 ]->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $documents[ 0 ]->getArrayCopy() );
 
 echo( "\n" );
 
@@ -158,7 +170,13 @@ echo( "Delete many documents:\n" );
 echo( '$result = $test->Delete( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
 $result = $test->Delete( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
 var_dump( $result );
-print_r( $documents );
+foreach( $documents as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -274,7 +292,13 @@ echo( "\n" );
 echo( "Find first record standard by example:\n" );
 echo( '$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
 $result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
-print_r( $result );
+foreach( $result as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n" );
 
@@ -304,7 +328,13 @@ echo( "\n" );
 echo( "Find all records standard by example:\n" );
 echo( '$result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
 $result = $test->FindByExample( [ "color" => "red" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
-print_r( $result );
+foreach( $result as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n" );
 
@@ -334,7 +364,13 @@ echo( "\n" );
 echo( "Find first record standard by query:\n" );
 echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
 $result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
-print_r( $result );
+foreach( $result as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n" );
 
@@ -364,7 +400,13 @@ echo( "\n" );
 echo( "Find all records standard by query:\n" );
 echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
 $result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
-print_r( $result );
+foreach( $result as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n" );
 
@@ -400,7 +442,13 @@ $result = $test->Update( [ "color" => "yellow", "status" => "was red" ], ["query
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "was red" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "was red" ] );
-print_r( $result );
+foreach( $result as $document )
+{
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -408,8 +456,8 @@ echo( "\n=======================================================================
 // Replace a record.
 //
 echo( "Replace a record:\n" );
-echo( '$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], ["query" => "FOR r IN test_collection FILTER r.color == \'blue\' RETURN r"] );' . "\n" );
-$result = $test->Replace( [ "color" => "pink", "status" => "replaced" ], ["query" => "FOR r IN test_collection FILTER r.color == 'blue' RETURN r"] );
+echo( '$result = $test->Replace( [ "_key" => "ID1", "color" => "pink", "status" => "replaced" ] );' . "\n" );
+$result = $test->Replace( [ "_key" => "ID1", "color" => "pink", "status" => "replaced" ] );
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "replaced" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "replaced" ] );
