@@ -367,20 +367,104 @@ class Document extends Container
 	public function Validate()
 	{
 		//
-		// Get required properties.
+		// Get required and provided properties.
 		//
 		$required = $this->requiredOffsets();
+		$provided = array_intersect( $required, $this->arrayKeys() );
+		$missing = array_diff( $required, $provided );
 
 		//
 		// Check if all required offsets are there.
 		//
-		if( count( $required )
-			!= count( $missing = array_intersect( $required, $this->arrayKeys() ) ) )
+		if( count( $missing ) )
 			throw new \RuntimeException(
 				"Document is missing the following required properties: "
 				.implode( ', ', $missing ) );									// !@! ==>
 
 	} // Validate.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC PERSISTENCE INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Store																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Store object.</h4>
+	 *
+	 * This method will store the current document into the container provided when
+	 * instantiated, if the document is persistent ({@link IsPersistent()}), the document
+	 * will be replaced, if not, it will be inserted.
+	 *
+	 * The method will first call the {@link Validate()} document method to check whether
+	 * the document can be saved.
+	 *
+	 * The method will return the newly created document's key
+	 * ({@link Collection::KeyOffset()}) as well as setting it if necessary and updating
+	 * the document state by setting its persistent state, {@link IsPersistent()}, and
+	 * resetting its modification state, {@link IsModified()}.
+	 *
+	 * If the document is persistent and not modified, the method will do nothing and return
+	 * <tt>NULL</tt>.
+	 *
+	 * @return mixed				The document key.
+	 *
+	 * @uses doStore()
+	 * @uses IsModified()
+	 * @uses IsPersistent()
+	 */
+	public function Store()
+	{
+		//
+		// Check if not persistent and modified.
+		//
+		if( $this->IsModified()
+		 || (! $this->IsPersistent()) )
+			return $this->doStore();												// ==>
+
+		return NULL;																// ==>
+
+	} // Store.
+
+
+	/*===================================================================================
+	 *	Delete																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete object.</h4>
+	 *
+	 * This method will delete the current document from the container provided when
+	 * instantiated, the method will update the document state by resetting its persistent
+	 * state, {@link IsPersistent()}, and setting its modification state,
+	 * {@link IsModified()}.
+	 *
+	 * If the document is not persistent, the method will do nothing.
+	 *
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses doDelete()
+	 * @uses IsPersistent()
+	 */
+	public function Delete()
+	{
+		//
+		// Check if persistent.
+		//
+		if( $this->IsPersistent() )
+			return $this->doDelete();												// ==>
+
+		return 0;																	// ==>
+
+	} // Delete.
 
 
 
@@ -591,7 +675,7 @@ class Document extends Container
 	 * @uses Collection::ClassOffset()
 	 * @uses Collection::RevisionOffset()
 	 */
-	public function lockedOffsets()
+	protected function lockedOffsets()
 	{
 		return [ $this->mCollection->KeyOffset(),
 				 $this->mCollection->ClassOffset(),
@@ -619,7 +703,7 @@ class Document extends Container
 	 *
 	 * @return array				List of required offsets.
 	 */
-	public function requiredOffsets()
+	protected function requiredOffsets()
 	{
 		return [];															// ==>
 
@@ -629,6 +713,83 @@ class Document extends Container
 	//	return array_merge( parent::requiredOffsets(), [ ... ] );
 
 	} // requiredOffsets.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED PERSISTENCE INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	doStore																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Store object.</h4>
+	 *
+	 * This method will store the current document into the container provided when
+	 * instantiated, the method is called by the {@link Store()} method if all necessary
+	 * conditions are met: it will replace or insert the current document.
+	 *
+	 * The method should return the document key ({@link Collection::KeyOffset()}) if the
+	 * document was stored, or <tt>NULL</tt>.
+	 *
+	 * @return mixed				The document key or <tt>NULL</tt>.
+	 *
+	 * @uses Collection::Insert()
+	 * @uses Collection::Replace()
+	 */
+	protected function doStore()
+	{
+		//
+		// Replace.
+		//
+		if( $this->IsPersistent() )
+			$count = $this->mCollection->Replace( $this );
+
+		//
+		// Insert.
+		//
+		else
+			return $this->mCollection->Insert( $this );								// ==>
+
+		//
+		// Handle replaced count.
+		//
+		if( $count )
+			return $this->offsetGet( $this->mCollection->KeyOffset() );				// ==>
+
+		return NULL;																// ==>
+
+	} // doStore.
+
+
+	/*===================================================================================
+	 *	doDelete																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete object.</h4>
+	 *
+	 * This method will delete the current document from the container provided when
+	 * instantiated, the method is called by the {@link Delete()} method if all necessary
+	 * conditions are met.
+	 *
+	 * The method should return the number of deleted records.
+	 *
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Collection::Delete()
+	 */
+	protected function doDelete()
+	{
+		return $this->mCollection->Delete( $this );									// ==>
+
+	} // doDelete.
 
 
 

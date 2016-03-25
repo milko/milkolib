@@ -296,7 +296,7 @@ persistent and those which are required prior to saving the object.</p>
 				1.00<br>
 				<b>Since:</b>
 				10/03/2016<br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#30-636" title="Go to source code">PHPLib/Document.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#30-797" title="Go to source code">PHPLib/Document.php</a>
 		<br>
 	</div>
 
@@ -471,7 +471,7 @@ corresponds to the class, key and revision.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Validate">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#354-383" title="Go to source code">Validate</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#354-384" title="Go to source code">Validate</a>( )</code>
 
 			<div class="description short">
 				<h4>Validate object.</h4>
@@ -507,6 +507,105 @@ classes you should first call this method, then do any other type of validation.
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="Store" id="_Store">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_Store">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#400-435" title="Go to source code">Store</a>( )</code>
+
+			<div class="description short">
+				<h4>Store object.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Store object.</h4>
+
+<p>This method will store the current document into the container provided when
+instantiated, if the document is persistent (<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code>), the document
+will be replaced, if not, it will be inserted.</p>
+
+<p>The method will first call the <code><a href="class-Milko.PHPLib.Document.html#_Validate">Milko\PHPLib\Document::Validate()</a></code> document method to check whether
+the document can be saved.</p>
+
+<p>The method will return the newly created document's key
+(<a href="Collection::KeyOffset()">Collection::KeyOffset()</a>) as well as setting it if necessary and updating
+the document state by setting its persistent state, <code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code>, and
+resetting its modification state, <code><a href="class-Milko.PHPLib.Document.html#_IsModified">Milko\PHPLib\Document::IsModified()</a></code>.</p>
+
+<p>If the document is persistent and not modified, the method will do nothing and return
+<tt>NULL</tt>.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>The document key.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_doStore">Milko\PHPLib\Document::doStore()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Document.html#_IsModified">Milko\PHPLib\Document::IsModified()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="Delete" id="_Delete">
+
+			<td class="attributes"><code>
+				 public 
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_Delete">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#442-467" title="Go to source code">Delete</a>( )</code>
+
+			<div class="description short">
+				<h4>Delete object.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Delete object.</h4>
+
+<p>This method will delete the current document from the container provided when
+instantiated, the method will update the document state by resetting its persistent
+state, <code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code>, and setting its modification state,
+<code><a href="class-Milko.PHPLib.Document.html#_IsModified">Milko\PHPLib\Document::IsModified()</a></code>.</p>
+
+<p>If the document is not persistent, the method will do nothing.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br>The number of deleted records.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_doDelete">Milko\PHPLib\Document::doDelete()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="SetKey" id="_SetKey">
 
 			<td class="attributes"><code>
@@ -518,7 +617,7 @@ classes you should first call this method, then do any other type of validation.
 
 			<td class="name"><div>
 			<a class="anchor" href="#_SetKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#399-435" title="Go to source code">SetKey</a>( <span>mixed <var>$theKey</var></span>, <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theSetter</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#483-519" title="Go to source code">SetKey</a>( <span>mixed <var>$theKey</var></span>, <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theSetter</var></span> )</code>
 
 			<div class="description short">
 				<h4>Set document key.</h4>
@@ -572,7 +671,7 @@ locked once the document becomes persistent.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_IsModified">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#451-505" title="Go to source code">IsModified</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#535-589" title="Go to source code">IsModified</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Handle the document modification state.</h4>
@@ -624,6 +723,7 @@ exception will be raised.</p>
 							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseInsertedDocument">Milko\PHPLib\Collection::normaliseInsertedDocument()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseDeletedDocument">Milko\PHPLib\Collection::normaliseDeletedDocument()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseSelectedDocument">Milko\PHPLib\Collection::normaliseSelectedDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Document.html#_Store">Milko\PHPLib\Document::Store()</a></code><br>
 					</div>
 
 
@@ -641,7 +741,7 @@ exception will be raised.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_IsPersistent">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#512-564" title="Go to source code">IsPersistent</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#596-648" title="Go to source code">IsPersistent</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Handle the document persistent state.</h4>
@@ -692,6 +792,8 @@ only be changed by the document's <code><a href="class-Milko.PHPLib.Collection.h
 							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseInsertedDocument">Milko\PHPLib\Collection::normaliseInsertedDocument()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseDeletedDocument">Milko\PHPLib\Collection::normaliseDeletedDocument()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseSelectedDocument">Milko\PHPLib\Collection::normaliseSelectedDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Document.html#_Store">Milko\PHPLib\Document::Store()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Document.html#_Delete">Milko\PHPLib\Document::Delete()</a></code><br>
 					</div>
 
 
@@ -701,7 +803,7 @@ only be changed by the document's <code><a href="class-Milko.PHPLib.Collection.h
 		<tr data-order="lockedOffsets" id="_lockedOffsets">
 
 			<td class="attributes"><code>
-				 public 
+				 protected 
 				array
 				
 				</code>
@@ -709,7 +811,7 @@ only be changed by the document's <code><a href="class-Milko.PHPLib.Collection.h
 
 			<td class="name"><div>
 			<a class="anchor" href="#_lockedOffsets">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#580-605" title="Go to source code">lockedOffsets</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#664-689" title="Go to source code">lockedOffsets</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the list of locked offsets.</h4>
@@ -750,7 +852,7 @@ object has been committed to its <code><a href="class-Milko.PHPLib.Container.htm
 		<tr data-order="requiredOffsets" id="_requiredOffsets">
 
 			<td class="attributes"><code>
-				 public 
+				 protected 
 				array
 				
 				</code>
@@ -758,7 +860,7 @@ object has been committed to its <code><a href="class-Milko.PHPLib.Container.htm
 
 			<td class="name"><div>
 			<a class="anchor" href="#_requiredOffsets">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#612-631" title="Go to source code">requiredOffsets</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#696-715" title="Go to source code">requiredOffsets</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the list of required offsets.</h4>
@@ -783,6 +885,102 @@ document in its collection.</p>
 					<h4>Used by</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Document.html#_Validate">Milko\PHPLib\Document::Validate()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doStore" id="_doStore">
+
+			<td class="attributes"><code>
+				 protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doStore">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#731-768" title="Go to source code">doStore</a>( )</code>
+
+			<div class="description short">
+				<h4>Store object.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Store object.</h4>
+
+<p>This method will store the current document into the container provided when
+instantiated, the method is called by the <code><a href="class-Milko.PHPLib.Document.html#_Store">Milko\PHPLib\Document::Store()</a></code> method if all necessary
+conditions are met: it will replace or insert the current document.</p>
+
+<p>The method should return the document key (<a href="Collection::KeyOffset()">Collection::KeyOffset()</a>) if the
+document was stored, or <tt>NULL</tt>.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>The document key or <tt>NULL</tt>.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_Insert">Milko\PHPLib\Collection::Insert()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_Replace">Milko\PHPLib\Collection::Replace()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_Store">Milko\PHPLib\Document::Store()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doDelete" id="_doDelete">
+
+			<td class="attributes"><code>
+				 protected 
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doDelete">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#775-792" title="Go to source code">doDelete</a>( )</code>
+
+			<div class="description short">
+				<h4>Delete object.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Delete object.</h4>
+
+<p>This method will delete the current document from the container provided when
+instantiated, the method is called by the <code><a href="class-Milko.PHPLib.Document.html#_Delete">Milko\PHPLib\Document::Delete()</a></code> method if all necessary
+conditions are met.</p>
+
+<p>The method should return the number of deleted records.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br>The number of deleted records.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_Delete">Milko\PHPLib\Collection::Delete()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_Delete">Milko\PHPLib\Document::Delete()</a></code><br>
 					</div>
 
 

@@ -262,7 +262,7 @@ driver.</p>
 				1.00<br>
 				<b>Since:</b>
 				14/03/2016<br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Term.html#19-117" title="Go to source code">PHPLib/Term.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Term.html#19-740" title="Go to source code">PHPLib/Term.php</a>
 		<br>
 	</div>
 
@@ -271,6 +271,112 @@ driver.</p>
 		<div class="panel panel-default">
 			<div class="panel-heading"><h2>Methods summary</h2></div>
 			<table class="summary table table-bordered table-striped methods" id="methods">
+		<tr data-order="__construct" id="___construct">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#___construct">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#94-160" title="Go to source code">__construct</a>( <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theCollection</var></span>, <span>array <var>$theData</var> = [] </span> )</code>
+
+			<div class="description short">
+				<h4>Instantiate class.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Instantiate class.</h4>
+
+<p>We overload the parent constructor to pass the provided object properties through
+the class methods, this is to ensure that the global identifier is set if missing.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theCollection</var></dt>
+						<dd>Collection name.</dd>
+						<dt><var>$theData</var></dt>
+						<dd>Document data.</dd>
+					</dl></div>
+
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTAG_NS.html"><b>kTAG_NS</b></a></code><br>
+							<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermIdentifier">Milko\PHPLib\Term::setTermIdentifier()</a></code><br>
+					</div>
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-Milko.PHPLib.Document.html#___construct">Milko\PHPLib\Document::__construct</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="offsetSet" id="_offsetSet">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_offsetSet">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#176-225" title="Go to source code">offsetSet</a>( <span>string <var>$theOffset</var></span>, <span>mixed <var>$theValue</var></span> )</code>
+
+			<div class="description short">
+				<h4>Set a value at a given offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Set a value at a given offset.</h4>
+
+<p>We overload this method to update the term's global identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>)
+when setting the namespace (<code><a href="constant-kTAG_NS.html"><b>kTAG_NS</b></a></code>) or local identifier (<code><a href="constant-kTAG_LID.html"><b>kTAG_LID</b></a></code>).</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theOffset</var></dt>
+						<dd>Offset.</dd>
+						<dt><var>$theValue</var></dt>
+						<dd>Value to set at offset.</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+					</div>
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTAG_NS.html"><b>kTAG_NS</b></a></code><br>
+							<code><a href="constant-kTAG_LID.html"><b>kTAG_LID</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermIdentifier">Milko\PHPLib\Term::setTermIdentifier()</a></code><br>
+					</div>
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-Milko.PHPLib.Document.html#_offsetSet">Milko\PHPLib\Document::offsetSet</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="offsetUnset" id="_offsetUnset">
 
 			<td class="attributes"><code>
@@ -282,7 +388,7 @@ driver.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_offsetUnset">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#84-112" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#232-279" title="Go to source code">offsetUnset</a>( <span>string <var>$theOffset</var></span> )</code>
 
 			<div class="description short">
 				<h4>Reset a value at a given offset.</h4>
@@ -294,6 +400,9 @@ driver.</p>
 <p>We overload this method to prevent resetting the local identifier, global identifier
 and name: these properties are required.</p>
 
+<p>We also update the term global identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>) when resetting the
+namespace.</p>
+
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
@@ -304,12 +413,546 @@ and name: these properties are required.</p>
 
 					<h4>Throws</h4>
 					<div class="list">
-						<code><a href="class-BadMethodCallException.html">BadMethodCallException</a></code>
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+					</div>
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTAG_NS.html"><b>kTAG_NS</b></a></code><br>
+							<code><a href="constant-kTAG_LID.html"><b>kTAG_LID</b></a></code><br>
+							<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code><br>
+							<code><a href="constant-kTAG_NAME.html"><b>kTAG_NAME</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+					</div>
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-Milko.PHPLib.Document.html#_offsetUnset">Milko\PHPLib\Document::offsetUnset</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="Validate" id="_Validate">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_Validate">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#295-324" title="Go to source code">Validate</a>( )</code>
+
+			<div class="description short">
+				<h4>Validate object.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Validate object.</h4>
+
+<p>We overload this method to set the object key (<a href="Collection::KeyOffset()">Collection::KeyOffset()</a>) by
+generating the MD5 hash of the current term's global identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>).</p>
+
+<p>This means that when you insert a term, you <em>must</em> call this method first;
+nothe that this is done automatically by the collection.</p>
+
+<p>The method will set the key only if the current term is not persistent
+(<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code>).</p>
+
+
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
 					</div>
 
 
 					<h4>Overrides</h4>
-					<div class="list"><code><a href="class-Milko.PHPLib.Document.html#_offsetUnset">Milko\PHPLib\Document::offsetUnset</a></code></div>
+					<div class="list"><code><a href="class-Milko.PHPLib.Document.html#_Validate">Milko\PHPLib\Document::Validate</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="SetNamespaceByGID" id="_SetNamespaceByGID">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_SetNamespaceByGID">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#340-382" title="Go to source code">SetNamespaceByGID</a>( <span>string <var>$theIdentifier</var></span> )</code>
+
+			<div class="description short">
+				<h4>Set the namespace given a global identifier.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Set the namespace given a global identifier.</h4>
+
+<p>This method can be used to set the current term's namespace (<code><a href="constant-kTAG_NS.html"><b>kTAG_NS</b></a></code>) given
+the namespace term's global identifier, the method will use the current term's
+collection to locate the right term; if the provided identifier doesn't match any
+terms, the method will raise an exception.</p>
+
+<p>If you provide <tt>NULL</tt>, or an empty string, the method will reset the
+namespace.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theIdentifier</var></dt>
+						<dd>Namespace global identifier.</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+					</div>
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_getTermKey">Milko\PHPLib\Term::getTermKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="lockedOffsets" id="_lockedOffsets">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_lockedOffsets">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#398-418" title="Go to source code">lockedOffsets</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the list of locked offsets.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the list of locked offsets.</h4>
+
+<p>We overload this method to add the following offsets:</p>
+
+<ul> <li><tt>kTAG_NS</tt>: Term namespace. <li><tt>kTAG_LID</tt>: Local identifier. <li><tt>kTAG_GID</tt>: Global identifier.
+</ul>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						array<br>List of locked offsets.
+					</div>
+
+
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-Milko.PHPLib.Document.html#_lockedOffsets">Milko\PHPLib\Document::lockedOffsets</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="requiredOffsets" id="_requiredOffsets">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_requiredOffsets">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#425-445" title="Go to source code">requiredOffsets</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the list of required offsets.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the list of required offsets.</h4>
+
+<p>We overload this method to add the following offsets:</p>
+
+<ul> <li><tt>kTAG_LID</tt>: Local identifier. <li><tt>kTAG_GID</tt>: Global identifier. <li><tt>kTAG_NAME</tt>: Term name or label.
+</ul>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						array<br>List of required offsets.
+					</div>
+
+
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-Milko.PHPLib.Document.html#_requiredOffsets">Milko\PHPLib\Document::requiredOffsets</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doDelete" id="_doDelete">
+
+			<td class="attributes"><code>
+				 protected 
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doDelete">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#461-487" title="Go to source code">doDelete</a>( )</code>
+
+			<div class="description short">
+				<h4>Delete object.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Delete object.</h4>
+
+<p>We overload this method to ensure the current term is not used as a namespace
+elsewhere.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br>The number of deleted records.
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+					</div>
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_CountByExample">Milko\PHPLib\Collection::CountByExample()</a></code><br>
+					</div>
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-Milko.PHPLib.Document.html#_doDelete">Milko\PHPLib\Document::doDelete</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="setTermNamespace" id="_setTermNamespace">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_setTermNamespace">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#503-573" title="Go to source code">setTermNamespace</a>( <span>mixed <var>$theNamespace</var></span> )</code>
+
+			<div class="description short">
+				<h4>Set term namespace.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Set term namespace.</h4>
+
+<p>This method can be used to cache the term namespace (<code><a href="constant-kTAG_NS.html"><b>kTAG_NS</b></a></code>) and update the
+term global identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>), the method expects a single parameter
+which represents the namespace term object key (<a href="Collection::KeyOffset()">Collection::KeyOffset()</a>).</p>
+
+<p>If you provide <tt>NULL</tt>, the namespace will be reset.</p>
+
+<p>This method makes use of an attribute, <code><a href="class-Milko.PHPLib.Term.html#$mNamespaceGID">Milko\PHPLib\Term::<var>$mNamespaceGID</var></a></code>, which caches the
+current term's namespace term global identifier.</p>
+
+<p>The method will <em>not set the namespace property</em>, this should be done by the
+caller: the only property changed by this method is the current term's global
+identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>).</p>
+
+<p>If the term cannot be found, the method will raise an exception.</p>
+
+<p>By default we use the current term's collection for probing the namespace.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theNamespace</var></dt>
+						<dd>Term namespace key.</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-RuntimeException.html">RuntimeException</a></code>
+					</div>
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTAG_NS.html"><b>kTAG_NS</b></a></code><br>
+							<code><a href="constant-kTAG_LID.html"><b>kTAG_LID</b></a></code><br>
+							<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_getTermGID">Milko\PHPLib\Term::getTermGID()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_makeTermGID">Milko\PHPLib\Term::makeTermGID()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#___construct">Milko\PHPLib\Term::__construct()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_offsetSet">Milko\PHPLib\Term::offsetSet()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_offsetUnset">Milko\PHPLib\Term::offsetUnset()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_SetNamespaceByGID">Milko\PHPLib\Term::SetNamespaceByGID()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="setTermIdentifier" id="_setTermIdentifier">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_setTermIdentifier">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#580-626" title="Go to source code">setTermIdentifier</a>( <span>string <var>$theIdentifier</var></span> )</code>
+
+			<div class="description short">
+				<h4>Set term identifier.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Set term identifier.</h4>
+
+<p>This method can be used to set the term local identifier (<code><a href="constant-kTAG_LID.html"><b>kTAG_LID</b></a></code>) and
+update the term global identifier(<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>), the method expects a single
+parameter which represents the current term's local identifier.</p>
+
+<p>If you provide <tt>NULL</tt>, or an empty string, the method will raise an exception,
+since the local identifier is required.</p>
+
+<p>The method will <em>not set the identifier property</em>, this should be done by the
+caller: the only property changed by this method is the current term's global
+identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>).</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theIdentifier</var></dt>
+						<dd>Term local identifier.</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+					</div>
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTAG_LID.html"><b>kTAG_LID</b></a></code><br>
+							<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_makeTermGID">Milko\PHPLib\Term::makeTermGID()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#___construct">Milko\PHPLib\Term::__construct()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_offsetSet">Milko\PHPLib\Term::offsetSet()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="makeTermGID" id="_makeTermGID">
+
+			<td class="attributes"><code>
+				 protected 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_makeTermGID">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#633-656" title="Go to source code">makeTermGID</a>( <span>string <var>$theNamespace</var></span>, <span>string <var>$theIdentifier</var></span> )</code>
+
+			<div class="description short">
+				<h4>Compute terrm global identifier.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Compute terrm global identifier.</h4>
+
+<p>This method will compute the current term's global identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>)
+using the cached namespace global identifier (<code><a href="class-Milko.PHPLib.Term.html#$mNamespaceGID">Milko\PHPLib\Term::<var>$mNamespaceGID</var></a></code>) and the current
+term's local identifier (<code><a href="constant-kTAG_LID.html"><b>kTAG_LID</b></a></code>), and return the value.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theNamespace</var></dt>
+						<dd>Term namespace global identifier.</dd>
+						<dt><var>$theIdentifier</var></dt>
+						<dd>Term local identifier.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Term global identifier.
+					</div>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_NAMESPACE_SEPARATOR.html"><b>kTOKEN_NAMESPACE_SEPARATOR</b></a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermIdentifier">Milko\PHPLib\Term::setTermIdentifier()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getTermGID" id="_getTermGID">
+
+			<td class="attributes"><code>
+				 protected 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getTermGID">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#672-698" title="Go to source code">getTermGID</a>( <span>mixed <var>$theKey</var></span> )</code>
+
+			<div class="description short">
+				<h4>Return terrm global identifier.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return terrm global identifier.</h4>
+
+<p>Given a term key (<a href="Collection::KeyOffset()">Collection::KeyOffset()</a>) this method will return the
+corresponding term's global identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>), or <tt>NULL</tt> if the
+key is not found.</p>
+
+<p>By default we use the current term's collection.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theKey</var></dt>
+						<dd>Term key.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Term global identifier or <tt>NULL</tt>.
+					</div>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_FindByKey">Milko\PHPLib\Collection::FindByKey()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getTermKey" id="_getTermKey">
+
+			<td class="attributes"><code>
+				 protected 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getTermKey">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#705-735" title="Go to source code">getTermKey</a>( <span>mixed <var>$theGID</var></span> )</code>
+
+			<div class="description short">
+				<h4>Return terrm key.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return terrm key.</h4>
+
+<p>Given a term global identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>) this method will return the
+corresponding term's key (({@link Collection::KeyOffset()), or <tt>NULL</tt>
+if the global identifier matches no term.</p>
+
+<p>By default we use the current term's collection.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theGID</var></dt>
+						<dd>Term global identifier.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Term key or <tt>NULL</tt>.
+					</div>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code><br>
+							<code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Collection.html#_FindByExample">Milko\PHPLib\Collection::FindByExample()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_SetNamespaceByGID">Milko\PHPLib\Term::SetNamespaceByGID()</a></code><br>
+					</div>
+
 
 			</div>
 			</div></td>
@@ -320,14 +963,12 @@ and name: these properties are required.</p>
 		<div class="panel panel-default">
 	        <div class="panel-heading"><h3>Methods inherited from <a href="class-Milko.PHPLib.Document.html#methods">Milko\PHPLib\Document</a></h3></div>
 			<p class="elementList">
+				<code><a href="class-Milko.PHPLib.Document.html#_Delete">Delete()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Document.html#_IsModified">IsModified()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">IsPersistent()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Document.html#_SetKey">SetKey()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Document.html#_Validate">Validate()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Document.html#___construct">__construct()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Document.html#_lockedOffsets">lockedOffsets()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Document.html#_offsetSet">offsetSet()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Document.html#_requiredOffsets">requiredOffsets()</a></code>
+				<code><a href="class-Milko.PHPLib.Document.html#_Store">Store()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Document.html#_doStore">doStore()</a></code>
 			</p>
 		</div>
 		<div class="panel panel-default">
@@ -397,6 +1038,37 @@ and name: these properties are required.</p>
 
 		<div class="panel panel-default">
             <div class="panel-heading"><h2>Properties summary</h2></div>
+			<table class="summary table table-bordered table-striped properties" id="properties">
+		<tr data-order="mNamespaceGID" id="$mNamespaceGID">
+			<td class="attributes"><code>
+				protected  
+				string
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-Milko.PHPLib.Term.html#69-78" title="Go to source code"><var>$mNamespaceGID</var></a>
+
+				<div class="description short">
+					<p>Namespace global identifier.</p>
+				</div>
+
+				<div class="description detailed hidden">
+					<p>Namespace global identifier.</p>
+
+<p>This attribute stores the current term namespace global identifier.</p>
+
+<p>The attribute is used to cache the namespace.</p>
+
+				</div>
+			</td>
+			<td class="value">
+				<div>
+					<a href="#$mNamespaceGID" class="anchor">#</a>
+					<code><span class="php-quote">''</span></code>
+				</div>
+			</td>
+		</tr>
+			</table>
 		</div>
 
 		<div class="panel panel-default">

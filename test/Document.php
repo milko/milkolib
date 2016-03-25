@@ -158,8 +158,8 @@ echo( "\n=======================================================================
 // Insert B.
 //
 echo( "Insert B:\n" );
-echo( '$key = $collection->Insert( $B );' . "\n" );
-$key = $collection->Insert( $B );
+echo( '$key = $B->Store();' . "\n" );
+$key = $B->Store();
 echo( "Class: " . get_class( $B ) . "\n" );
 echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $B->IsPersistent() ) ? "Yes\n" : "No\n") );
