@@ -992,8 +992,9 @@ abstract class Collection extends Container
 	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
 	 * 			parameter is a set of keys or a single key:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Provided a set of keys.
-	 * 			<li><tt>FALSE</tt>: Provided a single key.
+	 * 			<li><tt>TRUE</tt>: Provided a set of keys, will return an array of results.
+	 * 			<li><tt>FALSE</tt>: Provided a single key, will return the document or
+	 * 				<tt>NULL</tt>.
 	 * 		 </ul>
 	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
 	 * 		 <ul>
@@ -1012,8 +1013,8 @@ abstract class Collection extends Container
 	 * return a scalar result (except if the {@link kTOKEN_OPT_FORMAT} is
 	 * {@link kTOKEN_OPT_FORMAT_NATIVE}), if not, it will return an array of results.
 	 *
-	 * By default the method will return documents as {@link Document} derived instances and
-	 * assume the provided key is a scalar.
+	 * By default the method will return documents as {@link Container} derived instances
+	 * and assume the provided key is a scalar.
 	 *
 	 * It is the responsibility of the caller to ensure the server is connected.
 	 *
@@ -1026,7 +1027,7 @@ abstract class Collection extends Container
 	 * @see kTOKEN_OPT_MANY
 	 * @see kTOKEN_OPT_FORMAT
 	 */
-	public function FindByKey($theKey, $theOptions = NULL )
+	public function FindByKey( $theKey, $theOptions = NULL )
 	{
 		//
 		// Normalise options.
@@ -1039,6 +1040,75 @@ abstract class Collection extends Container
 		return $this->doFindByKey( $theKey, $theOptions );							// ==>
 
 	} // FindByKey.
+
+
+	/*===================================================================================
+	 *	FindByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by document handle.</h4>
+	 *
+	 * This method will return the documents that match the provided document handle or
+	 * handles in the collection specified by the handle, the method features two
+	 * parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theHandle</b>: The document handle(s) to match.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
+	 * 			parameter is a set of handles or a single handle:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Provided a set of handles, will return an array of
+	 * 				results.
+	 * 			<li><tt>FALSE</tt>: Provided a single handle, will return the document or
+	 * 				<tt>NULL</tt>.
+	 * 		 </ul>
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
+	 * 		 <ul>
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return {@link Container}
+	 * 				instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return
+	 * 				(@link NewDocumentHandle()}) instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return document key(s).
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * If the provided {@link kTOKEN_OPT_MANY} option is <tt>FALSE</tt>, the method will
+	 * return a scalar result (except if the {@link kTOKEN_OPT_FORMAT} is
+	 * {@link kTOKEN_OPT_FORMAT_NATIVE}), if not, it will return an array of results.
+	 *
+	 * By default the method will return documents as {@link Container} derived instances
+	 * and assume the provided key is a scalar.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theHandle			The document handle(s).
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found document(s).
+	 *
+	 * @uses doFindByHandle()
+	 * @uses normaliseOptions()
+	 * @see kTOKEN_OPT_MANY
+	 * @see kTOKEN_OPT_FORMAT
+	 */
+	public function FindByHandle( $theHandle, $theOptions = NULL )
+	{
+		//
+		// Normalise options.
+		//
+		$this->normaliseOptions(
+			kTOKEN_OPT_MANY, FALSE, $theOptions );
+		$this->normaliseOptions(
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
+
+		return $this->doFindByHandle( $theHandle, $theOptions );					// ==>
+
+	} // FindByHandle.
 
 
 	/*===================================================================================
@@ -1734,8 +1804,9 @@ abstract class Collection extends Container
 	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
 	 * 			parameter is a set of keys or a single key:
 	 * 		 <ul>
-	 * 			<li><tt>TRUE</tt>: Provided a set of keys.
-	 * 			<li><tt>FALSE</tt>: Provided a single key.
+	 * 			<li><tt>TRUE</tt>: Provided a set of keys, will return an array of results.
+	 * 			<li><tt>FALSE</tt>: Provided a single key, will return the document or
+	 * 				<tt>NULL</tt>.
 	 * 		 </ul>
 	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
 	 * 		 <ul>
@@ -1766,6 +1837,59 @@ abstract class Collection extends Container
 	 * @return mixed				The found document(s).
 	 */
 	abstract protected function doFindByKey( $theKey, array $theOptions );
+
+
+	/*===================================================================================
+	 *	doFindByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by key.</h4>
+	 *
+	 * This method should return the document(s) that match the provided handle(s) in the
+	 * collection specified in the handle, the method features two parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theHandle</b>: The document handle(s) to match.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
+	 * 			parameter is a set of handles or a single handle:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Provided a set of handles, will return an array of
+	 * 				results.
+	 * 			<li><tt>FALSE</tt>: Provided a single handle, will return the document or
+	 * 				<tt>NULL</tt>.
+	 * 		 </ul>
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
+	 * 		 <ul>
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: The resulting document(s)
+	 * 				will be {@link Container} instances resulting from the
+	 * 				{@link NewDocument()} method.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return either a scalar or
+	 * 				an array of document handles (@link NewDocumentHandle()}).
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return document key(s).
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * If the {@link kTOKEN_OPT_FORMAT_STANDARD} {@link kTOKEN_OPT_FORMAT} option is set,
+	 * the resulting documents will be processed by the {@link normaliseSelectedDocument()}
+	 * method that will set the document persistent state and reset its modification state.
+	 *
+	 * If the provided {@link kTOKEN_OPT_MANY} option is <tt>FALSE</tt>, the method should
+	 * return a scalar result, if not, it should return an array of results (except if the
+	 * {@link kTOKEN_OPT_FORMAT} is {@link kTOKEN_OPT_FORMAT_NATIVE}).
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theHandle			The document handle(s).
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found document(s).
+	 */
+	abstract protected function doFindByHandle( $theHandle, array $theOptions );
 
 
 	/*===================================================================================

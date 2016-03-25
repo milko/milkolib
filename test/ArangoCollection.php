@@ -236,8 +236,19 @@ echo( "\n" );
 // Find by ID handle.
 //
 echo( "Find by ID handle:\n" );
-echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
-$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+echo( '$handle = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
+$handle = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+print_r( $handle );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find by one by handle.
+//
+echo( "Find by one by handle:\n" );
+echo( '$result = $test->FindByHandle( $handle );' . "\n" );
+$result = $test->FindByHandle( $handle );
 print_r( $result );
 echo( "\n" );
 
@@ -269,8 +280,19 @@ echo( "\n" );
 // Find many by ID handle.
 //
 echo( "Find by ID handle:\n" );
-echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
-$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+echo( '$handle = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
+$handle = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+print_r( $handle );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find by many by handle.
+//
+echo( "Find by many by handle:\n" );
+echo( '$result = $test->FindByHandle( $handle, [kTOKEN_OPT_MANY => TRUE] );' . "\n" );
+$result = $test->FindByHandle( $handle, [kTOKEN_OPT_MANY => TRUE] );
 print_r( $result );
 echo( "\n" );
 

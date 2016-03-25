@@ -250,7 +250,7 @@ $server->Connect();<br/>
 $database = $server->RetrieveCollection( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.MongoDB.Collection.html#17-1248" title="Go to source code">PHPLib/MongoDB/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.MongoDB.Collection.html#17-1313" title="Go to source code">PHPLib/MongoDB/Collection.php</a>
 		<br>
 	</div>
 
@@ -429,6 +429,7 @@ correct class, or a <code><a href="class-Milko.PHPLib.Container.html">Milko\PHPL
 					<h4>Used by</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByKey">Milko\PHPLib\MongoDB\Collection::doFindByKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByHandle">Milko\PHPLib\MongoDB\Collection::doFindByHandle()</a></code><br>
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByExample">Milko\PHPLib\MongoDB\Collection::doFindByExample()</a></code><br>
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByQuery">Milko\PHPLib\MongoDB\Collection::doFindByQuery()</a></code><br>
 					</div>
@@ -488,6 +489,7 @@ method will raise an exception, since it will be impossible to resolve the docum
 					<h4>Used by</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByKey">Milko\PHPLib\MongoDB\Collection::doFindByKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByHandle">Milko\PHPLib\MongoDB\Collection::doFindByHandle()</a></code><br>
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByExample">Milko\PHPLib\MongoDB\Collection::doFindByExample()</a></code><br>
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByQuery">Milko\PHPLib\MongoDB\Collection::doFindByQuery()</a></code><br>
 					</div>
@@ -542,6 +544,7 @@ method will raise an exception, since it will be impossible to resolve the docum
 					<h4>Used by</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByKey">Milko\PHPLib\MongoDB\Collection::doFindByKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByHandle">Milko\PHPLib\MongoDB\Collection::doFindByHandle()</a></code><br>
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByExample">Milko\PHPLib\MongoDB\Collection::doFindByExample()</a></code><br>
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByQuery">Milko\PHPLib\MongoDB\Collection::doFindByQuery()</a></code><br>
 					</div>
@@ -591,6 +594,7 @@ method will raise an exception, since it will be impossible to resolve the docum
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doDeleteByKey">Milko\PHPLib\MongoDB\Collection::doDeleteByKey()</a></code><br>
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doReplace">Milko\PHPLib\MongoDB\Collection::doReplace()</a></code><br>
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByKey">Milko\PHPLib\MongoDB\Collection::doFindByKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByHandle">Milko\PHPLib\MongoDB\Collection::doFindByHandle()</a></code><br>
 					</div>
 
 
@@ -902,6 +906,10 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 							<code><a href="class-Milko.PHPLib.MongoDB.Database.html">Milko\PHPLib\MongoDB\Database</a></code><br>
 							<code><a href="class-MongoDB.Database.html#_selectCollection">MongoDB\Database::selectCollection()</a></code><br>
 					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByHandle">Milko\PHPLib\MongoDB\Collection::doFindByHandle()</a></code><br>
+					</div>
 
 
 			</div>
@@ -947,6 +955,7 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 					<h4>Used by</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_NewDocumentHandle">Milko\PHPLib\MongoDB\Collection::NewDocumentHandle()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByHandle">Milko\PHPLib\MongoDB\Collection::doFindByHandle()</a></code><br>
 					</div>
 
 
@@ -1370,14 +1379,14 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#906-1029" title="Go to source code">doFindByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#906-993" title="Go to source code">doFindByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
-				<h4>Find by ID.</h4>
+				<h4>Find by key.</h4>
 			</div>
 
 			<div class="description detailed hidden">
-				<h4>Find by ID.</h4>
+				<h4>Find by key.</h4>
 
 <p>We implement this method to use the <tt>findOne</tt> method.</p>
 
@@ -1422,6 +1431,68 @@ not perform the replacement and return <tt>0</tt>.</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="doFindByHandle" id="_doFindByHandle">
+
+			<td class="attributes"><code>
+				 protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doFindByHandle">#</a>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1000-1094" title="Go to source code">doFindByHandle</a>( <span>mixed <var>$theHandle</var></span>, <span>array <var>$theOptions</var></span> )</code>
+
+			<div class="description short">
+				<h4>Find by handle.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Find by handle.</h4>
+
+<p>We implement this method to use the <tt>findOne</tt> method.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theHandle</var></dt>
+						<dd>The document handle(s).</dd>
+						<dt><var>$theOptions</var></dt>
+						<dd>Find options.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>The found document(s).
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+					</div>
+
+					<h4>See</h4>
+					<div class="list">
+							<code><a href="constant-kTOKEN_OPT_MANY.html"><b>kTOKEN_OPT_MANY</b></a></code><br>
+							<code><a href="constant-kTOKEN_OPT_FORMAT.html"><b>kTOKEN_OPT_FORMAT</b></a></code><br>
+					</div>
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_collectionName">Milko\PHPLib\MongoDB\Collection::collectionName()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_collectionNew">Milko\PHPLib\MongoDB\Collection::collectionNew()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_KeyOffset">Milko\PHPLib\MongoDB\Collection::KeyOffset()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_NewDocument">Milko\PHPLib\MongoDB\Collection::NewDocument()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_NewDocumentKey">Milko\PHPLib\MongoDB\Collection::NewDocumentKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_NewDocumentHandle">Milko\PHPLib\MongoDB\Collection::NewDocumentHandle()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Collection.html#_normaliseSelectedDocument">Milko\PHPLib\Collection::normaliseSelectedDocument()</a></code><br>
+							<code><a href="class-MongoDB.Collection.html#_findOne">MongoDB\Collection::findOne()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="doFindByExample" id="_doFindByExample">
 
 			<td class="attributes"><code>
@@ -1433,7 +1504,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1036-1142" title="Go to source code">doFindByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1101-1207" title="Go to source code">doFindByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by example the first or all records.</h4>
@@ -1498,7 +1569,7 @@ respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1149-1244" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1214-1309" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -1561,6 +1632,7 @@ respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
 				<code><a href="class-Milko.PHPLib.Collection.html#_DeleteByKey">DeleteByKey()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_DeleteByQuery">DeleteByQuery()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_FindByExample">FindByExample()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Collection.html#_FindByHandle">FindByHandle()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_FindByKey">FindByKey()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_FindByQuery">FindByQuery()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Collection.html#_Insert">Insert()</a></code>, 

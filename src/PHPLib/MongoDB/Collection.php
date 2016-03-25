@@ -904,7 +904,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Find by ID.</h4>
+	 * <h4>Find by key.</h4>
 	 *
 	 * We implement this method to use the <tt>findOne</tt> method.
 	 *
@@ -938,8 +938,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Make selection.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-				? $this->Connection()->find( $filter )
-				: $this->Connection()->findOne( $filter );
+			? $this->Connection()->find( $filter )
+			: $this->Connection()->findOne( $filter );
 
 		//
 		// Handle native result.
@@ -948,50 +948,10 @@ class Collection extends \Milko\PHPLib\Collection
 			return $result;															// ==>
 
 		//
-		// Handle single document.
+		// Convert to array.
 		//
 		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
-		{
-			//
-			// Handle found document.
-			//
-			if( $result !== NULL )
-			{
-				//
-				// Format document.
-				//
-				switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
-				{
-					case kTOKEN_OPT_FORMAT_STANDARD:
-						$document = $this->NewDocument( $result );
-						$this->normaliseSelectedDocument( $document, $result );
-						return $document;											// ==>
-
-					case kTOKEN_OPT_FORMAT_HANDLE:
-						return $this->NewDocumentHandle( $result );					// ==>
-
-					case kTOKEN_OPT_FORMAT_KEY:
-						return $this->NewDocumentKey( $result );					// ==>
-				}
-
-				//
-				// Invalid format code.
-				//
-				throw new \InvalidArgumentException (
-					"Invalid conversion format code." );						// !@! ==>
-
-			} // Found document.
-
-			return NULL;															// ==>
-
-		} // Single document.
-
-		//
-		// Handle no results.
-		// For some reason the cursor doesn't seem to have the count() method.
-		//
-		if( ! $this->Connection()->count( $filter ) )
-			return [];																// ==>
+			$result = [ $result ];
 
 		//
 		// Iterate cursor.
@@ -1024,9 +984,114 @@ class Collection extends \Milko\PHPLib\Collection
 			}
 		}
 
-		return $list;																// ==>
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+			return $list;															// ==>
+		if( count( $list ) )
+			return $list[ 0 ];														// ==>
+		return NULL;																// ==>
 
 	} // doFindByKey.
+
+
+	/*===================================================================================
+	 *	doFindByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by handle.</h4>
+	 *
+	 * We implement this method to use the <tt>findOne</tt> method.
+	 *
+	 * @param mixed					$theHandle			The document handle(s).
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found document(s).
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses collectionName()
+	 * @uses collectionNew()
+	 * @uses KeyOffset()
+	 * @uses NewDocument()
+	 * @uses NewDocumentKey()
+	 * @uses NewDocumentHandle()
+	 * @uses normaliseSelectedDocument()
+	 * @uses \MongoDB\Collection::findOne()
+	 * @see kTOKEN_OPT_MANY
+	 * @see kTOKEN_OPT_FORMAT
+	 */
+	protected function doFindByHandle( $theHandle, array $theOptions )
+	{
+		//
+		// Init local storage.
+		//
+		$list = [];
+
+		//
+		// Convert scalar to array.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			$theHandle = [ $theHandle ];
+
+		//
+		// Iterate handles.
+		//
+		foreach( $theHandle as $handle )
+		{
+			//
+			// Get collection.
+			//
+			if( $handle[ 0 ] == $this->collectionName() )
+				$collection = $this;
+			else
+				$collection = $this->Database()->collectionRetrieve( $theHandle[ 0 ] );
+
+			//
+			// Get by key.
+			//
+			$found =
+				$collection->Connection()->findOne(
+					[ $collection->KeyOffset() => $handle[ 1 ] ] );
+			if( $found !== NULL )
+			{
+				//
+				// Format document.
+				//
+				switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+				{
+					case kTOKEN_OPT_FORMAT_STANDARD:
+						$document = $this->NewDocument( $found );
+						$this->normaliseSelectedDocument( $document, $found );
+						$list[] = $document;
+						break;
+
+					case kTOKEN_OPT_FORMAT_NATIVE:
+						$list[] = $found;
+						break;
+
+					case kTOKEN_OPT_FORMAT_HANDLE:
+						$list[] = $this->NewDocumentHandle( $found );
+						break;
+
+					case kTOKEN_OPT_FORMAT_KEY:
+						$list[] = $this->NewDocumentKey( $found );
+						break;
+
+					default:
+						throw new \InvalidArgumentException (
+							"Invalid conversion format code." );				// !@! ==>
+
+				} // Formatted document.
+
+			} // Found.
+
+		} // Iterating handles.
+
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+			return $list;															// ==>
+		if( count( $list ) )
+			return $list[ 0 ];														// ==>
+		return NULL;																// ==>
+
+	} // doFindByHandle.
 
 
 	/*===================================================================================

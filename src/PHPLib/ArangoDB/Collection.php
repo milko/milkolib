@@ -1232,7 +1232,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @see kTOKEN_OPT_MANY
 	 * @see kTOKEN_OPT_FORMAT
 	 */
-	protected function doFindByKey($theKey, array $theOptions )
+	protected function doFindByKey( $theKey, array $theOptions )
 	{
 		//
 		// Handle list.
@@ -1251,46 +1251,128 @@ class Collection extends \Milko\PHPLib\Collection
 				$handler->lookupByKeys(
 					$this->Connection()->getID(), (array)$theKey );
 
-			//
-			// Handle native result.
-			//
-			if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
-				return $result;														// ==>
+		} // Set of keys.
 
-			//
-			// Iterate cursor.
-			//
-			$list = [];
-			foreach( $result as $document )
+		//
+		// Handle scalar.
+		//
+		else
+		{
+			try
 			{
 				//
-				// Format document.
+				// Instantiate document handler.
 				//
-				switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
-				{
-					case kTOKEN_OPT_FORMAT_STANDARD:
-						$tmp = $this->NewDocument( $document );
-						$this->normaliseSelectedDocument( $tmp, $document );
-						$list[] = $tmp;
-						break;
+				$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
-					case kTOKEN_OPT_FORMAT_HANDLE:
-						$list[] = $this->NewDocumentHandle( $document );
-						break;
+				//
+				// Find document.
+				//
+				$result = $handler->getById( $this->Connection()->getId(), $theKey );
 
-					case kTOKEN_OPT_FORMAT_KEY:
-						$list[] = $this->NewDocumentKey( $document );
-						break;
+				//
+				// Set to array.
+				//
+				$result = [ $result ];
+			}
+			catch( ArangoServerException $error )
+			{
+				//
+				// Handle not found.
+				//
+				if( $error->getCode() == 404 )
+					return NULL;													// ==>
 
-					default:
-						throw new \InvalidArgumentException (
-							"Invalid conversion format code." );				// !@! ==>
-				}
+				throw $error;													// !@! ==>
 			}
 
-			return $list;															// ==>
+		} // Scalar key.
 
-		} // List.
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $result;															// ==>
+
+		//
+		// Iterate cursor.
+		//
+		$list = [];
+		foreach( $result as $document )
+		{
+			//
+			// Format document.
+			//
+			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
+			{
+				case kTOKEN_OPT_FORMAT_STANDARD:
+					$tmp = $this->NewDocument( $document );
+					$this->normaliseSelectedDocument( $tmp, $document );
+					$list[] = $tmp;
+					break;
+
+				case kTOKEN_OPT_FORMAT_HANDLE:
+					$list[] = $this->NewDocumentHandle( $document );
+					break;
+
+				case kTOKEN_OPT_FORMAT_KEY:
+					$list[] = $this->NewDocumentKey( $document );
+					break;
+
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid conversion format code." );				// !@! ==>
+			}
+		}
+
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+			return $list;															// ==>
+		if( count( $list ) )
+			return $list[ 0 ];														// ==>
+		return NULL;																// ==>
+
+	} // doFindByKey.
+
+
+	/*===================================================================================
+	 *	doFindByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by handle.</h4>
+	 *
+	 * We implement the method by using the
+	 * {@link triagens\ArangoDb\CollectionHandler::lookupByKeys()} method.
+	 *
+	 * @param mixed					$theHandle			The document handle(s).
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found document(s).
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses Database()
+	 * @uses NewDocument()
+	 * @uses NewDocumentKey()
+	 * @uses NewDocumentHandle()
+	 * @uses collectionNew()
+	 * @uses collectionName()
+	 * @uses normaliseSelectedDocument()
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
+	 * @uses triagens\ArangoDb\CollectionHandler::lookupByKeys()
+	 * @see kTOKEN_OPT_MANY
+	 * @see kTOKEN_OPT_FORMAT
+	 */
+	protected function doFindByHandle( $theHandle, array $theOptions )
+	{
+		//
+		// Init local storage.
+		//
+		$list = [];
+
+		//
+		// Convert scalar to array.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			$theHandle = [ $theHandle ];
 
 		//
 		// Instantiate document handler.
@@ -1298,56 +1380,79 @@ class Collection extends \Milko\PHPLib\Collection
 		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
 		//
-		// Get document.
+		// Iterate handles.
 		//
-		try
+		foreach( $theHandle as $handle )
 		{
 			//
-			// Find document.
+			// Get collection and key.
 			//
-			$result = $handler->getById( $this->Connection()->getId(), $theKey );
+			$tmp = explode( '/', $handle );
+			if( $tmp[ 0 ] == $this->collectionName() )
+				$collection = $this->Connection();
+			else
+				$collection = $this->collectionNew( $tmp[ 0 ] );
+			$key = $tmp[ 1 ];
 
 			//
-			// Handle native result.
+			// Get by key.
 			//
-			if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
-				return $result;														// ==>
+			try
+			{
+				//
+				// Find document.
+				//
+				$result = $handler->getById( $collection->getId(), $key );
+			}
+			catch( ArangoServerException $error )
+			{
+				//
+				// Handle not found.
+				//
+				if( $error->getCode() == 404 )
+					continue;													// =>
+
+				throw $error;													// !@! ==>
+			}
 
 			//
-			// Format result.
+			// Format document.
 			//
 			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
 			{
 				case kTOKEN_OPT_FORMAT_STANDARD:
 					$document = $this->NewDocument( $result );
 					$this->normaliseSelectedDocument( $document, $result );
-					return $document;												// ==>
+					$list[] = $document;
+					break;
+
+				case kTOKEN_OPT_FORMAT_NATIVE:
+					$list[] = $result;
+					break;
 
 				case kTOKEN_OPT_FORMAT_HANDLE:
-					return $this->NewDocumentHandle( $result );						// ==>
+					$list[] = $this->NewDocumentHandle( $result );
+					break;
 
 				case kTOKEN_OPT_FORMAT_KEY:
-					return $this->NewDocumentKey( $result );						// ==>
-			}
-		}
-		catch( ArangoServerException $error )
-		{
-			//
-			// Handle not found.
-			//
-			if( $error->getCode() == 404 )
-				return NULL;														// ==>
+					$list[] = $this->NewDocumentKey( $result );
+					break;
 
-			throw $error;														// !@! ==>
-		}
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid conversion format code." );				// !@! ==>
 
-		//
-		// Invalid format code.
-		//
-		throw new \InvalidArgumentException (
-			"Invalid conversion format code." );								// !@! ==>
+			} // Formatted document.
 
-	} // doFindByKey.
+		} // Iterating handles.
+
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+			return $list;															// ==>
+		if( count( $list ) )
+			return $list[ 0 ];														// ==>
+		return NULL;																// ==>
+
+	} // doFindByHandle.
 
 
 	/*===================================================================================
