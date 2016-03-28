@@ -6,7 +6,7 @@
 	<title>Class MongoDB\Collection | milkolib reference documentation</title>
 
 	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
-	<link rel="stylesheet" href="resources/style.css?49f43d3208c5d7e33fa16d36107a345bf11cc00d">
+	<link rel="stylesheet" href="resources/style.css?70c1d062672daa3f906b72e4f5d03d4bc5c4174d">
 
 </head>
 
@@ -61,16 +61,6 @@
 		<div id="groups">
 				<h3>Namespaces</h3>
 			<ul>
-					<li>
-						<a href="namespace-Composer.html">
-							Composer<span></span>
-						</a>
-							<ul>
-					<li>
-						<a href="namespace-Composer.Autoload.html">
-							Autoload						</a>
-							</li>
-								</ul></li>
 					<li>
 						<a href="namespace-Milko.html">
 							Milko<span></span>
@@ -197,7 +187,7 @@
 		<b>Namespace:</b> <a href="namespace-MongoDB.html">MongoDB</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-MongoDB.Collection.html#37-731" title="Go to source code">mongodb/mongodb/src/Collection.php</a>
+			<b>Located at</b> <a href="source-class-MongoDB.Collection.html#37-731" title="Go to source code">mongodb/src/Collection.php</a>
 		<br>
 	</div>
 
@@ -373,10 +363,6 @@ a command cursor) does not yet support a custom type map
 					<div class="list">
 							Aggregate::__construct() for supported options<br>
 					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_MapReduce">Milko\PHPLib\MongoDB\Collection::MapReduce()</a></code><br>
-					</div>
 
 
 			</div>
@@ -465,13 +451,6 @@ a command cursor) does not yet support a custom type map
 					<div class="list">
 							Count::__construct() for supported options<br>
 					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_RecordCount">Milko\PHPLib\MongoDB\Collection::RecordCount()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_CountByExample">Milko\PHPLib\MongoDB\Collection::CountByExample()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_CountByQuery">Milko\PHPLib\MongoDB\Collection::CountByQuery()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByKey">Milko\PHPLib\MongoDB\Collection::doFindByKey()</a></code><br>
-					</div>
 
 
 			</div>
@@ -515,7 +494,7 @@ a command cursor) does not yet support a custom type map
 
 					<h4>See</h4>
 					<div class="list">
-							<code><a href="class-MongoDB.Collection.html#_createIndexes">MongoDB\Collection::createIndexes()</a></code><br>
+							Collection::createIndexes()<br>
 					</div>
 
 
@@ -617,12 +596,6 @@ For example:
 							DeleteMany::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/reference/command/delete/<br>
 					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_Truncate">Milko\PHPLib\MongoDB\Collection::Truncate()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doDeleteByKey">Milko\PHPLib\MongoDB\Collection::doDeleteByKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doDeleteByExample">Milko\PHPLib\MongoDB\Collection::doDeleteByExample()</a></code><br>
-					</div>
 
 
 			</div>
@@ -667,11 +640,6 @@ For example:
 					<div class="list">
 							DeleteOne::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/reference/command/delete/<br>
-					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doDeleteByKey">Milko\PHPLib\MongoDB\Collection::doDeleteByKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doDeleteByExample">Milko\PHPLib\MongoDB\Collection::doDeleteByExample()</a></code><br>
 					</div>
 
 
@@ -760,10 +728,6 @@ For example:
 					<h4>See</h4>
 					<div class="list">
 							DropCollection::__construct() for supported options<br>
-					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_Drop">Milko\PHPLib\MongoDB\Collection::Drop()</a></code><br>
 					</div>
 
 
@@ -900,12 +864,6 @@ For example:
 							Find::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/core/read-operations-introduction/<br>
 					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByKey">Milko\PHPLib\MongoDB\Collection::doFindByKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByExample">Milko\PHPLib\MongoDB\Collection::doFindByExample()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByQuery">Milko\PHPLib\MongoDB\Collection::doFindByQuery()</a></code><br>
-					</div>
 
 
 			</div>
@@ -950,11 +908,6 @@ For example:
 					<div class="list">
 							FindOne::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/core/read-operations-introduction/<br>
-					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByKey">Milko\PHPLib\MongoDB\Collection::doFindByKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doFindByHandle">Milko\PHPLib\MongoDB\Collection::doFindByHandle()</a></code><br>
 					</div>
 
 
@@ -1151,10 +1104,6 @@ a custom type map (depends on: https://jira.mongodb.org/browse/PHPC-314).</p>
 					</div>
 
 
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_collectionName">Milko\PHPLib\MongoDB\Collection::collectionName()</a></code><br>
-					</div>
 
 
 			</div>
@@ -1270,10 +1219,6 @@ a custom type map (depends on: https://jira.mongodb.org/browse/PHPC-314).</p>
 							InsertMany::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/reference/command/insert/<br>
 					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doInsertBulk">Milko\PHPLib\MongoDB\Collection::doInsertBulk()</a></code><br>
-					</div>
 
 
 			</div>
@@ -1318,10 +1263,6 @@ a custom type map (depends on: https://jira.mongodb.org/browse/PHPC-314).</p>
 					<div class="list">
 							InsertOne::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/reference/command/insert/<br>
-					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doInsertOne">Milko\PHPLib\MongoDB\Collection::doInsertOne()</a></code><br>
 					</div>
 
 
@@ -1407,10 +1348,6 @@ a custom type map (depends on: https://jira.mongodb.org/browse/PHPC-314).</p>
 							ReplaceOne::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/reference/command/update/<br>
 					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doReplace">Milko\PHPLib\MongoDB\Collection::doReplace()</a></code><br>
-					</div>
 
 
 			</div>
@@ -1458,10 +1395,6 @@ a custom type map (depends on: https://jira.mongodb.org/browse/PHPC-314).</p>
 							UpdateMany::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/reference/command/update/<br>
 					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doUpdate">Milko\PHPLib\MongoDB\Collection::doUpdate()</a></code><br>
-					</div>
 
 
 			</div>
@@ -1508,10 +1441,6 @@ a custom type map (depends on: https://jira.mongodb.org/browse/PHPC-314).</p>
 					<div class="list">
 							ReplaceOne::__construct() for supported options<br>
 							http://docs.mongodb.org/manual/reference/command/update/<br>
-					</div>
-					<h4>Used by</h4>
-					<div class="list">
-							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_doUpdate">Milko\PHPLib\MongoDB\Collection::doUpdate()</a></code><br>
 					</div>
 
 

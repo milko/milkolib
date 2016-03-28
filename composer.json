@@ -21,5 +21,8 @@
 	"require": {
 		"mongodb/mongodb": ">=1.0-stable",
 		"triagens/arangodb": ">=2.8-stable"
+	},
+	"require-dev": {
+		"apigen/apigen": "^4.1"
 	}
 }

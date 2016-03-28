@@ -65,6 +65,9 @@ use Milko\PHPLib\Document;
  * 		<li><b>{@link KeyOffset()}</b>: Return the document key offset.
  * 		<li><b>{@link ClassOffset()}</b>: Return the document class offset.
  * 		<li><b>{@link RevisionOffset()}</b>: Return the document revision offset.
+ * 		<li><b>{@link RelationSourceOffset()}</b>: Return the relationship source offset.
+ * 		<li><b>{@link RelationDestinationOffset()}</b>: Return the relationship destination
+ * 			offset.
  *   </ul>
  * 	<li><em>Record related:</em>
  *   <ul>
@@ -186,10 +189,16 @@ abstract class Collection extends Container
 	public function __construct( Database $theDatabase, $theCollection, $theOptions = NULL )
 	{
 		//
+		// Normalise optons.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		//
 		// Call parent constructor.
 		//
 		parent::__construct();
-		
+
 		//
 		// Store server instance.
 		//
@@ -519,6 +528,36 @@ abstract class Collection extends Container
 	 * @return string				Document revision offset.
 	 */
 	abstract public function RevisionOffset();
+
+
+	/*===================================================================================
+	 *	RelationSourceOffset															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the relationship source offset.</h4>
+	 *
+	 * This represents the default offset for storing document handles
+	 * ({@link NewDocumentHandle()}) that represent the source node in a relationship.
+	 *
+	 * @return string				Relationship source offset.
+	 */
+	abstract public function RelationSourceOffset();
+
+
+	/*===================================================================================
+	 *	RelationDestinationOffset														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the relationship destination offset.</h4>
+	 *
+	 * This represents the default offset for storing document handles
+	 * ({@link NewDocumentHandle()}) that represent the destination node in a relationship.
+	 *
+	 * @return string				Relationship destination offset.
+	 */
+	abstract public function RelationDestinationOffset();
 
 
 

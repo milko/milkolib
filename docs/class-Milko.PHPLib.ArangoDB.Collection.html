@@ -6,7 +6,7 @@
 	<title>Class Milko\PHPLib\ArangoDB\Collection | milkolib reference documentation</title>
 
 	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
-	<link rel="stylesheet" href="resources/style.css?49f43d3208c5d7e33fa16d36107a345bf11cc00d">
+	<link rel="stylesheet" href="resources/style.css?70c1d062672daa3f906b72e4f5d03d4bc5c4174d">
 
 </head>
 
@@ -61,16 +61,6 @@
 		<div id="groups">
 				<h3>Namespaces</h3>
 			<ul>
-					<li>
-						<a href="namespace-Composer.html">
-							Composer<span></span>
-						</a>
-							<ul>
-					<li>
-						<a href="namespace-Composer.Autoload.html">
-							Autoload						</a>
-							</li>
-								</ul></li>
 					<li class="active">
 						<a href="namespace-Milko.html">
 							Milko<span></span>
@@ -253,7 +243,7 @@ collections.</p>
 $database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...<br/></p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#34-1764" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#34-1799" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
 		<br>
 	</div>
 
@@ -292,7 +282,7 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_truncate">triagens\ArangoDb\CollectionHandler::truncate()</a></code><br>
+							triagens\ArangoDb\CollectionHandler::truncate()<br>
 					</div>
 
 
@@ -329,7 +319,7 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_drop">triagens\ArangoDb\CollectionHandler::drop()</a></code><br>
+							triagens\ArangoDb\CollectionHandler::drop()<br>
 					</div>
 
 
@@ -378,15 +368,15 @@ $collection = $database->RetrieveCollection( "collection" );<br/>
 					</div>
 					<h4>Uses</h4>
 					<div class="list">
-							<code><a href="class-triagens.ArangoDb.Document.html#_createFromArray">triagens\ArangoDb\Document::createFromArray()</a></code><br>
+							triagens\ArangoDb\Document::createFromArray()<br>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doInsertBulk">Milko\PHPLib\ArangoDB\Collection::doInsertBulk()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doDeleteOne">Milko\PHPLib\ArangoDB\Collection::doDeleteOne()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doDeleteOne">Milko\PHPLib\ArangoDB\Collection::doDeleteOne()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doDeleteByExample">Milko\PHPLib\ArangoDB\Collection::doDeleteByExample()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doReplace">Milko\PHPLib\ArangoDB\Collection::doReplace()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::doInsertBulk()<br>
+							Milko\PHPLib\ArangoDB\Collection::doDeleteOne()<br>
+							Milko\PHPLib\ArangoDB\Collection::doDeleteOne()<br>
+							Milko\PHPLib\ArangoDB\Collection::doDeleteByExample()<br>
+							Milko\PHPLib\ArangoDB\Collection::doReplace()<br>
 					</div>
 
 
@@ -442,9 +432,9 @@ the expected document.</p>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByKey">Milko\PHPLib\ArangoDB\Collection::doFindByKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByHandle">Milko\PHPLib\ArangoDB\Collection::doFindByHandle()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByQuery">Milko\PHPLib\ArangoDB\Collection::doFindByQuery()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByKey()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByHandle()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByQuery()<br>
 					</div>
 
 
@@ -503,13 +493,13 @@ method will raise an exception, since it will be impossible to resolve the docum
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_KeyOffset">Milko\PHPLib\ArangoDB\Collection::KeyOffset()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Document.html#_getHandle">triagens\ArangoDb\Document::getHandle()</a></code><br>
+							triagens\ArangoDb\Document::getHandle()<br>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByKey">Milko\PHPLib\ArangoDB\Collection::doFindByKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByHandle">Milko\PHPLib\ArangoDB\Collection::doFindByHandle()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByQuery">Milko\PHPLib\ArangoDB\Collection::doFindByQuery()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByKey()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByHandle()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByQuery()<br>
 					</div>
 
 
@@ -563,13 +553,13 @@ method will raise an exception, since it will be impossible to resolve the docum
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_KeyOffset">Milko\PHPLib\ArangoDB\Collection::KeyOffset()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Document.html#_getId">triagens\ArangoDb\Document::getId()</a></code><br>
+							triagens\ArangoDb\Document::getId()<br>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByKey">Milko\PHPLib\ArangoDB\Collection::doFindByKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByHandle">Milko\PHPLib\ArangoDB\Collection::doFindByHandle()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByQuery">Milko\PHPLib\ArangoDB\Collection::doFindByQuery()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByKey()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByHandle()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByQuery()<br>
 					</div>
 
 
@@ -608,10 +598,10 @@ method will raise an exception, since it will be impossible to resolve the docum
 
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewDocumentHandle">Milko\PHPLib\ArangoDB\Collection::NewDocumentHandle()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewDocumentKey">Milko\PHPLib\ArangoDB\Collection::NewDocumentKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doDeleteOne">Milko\PHPLib\ArangoDB\Collection::doDeleteOne()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doReplace">Milko\PHPLib\ArangoDB\Collection::doReplace()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::NewDocumentHandle()<br>
+							Milko\PHPLib\ArangoDB\Collection::NewDocumentKey()<br>
+							Milko\PHPLib\ArangoDB\Collection::doDeleteOne()<br>
+							Milko\PHPLib\ArangoDB\Collection::doReplace()<br>
 					</div>
 
 
@@ -650,7 +640,7 @@ method will raise an exception, since it will be impossible to resolve the docum
 
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewDocument">Milko\PHPLib\ArangoDB\Collection::NewDocument()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::NewDocument()<br>
 					</div>
 
 
@@ -689,8 +679,78 @@ method will raise an exception, since it will be impossible to resolve the docum
 
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doReplace">Milko\PHPLib\ArangoDB\Collection::doReplace()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::doReplace()<br>
 					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="RelationSourceOffset" id="_RelationSourceOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_RelationSourceOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#428-435" title="Go to source code">RelationSourceOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the relationship source offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the relationship source offset.</h4>
+
+<p>We overload this method to use the <code><a href="constant-kTAG_ARANGO_REL_FROM.html"><b>kTAG_ARANGO_REL_FROM</b></a></code> constant.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Relationship source offset.
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="RelationDestinationOffset" id="_RelationDestinationOffset">
+
+			<td class="attributes"><code>
+				 public 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_RelationDestinationOffset">#</a>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#442-449" title="Go to source code">RelationDestinationOffset</a>( )</code>
+
+			<div class="description short">
+				<h4>Return the relationship destination offset.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return the relationship destination offset.</h4>
+
+<p>We overload this method to use the <code><a href="constant-kTAG_ARANGO_REL_FROM.html"><b>kTAG_ARANGO_REL_FROM</b></a></code> constant.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>Relationship source offset.
+					</div>
+
+
 
 
 			</div>
@@ -707,7 +767,7 @@ method will raise an exception, since it will be impossible to resolve the docum
 
 			<td class="name"><div>
 			<a class="anchor" href="#_RecordCount">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#437-458" title="Go to source code">RecordCount</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#465-486" title="Go to source code">RecordCount</a>( )</code>
 
 			<div class="description short">
 				<h4>Count documents.</h4>
@@ -717,7 +777,7 @@ method will raise an exception, since it will be impossible to resolve the docum
 				<h4>Count documents.</h4>
 
 <p>We overload this method to use the
-<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_count">triagens\ArangoDb\CollectionHandler::count()</a></code> method.</p>
+triagens\ArangoDb\CollectionHandler::count() method.</p>
 
 
 
@@ -731,7 +791,7 @@ method will raise an exception, since it will be impossible to resolve the docum
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_count">triagens\ArangoDb\CollectionHandler::count()</a></code><br>
+							triagens\ArangoDb\CollectionHandler::count()<br>
 					</div>
 
 
@@ -749,7 +809,7 @@ method will raise an exception, since it will be impossible to resolve the docum
 
 			<td class="name"><div>
 			<a class="anchor" href="#_CountByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#465-497" title="Go to source code">CountByExample</a>( <span>mixed <var>$theDocument</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#493-526" title="Go to source code">CountByExample</a>( <span>mixed <var>$theDocument</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Count by example.</h4>
@@ -780,8 +840,8 @@ Mongo Collection.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_byExample">triagens\ArangoDb\CollectionHandler::byExample()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Cursor.html#_getCount">triagens\ArangoDb\Cursor::getCount()</a></code><br>
+							triagens\ArangoDb\CollectionHandler::byExample()<br>
+							triagens\ArangoDb\Cursor::getCount()<br>
 					</div>
 
 
@@ -799,7 +859,7 @@ Mongo Collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_CountByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#504-535" title="Go to source code">CountByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#533-564" title="Go to source code">CountByQuery</a>( <span>mixed <var>$theQuery</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Count by example.</h4>
@@ -827,8 +887,8 @@ Mongo Collection.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_collectionName">Milko\PHPLib\ArangoDB\Collection::collectionName()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Statement.html#_execute">triagens\ArangoDb\Statement::execute()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Cursor.html#_getCount">triagens\ArangoDb\Cursor::getCount()</a></code><br>
+							triagens\ArangoDb\Statement::execute()<br>
+							triagens\ArangoDb\Cursor::getCount()<br>
 					</div>
 
 
@@ -846,7 +906,7 @@ Mongo Collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_MapReduce">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#551-568" title="Go to source code">MapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var> = [] </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#580-597" title="Go to source code">MapReduce</a>( <span>mixed <var>$thePipeline</var></span>, <span>array <var>$theOptions</var> = [] </span> )</code>
 
 			<div class="description short">
 				<h4>Execute an aggregation query.</h4>
@@ -894,7 +954,7 @@ the query.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionNew">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#584-618" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = [] </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#613-652" title="Go to source code">collectionNew</a>( <span>string <var>$theCollection</var></span>, <span>array <var>$theOptions</var> = [] </span> )</code>
 
 			<div class="description short">
 				<h4>Return a native collection object.</h4>
@@ -928,13 +988,13 @@ exists, in which case we return it; if not, we create a new one and return it.</
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_has">triagens\ArangoDb\CollectionHandler::has()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_get">triagens\ArangoDb\CollectionHandler::get()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_create">triagens\ArangoDb\CollectionHandler::create()</a></code><br>
+							triagens\ArangoDb\CollectionHandler::has()<br>
+							triagens\ArangoDb\CollectionHandler::get()<br>
+							triagens\ArangoDb\CollectionHandler::create()<br>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByHandle">Milko\PHPLib\ArangoDB\Collection::doFindByHandle()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByHandle()<br>
 					</div>
 
 
@@ -952,7 +1012,7 @@ exists, in which case we return it; if not, we create a new one and return it.</
 
 			<td class="name"><div>
 			<a class="anchor" href="#_collectionName">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#625-641" title="Go to source code">collectionName</a>( <span> <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#659-675" title="Go to source code">collectionName</a>( <span> <var>$theOptions</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Return the collection name.</h4>
@@ -976,14 +1036,14 @@ exists, in which case we return it; if not, we create a new one and return it.</
 					<h4>Uses</h4>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Collection.html#_getName">triagens\ArangoDb\Collection::getName()</a></code><br>
+							triagens\ArangoDb\Collection::getName()<br>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_CountByQuery">Milko\PHPLib\ArangoDB\Collection::CountByQuery()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doUpdate">Milko\PHPLib\ArangoDB\Collection::doUpdate()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByHandle">Milko\PHPLib\ArangoDB\Collection::doFindByHandle()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByQuery">Milko\PHPLib\ArangoDB\Collection::doFindByQuery()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::CountByQuery()<br>
+							Milko\PHPLib\ArangoDB\Collection::doUpdate()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByHandle()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByQuery()<br>
 					</div>
 
 
@@ -1001,7 +1061,7 @@ exists, in which case we return it; if not, we create a new one and return it.</
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsertOne">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#657-697" title="Go to source code">doInsertOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#691-731" title="Go to source code">doInsertOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert a document.</h4>
@@ -1010,7 +1070,7 @@ exists, in which case we return it; if not, we create a new one and return it.</
 			<div class="description detailed hidden">
 				<h4>Insert a document.</h4>
 
-<p>We overload this method to use the <code><a href="class-triagens.ArangoDb.DocumentHandler.html#_save">triagens\ArangoDb\DocumentHandler::save()</a></code>
+<p>We overload this method to use the triagens\ArangoDb\DocumentHandler::save()
 method.</p>
 
 
@@ -1030,7 +1090,7 @@ method.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_save">triagens\ArangoDb\DocumentHandler::save()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::save()<br>
 					</div>
 
 
@@ -1048,7 +1108,7 @@ method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsertBulk">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#704-736" title="Go to source code">doInsertBulk</a>( <span>array <var>$theList</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#738-770" title="Go to source code">doInsertBulk</a>( <span>array <var>$theList</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert a list of documents.</h4>
@@ -1058,7 +1118,7 @@ method.</p>
 				<h4>Insert a list of documents.</h4>
 
 <p>We overload this method to iterate the provided list and call the
-<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_save">triagens\ArangoDb\DocumentHandler::save()</a></code> method on each document.</p>
+triagens\ArangoDb\DocumentHandler::save() method on each document.</p>
 
 
 					<h4>Parameters</h4>
@@ -1078,7 +1138,7 @@ method.</p>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewNativeDocument">Milko\PHPLib\ArangoDB\Collection::NewNativeDocument()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_save">triagens\ArangoDb\DocumentHandler::save()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::save()<br>
 					</div>
 
 
@@ -1096,7 +1156,7 @@ method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteOne">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#752-823" title="Go to source code">doDeleteOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#786-857" title="Go to source code">doDeleteOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete a document.</h4>
@@ -1106,7 +1166,7 @@ method.</p>
 				<h4>Delete a document.</h4>
 
 <p>We overload this method to call the
-<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_removeById">triagens\ArangoDb\DocumentHandler::removeById()</a></code> method; we also check if the
+triagens\ArangoDb\DocumentHandler::removeById() method; we also check if the
 provided document has its key, if that is not the case, we raise an exception.</p>
 
 
@@ -1133,7 +1193,7 @@ provided document has its key, if that is not the case, we raise an exception.</
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_KeyOffset">Milko\PHPLib\ArangoDB\Collection::KeyOffset()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewNativeDocument">Milko\PHPLib\ArangoDB\Collection::NewNativeDocument()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewNativeDocument">Milko\PHPLib\ArangoDB\Collection::NewNativeDocument()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_remove">triagens\ArangoDb\DocumentHandler::remove()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::remove()<br>
 					</div>
 
 
@@ -1151,7 +1211,7 @@ provided document has its key, if that is not the case, we raise an exception.</
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#830-867" title="Go to source code">doDeleteByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#864-902" title="Go to source code">doDeleteByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by key.</h4>
@@ -1161,7 +1221,7 @@ provided document has its key, if that is not the case, we raise an exception.</
 				<h4>Delete the first or all records by key.</h4>
 
 <p>We overload this method to use the
-<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_lookupByKeys">triagens\ArangoDb\CollectionHandler::lookupByKeys()</a></code> method.</p>
+triagens\ArangoDb\CollectionHandler::lookupByKeys() method.</p>
 
 
 					<h4>Parameters</h4>
@@ -1182,7 +1242,7 @@ provided document has its key, if that is not the case, we raise an exception.</
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_FindByKey">Milko\PHPLib\Collection::FindByKey()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_remove">triagens\ArangoDb\DocumentHandler::remove()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::remove()<br>
 					</div>
 
 
@@ -1200,7 +1260,7 @@ provided document has its key, if that is not the case, we raise an exception.</
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#874-941" title="Go to source code">doDeleteByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#909-976" title="Go to source code">doDeleteByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by example.</h4>
@@ -1210,8 +1270,8 @@ provided document has its key, if that is not the case, we raise an exception.</
 				<h4>Delete the first or all records by example.</h4>
 
 <p>We overload this method to use the
-<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_removeByExample">triagens\ArangoDb\CollectionHandler::removeByExample()</a></code> method when deleting
-all selected records, and the <code><a href="class-triagens.ArangoDb.DocumentHandler.html#_remove">triagens\ArangoDb\DocumentHandler::remove()</a></code>
+triagens\ArangoDb\CollectionHandler::removeByExample() method when deleting
+all selected records, and the triagens\ArangoDb\DocumentHandler::remove()
 method when removing the first document.</p>
 
 
@@ -1233,8 +1293,8 @@ method when removing the first document.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewNativeDocument">Milko\PHPLib\ArangoDB\Collection::NewNativeDocument()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_remove">triagens\ArangoDb\DocumentHandler::remove()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_removeByExample">triagens\ArangoDb\CollectionHandler::removeByExample()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::remove()<br>
+							triagens\ArangoDb\CollectionHandler::removeByExample()<br>
 					</div>
 
 
@@ -1252,7 +1312,7 @@ method when removing the first document.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#948-1000" title="Go to source code">doDeleteByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#983-1035" title="Go to source code">doDeleteByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by query.</h4>
@@ -1262,8 +1322,8 @@ method when removing the first document.</p>
 				<h4>Delete the first or all records by query.</h4>
 
 <p>We overload this method to use the
-<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_removeByKeys">triagens\ArangoDb\CollectionHandler::removeByKeys()</a></code> method when deleting
-all selected records, and the <code><a href="class-triagens.ArangoDb.DocumentHandler.html#_remove">triagens\ArangoDb\DocumentHandler::remove()</a></code>
+triagens\ArangoDb\CollectionHandler::removeByKeys() method when deleting
+all selected records, and the triagens\ArangoDb\DocumentHandler::remove()
 method when removing the first document.</p>
 
 
@@ -1285,7 +1345,7 @@ method when removing the first document.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_removeByKeys">triagens\ArangoDb\CollectionHandler::removeByKeys()</a></code><br>
+							triagens\ArangoDb\CollectionHandler::removeByKeys()<br>
 					</div>
 
 
@@ -1303,7 +1363,7 @@ method when removing the first document.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doUpdate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1016-1104" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>mixed <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1051-1139" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>mixed <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Update one or more records.</h4>
@@ -1340,10 +1400,10 @@ matching the provided filter and apply the modifications to each one.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_collectionName">Milko\PHPLib\ArangoDB\Collection::collectionName()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Cursor.html#_getCount">triagens\ArangoDb\Cursor::getCount()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Statement.html#_execute">triagens\ArangoDb\Statement::execute()</a></code><br>
+							triagens\ArangoDb\Cursor::getCount()<br>
+							triagens\ArangoDb\Statement::execute()<br>
 							triagens\ArangoDb\DocumentHandler::set()<br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_update">triagens\ArangoDb\DocumentHandler::update()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::update()<br>
 					</div>
 
 
@@ -1361,7 +1421,7 @@ matching the provided filter and apply the modifications to each one.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doReplace">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1111-1197" title="Go to source code">doReplace</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1146-1232" title="Go to source code">doReplace</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -1397,8 +1457,8 @@ not perform the replacement and return <tt>0</tt>.</p>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_KeyOffset">Milko\PHPLib\ArangoDB\Collection::KeyOffset()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_RevisionOffset">Milko\PHPLib\ArangoDB\Collection::RevisionOffset()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewNativeDocument">Milko\PHPLib\ArangoDB\Collection::NewNativeDocument()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_replace">triagens\ArangoDb\DocumentHandler::replace()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_getById">triagens\ArangoDb\DocumentHandler::getById()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::replace()<br>
+							triagens\ArangoDb\DocumentHandler::getById()<br>
 					</div>
 
 
@@ -1416,7 +1476,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1213-1334" title="Go to source code">doFindByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1248-1369" title="Go to source code">doFindByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by key.</h4>
@@ -1426,7 +1486,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 				<h4>Find by key.</h4>
 
 <p>We implement the method by using the
-<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_lookupByKeys">triagens\ArangoDb\CollectionHandler::lookupByKeys()</a></code> method.</p>
+triagens\ArangoDb\CollectionHandler::lookupByKeys() method.</p>
 
 
 					<h4>Parameters</h4>
@@ -1460,8 +1520,8 @@ not perform the replacement and return <tt>0</tt>.</p>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewDocumentKey">Milko\PHPLib\ArangoDB\Collection::NewDocumentKey()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewDocumentHandle">Milko\PHPLib\ArangoDB\Collection::NewDocumentHandle()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_normaliseSelectedDocument">Milko\PHPLib\ArangoDB\Collection::normaliseSelectedDocument()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_getById">triagens\ArangoDb\DocumentHandler::getById()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_lookupByKeys">triagens\ArangoDb\CollectionHandler::lookupByKeys()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::getById()<br>
+							triagens\ArangoDb\CollectionHandler::lookupByKeys()<br>
 					</div>
 
 
@@ -1479,7 +1539,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByHandle">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1341-1455" title="Go to source code">doFindByHandle</a>( <span>mixed <var>$theHandle</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1376-1490" title="Go to source code">doFindByHandle</a>( <span>mixed <var>$theHandle</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by handle.</h4>
@@ -1489,7 +1549,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 				<h4>Find by handle.</h4>
 
 <p>We implement the method by using the
-<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_lookupByKeys">triagens\ArangoDb\CollectionHandler::lookupByKeys()</a></code> method.</p>
+triagens\ArangoDb\CollectionHandler::lookupByKeys() method.</p>
 
 
 					<h4>Parameters</h4>
@@ -1524,8 +1584,8 @@ not perform the replacement and return <tt>0</tt>.</p>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_collectionNew">Milko\PHPLib\ArangoDB\Collection::collectionNew()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_collectionName">Milko\PHPLib\ArangoDB\Collection::collectionName()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_normaliseSelectedDocument">Milko\PHPLib\ArangoDB\Collection::normaliseSelectedDocument()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.DocumentHandler.html#_getById">triagens\ArangoDb\DocumentHandler::getById()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_lookupByKeys">triagens\ArangoDb\CollectionHandler::lookupByKeys()</a></code><br>
+							triagens\ArangoDb\DocumentHandler::getById()<br>
+							triagens\ArangoDb\CollectionHandler::lookupByKeys()<br>
 					</div>
 
 
@@ -1543,7 +1603,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1462-1554" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1497-1589" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by example the first or all records.</h4>
@@ -1553,7 +1613,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 				<h4>Find by example the first or all records.</h4>
 
 <p>We overload this method to use the
-<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_byExample">triagens\ArangoDb\CollectionHandler::byExample()</a></code> method.</p>
+triagens\ArangoDb\CollectionHandler::byExample() method.</p>
 
 <p>We convert the <code><a href="constant-kTOKEN_OPT_SKIP.html"><b>kTOKEN_OPT_SKIP</b></a></code> and <code><a href="constant-kTOKEN_OPT_LIMIT.html"><b>kTOKEN_OPT_LIMIT</b></a></code> parameters into
 respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
@@ -1584,7 +1644,7 @@ respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
 							formatCursor()<br>
-							<code><a href="class-triagens.ArangoDb.CollectionHandler.html#_byExample">triagens\ArangoDb\CollectionHandler::byExample()</a></code><br>
+							triagens\ArangoDb\CollectionHandler::byExample()<br>
 					</div>
 
 
@@ -1602,7 +1662,7 @@ respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1561-1639" title="Go to source code">doFindByQuery</a>( <span>array <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1596-1674" title="Go to source code">doFindByQuery</a>( <span>array <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -1639,7 +1699,7 @@ ignored in this method: you must set them directly into the query</em>.</p>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewDocument">Milko\PHPLib\ArangoDB\Collection::NewDocument()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewDocumentKey">Milko\PHPLib\ArangoDB\Collection::NewDocumentKey()</a></code><br>
 							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_NewDocumentHandle">Milko\PHPLib\ArangoDB\Collection::NewDocumentHandle()</a></code><br>
-							<code><a href="class-triagens.ArangoDb.Statement.html#_execute">triagens\ArangoDb\Statement::execute()</a></code><br>
+							triagens\ArangoDb\Statement::execute()<br>
 					</div>
 
 
@@ -1657,7 +1717,7 @@ ignored in this method: you must set them directly into the query</em>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_normaliseInsertedDocument">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1656-1683" title="Go to source code">normaliseInsertedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span>, <span>mixed <var>$theData</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1691-1718" title="Go to source code">normaliseInsertedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span>, <span>mixed <var>$theData</var></span> )</code>
 
 			<div class="description short">
 				<h4>Normalise inserted document.</h4>
@@ -1704,7 +1764,7 @@ the parent method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_normaliseDeletedDocument">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1690-1713" title="Go to source code">normaliseDeletedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1725-1748" title="Go to source code">normaliseDeletedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Normalise inserted document.</h4>
@@ -1748,7 +1808,7 @@ document persistent state, allowing this method to remove the revision
 
 			<td class="name"><div>
 			<a class="anchor" href="#_normaliseSelectedDocument">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1720-1760" title="Go to source code">normaliseSelectedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span>, <span>mixed <var>$theData</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1755-1795" title="Go to source code">normaliseSelectedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span>, <span>mixed <var>$theData</var></span> )</code>
 
 			<div class="description short">
 				<h4>Normalise selected document.</h4>
@@ -1790,8 +1850,8 @@ then call the current method.</p>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByKey">Milko\PHPLib\ArangoDB\Collection::doFindByKey()</a></code><br>
-							<code><a href="class-Milko.PHPLib.ArangoDB.Collection.html#_doFindByHandle">Milko\PHPLib\ArangoDB\Collection::doFindByHandle()</a></code><br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByKey()<br>
+							Milko\PHPLib\ArangoDB\Collection::doFindByHandle()<br>
 					</div>
 
 					<h4>Overrides</h4>

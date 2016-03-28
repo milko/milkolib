@@ -113,7 +113,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Check collection.
 		//
-		if( ($id = $this->Connection()->getId()) !== NULL )
+		if( $this->Connection()->getId() !== NULL )
 		{
 			//
 			// Instantiate collection handler.
@@ -123,7 +123,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Drop collection.
 			//
-			$handler->drop( $id );
+			$handler->drop( $this->Connection()->getName() );
 		}
 
 	} // Drop.
@@ -421,6 +421,34 @@ class Collection extends \Milko\PHPLib\Collection
 	public function RevisionOffset()					{	return kTAG_ARANGO_REVISION;	}
 
 
+	/*===================================================================================
+	 *	RelationSourceOffset															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the relationship source offset.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_ARANGO_REL_FROM} constant.
+	 *
+	 * @return string				Relationship source offset.
+	 */
+	public function RelationSourceOffset()				{	return kTAG_ARANGO_REL_FROM;	}
+
+
+	/*===================================================================================
+	 *	RelationDestinationOffset														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the relationship destination offset.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_ARANGO_REL_FROM} constant.
+	 *
+	 * @return string				Relationship source offset.
+	 */
+	public function RelationDestinationOffset()				{	return kTAG_ARANGO_REL_TO;	}
+
+
 
 /*=======================================================================================
  *																						*
@@ -453,7 +481,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
 
-		return $handler->count( $this->Connection()->getId() );						// ==>
+		return $handler->count( $this->Connection()->getName() );					// ==>
 
 	} // RecordCount.
 
@@ -491,8 +519,9 @@ class Collection extends \Milko\PHPLib\Collection
 		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
 
 		return
-			$handler->byExample( $this->Connection()->getId(), $document )
-				->getCount();														// ==>
+			$handler->byExample(
+				$this->Connection()->getName(), $document )
+					->getCount();													// ==>
 
 	} // CountByExample.
 
@@ -613,7 +642,12 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $handler->has( $theCollection ) )
 			return $handler->get( $theCollection );									// ==>
 
-		return $handler->create( $theCollection );									// ==>
+		//
+		// Create collection.
+		//
+		$id = $handler->create( $theCollection );
+
+		return $handler->get( $id );												// ==>
 
 	} // collectionNew.
 
@@ -794,7 +828,7 @@ class Collection extends \Milko\PHPLib\Collection
 				// Try to delete document.
 				//
 				$handler->removeById(
-					$this->Connection()->getId(), $id, $document->getRevision() );
+					$this->Connection()->getName(), $id, $document->getRevision() );
 
 				//
 				// Normalise deleted document.
@@ -859,8 +893,9 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Remove by keys.
 		//
-		$result = $collectionHandler->removeByKeys(
-			$this->Connection()->getId(), $theKey );
+		$result =
+			$collectionHandler->removeByKeys(
+				$this->Connection()->getName(), $theKey );
 
 		return $result[ 'removed' ];												// ==>
 
@@ -907,7 +942,7 @@ class Collection extends \Milko\PHPLib\Collection
 		{
 			return
 				$collectionHandler->removeByExample(
-					$this->Connection()->getId(), $document );						// ==>
+					$this->Connection()->getName(), $document );					// ==>
 
 		} // Delete all.
 
@@ -916,7 +951,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$cursor =
 			$collectionHandler->byExample(
-				$this->Connection()->getId(), $document, ['limit' => 1] );
+				$this->Connection()->getName(), $document, ['limit' => 1] );
 
 		//
 		// Iterate cursor.
@@ -991,7 +1026,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Remove by keys.
 			//
-			$collectionHandler->removeByKeys( $this->Connection()->getId(), $keys );
+			$collectionHandler->removeByKeys( $this->Connection()->getName(), $keys );
 
 		} // Selected something.
 
@@ -1154,7 +1189,7 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Find document.
 				//
-				$found = $handler->getById( $this->Connection()->getId(), $key );
+				$found = $handler->getById( $this->Connection()->getName(), $key );
 
 				//
 				// Reset document properties.
@@ -1268,7 +1303,7 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Find document.
 				//
-				$result = $handler->getById( $this->Connection()->getId(), $theKey );
+				$result = $handler->getById( $this->Connection()->getName(), $theKey );
 
 				//
 				// Set to array.
@@ -1510,7 +1545,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$cursor =
 			$handler->byExample(
-				$this->Connection()->getId(), $document, $options );
+				$this->Connection()->getName(), $document, $options );
 
 		//
 		// Handle native result.

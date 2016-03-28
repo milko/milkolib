@@ -153,13 +153,13 @@ class Database extends \Milko\PHPLib\Database
 	 *==================================================================================*/
 
 	/**
-	 * <h4>List server databases.</h4>
+	 * <h4>List database collections.</h4>
 	 *
 	 * We overload this method to use the native driver object, we only consider the
 	 * collection names in the returned value.
 	 *
 	 * @param array					$theOptions			Collection native options.
-	 * @return array				List of database names.
+	 * @return array				List of database collection names.
 	 *
 	 * @uses Connection()
 	 * @uses \MongoDB\Database::listCollections()

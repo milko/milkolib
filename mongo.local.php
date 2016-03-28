@@ -59,5 +59,19 @@ const kTAG_MONGO_CLASS = '_class';
  */
 const kTAG_MONGO_REVISION = '_rev';
 
+/**
+ * <h4>Default source relationship offset.</h4>
+ *
+ * This defines the default offset for source nodes in a graph edge.
+ */
+const kTAG_MONGO_REL_FROM = '_from';
+
+/**
+ * <h4>Default destination relationship offset.</h4>
+ *
+ * This defines the default offset for destination nodes in a graph edge.
+ */
+const kTAG_MONGO_REL_TO = '_to';
+
 
 ?>

@@ -199,7 +199,7 @@ class Database extends \Milko\PHPLib\Database
 	 * The options parameter is ignored here.
 	 *
 	 * @param array					$theOptions			Collection native options.
-	 * @return array				List of database names.
+	 * @return array				List of database collection names.
 	 *
 	 * @uses Connection()
 	 * @uses triagens\ArangoDb\CollectionHandler::getAllCollections()
@@ -251,13 +251,18 @@ class Database extends \Milko\PHPLib\Database
 	 * @param string				$theCollection		Collection name.
 	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
-	 *
-	 * @uses collectionList()
 	 */
 	protected function collectionRetrieve( $theCollection, $theOptions = NULL )
 	{
 		//
-		// Check if collection exists.
+		// Check working collections.
+		//
+		$collection = $this->offsetGet( $theCollection );
+		if( $collection !== NULL )
+			return $collection;														// ==>
+
+		//
+		// Create collection.
 		//
 		if( in_array( $theCollection, $this->collectionList() ) )
 			return new Collection( $this, $theCollection, $theOptions );			// ==>

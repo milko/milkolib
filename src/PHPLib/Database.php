@@ -405,6 +405,11 @@ abstract class Database extends Container
 		$theCollection = (string)$theCollection;
 
 		//
+		// Get working collection.
+		//
+		$collection = $this->collectionRetrieve( $theCollection, $theOptions );
+
+		//
 		// Match working collections.
 		//
 		if( $this->offsetExists( $theCollection ) )
@@ -688,9 +693,9 @@ abstract class Database extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>List server databases.</h4>
+	 * <h4>List database collections.</h4>
 	 *
-	 * This method should return the list of server database names.
+	 * This method should return the list of database collection names.
 	 *
 	 * This method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
@@ -704,7 +709,7 @@ abstract class Database extends Container
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theOptions			Native driver options.
-	 * @return array				List of database names.
+	 * @return array				List of database collection names.
 	 */
 	abstract protected function collectionList( $theOptions = NULL );
 
