@@ -327,7 +327,144 @@ class Term extends Document
 
 /*=======================================================================================
  *																						*
- *								PUBLIC ARRAY ACCESS INTERFACE							*
+ *							PUBLIC MEMBER ACCESSOR INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Name																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Manage term name.</h4>
+	 *
+	 * This method can be used to set, retrieve and delete individual term names expressed
+	 * in different languages, the method accepts the following parameters:
+	 *
+	 * <ul>
+	 *	<li><tt>$theLanguage</tt>: The language code or operation:
+	 *	 <ul>
+	 *		<li><tt>NULL</tt>: Return the full set of names, the next parameter is ignored.
+	 *		<li><tt>FALSE</tt>: Delete the full set of names and return the old value, the
+	 * 			next parameter is ignored.
+	 *		<li><em>other</em>: Use the value as the language code, the next parameter will
+	 * 			be considered the name in tha provided language.
+	 *	 </ul>
+	 *	<li><tt>$theValue</tt>: The name or operation:
+	 *	 <ul>
+	 *		<li><tt>NULL</tt>: Return the name in the provided language.
+	 *		<li><tt>FALSE</tt>: Delete the the name in the provided language and return the
+	 * 			old name.
+	 *		<li><em>other</em>: Set the the name in the provided language to the provided
+	 * 			value and return it.
+	 *	 </ul>
+	 * </ul>
+	 *
+	 * @param string				$theLanguage		Language code.
+	 * @param string				$theName			Term name in the provided language.
+	 * @return mixed				Old or current name.
+	 *
+	 * @uses getTermKey()
+	 * @uses setTermNamespace()
+	 */
+	public function Name( $theLanguage = NULL, $theName = NULL )
+	{
+		return $this->manageIndexedProperty( kTAG_NAME, $theLanguage, $theName );	// ==>
+
+	} // Name.
+
+
+	/*===================================================================================
+	 *	Definition																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Manage term definition.</h4>
+	 *
+	 * This method can be used to set, retrieve and delete individual term definitions
+	 * expressed in different languages, the method accepts the following parameters:
+	 *
+	 * <ul>
+	 *	<li><tt>$theLanguage</tt>: The language code or operation:
+	 *	 <ul>
+	 *		<li><tt>NULL</tt>: Return the full set of definitions, the next parameter is
+	 * 			ignored.
+	 *		<li><tt>FALSE</tt>: Delete the full set of definitions and return the old value,
+	 * 			the next parameter is ignored.
+	 *		<li><em>other</em>: Use the value as the language code, the next parameter will
+	 * 			be considered the definition in tha provided language.
+	 *	 </ul>
+	 *	<li><tt>$theValue</tt>: The definition or operation:
+	 *	 <ul>
+	 *		<li><tt>NULL</tt>: Return the definition in the provided language.
+	 *		<li><tt>FALSE</tt>: Delete the the definition in the provided language and
+	 * 			return the old definition.
+	 *		<li><em>other</em>: Set the the definition in the provided language to the
+	 * 			provided value and return it.
+	 *	 </ul>
+	 * </ul>
+	 *
+	 * @param string				$theLanguage		Language code.
+	 * @param string				$theDefinition		Term definition in the provided
+	 * 													language.
+	 * @return mixed				Old or current definition.
+	 *
+	 * @uses getTermKey()
+	 * @uses setTermNamespace()
+	 */
+	public function Definition( $theLanguage = NULL, $theName = NULL )
+	{
+		return
+			$this->manageIndexedProperty(
+				kTAG_DESCRIPTION, $theLanguage, $theDefinition );					// ==>
+
+	} // Definition.
+
+
+	/*===================================================================================
+	 *	NamespaceTerm																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return namespace term.</h4>
+	 *
+	 * This method can be used to retrieve the namespace term, it will return the term
+	 * document if the namespace is set, or <tt>NULL</tt>.
+	 *
+	 * @return Term					Namespace term or <tt>NULL</tt>.
+	 *
+	 * @uses getTermKey()
+	 * @uses setTermNamespace()
+	 */
+	public function NamespaceTerm( $theLanguage = NULL, $theName = NULL )
+	{
+		//
+		// Get namespace.
+		//
+		if( ($namespace = $this->offsetGet( kTAG_NS )) !== NULL )
+		{
+			//
+			// Handle namespace object.
+			//
+			if( $namespace instanceof Document )
+				return $namespace;													// ==>
+
+			return
+				$this->mCollection->FindByKey( $namespace );						// ==>
+
+		} // Has namespace.
+
+		return NULL;																// ==>
+
+	} // NamespaceTerm.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC NAMESPACE INTERFACE								*
  *																						*
  *======================================================================================*/
 

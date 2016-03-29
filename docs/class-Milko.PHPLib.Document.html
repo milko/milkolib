@@ -153,6 +153,7 @@
 				<li><a href="class-Milko.PHPLib.DataSource.html">DataSource</a></li>
 				<li class="active"><a href="class-Milko.PHPLib.Document.html">Document</a></li>
 				<li><a href="class-Milko.PHPLib.DocumentSet.html">DocumentSet</a></li>
+				<li><a href="class-Milko.PHPLib.Edge.html">Edge</a></li>
 				<li><a href="class-Milko.PHPLib.Server.html">Server</a></li>
 				<li><a href="class-Milko.PHPLib.Term.html">Term</a></li>
 			</ul>
@@ -265,6 +266,7 @@ persistent and those which are required prior to saving the object.</p>
 	<div>
 		<h3>Direct known subclasses</h3>
 		<p class="elementList">
+			<code><a href="class-Milko.PHPLib.Edge.html">Milko\PHPLib\Edge</a></code>, 
 			<code><a href="class-Milko.PHPLib.Term.html">Milko\PHPLib\Term</a></code>
 		</p>
 	</div>
@@ -286,7 +288,7 @@ persistent and those which are required prior to saving the object.</p>
 				1.00<br>
 				<b>Since:</b>
 				10/03/2016<br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#30-886" title="Go to source code">PHPLib/Document.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Document.html#30-892" title="Go to source code">PHPLib/Document.php</a>
 		<br>
 	</div>
 
@@ -504,7 +506,7 @@ classes you should first call this method, then do any other type of validation.
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Store">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#400-454" title="Go to source code">Store</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#400-435" title="Go to source code">Store</a>( )</code>
 
 			<div class="description short">
 				<h4>Store object.</h4>
@@ -541,7 +543,10 @@ resetting its modification state, <code><a href="class-Milko.PHPLib.Document.htm
 							<code><a href="class-Milko.PHPLib.Document.html#_doStore">Milko\PHPLib\Document::doStore()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Document.html#_IsModified">Milko\PHPLib\Document::IsModified()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code><br>
-							<code><a href="class-Milko.PHPLib.Document.html#_storeDocuments">Milko\PHPLib\Document::storeDocuments()</a></code><br>
+					</div>
+					<h4>Used by</h4>
+					<div class="list">
+							Milko\PHPLib\Document::doStoreRelated()<br>
 					</div>
 
 
@@ -559,7 +564,7 @@ resetting its modification state, <code><a href="class-Milko.PHPLib.Document.htm
 
 			<td class="name"><div>
 			<a class="anchor" href="#_Delete">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#461-486" title="Go to source code">Delete</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#442-467" title="Go to source code">Delete</a>( )</code>
 
 			<div class="description short">
 				<h4>Delete object.</h4>
@@ -593,6 +598,43 @@ state, <code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPL
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="ResolveRelated" id="_ResolveRelated">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_ResolveRelated">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#474-500" title="Go to source code">ResolveRelated</a>( )</code>
+
+			<div class="description short">
+				<h4>Resolve related objects.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Resolve related objects.</h4>
+
+<p>This method should be called prior to inserting the object, it will traverse all
+object structures inserting sub-documents ecpressed as document objects that
+are modified (<code><a href="class-Milko.PHPLib.Document.html#_IsModified">Milko\PHPLib\Document::IsModified()</a></code>) and are not persistent (<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code>).</p>
+
+
+
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_doStoreRelated">Milko\PHPLib\Document::doStoreRelated()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="SetKey" id="_SetKey">
 
 			<td class="attributes"><code>
@@ -604,7 +646,7 @@ state, <code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPL
 
 			<td class="name"><div>
 			<a class="anchor" href="#_SetKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#502-538" title="Go to source code">SetKey</a>( <span>mixed <var>$theKey</var></span>, <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theSetter</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#516-552" title="Go to source code">SetKey</a>( <span>mixed <var>$theKey</var></span>, <span><code><a href="class-Milko.PHPLib.Collection.html">Milko\PHPLib\Collection</a></code> <var>$theSetter</var></span> )</code>
 
 			<div class="description short">
 				<h4>Set document key.</h4>
@@ -654,7 +696,7 @@ locked once the document becomes persistent.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_IsModified">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#554-608" title="Go to source code">IsModified</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#568-622" title="Go to source code">IsModified</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Handle the document modification state.</h4>
@@ -704,7 +746,7 @@ exception will be raised.</p>
 					<h4>Used by</h4>
 					<div class="list">
 							Milko\PHPLib\Document::Store()<br>
-							Milko\PHPLib\Document::storeDocuments()<br>
+							Milko\PHPLib\Document::doStoreRelated()<br>
 					</div>
 
 
@@ -722,7 +764,7 @@ exception will be raised.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_IsPersistent">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#615-667" title="Go to source code">IsPersistent</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#629-681" title="Go to source code">IsPersistent</a>( <span>mixed <var>$theValue</var> = <span class="php-keyword1">NULL</span></span>, <span>mixed <var>$theSetter</var> = <span class="php-keyword1">NULL</span> </span> )</code>
 
 			<div class="description short">
 				<h4>Handle the document persistent state.</h4>
@@ -772,7 +814,7 @@ only be changed by the document's <code><a href="class-Milko.PHPLib.Collection.h
 					<div class="list">
 							Milko\PHPLib\Document::Store()<br>
 							Milko\PHPLib\Document::Delete()<br>
-							Milko\PHPLib\Document::storeDocuments()<br>
+							Milko\PHPLib\Document::doStoreRelated()<br>
 					</div>
 
 
@@ -790,7 +832,7 @@ only be changed by the document's <code><a href="class-Milko.PHPLib.Collection.h
 
 			<td class="name"><div>
 			<a class="anchor" href="#_lockedOffsets">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#683-708" title="Go to source code">lockedOffsets</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#697-722" title="Go to source code">lockedOffsets</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the list of locked offsets.</h4>
@@ -839,7 +881,7 @@ object has been committed to its <code><a href="class-Milko.PHPLib.Container.htm
 
 			<td class="name"><div>
 			<a class="anchor" href="#_requiredOffsets">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#715-734" title="Go to source code">requiredOffsets</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#729-748" title="Go to source code">requiredOffsets</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the list of required offsets.</h4>
@@ -881,7 +923,7 @@ document in its collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doStore">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#750-787" title="Go to source code">doStore</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#764-801" title="Go to source code">doStore</a>( )</code>
 
 			<div class="description short">
 				<h4>Store object.</h4>
@@ -930,7 +972,7 @@ document was stored, or <tt>NULL</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDelete">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#794-811" title="Go to source code">doDelete</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Document.html#808-825" title="Go to source code">doDelete</a>( )</code>
 
 			<div class="description short">
 				<h4>Delete object.</h4>
@@ -966,7 +1008,7 @@ conditions are met.</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="storeDocuments" id="_storeDocuments">
+		<tr data-order="doStoreRelated" id="_doStoreRelated">
 
 			<td class="attributes"><code>
 				 protected 
@@ -976,8 +1018,8 @@ conditions are met.</p>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_storeDocuments">#</a>
-			<code><a href="source-class-Milko.PHPLib.Document.html#827-881" title="Go to source code">storeDocuments</a>( <span>array <var>$theSource</var></span>, <span>array <var>&amp; $theDestination</var></span> )</code>
+			<a class="anchor" href="#_doStoreRelated">#</a>
+			<code><a href="source-class-Milko.PHPLib.Document.html#832-887" title="Go to source code">doStoreRelated</a>( <span>array <var>$theSource</var></span>, <span>array <var>&amp; $theDestination</var></span> )</code>
 
 			<div class="description short">
 				<h4>Store embedded documents.</h4>
@@ -1004,12 +1046,13 @@ replaced with the stored document's handle.</p>
 
 					<h4>Uses</h4>
 					<div class="list">
+							<code><a href="class-Milko.PHPLib.Document.html#_Store">Milko\PHPLib\Document::Store()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Document.html#_IsModified">Milko\PHPLib\Document::IsModified()</a></code><br>
 							<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">Milko\PHPLib\Document::IsPersistent()</a></code><br>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
-							Milko\PHPLib\Document::Store()<br>
+							Milko\PHPLib\Document::ResolveRelated()<br>
 					</div>
 
 
@@ -1027,6 +1070,7 @@ replaced with the stored document's handle.</p>
 				<code><a href="class-Milko.PHPLib.Container.html#_convertToArray">convertToArray()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageAttribute">manageAttribute()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageFlagAttribute">manageFlagAttribute()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_manageIndexedProperty">manageIndexedProperty()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">manageProperty()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_offsetGet">offsetGet()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_toArray">toArray()</a></code>

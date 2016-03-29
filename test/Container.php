@@ -48,6 +48,14 @@ class test_Container extends Milko\PHPLib\Container
 	{
 		return $this->manageProperty( $theProperty, $theValue );
 	}
+
+	//
+	// Declare indexed property accessor method.
+	//
+	function IndexedProperty( $theProperty, $theKey = NULL, $theValue = NULL )
+	{
+		return $this->manageIndexedProperty( $theProperty, $theKey, $theValue );
+	}
 }
 
 //
@@ -240,6 +248,70 @@ echo( "Get properties:\n" );
 echo( '$result = $test->toArray();' . "\n" );
 $result = $test->toArray();
 print_r( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Add indexed property.
+//
+echo( "Add indexed property:\n" );
+echo( '$result = $test->IndexedProperty( "Indexed", "key", "value" );' . "\n" );
+$result = $test->IndexedProperty( "Indexed", "key", "value" );
+var_dump( $result );
+print_r( $test );
+
+echo( "\n" );
+
+//
+// Add another indexed property.
+//
+echo( "Add another indexed property:\n" );
+echo( '$result = $test->IndexedProperty( "Indexed", "other", "another" );' . "\n" );
+$result = $test->IndexedProperty( "Indexed", "other", "another" );
+var_dump( $result );
+print_r( $test );
+
+echo( "\n" );
+
+//
+// Retrieve indexed property.
+//
+echo( "Retrieve indexed property:\n" );
+echo( '$result = $test->IndexedProperty( "Indexed", "key" );' . "\n" );
+$result = $test->IndexedProperty( "Indexed", "key" );
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Retrieve full property.
+//
+echo( "Retrieve full property:\n" );
+echo( '$result = $test->IndexedProperty( "Indexed" );' . "\n" );
+$result = $test->IndexedProperty( "Indexed" );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Delete indexed property.
+//
+echo( "Delete indexed property:\n" );
+echo( '$result = $test->IndexedProperty( "Indexed", "key", FALSE );' . "\n" );
+$result = $test->IndexedProperty( "Indexed", "key", FALSE );
+var_dump( $result );
+print_r( $test );
+
+echo( "\n" );
+
+//
+// Delete last indexed property.
+//
+echo( "Delete last indexed property:\n" );
+echo( '$result = $test->IndexedProperty( "Indexed", "other", FALSE );' . "\n" );
+$result = $test->IndexedProperty( "Indexed", "other", FALSE );
+var_dump( $result );
+print_r( $test );
 
 ?>
 

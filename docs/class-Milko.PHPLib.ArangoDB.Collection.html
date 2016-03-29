@@ -243,7 +243,7 @@ collections.</p>
 $database = $server->RetrieveDatabase( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...<br/></p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#34-1799" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#34-1811" title="Go to source code">PHPLib/ArangoDB/Collection.php</a>
 		<br>
 	</div>
 
@@ -1061,7 +1061,7 @@ exists, in which case we return it; if not, we create a new one and return it.</
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsertOne">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#691-731" title="Go to source code">doInsertOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#691-743" title="Go to source code">doInsertOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert a document.</h4>
@@ -1090,6 +1090,8 @@ method.</p>
 					<div class="list">
 							<code><a href="class-Milko.PHPLib.ArangoDB.Database.html">Milko\PHPLib\ArangoDB\Database</a></code><br>
 							<code><a href="class-Milko.PHPLib.Collection.html#_Connection">Milko\PHPLib\Collection::Connection()</a></code><br>
+							\Milko\PHPLib\Document::Validate()<br>
+							\Milko\PHPLib\Document::ResolveRelated()<br>
 							triagens\ArangoDb\DocumentHandler::save()<br>
 					</div>
 
@@ -1108,7 +1110,7 @@ method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsertBulk">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#738-770" title="Go to source code">doInsertBulk</a>( <span>array <var>$theList</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#750-782" title="Go to source code">doInsertBulk</a>( <span>array <var>$theList</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert a list of documents.</h4>
@@ -1156,7 +1158,7 @@ triagens\ArangoDb\DocumentHandler::save() method on each document.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteOne">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#786-857" title="Go to source code">doDeleteOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#798-869" title="Go to source code">doDeleteOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete a document.</h4>
@@ -1211,7 +1213,7 @@ provided document has its key, if that is not the case, we raise an exception.</
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#864-902" title="Go to source code">doDeleteByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#876-914" title="Go to source code">doDeleteByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by key.</h4>
@@ -1260,7 +1262,7 @@ triagens\ArangoDb\CollectionHandler::lookupByKeys() method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#909-976" title="Go to source code">doDeleteByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#921-988" title="Go to source code">doDeleteByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by example.</h4>
@@ -1312,7 +1314,7 @@ method when removing the first document.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#983-1035" title="Go to source code">doDeleteByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#995-1047" title="Go to source code">doDeleteByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by query.</h4>
@@ -1363,7 +1365,7 @@ method when removing the first document.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doUpdate">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1051-1139" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>mixed <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1063-1151" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>mixed <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Update one or more records.</h4>
@@ -1421,7 +1423,7 @@ matching the provided filter and apply the modifications to each one.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doReplace">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1146-1232" title="Go to source code">doReplace</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1158-1244" title="Go to source code">doReplace</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -1476,7 +1478,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1248-1369" title="Go to source code">doFindByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1260-1381" title="Go to source code">doFindByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by key.</h4>
@@ -1539,7 +1541,7 @@ triagens\ArangoDb\CollectionHandler::lookupByKeys() method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByHandle">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1376-1490" title="Go to source code">doFindByHandle</a>( <span>mixed <var>$theHandle</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1388-1502" title="Go to source code">doFindByHandle</a>( <span>mixed <var>$theHandle</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by handle.</h4>
@@ -1603,7 +1605,7 @@ triagens\ArangoDb\CollectionHandler::lookupByKeys() method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1497-1589" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1509-1601" title="Go to source code">doFindByExample</a>( <span>array <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by example the first or all records.</h4>
@@ -1662,7 +1664,7 @@ respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1596-1674" title="Go to source code">doFindByQuery</a>( <span>array <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1608-1686" title="Go to source code">doFindByQuery</a>( <span>array <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -1717,7 +1719,7 @@ ignored in this method: you must set them directly into the query</em>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_normaliseInsertedDocument">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1691-1718" title="Go to source code">normaliseInsertedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span>, <span>mixed <var>$theData</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1703-1730" title="Go to source code">normaliseInsertedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span>, <span>mixed <var>$theData</var></span> )</code>
 
 			<div class="description short">
 				<h4>Normalise inserted document.</h4>
@@ -1764,7 +1766,7 @@ the parent method.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_normaliseDeletedDocument">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1725-1748" title="Go to source code">normaliseDeletedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1737-1760" title="Go to source code">normaliseDeletedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Normalise inserted document.</h4>
@@ -1808,7 +1810,7 @@ document persistent state, allowing this method to remove the revision
 
 			<td class="name"><div>
 			<a class="anchor" href="#_normaliseSelectedDocument">#</a>
-			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1755-1795" title="Go to source code">normaliseSelectedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span>, <span>mixed <var>$theData</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.ArangoDB.Collection.html#1767-1807" title="Go to source code">normaliseSelectedDocument</a>( <span><code><a href="class-Milko.PHPLib.Container.html">Milko\PHPLib\Container</a></code> <var>$theDocument</var></span>, <span>mixed <var>$theData</var></span> )</code>
 
 			<div class="description short">
 				<h4>Normalise selected document.</h4>
@@ -1896,6 +1898,7 @@ then call the current method.</p>
 				<code><a href="class-Milko.PHPLib.Container.html#_convertToArray">convertToArray()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageAttribute">manageAttribute()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageFlagAttribute">manageFlagAttribute()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_manageIndexedProperty">manageIndexedProperty()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">manageProperty()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_offsetGet">offsetGet()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_offsetSet">offsetSet()</a></code>, 

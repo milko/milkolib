@@ -46,8 +46,8 @@ echo( "\n=======================================================================
 // Instantiate namespace.
 //
 echo( "Instantiate namespace:\n" );
-echo( '$namespace = new Milko\PHPLib\Term( $collection, [kTAG_LID => "namespace", kTAG_NAME => "Namespace"] );' . "\n" );
-$namespace = new Milko\PHPLib\Term( $collection, [kTAG_LID => "namespace", kTAG_NAME => "Namespace"] );
+echo( '$namespace = new Milko\PHPLib\Term( $collection, [kTAG_LID => "namespace", kTAG_NAME => ["en" => "Namespace"] );' . "\n" );
+$namespace = new Milko\PHPLib\Term( $collection, [kTAG_LID => "namespace", kTAG_NAME => ["en" => "Namespace"]] );
 echo( "Class: " . get_class( $namespace ) . "\n" );
 echo( "Modified:   " . (( $namespace->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $namespace->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -86,6 +86,16 @@ print_r( $document->getArrayCopy() );
 echo( "\n" );
 
 //
+// Get namespace.
+//
+echo( "Get namespace:\n" );
+echo( '$result = $document->NamespaceTerm();' . "\n" );
+$result = $document->NamespaceTerm();
+print_r( $result->getArrayCopy() );
+
+echo( "\n" );
+
+//
 // Insert term.
 //
 echo( "Insert term:\n" );
@@ -107,8 +117,8 @@ echo( "\n" );
 // Insert term.
 //
 echo( "Insert term:\n" );
-echo( '$document[ kTAG_NAME ] = "A term";' . "\n" );
-$document[ kTAG_NAME ] = "A term";
+echo( '$document->Name( "en", "A term" );' . "\n" );
+$document->Name( "en", "A term" );
 echo( '$key = $document->Store();' . "\n" );
 $key = $document->Store();
 echo( "Class: " . get_class( $document ) . "\n" );

@@ -115,5 +115,30 @@ const kTOKEN_OPT_SKIP = '$skip';
  */
 const kTOKEN_OPT_LIMIT = '$limit';
 
+/*=======================================================================================
+ *	RELATIONSHIP DIRECTION TOKENS														*
+ *======================================================================================*/
+
+/**
+ * Incoming relationships.
+ *
+ * This token indicates relationships directed towards the current vertex.
+ */
+const kTOKEN_REL_IN = 'in';
+
+/**
+ * Outgoing relationships.
+ *
+ * This token indicates relationships stemming from the current vertex.
+ */
+const kTOKEN_REL_OUT = 'out';
+
+/**
+ * Any direction.
+ *
+ * This token indicates both incoming and outgoing relationships.
+ */
+const kTOKEN_REL_ANY = 'any';
+
 
 ?>

@@ -240,7 +240,7 @@ $server->Connect();<br/>
 $database = $server->RetrieveCollection( "database" );<br/>
 $collection = $database->RetrieveCollection( "collection" );<br/>
 // Work with that collection...</p><br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.MongoDB.Collection.html#17-1341" title="Go to source code">PHPLib/MongoDB/Collection.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.MongoDB.Collection.html#17-1352" title="Go to source code">PHPLib/MongoDB/Collection.php</a>
 		<br>
 	</div>
 
@@ -1033,7 +1033,7 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsertOne">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#587-626" title="Go to source code">doInsertOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#587-637" title="Go to source code">doInsertOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert a document.</h4>
@@ -1063,6 +1063,7 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 							<code><a href="class-Milko.PHPLib.MongoDB.Collection.html#_NewNativeDocument">Milko\PHPLib\MongoDB\Collection::NewNativeDocument()</a></code><br>
 							normalistInsertedDocument()<br>
 							\Milko\PHPLib\Document::Validate()<br>
+							\Milko\PHPLib\Document::ResolveRelated()<br>
 							\MongoDB\Collection::insertOne()<br>
 							\MongoDB\Cursor::getInsertedId()<br>
 					</div>
@@ -1082,7 +1083,7 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doInsertBulk">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#633-651" title="Go to source code">doInsertBulk</a>( <span>array <var>$theList</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#644-662" title="Go to source code">doInsertBulk</a>( <span>array <var>$theList</var></span> )</code>
 
 			<div class="description short">
 				<h4>Insert a list of documents.</h4>
@@ -1128,7 +1129,7 @@ options and set respectively the <tt>skip</tt> and <tt>limit</tt> native options
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteOne">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#667-714" title="Go to source code">doDeleteOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#678-725" title="Go to source code">doDeleteOne</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete a document.</h4>
@@ -1170,7 +1171,7 @@ raise an exception.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#721-756" title="Go to source code">doDeleteByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#732-767" title="Go to source code">doDeleteByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by key.</h4>
@@ -1225,7 +1226,7 @@ delete a list of documents.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#763-800" title="Go to source code">doDeleteByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#774-811" title="Go to source code">doDeleteByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by example.</h4>
@@ -1283,7 +1284,7 @@ delete all selected records.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDeleteByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#807-830" title="Go to source code">doDeleteByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#818-841" title="Go to source code">doDeleteByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Delete the first or all records by query.</h4>
@@ -1330,7 +1331,7 @@ treats the example document as a filter.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doUpdate">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#846-880" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>mixed <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#857-891" title="Go to source code">doUpdate</a>( <span>mixed <var>$theFilter</var></span>, <span>mixed <var>$theCriteria</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Update one or more records.</h4>
@@ -1386,7 +1387,7 @@ update many records.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doReplace">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#887-918" title="Go to source code">doReplace</a>( <span>mixed <var>$theDocument</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#898-929" title="Go to source code">doReplace</a>( <span>mixed <var>$theDocument</var></span> )</code>
 
 			<div class="description short">
 				<h4>Replace a record.</h4>
@@ -1439,7 +1440,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#934-1021" title="Go to source code">doFindByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#945-1032" title="Go to source code">doFindByKey</a>( <span>mixed <var>$theKey</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by key.</h4>
@@ -1502,7 +1503,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByHandle">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1028-1122" title="Go to source code">doFindByHandle</a>( <span>mixed <var>$theHandle</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1039-1133" title="Go to source code">doFindByHandle</a>( <span>mixed <var>$theHandle</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by handle.</h4>
@@ -1564,7 +1565,7 @@ not perform the replacement and return <tt>0</tt>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByExample">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1129-1235" title="Go to source code">doFindByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1140-1246" title="Go to source code">doFindByExample</a>( <span>mixed <var>$theDocument</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Find by example the first or all records.</h4>
@@ -1629,7 +1630,7 @@ respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doFindByQuery">#</a>
-			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1242-1337" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.MongoDB.Collection.html#1253-1348" title="Go to source code">doFindByQuery</a>( <span>mixed <var>$theQuery</var></span>, <span>array <var>$theOptions</var></span> )</code>
 
 			<div class="description short">
 				<h4>Query the collection.</h4>
@@ -1718,6 +1719,7 @@ respectively the <tt>skip</tt> and <tt>limit</tt> native options.</p>
 				<code><a href="class-Milko.PHPLib.Container.html#_convertToArray">convertToArray()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageAttribute">manageAttribute()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageFlagAttribute">manageFlagAttribute()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_manageIndexedProperty">manageIndexedProperty()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">manageProperty()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_offsetGet">offsetGet()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_offsetSet">offsetSet()</a></code>, 

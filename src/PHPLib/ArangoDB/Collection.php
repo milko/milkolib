@@ -699,15 +699,27 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
+	 * @uses \Milko\PHPLib\Document::Validate()
+	 * @uses \Milko\PHPLib\Document::ResolveRelated()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	protected function doInsertOne( $theDocument )
 	{
 		//
-		// Validate document.
+		// Prepare document.
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Document )
+		{
+			//
+			// Validate document.
+			//
 			$theDocument->Validate();
+
+			//
+			// Store sub-documents.
+			//
+			$theDocument->ResolveRelated();
+		}
 
 		//
 		// Init local storage.

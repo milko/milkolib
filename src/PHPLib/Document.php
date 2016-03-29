@@ -420,7 +420,6 @@ class Document extends Container
 	 * @uses doStore()
 	 * @uses IsModified()
 	 * @uses IsPersistent()
-	 * @uses storeDocuments()
 	 */
 	public function Store()
 	{
@@ -429,25 +428,7 @@ class Document extends Container
 		//
 		if( $this->IsModified()
 		 || (! $this->IsPersistent()) )
-		{
-			//
-			// Init local storage.
-			//
-			$data = [];
-
-			//
-			// Convert to array.
-			//
-			$this->storeDocuments( $this->getArrayCopy(), $data );
-
-			//
-			// Update document data.
-			//
-			$this->exchangeArray( $data );
-
 			return $this->doStore();												// ==>
-
-		} // Modified or not persistent.
 
 		return NULL;																// ==>
 
@@ -484,6 +465,39 @@ class Document extends Container
 		return 0;																	// ==>
 
 	} // Delete.
+
+
+	/*===================================================================================
+	 *	ResolveRelated																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Resolve related objects.</h4>
+	 *
+	 * This method should be called prior to inserting the object, it will traverse all
+	 * object structures inserting sub-documents ecpressed as document objects that
+	 * are modified ({@link IsModified()}) and are not persistent ({@link IsPersistent()}).
+	 *
+	 * @uses doStoreRelated()
+	 */
+	public function ResolveRelated()
+	{
+		//
+		// Init local storage.
+		//
+		$data = [];
+
+		//
+		// Convert to array.
+		//
+		$this->doStoreRelated( $this->getArrayCopy(), $data );
+
+		//
+		// Update document data.
+		//
+		$this->exchangeArray( $data );
+
+	} // ResolveRelated.
 
 
 
@@ -579,7 +593,7 @@ class Document extends Container
 	 * @param mixed					$theValue			<tt>TRUE</tt> or <tt>FALSE</tt>.
 	 * @param mixed					$theSetter			Setting object.
 	 * @return bool					New or old state.
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 *
 	 * @uses manageFlagAttribute()
 	 * @see kFLAG_DOC_MODIFIED
@@ -639,7 +653,7 @@ class Document extends Container
 	 * @param mixed					$theValue			<tt>TRUE</tt> or <tt>FALSE</tt>.
 	 * @param mixed					$theSetter			Setting object.
 	 * @return bool					New or old state.
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 *
 	 * @uses manageFlagAttribute()
 	 * @see kFLAG_DOC_PERSISTENT
@@ -811,17 +825,8 @@ class Document extends Container
 	} // doDelete.
 
 
-
-/*=======================================================================================
- *																						*
- *							PROTECTED SERIALISATION INTERFACE							*
- *																						*
- *======================================================================================*/
-
-
-
 	/*===================================================================================
-	 *	storeDocuments																	*
+	 *	doStoreRelated																	*
 	 *==================================================================================*/
 
 	/**
@@ -835,10 +840,11 @@ class Document extends Container
 	 * @param array					$theSource			Source structure.
 	 * @param array				   &$theDestination		Reference to the destination array.
 	 *
+	 * @uses Store()
 	 * @uses IsModified()
 	 * @uses IsPersistent()
 	 */
-	protected function storeDocuments( $theSource, &$theDestination )
+	protected function doStoreRelated( $theSource, &$theDestination )
 	{
 		//
 		// Traverse source.
@@ -852,23 +858,23 @@ class Document extends Container
 			$value = & $theSource[ $key ];
 
 			//
-			// Handle unsaved documents.
+			// Handle documents.
 			//
-			if( ($value instanceof Document)
-			 && ( $value->IsModified()
-			   || (! $value->IsPersistent()) ) )
+			if( $value instanceof Document )
 			{
 				//
-				// Store document.
+				// Insert new documents.
 				//
-				$value->Store();
+				if( $value->IsModified()
+				 || (! $value->IsPersistent()) )
+					$value->Store();
 
 				//
 				// Replace with handle.
 				//
 				$theDestination[ $key ] = $value->mCollection->NewDocumentHandle( $value );
 
-			} // Is collection.
+			} // Sub-document.
 
 			//
 			// Handle scalars.
@@ -878,7 +884,7 @@ class Document extends Container
 
 		} // Traversing source.
 
-	} // storeDocuments.
+	} // doStoreRelated.
 
 
 

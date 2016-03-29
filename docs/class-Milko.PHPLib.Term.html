@@ -153,6 +153,7 @@
 				<li><a href="class-Milko.PHPLib.DataSource.html">DataSource</a></li>
 				<li><a href="class-Milko.PHPLib.Document.html">Document</a></li>
 				<li><a href="class-Milko.PHPLib.DocumentSet.html">DocumentSet</a></li>
+				<li><a href="class-Milko.PHPLib.Edge.html">Edge</a></li>
 				<li><a href="class-Milko.PHPLib.Server.html">Server</a></li>
 				<li class="active"><a href="class-Milko.PHPLib.Term.html">Term</a></li>
 			</ul>
@@ -252,7 +253,7 @@ driver.</p>
 				1.00<br>
 				<b>Since:</b>
 				14/03/2016<br>
-			<b>Located at</b> <a href="source-class-Milko.PHPLib.Term.html#19-740" title="Go to source code">PHPLib/Term.php</a>
+			<b>Located at</b> <a href="source-class-Milko.PHPLib.Term.html#19-877" title="Go to source code">PHPLib/Term.php</a>
 		<br>
 	</div>
 
@@ -468,6 +469,154 @@ nothe that this is done automatically by the collection.</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="Name" id="_Name">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_Name">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#340-376" title="Go to source code">Name</a>( <span>string <var>$theLanguage</var> = <span class="php-keyword1">NULL</span></span>, <span>string <var>$theName</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+			<div class="description short">
+				<h4>Manage term name.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Manage term name.</h4>
+
+<p>This method can be used to set, retrieve and delete individual term names expressed
+in different languages, the method accepts the following parameters:</p>
+
+<ul>
+<li><tt>$theLanguage</tt>: The language code or operation: <ul> <li><tt>NULL</tt>: Return the full set of names, the next parameter is ignored. <li><tt>FALSE</tt>: Delete the full set of names and return the old value, the next parameter is ignored. <li><em>other</em>: Use the value as the language code, the next parameter will be considered the name in tha provided language. </ul>
+<li><tt>$theValue</tt>: The name or operation: <ul> <li><tt>NULL</tt>: Return the name in the provided language. <li><tt>FALSE</tt>: Delete the the name in the provided language and return the old name. <li><em>other</em>: Set the the name in the provided language to the provided value and return it. </ul>
+</ul>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theLanguage</var></dt>
+						<dd>Language code.</dd>
+						<dt><var>$theName</var></dt>
+						<dd>Term name in the provided language.</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>Old or current name.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_getTermKey">Milko\PHPLib\Term::getTermKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="Definition" id="_Definition">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_Definition">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#383-423" title="Go to source code">Definition</a>( <span>string <var>$theLanguage</var> = <span class="php-keyword1">NULL</span></span>, <span>string <var>$theName</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+			<div class="description short">
+				<h4>Manage term definition.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Manage term definition.</h4>
+
+<p>This method can be used to set, retrieve and delete individual term definitions
+expressed in different languages, the method accepts the following parameters:</p>
+
+<ul>
+<li><tt>$theLanguage</tt>: The language code or operation: <ul> <li><tt>NULL</tt>: Return the full set of definitions, the next parameter is ignored. <li><tt>FALSE</tt>: Delete the full set of definitions and return the old value, the next parameter is ignored. <li><em>other</em>: Use the value as the language code, the next parameter will be considered the definition in tha provided language. </ul>
+<li><tt>$theValue</tt>: The definition or operation: <ul> <li><tt>NULL</tt>: Return the definition in the provided language. <li><tt>FALSE</tt>: Delete the the definition in the provided language and return the old definition. <li><em>other</em>: Set the the definition in the provided language to the provided value and return it. </ul>
+</ul>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$theLanguage</var></dt>
+						<dd>Language code.</dd>
+						<dt><var>$theName</var></dt>
+						<dd><p>$theDefinition      Term definition in the provided
+                                                    language.</p></dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>Old or current definition.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_getTermKey">Milko\PHPLib\Term::getTermKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="NamespaceTerm" id="_NamespaceTerm">
+
+			<td class="attributes"><code>
+				 public 
+				<code><a href="class-Milko.PHPLib.Term.html">Milko\PHPLib\Term</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_NamespaceTerm">#</a>
+			<code><a href="source-class-Milko.PHPLib.Term.html#430-461" title="Go to source code">NamespaceTerm</a>( <span> <var>$theLanguage</var> = <span class="php-keyword1">NULL</span></span>, <span> <var>$theName</var> = <span class="php-keyword1">NULL</span> </span> )</code>
+
+			<div class="description short">
+				<h4>Return namespace term.</h4>
+			</div>
+
+			<div class="description detailed hidden">
+				<h4>Return namespace term.</h4>
+
+<p>This method can be used to retrieve the namespace term, it will return the term
+document if the namespace is set, or <tt>NULL</tt>.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><a href="class-Milko.PHPLib.Term.html">Milko\PHPLib\Term</a></code><br>Namespace term or <tt>NULL</tt>.
+					</div>
+
+
+					<h4>Uses</h4>
+					<div class="list">
+							<code><a href="class-Milko.PHPLib.Term.html#_getTermKey">Milko\PHPLib\Term::getTermKey()</a></code><br>
+							<code><a href="class-Milko.PHPLib.Term.html#_setTermNamespace">Milko\PHPLib\Term::setTermNamespace()</a></code><br>
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="SetNamespaceByGID" id="_SetNamespaceByGID">
 
 			<td class="attributes"><code>
@@ -479,7 +628,7 @@ nothe that this is done automatically by the collection.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_SetNamespaceByGID">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#340-382" title="Go to source code">SetNamespaceByGID</a>( <span>string <var>$theIdentifier</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#477-519" title="Go to source code">SetNamespaceByGID</a>( <span>string <var>$theIdentifier</var></span> )</code>
 
 			<div class="description short">
 				<h4>Set the namespace given a global identifier.</h4>
@@ -530,7 +679,7 @@ namespace.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_lockedOffsets">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#398-418" title="Go to source code">lockedOffsets</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#535-555" title="Go to source code">lockedOffsets</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the list of locked offsets.</h4>
@@ -570,7 +719,7 @@ namespace.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_requiredOffsets">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#425-445" title="Go to source code">requiredOffsets</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#562-582" title="Go to source code">requiredOffsets</a>( )</code>
 
 			<div class="description short">
 				<h4>Return the list of required offsets.</h4>
@@ -610,7 +759,7 @@ namespace.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_doDelete">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#461-487" title="Go to source code">doDelete</a>( )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#598-624" title="Go to source code">doDelete</a>( )</code>
 
 			<div class="description short">
 				<h4>Delete object.</h4>
@@ -656,7 +805,7 @@ elsewhere.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_setTermNamespace">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#503-573" title="Go to source code">setTermNamespace</a>( <span>mixed <var>$theNamespace</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#640-710" title="Go to source code">setTermNamespace</a>( <span>mixed <var>$theNamespace</var></span> )</code>
 
 			<div class="description short">
 				<h4>Set term namespace.</h4>
@@ -711,6 +860,9 @@ identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>).<
 							Milko\PHPLib\Term::__construct()<br>
 							Milko\PHPLib\Term::offsetSet()<br>
 							Milko\PHPLib\Term::offsetUnset()<br>
+							Milko\PHPLib\Term::Name()<br>
+							Milko\PHPLib\Term::Definition()<br>
+							Milko\PHPLib\Term::NamespaceTerm()<br>
 							Milko\PHPLib\Term::SetNamespaceByGID()<br>
 					</div>
 
@@ -729,7 +881,7 @@ identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>).<
 
 			<td class="name"><div>
 			<a class="anchor" href="#_setTermIdentifier">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#580-626" title="Go to source code">setTermIdentifier</a>( <span>string <var>$theIdentifier</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#717-763" title="Go to source code">setTermIdentifier</a>( <span>string <var>$theIdentifier</var></span> )</code>
 
 			<div class="description short">
 				<h4>Set term identifier.</h4>
@@ -792,7 +944,7 @@ identifier (<code><a href="constant-kTAG_GID.html"><b>kTAG_GID</b></a></code>).<
 
 			<td class="name"><div>
 			<a class="anchor" href="#_makeTermGID">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#633-656" title="Go to source code">makeTermGID</a>( <span>string <var>$theNamespace</var></span>, <span>string <var>$theIdentifier</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#770-793" title="Go to source code">makeTermGID</a>( <span>string <var>$theNamespace</var></span>, <span>string <var>$theIdentifier</var></span> )</code>
 
 			<div class="description short">
 				<h4>Compute terrm global identifier.</h4>
@@ -845,7 +997,7 @@ term's local identifier (<code><a href="constant-kTAG_LID.html"><b>kTAG_LID</b><
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getTermGID">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#672-698" title="Go to source code">getTermGID</a>( <span>mixed <var>$theKey</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#809-835" title="Go to source code">getTermGID</a>( <span>mixed <var>$theKey</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return terrm global identifier.</h4>
@@ -901,7 +1053,7 @@ key is not found.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getTermKey">#</a>
-			<code><a href="source-class-Milko.PHPLib.Term.html#705-735" title="Go to source code">getTermKey</a>( <span>mixed <var>$theGID</var></span> )</code>
+			<code><a href="source-class-Milko.PHPLib.Term.html#842-872" title="Go to source code">getTermKey</a>( <span>mixed <var>$theGID</var></span> )</code>
 
 			<div class="description short">
 				<h4>Return terrm key.</h4>
@@ -940,6 +1092,9 @@ if the global identifier matches no term.</p>
 					</div>
 					<h4>Used by</h4>
 					<div class="list">
+							Milko\PHPLib\Term::Name()<br>
+							Milko\PHPLib\Term::Definition()<br>
+							Milko\PHPLib\Term::NamespaceTerm()<br>
 							Milko\PHPLib\Term::SetNamespaceByGID()<br>
 					</div>
 
@@ -956,10 +1111,11 @@ if the global identifier matches no term.</p>
 				<code><a href="class-Milko.PHPLib.Document.html#_Delete">Delete()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Document.html#_IsModified">IsModified()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Document.html#_IsPersistent">IsPersistent()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Document.html#_ResolveRelated">ResolveRelated()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Document.html#_SetKey">SetKey()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Document.html#_Store">Store()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Document.html#_doStore">doStore()</a></code>, 
-				<code><a href="class-Milko.PHPLib.Document.html#_storeDocuments">storeDocuments()</a></code>
+				<code><a href="class-Milko.PHPLib.Document.html#_doStoreRelated">doStoreRelated()</a></code>
 			</p>
 		</div>
 		<div class="panel panel-default">
@@ -970,6 +1126,7 @@ if the global identifier matches no term.</p>
 				<code><a href="class-Milko.PHPLib.Container.html#_convertToArray">convertToArray()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageAttribute">manageAttribute()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageFlagAttribute">manageFlagAttribute()</a></code>, 
+				<code><a href="class-Milko.PHPLib.Container.html#_manageIndexedProperty">manageIndexedProperty()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_manageProperty">manageProperty()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_offsetGet">offsetGet()</a></code>, 
 				<code><a href="class-Milko.PHPLib.Container.html#_toArray">toArray()</a></code>

@@ -339,7 +339,7 @@ class Container extends \ArrayObject
 	 *	 </ul>
 	 * </ul>
 	 *
-	 * @param strin					$theProperty		Property offset.
+	 * @param string				$theProperty		Property offset.
 	 * @param mixed					$theValue			Value or operation.
 	 * @return mixed				Old or current property value.
 	 *
@@ -379,6 +379,121 @@ class Container extends \ArrayObject
 		return $save;																// ==>
 
 	} // manageProperty.
+
+
+	/*===================================================================================
+	 *	manageIndexedProperty															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Manage an indexed property</h4>
+	 *
+	 * This method can be used to manage a property structured as an associative array, the
+	 * method accepts the following parameters:
+	 *
+	 * <ul>
+	 *	<li><tt>$theProperty</tt>: Property offset.
+	 *	<li><tt>$theKey</tt>: The property value key or operation:
+	 *	 <ul>
+	 *		<li><tt>NULL</tt>: Return the full property, the next parameter is ignored.
+	 *		<li><tt>FALSE</tt>: Delete the full property and return the old value, the next
+	 * 			parameter is ignored.
+	 *		<li><em>other</em>: Use the value as the associative array key, the next
+	 * 			parameter will be considered the value or operation.
+	 *	 </ul>
+	 *	<li><tt>$theValue</tt>: The property value or operation:
+	 *	 <ul>
+	 *		<li><tt>NULL</tt>: Return the property value at the provided key.
+	 *		<li><tt>FALSE</tt>: Delete the property at the provided key and return the old
+	 * 			value.
+	 *		<li><em>other</em>: Set the property at the provided key with the provided value
+	 * 			and return it.
+	 *	 </ul>
+	 * </ul>
+	 *
+	 * @param string				$theProperty		Property offset.
+	 * @param string				$theKey				Key or operation.
+	 * @param mixed					$theValue			Value or operation.
+	 * @return mixed				Old or current property value.
+	 *
+	 * @example
+	 * $this->manageIndexedProperty( $offset );	// Will retrieve the full offset.<br/>
+	 * $this->manageIndexedProperty( $offset, FALSE ); // Will remove the full offset.<br/>
+	 * $this->manageIndexedProperty( $offset, 'key', 'value' ); // Will set the value at key "key" to "value".<br/>
+	 * $this->manageIndexedProperty( $offset, 'key' ); // Will retrieve the value at key "key".<br/>
+	 * $this->manageIndexedProperty( $offset, 'key', FALSE ); // Will reset the value at key "key".<br/>
+	 */
+	protected function manageIndexedProperty( $theProperty, $theKey = NULL,
+											  				$theValue = NULL )
+	{
+		//
+		// Save property.
+		//
+		$save = $this->offsetGet( $theProperty );
+
+		//
+		// Return full property.
+		//
+		if( $theKey === NULL )
+			return $save;															// ==>
+
+		//
+		// Delete full property.
+		//
+		if( $theKey === FALSE )
+		{
+			$this->offsetUnset( $theProperty );
+
+			return $save;															// ==>
+		}
+
+		//
+		// Return key property.
+		//
+		if( $theValue === NULL )
+		{
+			if( array_key_exists( $theKey, $save ) )
+				return $save[ $theKey ];											// ==>
+
+			return NULL;															// ==>
+		}
+
+		//
+		// Set key property.
+		//
+		if( $theValue !== FALSE )
+		{
+			if( $save === NULL )
+				$save = [ $theKey => $theValue ];
+			else
+				$save[ $theKey ] = $theValue;
+			$this->offsetSet( $theProperty, $save );
+
+			return $theValue;														// ==>
+		}
+
+		//
+		// Save old value.
+		//
+		$old = ( array_key_exists( $theKey, $save ) )
+			 ? $save[ $theKey ]
+			 : NULL;
+
+		//
+		// Remove value at key.
+		//
+		if( $old !== NULL )
+		{
+			unset( $save[ $theKey ] );
+			if( count( $save ) )
+				$this->offsetSet( $theProperty, $save );
+			else
+				$this->offsetUnset( $theProperty );
+		}
+
+		return $old;																// ==>
+
+	} // manageIndexedProperty.
 
 
 	/*===================================================================================

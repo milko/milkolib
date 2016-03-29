@@ -596,16 +596,27 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewNativeDocument()
 	 * @uses normalistInsertedDocument()
 	 * @uses \Milko\PHPLib\Document::Validate()
+	 * @uses \Milko\PHPLib\Document::ResolveRelated()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\Cursor::getInsertedId()
 	 */
 	protected function doInsertOne( $theDocument )
 	{
 		//
-		// Validate document.
+		// Prepare document.
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Document )
+		{
+			//
+			// Validate document.
+			//
 			$theDocument->Validate();
+
+			//
+			// Store sub-documents.
+			//
+			$theDocument->ResolveRelated();
+		}
 
 		//
 		// Insert document.
