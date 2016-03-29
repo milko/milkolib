@@ -10,10 +10,18 @@
  */
 
 //
+// Global definitions.
+//
+define( 'kENGINE', "ARANGO" );
+
+//
 // Include local definitions.
 //
 require_once(dirname(__DIR__) . "/includes.local.php");
-require_once(dirname(__DIR__) . "/mongo.local.php");
+if( kENGINE == "MONGO" )
+	require_once(dirname(__DIR__) . "/mongo.local.php");
+elseif( kENGINE == "ARANGO" )
+	require_once(dirname(__DIR__) . "/arango.local.php");
 
 //
 // Include utility functions.
@@ -35,10 +43,20 @@ class B extends Milko\PHPLib\Document{}
 //
 // Instantiate object.
 //
-echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
-$url = "mongodb://localhost:27017/test_milkolib/test_collection";
-echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
-$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
+if( kENGINE == "MONGO" )
+{
+	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
+	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
+	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
+}
+elseif( kENGINE == "ARANGO" )
+{
+	echo('$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n");
+	$url = "tcp://localhost:8529/test_milkolib/test_collection";
+	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+}
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
 $database = $server->RetrieveDatabase( "test_milkolib" );
 echo( '$collection = $database->RetrieveCollection( "test_collection" );' . "\n" );
@@ -219,6 +237,91 @@ catch( RuntimeException $error )
 	echo( "SUCCEEDED! - Has raised an exception.\n" );
 	echo( $error->getMessage() . "\n" );
 }
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Create embedded document 1.
+//
+echo( "Create embedded document 1:\n" );
+echo( '$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );' . "\n" );
+$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );
+echo( "Class: " . get_class( $sub1 ) . "\n" );
+echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $sub1->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Create embedded document 2.
+//
+echo( "Create embedded document 2:\n" );
+echo( '$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );' . "\n" );
+$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );
+echo( "Class: " . get_class( $sub2 ) . "\n" );
+echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $sub2->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Create container document.
+//
+echo( "Create container document:\n" );
+echo( '$document = new Milko\PHPLib\Document( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );' . "\n" );
+$document = new Milko\PHPLib\Document( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );
+echo( "Class: " . get_class( $document ) . "\n" );
+echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $document->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Store document.
+//
+echo( "Store document:\n" );
+echo( '$key = $document->Store();' . "\n" );
+$key = $document->Store();
+var_dump( $key );
+echo( "Class: " . get_class( $document ) . "\n" );
+echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $document->getArrayCopy() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Retrieve embedded document 1.
+//
+echo( "Retrieve embedded document 1:\n" );
+echo( '$sub1 = $collection->FindByHandle( $document["sub1"] );' . "\n" );
+$sub1 = $collection->FindByHandle( $document["sub1"] );
+echo( "Class: " . get_class( $sub1 ) . "\n" );
+echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $sub1->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Retrieve embedded document 2.
+//
+echo( "Retrieve embedded document 2:\n" );
+echo( '$sub2 = $collection->FindByHandle( $document["sub2"] );' . "\n" );
+$sub2 = $collection->FindByHandle( $document["sub2"] );
+echo( "Class: " . get_class( $sub2 ) . "\n" );
+echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $sub2->getArrayCopy() );
 
 
 ?>

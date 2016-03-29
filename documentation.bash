@@ -10,9 +10,10 @@ echo
 echo "********************************************************************************"
 echo "*                             Generate documentation                           *"
 echo "********************************************************************************"
-directory=`pwd`
+directory=`dirname $0`
 script=$directory/vendor/apigen/apigen/bin/apigen
-$script generate --config $directory/apigen.conf
+cd $directory
+$script generate --config apigen.conf
 
 echo
 echo "=> Done"

@@ -420,6 +420,7 @@ class Document extends Container
 	 * @uses doStore()
 	 * @uses IsModified()
 	 * @uses IsPersistent()
+	 * @uses storeDocuments()
 	 */
 	public function Store()
 	{
@@ -428,7 +429,25 @@ class Document extends Container
 		//
 		if( $this->IsModified()
 		 || (! $this->IsPersistent()) )
+		{
+			//
+			// Init local storage.
+			//
+			$data = [];
+
+			//
+			// Convert to array.
+			//
+			$this->storeDocuments( $this->getArrayCopy(), $data );
+
+			//
+			// Update document data.
+			//
+			$this->exchangeArray( $data );
+
 			return $this->doStore();												// ==>
+
+		} // Modified or not persistent.
 
 		return NULL;																// ==>
 
@@ -790,6 +809,76 @@ class Document extends Container
 		return $this->mCollection->Delete( $this );									// ==>
 
 	} // doDelete.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED SERIALISATION INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	storeDocuments																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Store embedded documents.</h4>
+	 *
+	 * This method will traverse the current object and {@link Store()} any property that is
+	 * a document instance which is modified ({@link IsModified()}) or not persistent
+	 * ({@link IsPersistent()}); once the document is stored, the source property will be
+	 * replaced with the stored document's handle.
+	 *
+	 * @param array					$theSource			Source structure.
+	 * @param array				   &$theDestination		Reference to the destination array.
+	 *
+	 * @uses IsModified()
+	 * @uses IsPersistent()
+	 */
+	protected function storeDocuments( $theSource, &$theDestination )
+	{
+		//
+		// Traverse source.
+		//
+		$keys = array_keys( $theSource );
+		foreach( $keys as $key )
+		{
+			//
+			// Init local storage.
+			//
+			$value = & $theSource[ $key ];
+
+			//
+			// Handle unsaved documents.
+			//
+			if( ($value instanceof Document)
+			 && ( $value->IsModified()
+			   || (! $value->IsPersistent()) ) )
+			{
+				//
+				// Store document.
+				//
+				$value->Store();
+
+				//
+				// Replace with handle.
+				//
+				$theDestination[ $key ] = $value->mCollection->NewDocumentHandle( $value );
+
+			} // Is collection.
+
+			//
+			// Handle scalars.
+			//
+			else
+				$theDestination[ $key ] = $value;
+
+		} // Traversing source.
+
+	} // storeDocuments.
 
 
 
