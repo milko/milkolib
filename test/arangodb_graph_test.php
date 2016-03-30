@@ -118,6 +118,9 @@ else
 	$collectionHandler->create( "test_nodes" );
 echo( '$nodes_collection = $collectionHandler->get( "test_nodes" );' . "\n" );
 $nodes_collection = $collectionHandler->get( "test_nodes" );
+echo( '$result = $nodes_collection->getType();' . "\n" );
+$result = $nodes_collection->getType();
+var_dump( $result );
 
 echo( "\n" );
 
@@ -131,6 +134,9 @@ else
 	$collectionHandler->create( "test_predicates", [ "type" => 3 ] );
 echo( '$predicates_collection = $collectionHandler->get( "test_predicates" );' . "\n" );
 $predicates_collection = $collectionHandler->get( "test_predicates" );
+echo( '$result = $predicates_collection->getType();' . "\n" );
+$result = $predicates_collection->getType();
+var_dump( $result );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -159,16 +165,38 @@ var_dump( $result );
 echo( "\n" );
 
 //
-// Create predicate.
+// Add vertices via data.
 //
-echo( "Create predicate:\n" );
-echo( '$predicate = ArangoEdge::createFromArray( [ "Name" => "Predicate" ] );' . "\n" );
-$predicate = ArangoEdge::createFromArray( [ "Name" => "Predicate" ] );
+echo( "Add vertices via data:\n" );
+echo( '$predicate = ArangoEdge::createFromArray( [ "_key" => "pred1", "Name" => "Predicate", kTAG_ARANGO_REL_FROM => $node_source->getHandle(), kTAG_ARANGO_REL_TO => $node_dest->getHandle() ] );' . "\n" );
+$predicate = ArangoEdge::createFromArray( [ "_key" => "pred1", "Name" => "Predicate", kTAG_ARANGO_REL_FROM => $node_source->getHandle(), kTAG_ARANGO_REL_TO => $node_dest->getHandle() ] );
+print_r( $predicate );
+echo( '$predicate->getAll();' . "\n" );
+print_r( $predicate->getAll() );
+
+echo( "\n" );
+
+//
+// Save predicate.
+//
+echo( "Save predicate:\n" );
 echo( '$edge_id = $edgeHandler->saveEdge( $predicates_collection->getName(), $node_source->getHandle(), $node_dest->getHandle(), $predicate );' . "\n" );
 $edge_id = $edgeHandler->saveEdge( $predicates_collection->getName(), $node_source->getHandle(), $node_dest->getHandle(), $predicate );
 var_dump( $edge_id );
+print_r( $predicate );
 
 echo( "\n" );
+
+//
+// Get predicate.
+//
+echo( "Get predicate:\n" );
+echo( '$result = $edgeHandler->getById( $predicates_collection->getName(), $edge_id );' . "\n" );
+$result = $edgeHandler->getById( $predicates_collection->getName(), $edge_id );
+print_r( $result );
+print_r( $result->getAll() );
+
+echo( "\n====================================================================================\n\n" );
 
 //
 // Drop predicate and nodes.
@@ -189,8 +217,8 @@ echo( "\n=======================================================================
 echo( "Create graph connections:\n" );
 echo( '$graphHandler = new ArangoGraphHandler($connection);' . "\n" );
 $graphHandler = new ArangoGraphHandler($connection);
-echo( '$graph = new ArangoGraph( "MyGraph" );' . "\n" );
-$graph = new ArangoGraph( "MyGraph" );
+echo( '$graph = new ArangoGraph( "Graph1" );' . "\n" );
+$graph = new ArangoGraph( "Graph1" );
 echo( '$graph->addEdgeDefinition( ArangoEdgeDefinition::createUndirectedRelation( "test_predicates", [ "test_nodes" ] ) );' . "\n" );
 $graph->addEdgeDefinition( ArangoEdgeDefinition::createUndirectedRelation( "test_predicates", [ "test_nodes" ] ) );
 
@@ -211,24 +239,13 @@ echo( "\n" );
 //
 // Create predicate and nodes.
 //
-//echo( "Create predicate:\n" );
-//echo( '$predicate = ArangoEdge::createFromArray( $predicate->getAll() );' . "\n" );
-//$predicate = ArangoEdge::createFromArray( $predicate->getAll() );
-//echo( '$node_source = ArangoDocument::createFromArray( $node_source->getAll() );' . "\n" );
-//$node_source = ArangoDocument::createFromArray( $node_source->getAll() );
-//echo( '$node_dest = ArangoDocument::createFromArray( $node_dest->getAll() );' . "\n" );
-//$node_dest = ArangoDocument::createFromArray( $node_dest->getAll() );
-
-//
-// Create predicate and nodes.
-//
 echo( "Create predicate and nodes:\n" );
-echo( '$predicate = ArangoEdge::createFromArray( $predicate->getAll() );' . "\n" );
-$predicate = ArangoEdge::createFromArray( $predicate->getAll() );
 echo( '$node_source = ArangoDocument::createFromArray( $node_source->getAll() );' . "\n" );
 $node_source = ArangoDocument::createFromArray( $node_source->getAll() );
 echo( '$node_dest = ArangoDocument::createFromArray( $node_dest->getAll() );' . "\n" );
 $node_dest = ArangoDocument::createFromArray( $node_dest->getAll() );
+echo( '$predicate = ArangoEdge::createFromArray( $predicate->getAll() );' . "\n" );
+$predicate = ArangoEdge::createFromArray( $predicate->getAll() );
 
 echo( "\n" );
 
@@ -266,6 +283,116 @@ echo( "Add predicate:\n" );
 echo( '$edge_id = $graphHandler->saveEdge( $graph, $handle_in, $handle_out, "a label", $predicate );' . "\n" );
 $edge_id = $graphHandler->saveEdge( $graph, $handle_in, $handle_out, "a label", $predicate );
 var_dump( $edge_id );
+print_r( $predicate );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Create graph connections.
+//
+echo( "Create graph connections:\n" );
+echo( '$graphHandler = new ArangoGraphHandler($connection);' . "\n" );
+$graphHandler = new ArangoGraphHandler($connection);
+echo( '$graph = new ArangoGraph( "Graph2" );' . "\n" );
+$graph = new ArangoGraph( "Graph2" );
+echo( '$graph->addEdgeDefinition( ArangoEdgeDefinition::createUndirectedRelation( "test_predicates", [ "test_nodes" ] ) );' . "\n" );
+$graph->addEdgeDefinition( ArangoEdgeDefinition::createUndirectedRelation( "test_predicates", [ "test_nodes" ] ) );
+
+echo( "\n" );
+
+//
+// Create graph.
+//
+echo( "Create graph:\n" );
+echo( 'try{ $graphHandler->dropGraph($graph); }' . "\n" );
+try{ $graphHandler->dropGraph($graph); }
+catch( \Exception $error ){}
+echo( '$graphHandler->createGraph($graph);' . "\n" );
+$graphHandler->createGraph($graph);
+
+echo( "\n" );
+
+//
+// Create predicate and nodes.
+//
+echo( "Create predicate and nodes:\n" );
+echo( '$node_source = ArangoDocument::createFromArray( [ "_key" => "node3", "Name" => "Source node" ] );' . "\n" );
+$node_source = ArangoDocument::createFromArray( [ "_key" => "node3", "Name" => "Source node" ] );
+echo( '$node_dest = ArangoDocument::createFromArray( [ "_key" => "node4", "Name" => "Destination node" ] );' . "\n" );
+$node_dest = ArangoDocument::createFromArray( [ "_key" => "node4", "Name" => "Destination node" ] );
+echo( '$predicate = ArangoEdge::createFromArray( [ "_key" => "pred2", "Name" => "Predicate" ] );' . "\n" );
+$predicate = ArangoEdge::createFromArray( [ "_key" => "pred2", "Name" => "Predicate" ] );
+
+echo( "\n" );
+
+//
+// Save vertices.
+//
+//echo( '$handle_in = $graphHandler->saveVertex( $graph, $node_source );' . "\n" );
+//$handle_in = $graphHandler->saveVertex( $graph, $node_source );
+//var_dump( $handle_in );
+//echo( '$handle_out = $graphHandler->saveVertex( $graph, $node_dest );' . "\n" );
+//$handle_out = $graphHandler->saveVertex( $graph, $node_dest );
+//var_dump( $handle_out );
+
+//
+// Save vertices.
+//
+echo( "Save vertices:\n" );
+echo( '$result = $documentHandler->save( $nodes_collection->getName(), $node_source );' . "\n" );
+$result = $documentHandler->save( $nodes_collection->getName(), $node_source );
+echo( '$handle_in = $node_source->getHandle();' . "\n" );
+$handle_in = $node_source->getHandle();
+var_dump( $handle_in );
+echo( '$result = $documentHandler->save( $nodes_collection->getName(), $node_dest );' . "\n" );
+$result = $documentHandler->save( $nodes_collection->getName(), $node_dest );
+echo( '$handle_out = $node_dest->getHandle();' . "\n" );
+$handle_out = $node_dest->getHandle();
+var_dump( $handle_out );
+
+echo( "\n" );
+
+//
+// Add predicate.
+//
+echo( "Add predicate:\n" );
+echo( '$edge_id = $graphHandler->saveEdge( $graph, $handle_in, $handle_out, "another label", $predicate );' . "\n" );
+$edge_id = $graphHandler->saveEdge( $graph, $handle_in, $handle_out, "another label", $predicate );
+var_dump( $edge_id );
+
+echo( "\n" );
+
+//
+// Drop graph.
+//
+echo( "Drop graph:\n" );
+echo( '$graphHandler->dropGraph( $graph, FALSE );' . "\n" );
+$graphHandler->dropGraph( $graph, FALSE );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Create graph connections.
+//
+echo( "Create graph connections:\n" );
+echo( '$graphHandler = new ArangoGraphHandler($connection);' . "\n" );
+$graphHandler = new ArangoGraphHandler($connection);
+echo( '$graph = new ArangoGraph( "Graph2" );' . "\n" );
+$graph = new ArangoGraph( "Graph2" );
+echo( '$graph->addEdgeDefinition( ArangoEdgeDefinition::createUndirectedRelation( "test_predicates", [ "test_nodes" ] ) );' . "\n" );
+$graph->addEdgeDefinition( ArangoEdgeDefinition::createUndirectedRelation( "test_predicates", [ "test_nodes" ] ) );
+
+echo( "\n" );
+
+//
+// Create graph.
+//
+echo( "Create graph:\n" );
+echo( 'try{ $graphHandler->dropGraph($graph); }' . "\n" );
+try{ $graphHandler->dropGraph($graph); }
+catch( \Exception $error ){}
+echo( '$graphHandler->createGraph($graph);' . "\n" );
+$graphHandler->createGraph($graph);
 
 echo( "\n====================================================================================\n\n" );
 
@@ -286,8 +413,8 @@ echo( "\n" );
 // Drop graph.
 //
 echo( "Drop graph:\n" );
-echo( '$graphHandler->dropGraph( $graph, FALSE );' . "\n" );
-$graphHandler->dropGraph( $graph, FALSE );
+echo( '$graphHandler->dropGraph( $graph, TRUE );' . "\n" );
+$graphHandler->dropGraph( $graph, TRUE );
 
 
 ?>

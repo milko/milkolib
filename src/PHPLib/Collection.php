@@ -65,8 +65,6 @@ use Milko\PHPLib\Document;
  * 		<li><b>{@link KeyOffset()}</b>: Return the document key offset.
  * 		<li><b>{@link ClassOffset()}</b>: Return the document class offset.
  * 		<li><b>{@link RevisionOffset()}</b>: Return the document revision offset.
- * 		<li><b>{@link RelationSourceOffset()}</b>: Return the relationship source offset.
- * 		<li><b>{@link RelationDestinationOffset()}</b>: Return the relationship destination
  * 			offset.
  *   </ul>
  * 	<li><em>Record related:</em>
@@ -528,36 +526,6 @@ abstract class Collection extends Container
 	 * @return string				Document revision offset.
 	 */
 	abstract public function RevisionOffset();
-
-
-	/*===================================================================================
-	 *	RelationSourceOffset															*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return the relationship source offset.</h4>
-	 *
-	 * This represents the default offset for storing document handles
-	 * ({@link NewDocumentHandle()}) that represent the source node in a relationship.
-	 *
-	 * @return string				Relationship source offset.
-	 */
-	abstract public function RelationSourceOffset();
-
-
-	/*===================================================================================
-	 *	RelationDestinationOffset														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return the relationship destination offset.</h4>
-	 *
-	 * This represents the default offset for storing document handles
-	 * ({@link NewDocumentHandle()}) that represent the destination node in a relationship.
-	 *
-	 * @return string				Relationship destination offset.
-	 */
-	abstract public function RelationDestinationOffset();
 
 
 
@@ -1492,7 +1460,7 @@ abstract class Collection extends Container
 	 *
 	 * <ul>
 	 * 	<li>If the provided document is a {@link Document} instance, call its
-	 * 		{@link Validate()} method to ensure it is valid.
+	 * 		{@link Validate()} and {@link ResolveRelated()} methods to ensure it is valid.
 	 * 	<li>Prepare the document to be inserted, generally by calling the protected method
 	 * 		{@link NewNativeDocument()}.
 	 * 	<li>Insert the document.

@@ -120,25 +120,39 @@ const kTOKEN_OPT_LIMIT = '$limit';
  *======================================================================================*/
 
 /**
+ * Relationship direction.
+ *
+ * This token represents a controlled vocabulary that defines the direction of a
+ * relationship:
+ *
+ * <ul>
+ * 	<li><tt>{@link kTOKEN_OPT_DIRECTION_IN}</tt>: Incoming relationships.
+ * 	<li><tt>{@link kTOKEN_OPT_DIRECTION_OUT}</tt>: Outgoing relationships.
+ * 	<li><tt>{@link kTOKEN_OPT_DIRECTION_ANY}</tt>: Incoming and outgoing relationships.
+ * </ul>
+ */
+const kTOKEN_OPT_DIRECTION = '$direction';
+
+/**
  * Incoming relationships.
  *
  * This token indicates relationships directed towards the current vertex.
  */
-const kTOKEN_REL_IN = 'in';
+const kTOKEN_OPT_DIRECTION_IN = 'in';
 
 /**
  * Outgoing relationships.
  *
  * This token indicates relationships stemming from the current vertex.
  */
-const kTOKEN_REL_OUT = 'out';
+const kTOKEN_OPT_DIRECTION_OUT = 'out';
 
 /**
  * Any direction.
  *
  * This token indicates both incoming and outgoing relationships.
  */
-const kTOKEN_REL_ANY = 'any';
+const kTOKEN_OPT_DIRECTION_ANY = 'any';
 
 
 ?>

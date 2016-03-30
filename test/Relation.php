@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Document object test suite.
+ * Relation object test suite.
  *
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
- *	@since		17/03/2016
+ *	@since		30/03/2016
  */
 
 //
@@ -31,14 +31,14 @@ require_once( "functions.php" );
 //
 // Reference class.
 //
-use Milko\PHPLib\MongoDB\Document;
+use Milko\PHPLib\MongoDB\Relation;
 use Milko\PHPLib\MongoDB\Collection;
 
 //
 // Document test classes.
 //
-class A extends Milko\PHPLib\Document{}
-class B extends Milko\PHPLib\Document{}
+class SRC extends Milko\PHPLib\Document{}
+class DST extends Milko\PHPLib\Document{}
 
 //
 // Instantiate object.
@@ -77,11 +77,11 @@ print_r( $container );
 echo( "\n" );
 
 //
-// Instantiate document.
+// Instantiate edge.
 //
-echo( "Instantiate document:\n" );
-echo( '$document = new Milko\PHPLib\Document( $collection, $container );' . "\n" );
-$document = new Milko\PHPLib\Document( $collection, $container );
+echo( "Instantiate edge:\n" );
+echo( '$document = new Milko\PHPLib\Relation( $collection, $container );' . "\n" );
+$document = new Milko\PHPLib\Relation( $collection, $container );
 echo( "Class: " . get_class( $document ) . "\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -91,10 +91,10 @@ print_r( $document->getArrayCopy() );
 echo( "\n" );
 
 //
-// Instantiate A.
+// Instantiate SRC.
 //
-echo( "Instantiate A:\n" );
-echo( '$A = new A( $collection, $container );' . "\n" );
+echo( "Instantiate SRC:\n" );
+echo( '$A = new SRC( $collection, $container );' . "\n" );
 $A = new SRC( $collection, $container );
 echo( "Class: " . get_class( $A ) . "\n" );
 echo( "Modified:   " . (( $A->IsModified() ) ? "Yes\n" : "No\n") );
@@ -105,10 +105,10 @@ print_r( $A->getArrayCopy() );
 echo( "\n" );
 
 //
-// Instantiate B.
+// Instantiate DST.
 //
-echo( "Instantiate B:\n" );
-echo( '$B = new B( $collection, $A );' . "\n" );
+echo( "Instantiate DST:\n" );
+echo( '$B = new DST( $collection, $A );' . "\n" );
 $B = new DST( $collection, $A );
 echo( "Class: " . get_class( $B ) . "\n" );
 echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
@@ -272,8 +272,8 @@ echo( "\n" );
 // Create container document.
 //
 echo( "Create container document:\n" );
-echo( '$document = new Milko\PHPLib\Document( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );' . "\n" );
-$document = new Milko\PHPLib\Document( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );
+echo( '$document = new Milko\PHPLib\Relation( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );' . "\n" );
+$document = new Milko\PHPLib\Relation( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );
 echo( "Class: " . get_class( $document ) . "\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );

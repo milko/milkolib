@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Edge.php
+ * Relation.php
  *
- * This file contains the definition of the {@link Edge} class.
+ * This file contains the definition of the {@link Relation} class.
  */
 
 namespace Milko\PHPLib;
@@ -19,11 +19,10 @@ require_once( 'tags.inc.php' );
 require_once( 'tokens.inc.php' );
 
 use Milko\PHPLib\Document;
-use Milko\PHPLib\Collection;
 
 /*=======================================================================================
  *																						*
- *										Edge.php										*
+ *									Relation.php										*
  *																						*
  *======================================================================================*/
 
@@ -40,9 +39,9 @@ use Milko\PHPLib\Collection;
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
- *	@since		29/03/2016
+ *	@since		30/03/2016
  */
-class Edge extends Document
+class Relation extends Document
 {
 
 
@@ -75,8 +74,8 @@ class Edge extends Document
 	protected function lockedOffsets()
 	{
 		return array_merge( parent::lockedOffsets(),
-							$this->mCollection->RelationSourceOffset(),
-							$this->mCollection->RelationDestinationOffset() );		// ==>
+							[ $this->mCollection->RelationSourceOffset(),
+							  $this->mCollection->RelationDestinationOffset() ] );	// ==>
 
 	} // lockedOffsets.
 
@@ -101,15 +100,15 @@ class Edge extends Document
 	protected function requiredOffsets()
 	{
 		return array_merge( parent::requiredOffsets(),
-							$this->mCollection->RelationSourceOffset(),
-							$this->mCollection->RelationDestinationOffset() );		// ==>
+							[ $this->mCollection->RelationSourceOffset(),
+							  $this->mCollection->RelationDestinationOffset() ] );	// ==>
 
 	} // requiredOffsets.
 
 
 
 
-} // class Relationship.
+} // class Relation.
 
 
 ?>

@@ -877,7 +877,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * <h4>Delete the first or all records by key.</h4>
 	 *
 	 * We overload this method to use the
-	 * {@link triagens\ArangoDb\CollectionHandler::lookupByKeys()} method.
+	 * {@link triagens\ArangoDb\CollectionHandler::removeByKeys()} method.
 	 *
 	 * @param mixed					$theKey				The document key(s).
 	 * @param array					$theOptions			Find options.
