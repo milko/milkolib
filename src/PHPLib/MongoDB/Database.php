@@ -164,7 +164,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @uses Connection()
 	 * @uses \MongoDB\Database::listCollections()
 	 */
-	protected function collectionList( $theOptions = NULL )
+	protected function collectionList( $theOptions )
 	{
 		//
 		// Init local storage.
@@ -198,7 +198,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object.
 	 */
-	protected function collectionCreate( $theCollection, $theOptions = NULL )
+	protected function collectionCreate( $theCollection, $theOptions )
 	{
 		//
 		// Init local storage.
@@ -226,12 +226,12 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * @uses collectionList()
 	 */
-	protected function collectionRetrieve( $theCollection, $theOptions = NULL )
+	protected function collectionRetrieve( $theCollection, $theOptions )
 	{
 		//
 		// Check if collection exists.
 		//
-		if( in_array( $theCollection, $this->collectionList() ) )
+		if( in_array( $theCollection, $this->collectionList( $theOptions ) ) )
 		{
 			//
 			// Init local storage.

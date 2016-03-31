@@ -8,7 +8,7 @@
 
 namespace Milko\PHPLib\ArangoDB;
 
-use Milko\PHPLib\Collection;
+use \Milko\PHPLib\ArangoDB\Collection;
 use Milko\PHPLib\iRelations;
 
 use triagens\ArangoDb\Database as ArangoDatabase;
@@ -64,6 +64,40 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 
 
 	/*===================================================================================
+	 *	NewNativeDocument																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert a standard document to native data.</h4>
+	 *
+	 * We overload this method to return an ArangoEdge.
+	 *
+	 * @param mixed					$theDocument		Document to be converted.
+	 * @return mixed				Database native object.
+	 *
+	 * @uses triagens\ArangoDb\Edge::createFromArray()
+	 */
+	public function NewNativeDocument( $theDocument )
+	{
+		//
+		// Handle native type.
+		//
+		if( $theDocument instanceof ArangoEdge )
+			return $theDocument;													// ==>
+
+		//
+		// Convert to array.
+		//
+		$document = ( $theDocument instanceof \Milko\PHPLib\Container )
+			? $theDocument->toArray()
+			: (array)$theDocument;
+
+		return ArangoEdge::createFromArray( $document );							// ==>
+
+	} // NewNativeDocument.
+
+
+	/*===================================================================================
 	 *	NewDocument																		*
 	 *==================================================================================*/
 
@@ -77,8 +111,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * @param string					$theClass			Expected class name.
 	 * @return \Milko\PHPLib\Container	Standard document object.
 	 *
-	 * @uses VertexIn()
-	 * @uses VertexOut()
+	 * @uses VertexSource()
+	 * @uses VertexDest()
 	 * @uses ArangoEdge::getTo()
 	 * @uses ArangoEdge::getFrom()
 	 */
@@ -98,13 +132,13 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 			// Set incoming vertex.
 			//
 			if( ($tmp = $theData->getFrom()) !== NULL )
-				$document[ $this->VertexIn() ] = $tmp;
+				$document[ $this->VertexSource() ] = $tmp;
 
 			//
 			// Set incoming vertex.
 			//
 			if( ($tmp = $theData->getTo()) !== NULL )
-				$document[ $this->VertexOut() ] = $tmp;
+				$document[ $this->VertexDestination() ] = $tmp;
 
 		} // ArangoDocument.
 
@@ -123,7 +157,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 
 
 	/*===================================================================================
-	 *	VertexIn																		*
+	 *	VertexSource																	*
 	 *==================================================================================*/
 
 	/**
@@ -133,11 +167,11 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 *
 	 * @return mixed				Source vertex document handle.
 	 */
-	public function VertexIn()							{	return kTAG_ARANGO_REL_FROM;	}
+	public function VertexSource()						{	return kTAG_ARANGO_REL_FROM;	}
 
 
 	/*===================================================================================
-	 *	VertexOut																		*
+	 *	VertexDestination																*
 	 *==================================================================================*/
 
 	/**
@@ -147,7 +181,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 *
 	 * @return mixed				Destination vertex document handle.
 	 */
-	public function VertexOut()								{	return kTAG_ARANGO_REL_TO;	}
+	public function VertexDestination()						{	return kTAG_ARANGO_REL_TO;	}
 
 
 
@@ -196,7 +230,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 			// Assert the collection type.
 			//
 			$collection = $handler->get( $theCollection );
-			if( $collection->getType() != 3 )
+			if( $collection->getType() != \triagens\ArangoDb\Collection::TYPE_EDGE )
 				throw new \InvalidArgumentException (
 					"Invalid collection type: "
 				   ."expecting an edge collection." );							// !@! ==>
@@ -207,7 +241,10 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		//
 		// Create collection.
 		//
-		$id = $handler->create( $theCollection, [ "type" => 3 ] );
+		$id =
+			$handler->create(
+				$theCollection,
+				[ "type" => \triagens\ArangoDb\Collection::TYPE_EDGE ] );
 
 		return $handler->get( $id );												// ==>
 
@@ -242,7 +279,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * @uses collectionName()
 	 * @uses NewNativeDocument()
 	 * @uses \Milko\PHPLib\Document::Validate()
-	 * @uses \Milko\PHPLib\Document::ResolveRelated()
+	 * @uses \Milko\PHPLib\Document::StoreSubdocuments()
 	 * @uses triagens\ArangoDb\DocumentHandler::saveEdge()
 	 */
 	protected function doInsertOne( $theDocument )
@@ -260,8 +297,9 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 			//
 			// Store sub-documents.
 			//
-			$theDocument->ResolveRelated();
-		}
+			$theDocument->StoreSubdocuments();
+
+		} // Document object.
 		
 		//
 		// Init local storage.
@@ -294,7 +332,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		// Normalise inserted document.
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Container )
-			$this->normaliseInsertedDocument( $theDocument, $document );
+			$this->normaliseInsertedDocument(
+					$theDocument, $document, $document->getKey() );
 
 		return $key;																// ==>
 
@@ -449,6 +488,9 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * @uses NewDocumentHandle()
 	 * @uses collectionName()
 	 * @uses normaliseOptions()
+	 *
+	 * @see kTOKEN_OPT_FORMAT
+	 * @see kTOKEN_OPT_DIRECTION
 	 */
 	public function FindByVertex( $theVertex, $theOptions = NULL )
 	{
@@ -464,7 +506,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		// Get vertex handle.
 		//
 		if( $theVertex instanceof \Milko\PHPLib\Container )
-			$theVertex = $this->NewDocumentHandle( $theVertex );
+			$theVertex = $theVertex->Handle();
 
 		//
 		// Get edge handler.
@@ -541,27 +583,29 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * destination ({@link VertexOut()}) vertices.
 	 *
 	 * @param \Milko\PHPLib\Container	$theDocument	The inserted document.
-	 * @param mixed						$theData		The insert operation data.
+	 * @param mixed						$theData		The native inserted document.
+	 * @param mixed						$theKey			The document key.
 	 *
 	 * @uses Document::VertexIn()
 	 * @uses Document::VertexOut()
 	 */
 	protected function normaliseInsertedDocument( \Milko\PHPLib\Container $theDocument,
-												  $theData )
+												  						  $theData,
+																		  $theKey)
 	{
 		//
 		// Set source and destination vertices.
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Relation )
 		{
-			$theDocument->offsetSet( $this->VertexIn(), $theData->getFrom() );
-			$theDocument->offsetSet( $this->VertexOut(), $theData->getTo() );
+			$theDocument->offsetSet( $this->VertexSource(), $theData->getFrom() );
+			$theDocument->offsetSet( $this->VertexDestination(), $theData->getTo() );
 		}
 
 		//
 		// Call parent method.
 		//
-		parent::normaliseInsertedDocument( $theDocument, $theData->getId() );
+		parent::normaliseInsertedDocument( $theDocument, $theData, $theKey );
 
 	} // normaliseInsertedDocument.
 
@@ -576,8 +620,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * We overload this method to retrieve and set the source ({@link VertexIn()}) and
 	 * destination ({@link VertexOut()}) vertices.
 	 *
-	 * @param Container				$theDocument		The selected document.
-	 * @param mixed					$theData			The native database document.
+	 * @param \Milko\PHPLib\Container	$theDocument	The selected document.
+	 * @param mixed						$theData		The native database document.
 	 *
 	 * @uses Document::VertexIn()
 	 * @uses Document::VertexOut()
@@ -590,8 +634,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Relation )
 		{
-			$theDocument->offsetSet( $this->VertexIn(), $theData->getFrom() );
-			$theDocument->offsetSet( $this->VertexOut(), $theData->getTo() );
+			$theDocument->offsetSet( $this->VertexSource(), $theData->getFrom() );
+			$theDocument->offsetSet( $this->VertexDestination(), $theData->getTo() );
 		}
 
 		//

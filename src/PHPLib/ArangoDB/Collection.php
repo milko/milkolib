@@ -629,8 +629,14 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses triagens\ArangoDb\CollectionHandler::get()
 	 * @uses triagens\ArangoDb\CollectionHandler::create()
 	 */
-	protected function collectionNew( $theCollection, $theOptions = [] )
+	protected function collectionNew( $theCollection, $theOptions )
 	{
+		//
+		// Init options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
 		//
 		// Get collection handler.
 		//
@@ -645,7 +651,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Create collection.
 		//
-		$id = $handler->create( $theCollection );
+		$id = $handler->create( $theCollection, $theOptions );
 
 		return $handler->get( $id );												// ==>
 
@@ -668,7 +674,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Connection()
 	 * @uses triagens\ArangoDb\Collection::getName()
 	 */
-	protected function collectionName( $theOptions = NULL )
+	protected function collectionName()
 	{
 		return $this->Connection()->getName();										// ==>
 
@@ -700,7 +706,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Database()
 	 * @uses Connection()
 	 * @uses \Milko\PHPLib\Document::Validate()
-	 * @uses \Milko\PHPLib\Document::ResolveRelated()
+	 * @uses \Milko\PHPLib\Document::StoreSubdocuments()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	protected function doInsertOne( $theDocument )
@@ -718,7 +724,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents.
 			//
-			$theDocument->ResolveRelated();
+			$theDocument->StoreSubdocuments();
 		}
 
 		//
@@ -736,7 +742,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Normalise inserted document.
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Container )
-			$this->normaliseInsertedDocument( $theDocument, $document );
+			$this->normaliseInsertedDocument(
+				$theDocument, $document, $document->getKey() );
 
 		return $key;																// ==>
 
@@ -1709,12 +1716,14 @@ class Collection extends \Milko\PHPLib\Collection
 	 * the parent method.
 	 *
 	 * @param \Milko\PHPLib\Container	$theDocument	The inserted document.
-	 * @param mixed						$theData		The insert operation data.
+	 * @param mixed					$theData			The native inserted document.
+	 * @param mixed					$theKey				The document key.
 	 *
 	 * @uses Document::RevisionOffset()
 	 */
 	protected function normaliseInsertedDocument( \Milko\PHPLib\Container $theDocument,
-												  						  $theData )
+												  						  $theData,
+																		  $theKey )
 	{
 		//
 		// Set document revision.
@@ -1725,7 +1734,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Call parent method.
 		//
-		parent::normaliseInsertedDocument( $theDocument, $theData->getId() );
+		parent::normaliseInsertedDocument( $theDocument, $theData, $theKey );
 
 	} // normaliseInsertedDocument.
 
@@ -1785,8 +1794,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * In derived classes you should first manage internal database properties, if relevant,
 	 * then call the current method.
 	 *
-	 * @param Container				$theDocument		The selected document.
-	 * @param mixed					$theData			The native database document.
+	 * @param \Milko\PHPLib\Container	$theDocument	The inserted document.
+	 * @param mixed						$theData		The native database document.
 	 *
 	 * @uses Document::RevisionOffset()
 	 */

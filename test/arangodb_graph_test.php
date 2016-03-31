@@ -252,36 +252,38 @@ echo( "\n" );
 //
 // Save vertices.
 //
-//echo( '$handle_in = $graphHandler->saveVertex( $graph, $node_source );' . "\n" );
-//$handle_in = $graphHandler->saveVertex( $graph, $node_source );
-//var_dump( $handle_in );
-//echo( '$handle_out = $graphHandler->saveVertex( $graph, $node_dest );' . "\n" );
-//$handle_out = $graphHandler->saveVertex( $graph, $node_dest );
-//var_dump( $handle_out );
-
-//
-// Save vertices.
-//
-echo( "Save vertices:\n" );
-echo( '$result = $documentHandler->save( $nodes_collection->getName(), $node_source );' . "\n" );
-$result = $documentHandler->save( $nodes_collection->getName(), $node_source );
-echo( '$handle_in = $node_source->getHandle();' . "\n" );
-$handle_in = $node_source->getHandle();
+echo( '$handle_in = $graphHandler->saveVertex( $graph, $node_source );' . "\n" );
+$handle_in = $graphHandler->saveVertex( $graph, $node_source );
 var_dump( $handle_in );
-echo( '$result = $documentHandler->save( $nodes_collection->getName(), $node_dest );' . "\n" );
-$result = $documentHandler->save( $nodes_collection->getName(), $node_dest );
-echo( '$handle_out = $node_dest->getHandle();' . "\n" );
-$handle_out = $node_dest->getHandle();
+echo( '$handle_out = $graphHandler->saveVertex( $graph, $node_dest );' . "\n" );
+$handle_out = $graphHandler->saveVertex( $graph, $node_dest );
 var_dump( $handle_out );
 
 echo( "\n" );
 
 //
+// Save vertices.
+//
+//echo( "Save vertices:\n" );
+//echo( '$result = $documentHandler->save( $nodes_collection->getName(), $node_source );' . "\n" );
+//$result = $documentHandler->save( $nodes_collection->getName(), $node_source );
+//echo( '$handle_in = $node_source->getHandle();' . "\n" );
+//$handle_in = $node_source->getHandle();
+//var_dump( $handle_in );
+//echo( '$result = $documentHandler->save( $nodes_collection->getName(), $node_dest );' . "\n" );
+//$result = $documentHandler->save( $nodes_collection->getName(), $node_dest );
+//echo( '$handle_out = $node_dest->getHandle();' . "\n" );
+//$handle_out = $node_dest->getHandle();
+//var_dump( $handle_out );
+//
+//echo( "\n" );
+
+//
 // Add predicate.
 //
 echo( "Add predicate:\n" );
-echo( '$edge_id = $graphHandler->saveEdge( $graph, $handle_in, $handle_out, "a label", $predicate );' . "\n" );
-$edge_id = $graphHandler->saveEdge( $graph, $handle_in, $handle_out, "a label", $predicate );
+echo( '$edge_id = $graphHandler->saveEdge( $graph, $handle_in, $handle_out, "a predicate", $predicate );' . "\n" );
+$edge_id = $graphHandler->saveEdge( $graph, $handle_in, $handle_out, "a predicate", $predicate );
 var_dump( $edge_id );
 print_r( $predicate );
 

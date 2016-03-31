@@ -204,8 +204,14 @@ class Database extends \Milko\PHPLib\Database
 	 * @uses Connection()
 	 * @uses triagens\ArangoDb\CollectionHandler::getAllCollections()
 	 */
-	protected function collectionList( $theOptions = NULL )
+	protected function collectionList( $theOptions )
 	{
+		//
+		// Normalise options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
 		//
 		// Get collection handler.
 		//
@@ -225,14 +231,36 @@ class Database extends \Milko\PHPLib\Database
 	 * <h4>Create collection.</h4>
 	 *
 	 * We overload this method to instantiate a ArangoDB version of the {@link Collection}
-	 * class.
+	 * class or of the {@link Relations} class if the provided collection type is
+	 * <tt>3</tt>.
 	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object.
 	 */
-	protected function collectionCreate( $theCollection, $theOptions = NULL )
+	protected function collectionCreate( $theCollection, $theOptions )
 	{
+		//
+		// Normalise options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		//
+		// Handle collection tyoe.
+		//
+		if( array_key_exists( "type", $theOptions ) )
+		{
+			switch( $theOptions[ "type" ] )
+			{
+				case ArangoCollection::TYPE_EDGE:
+					return new Relations( $this, $theCollection, $theOptions );		// ==>
+
+				case ArangoCollection::TYPE_DOCUMENT:
+					return new Collection( $this, $theCollection, $theOptions );	// ==>
+			}
+		}
+
 		return new Collection( $this, $theCollection, $theOptions );				// ==>
 
 	} // collectionCreate.
@@ -252,20 +280,20 @@ class Database extends \Milko\PHPLib\Database
 	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 */
-	protected function collectionRetrieve( $theCollection, $theOptions = NULL )
+	protected function collectionRetrieve( $theCollection, $theOptions )
 	{
+		//
+		// Normalise options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
 		//
 		// Check working collections.
 		//
 		$collection = $this->offsetGet( $theCollection );
 		if( $collection !== NULL )
 			return $collection;														// ==>
-
-		//
-		// Create collection.
-		//
-		if( in_array( $theCollection, $this->collectionList() ) )
-			return new Collection( $this, $theCollection, $theOptions );			// ==>
 
 		return NULL;																// ==>
 

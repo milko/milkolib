@@ -568,9 +568,8 @@ abstract class Collection extends Container
 	 * care of performing the actual insertions of, respectively, a single or a set of
 	 * documents.
 	 *
-	 * When inserting {@link Document} instances this method will call a protected method,
-	 * {@link normaliseInsertedDocument()}, which will update the inserted key, set the
-	 * document's persistent state and reset the document's modification state.
+	 * When inserting {@link Document} instances this method will will update the inserted
+	 * key, set the document's persistent state and reset the document's modification state.
 	 *
 	 * The method will return the newly inserted document key or an array of document keys
 	 * if provided with a set of documents.
@@ -1409,7 +1408,7 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Driver native options.
 	 * @return mixed				Native collection object.
 	 */
-	abstract protected function collectionNew( $theCollection, $theOptions = [] );
+	abstract protected function collectionNew( $theCollection, $theOptions );
 	
 	
 	/*===================================================================================
@@ -2069,10 +2068,8 @@ abstract class Collection extends Container
 	 *
 	 * <ul>
 	 *	<li><b>$theDocument</b>: The {@link Container} instance provided for insertion.
-	 *	<li><b>$theData</b>: The method in this class expects this parameter to contain the
-	 * 		document key ({@link KeyOffset()}), in derived classes you may pass the native
-	 * 		inserted document or other information containing database native internal
-	 * 		properties.
+	 *	<li><b>$theData</b>: The native inserted object.
+	 *	<li><b>$theKey</b>: The document key ({@link KeyOffset()}).
 	 * </ul>
 	 *
 	 * The method is implemented in this class to set global properties:
@@ -2093,14 +2090,17 @@ abstract class Collection extends Container
 	 * document key.
 	 *
 	 * @param Container				$theDocument		The inserted document.
-	 * @param mixed					$theData			The insert operation data.
+	 * @param mixed					$theData			The native inserted document.
+	 * @param mixed					$theKey				The document key.
 	 *
 	 * @uses Document::SetKey()
 	 * @uses Document::KeyOffset()
 	 * @uses Document::IsPersistent()
 	 * @uses Document::IsModified()
 	 */
-	protected function normaliseInsertedDocument( Container $theDocument, $theData )
+	protected function normaliseInsertedDocument( Container $theDocument,
+												  			$theData,
+												  			$theKey )
 	{
 		//
 		// Handle documents.
@@ -2110,7 +2110,7 @@ abstract class Collection extends Container
 			//
 			// Set key.
 			//
-			$theDocument->SetKey( $theData, $this );
+			$theDocument->SetKey( $theKey, $this );
 
 			//
 			// Set persistent state.
@@ -2128,7 +2128,7 @@ abstract class Collection extends Container
 		// Handle containers.
 		//
 		else
-			$theDocument[ $this->KeyOffset() ] = $theData;
+			$theDocument[ $this->KeyOffset() ] = $theKey;
 
 	} // normaliseInsertedDocument.
 

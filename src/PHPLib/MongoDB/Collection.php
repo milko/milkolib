@@ -537,8 +537,14 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Database()
 	 * @uses \MongoDB\Database::selectCollection()
 	 */
-	protected function collectionNew( $theCollection, $theOptions = [] )
+	protected function collectionNew( $theCollection, $theOptions )
 	{
+		//
+		// Init options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
 		return
 			$this->
 				Database()->
@@ -596,7 +602,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewNativeDocument()
 	 * @uses normalistInsertedDocument()
 	 * @uses \Milko\PHPLib\Document::Validate()
-	 * @uses \Milko\PHPLib\Document::ResolveRelated()
+	 * @uses \Milko\PHPLib\Document::StoreSubdocuments()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\Cursor::getInsertedId()
 	 */
@@ -615,22 +621,24 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents.
 			//
-			$theDocument->ResolveRelated();
+			$theDocument->StoreSubdocuments();
 		}
+		
+		//
+		// Convert to native document.
+		//
+		$document = $this->NewNativeDocument( $theDocument );
 
 		//
 		// Insert document.
 		//
-		$key =
-			$this->Connection()->insertOne(
-				$this->NewNativeDocument( $theDocument ) )
-					->getInsertedId();
+		$key = $this->Connection()->insertOne( $document )->getInsertedId();
 
 		//
 		// Normalise inserted document.
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Container )
-			$this->normaliseInsertedDocument( $theDocument, $key );
+			$this->normaliseInsertedDocument( $theDocument, $document, $key );
 
 		return $key;																// ==>
 

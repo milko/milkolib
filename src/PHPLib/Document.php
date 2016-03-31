@@ -357,8 +357,8 @@ class Document extends Container
 	 * This method should check whether the document is valid and ready to be stored in its
 	 * collection, if that is not the case, the method should raise an exception.
 	 *
-	 * In this class we check whether all the required properties are there, in derived
-	 * classes you should first call this method, then do any other type of validation.
+	 * In this class we check whether all required properties are there and we traverse the
+	 * object calling this method for each of them.
 	 *
 	 * @throws \RuntimeException
 	 *
@@ -380,6 +380,12 @@ class Document extends Container
 			throw new \RuntimeException(
 				"Document is missing the following required properties: "
 				.implode( ', ', $missing ) );									// !@! ==>
+
+		//
+		// Traverse object.
+		//
+		$data = $this->getArrayCopy();
+		$this->doValidateSubdocuments( $data );
 
 	} // Validate.
 
@@ -404,16 +410,14 @@ class Document extends Container
 	 * instantiated, if the document is persistent ({@link IsPersistent()}), the document
 	 * will be replaced, if not, it will be inserted.
 	 *
-	 * The method will first call the {@link Validate()} document method to check whether
-	 * the document can be saved.
+	 * The method will call the protected {@link doStore()} method that will, in turn, have
+	 * the current document's collection insert or replace the object.
 	 *
-	 * The method will return the newly created document's key
-	 * ({@link Collection::KeyOffset()}) as well as setting it if necessary and updating
-	 * the document state by setting its persistent state, {@link IsPersistent()}, and
-	 * resetting its modification state, {@link IsModified()}.
+	 * The method will return the stored document key ({@link Container::KeyOffset()}), or
+	 *  <tt>NULL</tt> if the document is persistent and not modified.
 	 *
-	 * If the document is persistent and not modified, the method will do nothing and return
-	 * <tt>NULL</tt>.
+	 * Note that this method will not validate the document, this will be done by the
+	 * document's {@link Collection}.
 	 *
 	 * @return mixed				The document key.
 	 *
@@ -436,6 +440,43 @@ class Document extends Container
 
 
 	/*===================================================================================
+	 *	StoreSubdocuments																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Store embedded objects.</h4>
+	 *
+	 * This method should be called prior to inserting the object, it will traverse all
+	 * object structures inserting sub-documents expressed as document objects that
+	 * are modified ({@link IsModified()}) and are not persistent ({@link IsPersistent()}),
+	 * replacing them with their document handles.
+	 *
+	 * This method <em>must</em> be called <em>after</em> calling {@link Validate()}, which
+	 * validates also the sub-documents.
+	 *
+	 * @uses doStoreRelated()
+	 */
+	public function StoreSubdocuments()
+	{
+		//
+		// Get a copy of the document data.
+		//
+		$data = $this->getArrayCopy();
+
+		//
+		// Convert to array.
+		//
+		$this->doStoreSubdocuments( $data );
+
+		//
+		// Update document data.
+		//
+		$this->exchangeArray( $data );
+
+	} // StoreSubdocuments.
+
+
+	/*===================================================================================
 	 *	Delete																			*
 	 *==================================================================================*/
 
@@ -447,7 +488,8 @@ class Document extends Container
 	 * state, {@link IsPersistent()}, and setting its modification state,
 	 * {@link IsModified()}.
 	 *
-	 * If the document is not persistent, the method will do nothing.
+	 * The method will return the number of deleted documents, <tt>1</tt>, ot <tt>0</tt> if
+	 * the document was not deleted or if the document is not persistent.
 	 *
 	 * @return int					The number of deleted records.
 	 *
@@ -465,39 +507,6 @@ class Document extends Container
 		return 0;																	// ==>
 
 	} // Delete.
-
-
-	/*===================================================================================
-	 *	ResolveRelated																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Resolve related objects.</h4>
-	 *
-	 * This method should be called prior to inserting the object, it will traverse all
-	 * object structures inserting sub-documents ecpressed as document objects that
-	 * are modified ({@link IsModified()}) and are not persistent ({@link IsPersistent()}).
-	 *
-	 * @uses doStoreRelated()
-	 */
-	public function ResolveRelated()
-	{
-		//
-		// Init local storage.
-		//
-		$data = [];
-
-		//
-		// Convert to array.
-		//
-		$this->doStoreRelated( $this->getArrayCopy(), $data );
-
-		//
-		// Update document data.
-		//
-		$this->exchangeArray( $data );
-
-	} // ResolveRelated.
 
 
 
@@ -550,6 +559,33 @@ class Document extends Container
 		$this->mStatus &= (~ self::kFLAG_DOC_MODIFIED);
 
 	} // SetKey.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC REFERENCE INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Handle																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return document handle.</h4>
+	 *
+	 * This method can be used to retrieve the document handle.
+	 *
+	 * @return string				The document handle.
+	 */
+	public function Handle()
+	{
+		return $this->mCollection->NewDocumentHandle( $this );						// ==>
+
+	} // Handle.
 
 
 
@@ -825,6 +861,56 @@ class Document extends Container
 	} // doDelete.
 
 
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED TRAVERSAL INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	doValidateSubdocuments															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Validate embedded documents.</h4>
+	 *
+	 * This method will traverse the current object and call the {@link Validate()} method
+	 * on all document objects encountered.
+	 *
+	 * @param array				   &$theData			Reference to the object data.
+	 *
+	 * @uses Store()
+	 * @uses IsModified()
+	 * @uses IsPersistent()
+	 */
+	protected function doValidateSubdocuments( &$theData )
+	{
+		//
+		// Traverse data.
+		//
+		foreach( $theData as $key => $value )
+		{
+			//
+			// Validate documents.
+			//
+			if( $value instanceof Document )
+				$value->Validate();
+
+			//
+			// Handle arrays and array objects.
+			//
+			elseif( is_array( $value )
+				 || ($value instanceof \ArrayObject) )
+				$this->doValidateSubdocuments( $theData[ $key ] );
+
+		} // Traversing the document.
+
+	} // doValidateSubdocuments.
+
+
 	/*===================================================================================
 	 *	doStoreRelated																	*
 	 *==================================================================================*/
@@ -837,31 +923,32 @@ class Document extends Container
 	 * ({@link IsPersistent()}); once the document is stored, the source property will be
 	 * replaced with the stored document's handle.
 	 *
-	 * @param array					$theSource			Source structure.
-	 * @param array				   &$theDestination		Reference to the destination array.
+	 * This method <em>must</em> be called <em>after</em> calling {@link Validate()} to
+	 * ensure the subdocuments are all valid.
+	 *
+	 * @param array				   &$theData			Document data.
 	 *
 	 * @uses Store()
 	 * @uses IsModified()
 	 * @uses IsPersistent()
 	 */
-	protected function doStoreRelated( $theSource, &$theDestination )
+	protected function doStoreSubdocuments( &$theData )
 	{
 		//
-		// Traverse source.
+		// Traverse data.
 		//
-		$keys = array_keys( $theSource );
-		foreach( $keys as $key )
+		foreach( $theData as $key => $value )
 		{
 			//
-			// Init local storage.
-			//
-			$value = & $theSource[ $key ];
-
-			//
-			// Handle documents.
+			// Validate documents.
 			//
 			if( $value instanceof Document )
 			{
+				//
+				// Recurse.
+				//
+				$value->StoreSubdocuments();
+
 				//
 				// Insert new documents.
 				//
@@ -872,17 +959,35 @@ class Document extends Container
 				//
 				// Replace with handle.
 				//
-				$theDestination[ $key ] = $value->mCollection->NewDocumentHandle( $value );
+				$theData[ $key ] = $value->mCollection->NewDocumentHandle( $value );
 
-			} // Sub-document.
+			} // Is a document.
 
 			//
-			// Handle scalars.
+			// Handle arrays and array objects.
 			//
-			else
-				$theDestination[ $key ] = $value;
+			elseif( is_array( $value )
+				|| ($value instanceof \ArrayObject) )
+			{
+				//
+				// Convert to array.
+				//
+				if( $value instanceof \ArrayObject )
+					$value = $value->getArrayCopy();
 
-		} // Traversing source.
+				//
+				// Recurse.
+				//
+				$this->doStoreSubdocuments( $value );
+
+				//
+				// Replace in data.
+				//
+				$theData[ $key ] = $value;
+
+			} // Array or iterable.
+
+		} // Traversing the document.
 
 	} // doStoreRelated.
 

@@ -18,7 +18,8 @@ require_once( 'tags.inc.php' );
  */
 require_once( 'tokens.inc.php' );
 
-use Milko\PHPLib\Document;
+use \Milko\PHPLib\Document;
+use \Milko\PHPLib\ArangoDB\Relations;
 
 /*=======================================================================================
  *																						*
@@ -30,8 +31,9 @@ use Milko\PHPLib\Document;
  * <h4>Relationship ancestor object.</h4>
  *
  * This class extends {@link Document} by implementing a relationship document, it adds two
- * properties: {@link Collection::RelationSourceOffset()} that references the source vertex
- * of the relationship and {@link RelationDestinationOffset()} that references the
+ * properties: {@link \Milko\PHPLib\Collection::RelationSourceOffset()} that references the
+ * source vertex of the relationship and
+ * {@link \Milko\PHPLib\CollectionRelationDestinationOffset()} that references the
  * destination vertex of the relationship, both properties are document handles; the current
  * document represents the relationship predicate.
  *
@@ -41,8 +43,51 @@ use Milko\PHPLib\Document;
  *	@version	1.00
  *	@since		30/03/2016
  */
-class Relation extends Document
+class Relation extends \Milko\PHPLib\Document
 {
+
+
+
+/*=======================================================================================
+ *																						*
+ *										MAGIC											*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	__construct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Instantiate class.</h4>
+	 *
+	 * We override the inherited constructor to assert that the provided collection is an
+	 * edge collection (type = {@link \triagens\ArangoDb\Collection::TYPE_EDGE}).
+	 *
+	 * @param \Milko\PHPLib\Collection			$theCollection		Collection name.
+	 * @param array					$theData			Document data.
+	 * @throws \InvalidArgumentException
+	 *
+	 * @see \triagens\ArangoDb\Collection::TYPE_EDGE
+	 */
+	public function __construct( \Milko\PHPLib\Collection $theCollection, $theData = [] )
+	{
+		//
+		// Assert collection type.
+		//
+		if( ! ($theCollection instanceof \Milko\PHPLib\ArangoDB\Relations) )
+			throw new \InvalidArgumentException (
+				"Invalid collection type: "
+				."expecting an edge collection." );								// !@! ==>
+
+		//
+		// Call parent constructor.
+		//
+		parent::__construct( $theCollection, $theData );
+
+	} // Constructor.
 
 
 

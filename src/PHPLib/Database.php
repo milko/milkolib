@@ -405,11 +405,6 @@ abstract class Database extends Container
 		$theCollection = (string)$theCollection;
 
 		//
-		// Get working collection.
-		//
-		$collection = $this->collectionRetrieve( $theCollection, $theOptions );
-
-		//
 		// Match working collections.
 		//
 		if( $this->offsetExists( $theCollection ) )
@@ -711,7 +706,7 @@ abstract class Database extends Container
 	 * @param array					$theOptions			Native driver options.
 	 * @return array				List of database collection names.
 	 */
-	abstract protected function collectionList( $theOptions = NULL );
+	abstract protected function collectionList( $theOptions );
 
 
 	/*===================================================================================
@@ -742,7 +737,7 @@ abstract class Database extends Container
 	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object.
 	 */
-	abstract protected function collectionCreate( $theCollection, $theOptions = NULL );
+	abstract protected function collectionCreate( $theCollection, $theOptions );
 
 
 	/*===================================================================================
@@ -771,7 +766,7 @@ abstract class Database extends Container
 	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 */
-	abstract protected function collectionRetrieve( $theCollection, $theOptions = NULL );
+	abstract protected function collectionRetrieve( $theCollection, $theOptions );
 
 
 

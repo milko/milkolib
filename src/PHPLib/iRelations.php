@@ -70,7 +70,7 @@ interface iRelations
 
 
 	/*===================================================================================
-	 *	VertexIn																		*
+	 *	VertexSource																	*
 	 *==================================================================================*/
 
 	/**
@@ -81,11 +81,11 @@ interface iRelations
 	 *
 	 * @return string				Relationship source offset.
 	 */
-	public function VertexIn();
+	public function VertexSource();
 
 
 	/*===================================================================================
-	 *	VertexOut																		*
+	 *	VertexDestination																*
 	 *==================================================================================*/
 
 	/**
@@ -96,7 +96,7 @@ interface iRelations
 	 *
 	 * @return string				Relationship destination offset.
 	 */
-	public function VertexOut();
+	public function VertexDestination();
 
 
 

@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -95,7 +95,7 @@ echo( "\n" );
 //
 echo( "Instantiate A:\n" );
 echo( '$A = new A( $collection, $container );' . "\n" );
-$A = new SRC( $collection, $container );
+$A = new A( $collection, $container );
 echo( "Class: " . get_class( $A ) . "\n" );
 echo( "Modified:   " . (( $A->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $A->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -109,7 +109,7 @@ echo( "\n" );
 //
 echo( "Instantiate B:\n" );
 echo( '$B = new B( $collection, $A );' . "\n" );
-$B = new DST( $collection, $A );
+$B = new B( $collection, $A );
 echo( "Class: " . get_class( $B ) . "\n" );
 echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $B->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -245,7 +245,7 @@ echo( "\n=======================================================================
 //
 echo( "Create embedded document 1:\n" );
 echo( '$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );' . "\n" );
-$sub1 = new SRC( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );
+$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );
 echo( "Class: " . get_class( $sub1 ) . "\n" );
 echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -259,7 +259,7 @@ echo( "\n" );
 //
 echo( "Create embedded document 2:\n" );
 echo( '$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );' . "\n" );
-$sub2 = new DST( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );
+$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );

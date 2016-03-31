@@ -29,24 +29,19 @@ elseif( kENGINE == "ARANGO" )
 require_once( "functions.php" );
 
 //
-// Reference class.
-//
-use Milko\PHPLib\MongoDB\Relation;
-use Milko\PHPLib\MongoDB\Collection;
-
-//
 // Document test classes.
 //
 class SRC extends Milko\PHPLib\Document{}
 class DST extends Milko\PHPLib\Document{}
 
 //
-// Instantiate object.
+// Instantiate connection.
 //
+echo( "Instantiate connection:\n" );
 if( kENGINE == "MONGO" )
 {
-	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
-	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
+	echo( '$url = "mongodb://localhost:27017/test_milkolib";' . "\n" );
+	$url = "mongodb://localhost:27017/test_milkolib";
 	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
 	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
 }
@@ -57,22 +52,57 @@ elseif( kENGINE == "ARANGO" )
 	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
 	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
 }
+
+echo( "\n" );
+
+//
+// Instantiate database.
+//
+echo( "Instantiate database:\n" );
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
 $database = $server->RetrieveDatabase( "test_milkolib" );
-echo( '$collection = $database->RetrieveCollection( "test_collection" );' . "\n" );
-$collection = $database->RetrieveCollection( "test_collection" );
-echo( '$collection->Truncate();' . "\n" );
-$collection->Truncate();
+
+echo( "\n" );
+
+//
+// Instantiate nodes collection.
+//
+echo( "Instantiate nodes collection:\n" );
+echo( '$nodes = $database->RetrieveCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
+$nodes = $database->RetrieveCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );
+var_dump( get_class( $nodes ) );
+echo( '$nodes->Truncate();' . "\n" );
+$nodes->Truncate();
+
+echo( "\n" );
+
+//
+// Instantiate predicates collection.
+//
+echo( "Instantiate predicates collection:\n" );
+echo( '$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, ["type" => \triagens\ArangoDb\Collection::TYPE_EDGE] );' . "\n" );
+$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, ["type" => \triagens\ArangoDb\Collection::TYPE_EDGE] );
+var_dump( get_class( $predicates ) );
+echo( '$predicates->Truncate();' . "\n" );
+$predicates->Truncate();
 
 echo( "\n====================================================================================\n\n" );
 
 //
-// Instantiate container.
+// Instantiate edge.
 //
-echo( "Instantiate container:\n" );
-echo( '$container = new Milko\PHPLib\Container( ["name" => "Jim", "age" => 21] );' . "\n" );
-$container = new Milko\PHPLib\Container( ["name" => "Jim", "age" => 21] );
-print_r( $container );
+echo( "Instantiate edge:\n" );
+try
+{
+	echo( '$edge = new Milko\PHPLib\Relation( $nodes, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );' . "\n" );
+	$edge = new Milko\PHPLib\Relation( $nodes, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( InvalidArgumentException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+}
 
 echo( "\n" );
 
@@ -80,13 +110,13 @@ echo( "\n" );
 // Instantiate edge.
 //
 echo( "Instantiate edge:\n" );
-echo( '$document = new Milko\PHPLib\Relation( $collection, $container );' . "\n" );
-$document = new Milko\PHPLib\Relation( $collection, $container );
-echo( "Class: " . get_class( $document ) . "\n" );
-echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( '$edge = new Milko\PHPLib\Relation( $predicates, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );' . "\n" );
+$edge = new Milko\PHPLib\Relation( $predicates, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );
+echo( "Class: " . get_class( $edge ) . "\n" );
+echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
-print_r( $document->getArrayCopy() );
+print_r( $edge->getArrayCopy() );
 
 echo( "\n" );
 
@@ -94,13 +124,13 @@ echo( "\n" );
 // Instantiate SRC.
 //
 echo( "Instantiate SRC:\n" );
-echo( '$A = new SRC( $collection, $container );' . "\n" );
-$A = new SRC( $collection, $container );
-echo( "Class: " . get_class( $A ) . "\n" );
-echo( "Modified:   " . (( $A->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $A->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( '$src = new SRC( $nodes, [$nodes->KeyOffset() => "Node1", "Label" => ["en" => "Source node"]] );' . "\n" );
+$src = new SRC( $nodes, [$nodes->KeyOffset() => "Node1", "Label" => ["en" => "Source node"]] );
+echo( "Class: " . get_class( $src ) . "\n" );
+echo( "Modified:   " . (( $src->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $src->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
-print_r( $A->getArrayCopy() );
+print_r( $src->getArrayCopy() );
 
 echo( "\n" );
 
@@ -108,13 +138,14 @@ echo( "\n" );
 // Instantiate DST.
 //
 echo( "Instantiate DST:\n" );
-echo( '$B = new DST( $collection, $A );' . "\n" );
-$B = new DST( $collection, $A );
-echo( "Class: " . get_class( $B ) . "\n" );
-echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $B->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( '$dst = new SRC( $nodes, [$nodes->KeyOffset() => "pippo", "Label" => ["en" => "Destination node"]] );' . "\n" );
+$dst = new SRC( $nodes, [$nodes->KeyOffset() => "pippo", "Label" => ["en" => "Destination node"]] );
+echo( "Class: " . get_class( $dst ) . "\n" );
+echo( "Modified:   " . (( $dst->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $dst->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
-print_r( $B->getArrayCopy() );
+print_r( $dst->getArrayCopy() );
+
 
 echo( "\n====================================================================================\n\n" );
 
@@ -122,13 +153,13 @@ echo( "\n=======================================================================
 // Set key.
 //
 echo( "Set key:\n" );
-echo( '$B[ $collection->KeyOffset() ] = "pippo";' . "\n" );
-$B[ $collection->KeyOffset() ] = "pippo";
-echo( "Class: " . get_class( $B ) . "\n" );
-echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $B->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( '$dst[ $nodes->KeyOffset() ] = "Node2";' . "\n" );
+$dst[ $nodes->KeyOffset() ] = "Node2";
+echo( "Class: " . get_class( $dst ) . "\n" );
+echo( "Modified:   " . (( $dst->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $dst->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
-print_r( $B->getArrayCopy() );
+print_r( $dst->getArrayCopy() );
 
 echo( "\n" );
 
@@ -138,8 +169,8 @@ echo( "\n" );
 echo( "Set class:\n" );
 try
 {
-	echo( '$B[ $collection->ClassOffset() ] = "A";' . "\n" );
-	$B[ $collection->ClassOffset() ] = "A";
+	echo( '$dst[ $nodes->ClassOffset() ] = "A";' . "\n" );
+	$dst[ $nodes->ClassOffset() ] = "A";
 	echo( "FALIED! - Should have raised an exception.\n" );
 }
 catch( RuntimeException $error )
@@ -156,13 +187,13 @@ echo( "\n" );
 echo( "Set revision:\n" );
 try
 {
-	echo( '$B[ $collection->RevisionOffset() ] = 33143106288;' . "\n" );
-	$B[ $collection->RevisionOffset() ] = 33143106288;
-	echo( "Class: " . get_class( $B ) . "\n" );
-	echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
-	echo( "Persistent: " . (( $B->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( '$dst[ $nodes->RevisionOffset() ] = 33143106288;' . "\n" );
+	$dst[ $nodes->RevisionOffset() ] = 33143106288;
+	echo( "Class: " . get_class( $dst ) . "\n" );
+	echo( "Modified:   " . (( $dst->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $dst->IsPersistent() ) ? "Yes\n" : "No\n") );
 	echo( "Data: " );
-	print_r( $B->getArrayCopy() );
+	print_r( $dst->getArrayCopy() );
 }
 catch( RuntimeException $error )
 {
@@ -173,27 +204,13 @@ catch( RuntimeException $error )
 echo( "\n====================================================================================\n\n" );
 
 //
-// Insert B.
+// Insert edge.
 //
-echo( "Insert B:\n" );
-echo( '$key = $B->Store();' . "\n" );
-$key = $B->Store();
-echo( "Class: " . get_class( $B ) . "\n" );
-echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $B->IsPersistent() ) ? "Yes\n" : "No\n") );
-echo( "Data: " );
-print_r( $B->getArrayCopy() );
-
-echo( "\n====================================================================================\n\n" );
-
-//
-// Set key.
-//
-echo( "Set key:\n" );
+echo( "Insert edge:\n" );
 try
 {
-	echo( '$B[ $collection->KeyOffset() ] = "pippo";' . "\n" );
-	$B[ $collection->KeyOffset() ] = "pippo";
+	echo( '$key = $edge->Store();' . "\n" );
+	$key = $edge->Store();
 	echo( "FALIED! - Should have raised an exception.\n" );
 }
 catch( RuntimeException $error )
@@ -205,123 +222,172 @@ catch( RuntimeException $error )
 echo( "\n" );
 
 //
-// Set class.
+// Set edge source and destination.
 //
-echo( "Set class:\n" );
-try
-{
-	echo( '$B[ $collection->ClassOffset() ] = "A";' . "\n" );
-	$B[ $collection->ClassOffset() ] = "A";
-	echo( "FALIED! - Should have raised an exception.\n" );
-}
-catch( RuntimeException $error )
-{
-	echo( "SUCCEEDED! - Has raised an exception.\n" );
-	echo( $error->getMessage() . "\n" );
-}
+echo( "Set edge source:\n" );
+echo( '$result = $edge[ $predicates->VertexSource() ] = $src;' . "\n" );
+$result = $edge[ $predicates->VertexSource() ] = $src;
+echo( '$result = $edge[ $predicates->VertexDestination() ] = $dst;' . "\n" );
+$result = $edge[ $predicates->VertexDestination() ] = $dst;
+print_r( $edge->getArrayCopy() );
 
 echo( "\n" );
 
 //
-// Set revision.
+// Insert edge.
 //
-echo( "Set revision:\n" );
-try
-{
-	echo( '$B[ $collection->RevisionOffset() ] = 33143106288;' . "\n" );
-	$B[ $collection->RevisionOffset() ] = 33143106288;
-	echo( "FALIED! - Should have raised an exception.\n" );
-}
-catch( RuntimeException $error )
-{
-	echo( "SUCCEEDED! - Has raised an exception.\n" );
-	echo( $error->getMessage() . "\n" );
-}
-
-echo( "\n====================================================================================\n\n" );
-
-//
-// Create embedded document 1.
-//
-echo( "Create embedded document 1:\n" );
-echo( '$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );' . "\n" );
-$sub1 = new SRC( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );
-echo( "Class: " . get_class( $sub1 ) . "\n" );
-echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
-echo( "Data: " );
-print_r( $sub1->getArrayCopy() );
-
-echo( "\n" );
-
-//
-// Create embedded document 2.
-//
-echo( "Create embedded document 2:\n" );
-echo( '$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );' . "\n" );
-$sub2 = new DST( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );
-echo( "Class: " . get_class( $sub2 ) . "\n" );
-echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
-echo( "Data: " );
-print_r( $sub2->getArrayCopy() );
-
-echo( "\n" );
-
-//
-// Create container document.
-//
-echo( "Create container document:\n" );
-echo( '$document = new Milko\PHPLib\Relation( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );' . "\n" );
-$document = new Milko\PHPLib\Relation( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );
-echo( "Class: " . get_class( $document ) . "\n" );
-echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
-echo( "Data: " );
-print_r( $document->getArrayCopy() );
-
-echo( "\n" );
-
-//
-// Store document.
-//
-echo( "Store document:\n" );
-echo( '$key = $document->Store();' . "\n" );
-$key = $document->Store();
+echo( "Insert edge:\n" );
+echo( '$key = $edge->Store();' . "\n" );
+$key = $edge->Store();
 var_dump( $key );
-echo( "Class: " . get_class( $document ) . "\n" );
-echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Class: " . get_class( $edge ) . "\n" );
+echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
-print_r( $document->getArrayCopy() );
-
-echo( "\n====================================================================================\n\n" );
-
-//
-// Retrieve embedded document 1.
-//
-echo( "Retrieve embedded document 1:\n" );
-echo( '$sub1 = $collection->FindByHandle( $document["sub1"] );' . "\n" );
-$sub1 = $collection->FindByHandle( $document["sub1"] );
-echo( "Class: " . get_class( $sub1 ) . "\n" );
-echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
-echo( "Data: " );
-print_r( $sub1->getArrayCopy() );
+print_r( $edge->getArrayCopy() );
 
 echo( "\n" );
 
 //
-// Retrieve embedded document 2.
+// Delete edge.
 //
-echo( "Retrieve embedded document 2:\n" );
-echo( '$sub2 = $collection->FindByHandle( $document["sub2"] );' . "\n" );
-$sub2 = $collection->FindByHandle( $document["sub2"] );
-echo( "Class: " . get_class( $sub2 ) . "\n" );
-echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Delete edge:\n" );
+echo( '$key = $edge->Delete();' . "\n" );
+$key = $edge->Delete();
+echo( "Class: " . get_class( $edge ) . "\n" );
+echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
-print_r( $sub2->getArrayCopy() );
+print_r( $edge->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Set edge source and destination.
+//
+echo( "Set edge source:\n" );
+echo( '$result = $edge[ $predicates->VertexSource() ] = $nodes->NewDocumentHandle( $src );' . "\n" );
+$result = $edge[ $predicates->VertexSource() ] = $nodes->NewDocumentHandle( $src );
+echo( '$result = $edge[ $predicates->VertexDestination() ] = $nodes->NewDocumentHandle( $dst );' . "\n" );
+$result = $edge[ $predicates->VertexDestination() ] = $nodes->NewDocumentHandle( $dst );
+print_r( $edge->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Insert edge.
+//
+echo( "Insert edge:\n" );
+echo( '$key = $edge->Store();' . "\n" );
+$key = $edge->Store();
+var_dump( $key );
+echo( "Class: " . get_class( $edge ) . "\n" );
+echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $edge->getArrayCopy() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Get SRC edges.
+//
+echo( "Get SRC edges:\n" );
+echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );' . "\n" );
+$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );
+foreach( $result as $document )
+{
+	echo( "Class: " . get_class( $document ) . "\n" );
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
+
+echo( "\n" );
+
+//
+// Get SRC incoming edges.
+//
+echo( "Get SRC incoming edges:\n" );
+echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN] );' . "\n" );
+$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN] );
+foreach( $result as $document )
+{
+	echo( "Class: " . get_class( $document ) . "\n" );
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
+
+echo( "\n" );
+
+//
+// Get SRC outgoing edges.
+//
+echo( "Get SRC outgoing edges:\n" );
+echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT] );' . "\n" );
+$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT] );
+foreach( $result as $document )
+{
+	echo( "Class: " . get_class( $document ) . "\n" );
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Get DST edges.
+//
+echo( "Get DST edges:\n" );
+echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );' . "\n" );
+$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );
+foreach( $result as $document )
+{
+	echo( "Class: " . get_class( $document ) . "\n" );
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
+
+echo( "\n" );
+
+//
+// Get DST incoming edges.
+//
+echo( "Get DST incoming edges:\n" );
+echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN] );' . "\n" );
+$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN] );
+foreach( $result as $document )
+{
+	echo( "Class: " . get_class( $document ) . "\n" );
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
+
+echo( "\n" );
+
+//
+// Get DST outgoing edges.
+//
+echo( "Get DST outgoing edges:\n" );
+echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT] );' . "\n" );
+$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT] );
+foreach( $result as $document )
+{
+	echo( "Class: " . get_class( $document ) . "\n" );
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
 
 
 ?>
