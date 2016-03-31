@@ -12,9 +12,18 @@
  */
 
 //
+// Global definitions.
+//
+define( 'kENGINE', "MONGO" );
+
+//
 // Include local definitions.
 //
 require_once(dirname(__DIR__) . "/includes.local.php");
+if( kENGINE == "MONGO" )
+	require_once(dirname(__DIR__) . "/mongo.local.php");
+elseif( kENGINE == "ARANGO" )
+	require_once(dirname(__DIR__) . "/arango.local.php");
 
 //
 // Include utility functions.
@@ -22,147 +31,50 @@ require_once(dirname(__DIR__) . "/includes.local.php");
 require_once( "functions.php" );
 
 //
-// Reference class.
+// Enable exception logging.
 //
-use Milko\PHPLib\Database;
+//ArangoException::enableLogging();
 
 //
-// DataServer test class.
+// Instantiate object.
 //
-class test_DataServer extends Milko\PHPLib\DataServer
+if( kENGINE == "MONGO" )
 {
-	//
-	// Implement Server virtual interface.
-	//
-	protected function connectionCreate()	{	return "I am open!";	}
-	protected function connectionDestruct()	{	$this->mConnection = "I am closed.";	}
-
-	//
-	// Implement DataServer virtual interface.
-	//
-	protected function databaseList() {
-		return array_merge( ["db1", "db2", "db3" ], $this->WorkingDatabases() );	}
-	protected function databaseCreate( $theDatabase, $theOptions ) {
-		return new test_Database( $this, (string)$theDatabase, $theOptions );	}
-	protected function databaseRetrieve( $theDatabase, $theOptions ) {
-		return (string) $theDatabase;	}
-	protected function databaseDrop( Milko\PHPLib\Database $theDatabase, $theOptions ) {}
+	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
+	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
+	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
 }
-
-//
-// Database test class.
-//
-class test_Database extends Milko\PHPLib\Database
+elseif( kENGINE == "ARANGO" )
 {
-	//
-	// Implement Database virtual interface.
-	//
-	protected function newDatabase( $theDatabase, $theOptions )	{
-		return (string)$theDatabase;	}
-	protected function databaseName() {
-		return $this->mNativeObject;	}
-	protected function collectionList() {
-		return array_merge( ["cl1", "cl2", "cl3" ], $this->WorkingCollections() );	}
-	protected function collectionCreate( $theCollection, $theOptions ) {
-		return new test_Collection( $this, $theCollection, $theOptions );	}
-	protected function collectionRetrieve( $theCollection, $theOptions ) {
-		return new test_Collection( $this, $theCollection, $theOptions );	}
-	protected function collectionEmpty( Milko\PHPLib\Collection $theCollection, $theOptions ) {}
-	protected function collectionDrop( Milko\PHPLib\Collection $theCollection, $theOptions ) {}
+	echo( '$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n" );
+	$url = "tcp://localhost:8529/test_milkolib/test_collection";
+	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
 }
-
-//
-// Collection test class.
-//
-class test_Collection extends Milko\PHPLib\Collection
-{
-	//
-	// Implement Collection virtual interface.
-	//
-	protected function newCollection( $theCollection, $theOptions ) {
-		return (string)$theCollection;	}
-	protected function collectionName() {
-		return $this->mNativeObject;	}
-
-	//
-	// Declare record management interface,
-	// will not be tested here.
-	//
-	protected function insert( $theRecord, $theOptions, $doMany ) {}
-	protected function update( $theCriteria, $theFilter, $theOptions, $doMany ) {}
-	protected function replace( $theRecord, $theFilter, $theOptions ) {}
-	protected function find( $theFilter, $theOptions, $doMany ) {}
-	protected function query( $theQuery, $theOptions ) {}
-	protected function delete( $theFilter, $theOptions, $doMany ) {}
-}
-
-//
-// Instantiate data server.
-//
-echo( "Instantiate data server:\n" );
-echo( '$url = "protocol://user:pass@host:9090/db0/col0";' . "\n" );
-$url = "protocol://user:pass@host:9090/db0/col0";
-echo( '$server = new test_DataServer( $url' . " );\n" );
-$server = new test_DataServer( $url );
+echo( '$result = (string)$server;' . "\n" );
+echo( (string)$server . " ==> " );
+echo( ( "$server" == $url ) ? "OK\n" : "FALIED\n" );
 
 echo( "\n" );
 
 //
-// Instantiate database.
+// Retrieve database.
 //
-echo( "Instantiate database:\n" );
-echo( '$db = new test_Database( $server, "db" );' . "\n" );
-$db = new test_Database( $server, "db" );
-echo( '$name = (string)$db;' . "\n" );
-$name = (string)$db;
-echo( "$name\n" );
-echo( '$list = $server->WorkingDatabases();' . "\n" );
-$list = $server->WorkingDatabases();
-print_r( $list );
-
-echo( "\n" );
-
-//
-// Instantiate database from server.
-//
-echo( "Instantiate database from server:\n" );
-echo( '$db = $server->RetrieveDatabase( "db0" );' . "\n" );
-$db = $server->RetrieveDatabase( "db0" );
-echo( '$name = (string)$db;' . "\n" );
-$name = (string)$db;
-echo( "$name\n" );
-echo( '$list = $server->WorkingDatabases();' . "\n" );
-$list = $server->WorkingDatabases();
-print_r( $list );
+echo( "Retrieve database:\n" );
+echo( '$test = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
+$test = $server->RetrieveDatabase( "test_milkolib" );
+echo( "$test ==> " );
+echo( ( "$test" == "test_milkolib" ) ? "OK\n" : "FALIED\n" );
 
 echo( "\n====================================================================================\n\n" );
-
-//
-// Get server.
-//
-echo( "Get server:\n" );
-echo( '$x = $db->Server();' . "\n" );
-$x = $db->Server();
-print_r( $x );
-
-echo( "\n" );
-
-//
-// Get connection.
-//
-echo( "Get connection:\n" );
-echo( '$x = $db->Connection();' . "\n" );
-$x = $db->Connection();
-var_dump( $x );
-
-echo( "\n" );
 
 //
 // List database collections.
 //
 echo( "List database collections:\n" );
-echo( '$list = $db->ListCollections();' . "\n" );
-$list = $db->ListCollections();
+echo( '$list = $test->ListCollections();' . "\n" );
+$list = $test->ListCollections();
 print_r( $list );
 
 echo( "\n" );
@@ -171,30 +83,46 @@ echo( "\n" );
 // List working collections.
 //
 echo( "List working collections:\n" );
-echo( '$list = $db->WorkingCollections();' . "\n" );
-$list = $db->WorkingCollections();
+echo( '$list = $test->WorkingCollections();' . "\n" );
+$list = $test->WorkingCollections();
 print_r( $list );
 
-echo( "\n" );
+echo( "\n====================================================================================\n\n" );
 
 //
 // Retrieve collection.
 //
 echo( "Retrieve collection:\n" );
-echo( '$col = $db->RetrieveCollection( "col0" );' . "\n" );
-$col = $db->RetrieveCollection( "col0" );
-print_r( $col );
+echo( '$result = $test->RetrieveCollection( "test_collection" );' . "\n" );
+$result = $test->RetrieveCollection( "test_collection" );
+echo( "$result ==> " );
+echo( ( "$result" == "test_collection" ) ? "OK\n" : "FALIED\n" );
 
 echo( "\n" );
+
+//
+// Retrieve non existing collection.
+//
+echo( "Retrieve non existing collection:\n" );
+echo( '$result = $test->RetrieveCollection( "UNKNOWN" );' . "\n" );
+$result = $test->RetrieveCollection( "UNKNOWN" );
+var_dump( $result );
+echo( "$result ==> " );
+echo( ( $result === NULL ) ? "OK\n" : "FALIED\n" );
+
+echo( "\n====================================================================================\n\n" );
 
 //
 // Create collection.
 //
 echo( "Create collection:\n" );
-echo( '$col = $db->RetrieveCollection( "NewCol" );' . "\n" );
-$col = $db->RetrieveCollection( "NewCol" );
-echo( '$list = $db->WorkingCollections();' . "\n" );
-$list = $db->WorkingCollections();
+echo( '$result = $test->RetrieveCollection( "NewCollection", \Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
+$result = $test->RetrieveCollection( "NewCollection", \Milko\PHPLib\Server::kFLAG_CREATE );
+echo( '$list = $test->ListCollections();' . "\n" );
+$list = $test->ListCollections();
+print_r( $list );
+echo( '$list = $test->WorkingCollections();' . "\n" );
+$list = $test->WorkingCollections();
 print_r( $list );
 
 echo( "\n" );
@@ -203,10 +131,13 @@ echo( "\n" );
 // Forget collection.
 //
 echo( "Forget collection:\n" );
-echo( '$col = $db->ForgetCollection( "NewCol" );' . "\n" );
-$col = $db->ForgetCollection( "NewCol" );
-echo( '$list = $db->WorkingCollections();' . "\n" );
-$list = $db->WorkingCollections();
+echo( '$result = $test->ForgetCollection( "NewCollection" );' . "\n" );
+$result = $test->ForgetCollection( "NewCollection" );
+echo( '$list = $test->ListCollections();' . "\n" );
+$list = $test->ListCollections();
+print_r( $list );
+echo( '$list = $test->WorkingCollections();' . "\n" );
+$list = $test->WorkingCollections();
 print_r( $list );
 
 echo( "\n" );
@@ -215,11 +146,15 @@ echo( "\n" );
 // Drop collection.
 //
 echo( "Drop collection:\n" );
-echo( '$col = $db->DropCollection( "col0" );' . "\n" );
-$col = $db->DropCollection( "col0" );
-echo( '$list = $db->WorkingCollections();' . "\n" );
-$list = $db->WorkingCollections();
+echo( '$result = $test->DropCollection( "test_collection" );' . "\n" );
+$result = $test->DropCollection( "test_collection" );
+echo( '$list = $test->ListCollections();' . "\n" );
+$list = $test->ListCollections();
+print_r( $list );
+echo( '$list = $test->WorkingCollections();' . "\n" );
+$list = $test->WorkingCollections();
 print_r( $list );
 
 
 ?>
+
