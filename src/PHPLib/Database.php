@@ -415,7 +415,7 @@ abstract class Database extends Container
 		//
 		$collection = $this->collectionRetrieve( $theCollection, $theOptions );
 		if( ($collection === NULL)
-		 && ($theFlags & Server::kFLAG_CREATE) )
+			&& ($theFlags & Server::kFLAG_CREATE) )
 			$collection = $this->collectionCreate( $theCollection, $theOptions );
 
 		//
@@ -427,9 +427,9 @@ abstract class Database extends Container
 			// Add collection.
 			//
 			$this->offsetSet( $theCollection, $collection );
-			
+
 			return $collection;														// ==>
-		
+
 		} // Created or retrieved.
 
 		//

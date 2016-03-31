@@ -237,6 +237,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @param string				$theCollection		Collection name.
 	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object.
+	 * @throws \InvalidArgumentException
 	 */
 	protected function collectionCreate( $theCollection, $theOptions )
 	{
@@ -245,6 +246,25 @@ class Database extends \Milko\PHPLib\Database
 		//
 		if( $theOptions === NULL )
 			$theOptions = [];
+		elseif( array_key_exists( kTOKEN_OPT_COLLECTION_TYPE, $theOptions ) )
+		{
+			switch( $tmp = $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] )
+			{
+				case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
+					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
+					$theOptions[ "type" ] = ArangoCollection::TYPE_EDGE;
+					break;
+
+				case kTOKEN_OPT_COLLECTION_TYPE_DOC:
+					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
+					$theOptions[ "type" ] = ArangoCollection::TYPE_DOCUMENT;
+					break;
+
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid collection type [$tmp]." );					// !@! ==>
+			}
+		}
 
 		//
 		// Handle collection tyoe.
@@ -293,7 +313,35 @@ class Database extends \Milko\PHPLib\Database
 		//
 		$collection = $this->offsetGet( $theCollection );
 		if( $collection !== NULL )
+		{
+			//
+			// Assert edge collection.
+			//
+			if( array_key_exists( kTOKEN_OPT_COLLECTION_TYPE, $theOptions ) )
+			{
+				//
+				// Decode collection type.
+				//
+				switch( $tmp = $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] )
+				{
+					case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
+						if( $collection->Connection()->getType()
+							!= ArangoCollection::TYPE_EDGE )
+							throw new \RuntimeException(
+								"Expecting an edges collection." );				// !@! ==>
+						break;
+
+					case kTOKEN_OPT_COLLECTION_TYPE_DOC:
+						if( $collection->Connection()->getType()
+							!= ArangoCollection::TYPE_DOCUMENT )
+							throw new \RuntimeException(
+								"Expecting a documents collection." );			// !@! ==>
+						break;
+				}
+			}
+			
 			return $collection;														// ==>
+		}
 
 		return NULL;																// ==>
 

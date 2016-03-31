@@ -154,5 +154,38 @@ const kTOKEN_OPT_DIRECTION_OUT = 'out';
  */
 const kTOKEN_OPT_DIRECTION_ANY = 'any';
 
+/*=======================================================================================
+ *	COLLECTION TYPE TOKENS																*
+ *======================================================================================*/
+
+/**
+ * Collection type.
+ *
+ * This token represents a controlled vocabulary that defines the type of a collection:
+ *
+ * <ul>
+ * 	<li><tt>{@link kTOKEN_OPT_COLLECTION_TYPE_DOC}</tt>: Documents repository.
+ * 	<li><tt>{@link kTOKEN_OPT_COLLECTION_TYPE_EDGE}</tt>: Edges repository.
+ * </ul>
+ */
+const kTOKEN_OPT_COLLECTION_TYPE = '$collType';
+
+/**
+ * Document collection.
+ *
+ * This token indicates a collection of type <em>document</em>, collections of this type
+ * store document records.
+ */
+const kTOKEN_OPT_COLLECTION_TYPE_DOC = 'docu';
+
+/**
+ * Edge collection.
+ *
+ * This token indicates a collection of type <em>edge</em>, collections of this type store
+ * predicate documents which represent a directed relationship from a source document to
+ * another destination document.
+ */
+const kTOKEN_OPT_COLLECTION_TYPE_EDGE = 'edge';
+
 
 ?>

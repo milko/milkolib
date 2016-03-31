@@ -47,8 +47,8 @@ if( kENGINE == "MONGO" )
 }
 elseif( kENGINE == "ARANGO" )
 {
-	echo('$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n");
-	$url = "tcp://localhost:8529/test_milkolib/test_collection";
+	echo('$url = "tcp://localhost:8529/test_milkolib";' . "\n");
+	$url = "tcp://localhost:8529/test_milkolib";
 	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
 	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
 }
@@ -80,8 +80,8 @@ echo( "\n" );
 // Instantiate predicates collection.
 //
 echo( "Instantiate predicates collection:\n" );
-echo( '$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, ["type" => \triagens\ArangoDb\Collection::TYPE_EDGE] );' . "\n" );
-$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, ["type" => \triagens\ArangoDb\Collection::TYPE_EDGE] );
+echo( '$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );' . "\n" );
+$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );
 var_dump( get_class( $predicates ) );
 echo( '$predicates->Truncate();' . "\n" );
 $predicates->Truncate();
