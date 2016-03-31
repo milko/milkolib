@@ -261,7 +261,7 @@ class Document extends Container
 			 && in_array( $theOffset, $this->lockedOffsets() ) )
 				throw new \RuntimeException (
 					"The property $theOffset cannot be modified: "
-					."the object is persistet.");								// !@! ==>
+					."the object is persistent.");								// !@! ==>
 
 			//
 			// Set modification state.
@@ -322,7 +322,7 @@ class Document extends Container
 			 && in_array( $theOffset, $this->lockedOffsets() ) )
 				throw new \RuntimeException (
 					"The property $theOffset cannot be modified: "
-					."the object is persistet.");								// !@! ==>
+					."the object is persistent.");								// !@! ==>
 
 			//
 			// Set modification state.

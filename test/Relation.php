@@ -290,23 +290,6 @@ print_r( $edge->getArrayCopy() );
 echo( "\n====================================================================================\n\n" );
 
 //
-// Get SRC edges.
-//
-echo( "Get SRC edges:\n" );
-echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );' . "\n" );
-$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );
-foreach( $result as $document )
-{
-	echo( "Class: " . get_class( $document ) . "\n" );
-	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
-	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
-	echo( "Data: " );
-	print_r( $document->getArrayCopy() );
-}
-
-echo( "\n" );
-
-//
 // Get SRC incoming edges.
 //
 echo( "Get SRC incoming edges:\n" );
@@ -338,14 +321,14 @@ foreach( $result as $document )
 	print_r( $document->getArrayCopy() );
 }
 
-echo( "\n====================================================================================\n\n" );
+echo( "\n" );
 
 //
-// Get DST edges.
+// Get SRC edges.
 //
-echo( "Get DST edges:\n" );
-echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );' . "\n" );
-$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );
+echo( "Get SRC edges:\n" );
+echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );' . "\n" );
+$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );
 foreach( $result as $document )
 {
 	echo( "Class: " . get_class( $document ) . "\n" );
@@ -355,7 +338,7 @@ foreach( $result as $document )
 	print_r( $document->getArrayCopy() );
 }
 
-echo( "\n" );
+echo( "\n====================================================================================\n\n" );
 
 //
 // Get DST incoming edges.
@@ -387,6 +370,59 @@ foreach( $result as $document )
 	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
 	echo( "Data: " );
 	print_r( $document->getArrayCopy() );
+}
+
+echo( "\n" );
+
+//
+// Get DST edges.
+//
+echo( "Get DST edges:\n" );
+echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );' . "\n" );
+$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );
+foreach( $result as $document )
+{
+	echo( "Class: " . get_class( $document ) . "\n" );
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
+}
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Modify source vertex.
+//
+echo( "Modify source vertex:\n" );
+try
+{
+	echo( '$edge[ predicates->VertexSource() ] = $dst;' . "\n" );
+	$edge[ $predicates->VertexSource() ] = $dst;
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+}
+
+echo( "\n" );
+
+//
+// Modify destination vertex.
+//
+echo( "Modify destination vertex:\n" );
+try
+{
+	echo( '$edge[ predicates->VertexDestination() ] = $src;' . "\n" );
+	$edge[ $predicates->VertexDestination() ] = $src;
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
 }
 
 

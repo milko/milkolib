@@ -11,6 +11,7 @@ namespace Milko\PHPLib\ArangoDB;
 use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Collection as ArangoCollection;
 use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
+use triagens\ArangoDb\Document;
 use triagens\ArangoDb\Endpoint as ArangoEndpoint;
 use triagens\ArangoDb\Connection as ArangoConnection;
 use triagens\ArangoDb\ConnectionOptions as ArangoConnectionOptions;
@@ -728,9 +729,13 @@ class Collection extends \Milko\PHPLib\Collection
 		}
 
 		//
-		// Init local storage.
+		// Convert to native document.
 		//
 		$document = $this->NewNativeDocument( $theDocument );
+
+		//
+		// Instantiate handler.
+		//
 		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
 
 		//
@@ -743,7 +748,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Container )
 			$this->normaliseInsertedDocument(
-				$theDocument, $document, $document->getKey() );
+				$theDocument, $document, $key );
 
 		return $key;																// ==>
 

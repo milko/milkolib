@@ -638,7 +638,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Normalise inserted document.
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Container )
-			$this->normaliseInsertedDocument( $theDocument, $document, $key );
+			$this->normaliseInsertedDocument(
+				$theDocument, $document, $key );
 
 		return $key;																// ==>
 
