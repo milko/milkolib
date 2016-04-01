@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -544,7 +544,26 @@ elseif( kENGINE == "MONGO" )
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "changed" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "changed" ] );
-print_r( $result );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
 
 echo( "\n" );
 
@@ -597,7 +616,26 @@ $result = $test->Replace( [ $test->KeyOffset() => "ID1", "color" => "pink", "sta
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "replaced" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "replaced" ] );
-print_r( $result );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -618,7 +656,17 @@ echo( "\n" );
 echo( "Find by ID standard:\n" );
 echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
 $result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
-print_r( $result );
+echo( "Class: " . get_class( $document ) . "\n" );
+$tmp = $document[ $test->CLassOffset() ];
+echo( "Document class: [$tmp]\n" );
+$tmp = $document[ $test->KeyOffset() ];
+echo( "Document key: [$tmp]\n" );
+$tmp = $document[ $test->RevisionOffset() ];
+echo( "Document revision: [$tmp]\n" );
+echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $document->getArrayCopy() );
 echo( "\n" );
 
 echo( "\n" );
@@ -640,8 +688,17 @@ echo( "\n" );
 echo( "Find by handle:\n" );
 echo( '$result = $test->FindByHandle( $handle );' . "\n" );
 $result = $test->FindByHandle( $handle );
-print_r( $result );
-echo( "\n" );
+echo( "Class: " . get_class( $document ) . "\n" );
+$tmp = $document[ $test->CLassOffset() ];
+echo( "Document class: [$tmp]\n" );
+$tmp = $document[ $test->KeyOffset() ];
+echo( "Document key: [$tmp]\n" );
+$tmp = $document[ $test->RevisionOffset() ];
+echo( "Document revision: [$tmp]\n" );
+echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $document->getArrayCopy() );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -651,8 +708,26 @@ echo( "\n=======================================================================
 echo( "Find many by ID native:\n" );
 echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );' . "\n" );
 $result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
-print_r( $result );
-echo( "\n" );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
 
 echo( "\n" );
 
@@ -662,8 +737,26 @@ echo( "\n" );
 echo( "Find many by ID standard:\n" );
 echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
 $result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
-print_r( $result );
-echo( "\n" );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
 
 echo( "\n" );
 
@@ -695,8 +788,26 @@ echo( "\n" );
 echo( "Find by many by handle:\n" );
 echo( '$result = $test->FindByHandle( $handle, [kTOKEN_OPT_MANY => TRUE] );' . "\n" );
 $result = $test->FindByHandle( $handle, [kTOKEN_OPT_MANY => TRUE] );
-print_r( $result );
-echo( "\n" );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -1060,7 +1171,26 @@ elseif( kENGINE == "MONGO" )
 	print_r( $pipeline );
 	$result = $test->MapReduce( $pipeline );
 }
-print_r( $result );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
 
 echo( "\n====================================================================================\n\n" );
 

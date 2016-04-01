@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8bc12787-e3d0-41d0-b0bd-e8bf5e92355d" name="Default" comment="&#10;">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Relations.php" afterPath="$PROJECT_DIR$/test/Relations.php" />
     </list>
     <ignored path="milkolib.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,7 +23,18 @@
     <favorites_list name="milkolib" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Relations.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test/Relations.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="918">
+              <caret line="1193" column="0" selection-start-line="1193" selection-start-column="0" selection-end-line="1193" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -79,10 +89,10 @@
         <option value="$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/ArangoDB/Relations.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Relation.php" />
-        <option value="$PROJECT_DIR$/test/Relations.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/MongoDB/Database.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/MongoDB/Relations.php" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/test/Relations.php" />
       </list>
     </option>
   </component>
@@ -360,12 +370,12 @@
       <workItem from="1459525371311" duration="758000" />
       <workItem from="1459526309479" duration="1798000" />
       <workItem from="1459536288848" duration="86000" />
-      <workItem from="1459536382770" duration="308000" />
+      <workItem from="1459536382770" duration="1198000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="239833000" />
+    <option name="totallyTimeSpent" value="240723000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="2560" height="1413" extended-state="6" />
@@ -644,8 +654,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/Relations.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+        <state relative-caret-position="918">
+          <caret line="1193" column="0" selection-start-line="1193" selection-start-column="0" selection-end-line="1193" selection-end-column="0" />
           <folding />
         </state>
       </provider>
