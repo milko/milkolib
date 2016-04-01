@@ -1,5 +1,5 @@
 composer.phar
-/docs/
+/docs/*
 /vendor/
 /scrap/
 
