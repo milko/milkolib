@@ -201,10 +201,29 @@ class Database extends \Milko\PHPLib\Database
 	protected function collectionCreate( $theCollection, $theOptions )
 	{
 		//
-		// Init local storage.
+		// Normalise options.
 		//
 		if( $theOptions === NULL )
 			$theOptions = [];
+		elseif( array_key_exists( kTOKEN_OPT_COLLECTION_TYPE, $theOptions ) )
+		{
+			switch( $tmp = $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] )
+			{
+				case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
+					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
+					return new Relations( $this, $theCollection, $theOptions );		// ==>
+					break;
+
+				case kTOKEN_OPT_COLLECTION_TYPE_DOC:
+					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
+					return new Collection( $this, $theCollection, $theOptions );	// ==>
+					break;
+
+				default:
+					throw new \InvalidArgumentException (
+						"Invalid collection type [$tmp]." );					// !@! ==>
+			}
+		}
 
 		return new Collection( $this, $theCollection, $theOptions );				// ==>
 	}
@@ -229,19 +248,16 @@ class Database extends \Milko\PHPLib\Database
 	protected function collectionRetrieve( $theCollection, $theOptions )
 	{
 		//
+		// Normalise options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		//
 		// Check if collection exists.
 		//
 		if( in_array( $theCollection, $this->collectionList( $theOptions ) ) )
-		{
-			//
-			// Init local storage.
-			//
-			if( $theOptions === NULL )
-				$theOptions = [];
-			
-			return new Collection( $this, $theCollection, $theOptions );			// ==>
-		
-		} // Collection exists.
+			return $this->offsetGet( $theCollection );								// ==>
 
 		return NULL;																// ==>
 	}

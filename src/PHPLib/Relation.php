@@ -77,10 +77,10 @@ class Relation extends \Milko\PHPLib\Document
 		//
 		// Assert collection type.
 		//
-		if( ! ($theCollection instanceof \Milko\PHPLib\ArangoDB\Relations) )
-			throw new \InvalidArgumentException (
-				"Invalid collection type: "
-				."expecting an edge collection." );								// !@! ==>
+//		if( ! ($theCollection instanceof \Milko\PHPLib\ArangoDB\Relations) )
+//			throw new \InvalidArgumentException (
+//				"Invalid collection type: "
+//				."expecting an edge collection." );								// !@! ==>
 
 		//
 		// Call parent constructor.

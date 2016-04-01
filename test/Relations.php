@@ -824,8 +824,8 @@ echo( "\n=======================================================================
 echo( "Find first record native by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+	$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
 }
 elseif( kENGINE == "MONGO" )
 {

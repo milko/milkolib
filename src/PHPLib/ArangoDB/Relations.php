@@ -105,7 +105,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * <h4>Convert native data to standard document.</h4>
 	 *
 	 * We overload this method to get the source and destination vertices from the
-	 * {@link ArangoEdge} object.
+	 * {@link ArangoEdge} object and we return by default a {@link Relation} object.
 	 *
 	 * @param mixed						$theData			Database native document.
 	 * @param string					$theClass			Expected class name.
@@ -119,30 +119,75 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	public function NewDocument( $theData, $theClass = NULL )
 	{
 		//
-		// Call parent method.
+		// Convert ArangoDocument to aray.
 		//
-		$document = parent::NewDocument( $theData, $theClass );
-
-		//
-		// Get source and destination vertices.
-		//
-		if( $theData instanceof ArangoEdge )
+		if( $theData instanceof ArangoDocument )
 		{
 			//
-			// Set incoming vertex.
+			// Get document data.
 			//
-			if( ($tmp = $theData->getFrom()) !== NULL )
-				$document[ $this->VertexSource() ] = $tmp;
+			$document = $theData->getAll();
 
 			//
-			// Set incoming vertex.
+			// Set key.
 			//
-			if( ($tmp = $theData->getTo()) !== NULL )
-				$document[ $this->VertexDestination() ] = $tmp;
+			if( ($key = $theData->getId()) !== NULL )
+				$document[ $this->KeyOffset() ] = $key;
+
+			//
+			// Set revision.
+			//
+			if( ($revision = $theData->getRevision()) !== NULL )
+				$document[ $this->RevisionOffset() ] = $revision;
+
+			//
+			// Get source and destination vertices.
+			//
+			if( $theData instanceof ArangoEdge )
+			{
+				//
+				// Set incoming vertex.
+				//
+				if( ($tmp = $theData->getFrom()) !== NULL )
+					$document[ $this->VertexSource() ] = $tmp;
+
+				//
+				// Set incoming vertex.
+				//
+				if( ($tmp = $theData->getTo()) !== NULL )
+					$document[ $this->VertexDestination() ] = $tmp;
+
+			} // ArangoEdge.
 
 		} // ArangoDocument.
 
-		return $document;															// ==>
+		//
+		// Convert other types of documents.
+		//
+		elseif( $theData instanceof \Milko\PHPLib\Container )
+			$document = $theData->toArray();
+		else
+			$document = (array)$theData;
+
+		//
+		// Use provided class name.
+		//
+		if( $theClass !== NULL )
+		{
+			$theClass = (string)$theClass;
+			return new $theClass( $this, $document );								// ==>
+		}
+
+		//
+		// Use class in data.
+		//
+		if( array_key_exists( $this->ClassOffset(), $document ) )
+		{
+			$class = $document[ $this->ClassOffset() ];
+			return new $class( $this, $document );									// ==>
+		}
+
+		return new \Milko\PHPLib\Relation( $this, $document );						// ==>
 
 	} // NewDocument.
 
