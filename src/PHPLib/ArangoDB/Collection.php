@@ -422,34 +422,6 @@ class Collection extends \Milko\PHPLib\Collection
 	public function RevisionOffset()					{	return kTAG_ARANGO_REVISION;	}
 
 
-	/*===================================================================================
-	 *	RelationSourceOffset															*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return the relationship source offset.</h4>
-	 *
-	 * We overload this method to use the {@link kTAG_ARANGO_REL_FROM} constant.
-	 *
-	 * @return string				Relationship source offset.
-	 */
-	public function RelationSourceOffset()				{	return kTAG_ARANGO_REL_FROM;	}
-
-
-	/*===================================================================================
-	 *	RelationDestinationOffset														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return the relationship destination offset.</h4>
-	 *
-	 * We overload this method to use the {@link kTAG_ARANGO_REL_FROM} constant.
-	 *
-	 * @return string				Relationship source offset.
-	 */
-	public function RelationDestinationOffset()				{	return kTAG_ARANGO_REL_TO;	}
-
-
 
 /*=======================================================================================
  *																						*

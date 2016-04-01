@@ -445,6 +445,59 @@ abstract class Database extends Container
 
 
 	/*===================================================================================
+	 *	RetrieveRelations																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a relations object.</h4>
+	 *
+	 * This method can be used to create or retrieve a relationships collection object, it
+	 * will return a collection that can hold edges.
+	 *
+	 * The method makes use of the {@link RetrieveCollection()} method by seting the
+	 * requested collection type.
+	 *
+	 * @param string				$theCollection		Collection name.
+	 * @param string				$theFlags			Flags bitfield.
+	 * @param array					$theOptions			Collection native options.
+	 * @return Collection			Collection object or <tt>NULL</tt>.
+	 * @throws \RuntimeException
+	 *
+	 * @uses collectionCreate()
+	 * @uses collectionRetrieve()
+	 *
+	 * @example
+	 * // Retrieve an existing collection.<br/>
+	 * $server = new DataServer( 'driver://user:pass@host:8989/database/collection' );<br/>
+	 * $database = $server->RetrieveDatabase( "database" );<br/>
+	 * $collection = $database->RetrieveRelations( "edges" );
+	 * @example
+	 * // Create a new collection.<br/>
+	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
+	 * $database = $server->RetrieveDatabase( "database", kFLAG_CREATE );<br/>
+	 * $collection = $database->RetrieveRelations( "edges", kFLAG_CREATE );
+	 */
+	public function RetrieveRelations( $theCollection,
+									   $theFlags = Server::kFLAG_DEFAULT,
+									   $theOptions = NULL )
+	{
+		//
+		// Init requested collection type.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		//
+		// Set requested collection type.
+		//
+		$theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] = kTOKEN_OPT_COLLECTION_TYPE_EDGE;
+
+		return $this->RetrieveCollection( $theCollection, $theFlags, $theOptions );	// ==>
+
+	} // RetrieveRelations.
+
+
+	/*===================================================================================
 	 *	ForgetCollection																*
 	 *==================================================================================*/
 

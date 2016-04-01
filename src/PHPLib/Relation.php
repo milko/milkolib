@@ -85,7 +85,31 @@ class Relation extends \Milko\PHPLib\Document
 		//
 		// Call parent constructor.
 		//
-		parent::__construct( $theCollection, $theData );
+		Container::__construct( $theData );
+
+		//
+		// Set collection.
+		//
+		$this->mCollection = $theCollection;
+
+		//
+		// Save old class.
+		//
+		$class = $this->offsetGet( $this->mCollection->ClassOffset() );
+
+		//
+		// Add class.
+		// Note that we overwrite the eventual existing class name
+		// and we use the ancestor class method, since the class property is locked.
+		//
+		\ArrayObject::offsetSet(
+			$this->mCollection->ClassOffset(), get_class( $this ) );
+
+		//
+		// Reset modification state.
+		//
+		if( $class == $this->offsetGet( $this->mCollection->ClassOffset() ) )
+			$this->mStatus &= (~ self::kFLAG_DOC_MODIFIED);
 
 	} // Constructor.
 
@@ -119,8 +143,8 @@ class Relation extends \Milko\PHPLib\Document
 	protected function lockedOffsets()
 	{
 		return array_merge( parent::lockedOffsets(),
-							[ $this->mCollection->RelationSourceOffset(),
-							  $this->mCollection->RelationDestinationOffset() ] );	// ==>
+							[ $this->mCollection->VertexSource(),
+							  $this->mCollection->VertexDestination() ] );			// ==>
 
 	} // lockedOffsets.
 
@@ -145,8 +169,8 @@ class Relation extends \Milko\PHPLib\Document
 	protected function requiredOffsets()
 	{
 		return array_merge( parent::requiredOffsets(),
-							[ $this->mCollection->RelationSourceOffset(),
-							  $this->mCollection->RelationDestinationOffset() ] );	// ==>
+							[ $this->mCollection->VertexSource(),
+							  $this->mCollection->VertexDestination() ] );			// ==>
 
 	} // requiredOffsets.
 

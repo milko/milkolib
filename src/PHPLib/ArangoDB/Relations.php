@@ -333,7 +333,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		//
 		if( $theDocument instanceof \Milko\PHPLib\Container )
 			$this->normaliseInsertedDocument(
-					$theDocument, $document, $document->getKey() );
+					$theDocument, $document, $key );
 
 		return $key;																// ==>
 
@@ -631,8 +631,11 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	{
 		//
 		// Set source and destination vertices.
+		// Note that here we also check uf thye naticve document is an edge,
+		// if that is not the case, we assume the vertex references are in the properties.
 		//
-		if( $theDocument instanceof \Milko\PHPLib\Relation )
+		if( ($theData instanceof ArangoEdge)
+		 && ($theDocument instanceof \Milko\PHPLib\Relation) )
 		{
 			$theDocument->offsetSet( $this->VertexSource(), $theData->getFrom() );
 			$theDocument->offsetSet( $this->VertexDestination(), $theData->getTo() );

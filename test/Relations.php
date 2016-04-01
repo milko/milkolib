@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -33,6 +33,7 @@ require_once( "functions.php" );
 //
 class SRC extends Milko\PHPLib\Document{}
 class DST extends Milko\PHPLib\Document{}
+class DerivedFromDocument extends \Milko\PHPLib\Document {}
 
 //
 // Instantiate server.
@@ -80,20 +81,11 @@ echo( "\n" );
 // Instantiate predicates collection.
 //
 echo( "Instantiate predicates collection:\n" );
-if( kENGINE == "MONGO" )
-{
-	echo( '$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
-	$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE );
-}
-elseif( kENGINE == "ARANGO" )
-{
-	echo( '$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, ["type" => \triagens\ArangoDb\Collection::TYPE_EDGE] );' . "\n" );
-	$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, ["type" => \triagens\ArangoDb\Collection::TYPE_EDGE] );
-}
-var_dump( get_class( $predicates ) );
-echo( '$predicates->Truncate();' . "\n" );
-$predicates->Truncate();
-exit;
+echo( '$test = $database->RetrieveRelations( "edges", Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
+$test = $database->RetrieveRelations( "edges", Milko\PHPLib\Server::kFLAG_CREATE );
+var_dump( get_class( $test ) );
+echo( '$test->Truncate();' . "\n" );
+$test->Truncate();
 
 echo( "\n====================================================================================\n\n" );
 
@@ -344,11 +336,20 @@ var_dump( $document );
 echo( "\n====================================================================================\n\n" );
 
 //
+// Insert nodes.
+//
+echo( "Insert nodes:\n" );
+for( $i = 1; $i < 10; $i++ )
+	$nodes->Insert( [$nodes->KeyOffset() => "Node$i" ] );
+
+echo( "\n====================================================================================\n\n" );
+
+//
 // Insert native document.
 //
 echo( "Insert native document:\n" );
-echo( '$document = $test->NewNativeDocument( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );' . "\n" );
-$document = $test->NewNativeDocument( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );
+echo( '$document = $test->NewNativeDocument( [$test->VertexSource() => "nodes/Node1", $test->VertexDestination() => "nodes/Node2", "data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );' . "\n" );
+$document = $test->NewNativeDocument( [$test->VertexSource() => "nodes/Node1", $test->VertexDestination() => "nodes/Node2", "data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -360,8 +361,8 @@ echo( "\n" );
 // Insert container.
 //
 echo( "Insert container:\n" );
-echo( '$document = new Milko\PHPLib\Container( [$test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );' . "\n" );
-$document = new Milko\PHPLib\Container( [$test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );
+echo( '$document = new Milko\PHPLib\Container( [$test->VertexSource() => "nodes/Node3", $test->VertexDestination() => "nodes/Node4", $test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );' . "\n" );
+$document = new Milko\PHPLib\Container( [$test->VertexSource() => "nodes/Node3", $test->VertexDestination() => "nodes/Node4", $test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -373,8 +374,31 @@ echo( "\n" );
 // Insert document.
 //
 echo( "Insert document:\n" );
-echo( '$document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );' . "\n" );
-$document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );
+echo( '$document = new Milko\PHPLib\Document( $test, [$test->VertexSource() => "nodes/Node5", $test->VertexDestination() => "nodes/Node6", "data" => "XXX", "color" => "red"] );' . "\n" );
+$document = new Milko\PHPLib\Document( $test, [$test->VertexSource() => "nodes/Node5", $test->VertexDestination() => "nodes/Node6", "data" => "XXX", "color" => "red"] );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
+var_dump( $result );
+echo( "Class: " . get_class( $document ) . "\n" );
+$tmp = $document[ $test->CLassOffset() ];
+echo( "Document class: [$tmp]\n" );
+$tmp = $document[ $test->KeyOffset() ];
+echo( "Document key: [$tmp]\n" );
+$tmp = $document[ $test->RevisionOffset() ];
+echo( "Document revision: [$tmp]\n" );
+echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $document->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Insert relation.
+//
+echo( "Insert relation:\n" );
+echo( '$document = new Milko\PHPLib\Relation( $test, [$test->VertexSource() => "nodes/Node7", $test->VertexDestination() => "nodes/Node8", "data" => "XXX", "color" => "red"] );' . "\n" );
+$document = new Milko\PHPLib\Relation( $test, [$test->VertexSource() => "nodes/Node7", $test->VertexDestination() => "nodes/Node8", "data" => "XXX", "color" => "red"] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -397,11 +421,11 @@ echo( "\n=======================================================================
 //
 echo( "Insert many documents:\n" );
 $documents = [];
-$documents[0] = [ $test->KeyOffset() => "ID2", "data" => "XXX", "color" => "yellow" ];
-$documents[1] = $test->NewNativeDocument( [ "name" => "Nati" ] );
-$documents[2] = new Milko\PHPLib\Document( $test, [ $test->KeyOffset() => 7, "name" => "Cangalovic" ] );
-$documents[3] = new \DerivedFromDocument( $test, [ "name" => "no" ] );
-$documents[4] = new Milko\PHPLib\Container( [ "name" => "yes" ] );
+$documents[0] = [ $test->VertexSource() => "nodes/Node9", $test->VertexDestination() => "nodes/Node1", $test->KeyOffset() => "ID2", "data" => "XXX", "color" => "yellow" ];
+$documents[1] = $test->NewNativeDocument( [ $test->VertexSource() => "nodes/Node2", $test->VertexDestination() => "nodes/Node3", "name" => "Nati" ] );
+$documents[2] = new Milko\PHPLib\Relation( $test, [ $test->VertexSource() => "nodes/Node4", $test->VertexDestination() => "nodes/Node5", $test->KeyOffset() => 7, "name" => "Cangalovic" ] );
+$documents[3] = new \DerivedFromDocument( $test, [ $test->VertexSource() => "nodes/Node6", $test->VertexDestination() => "nodes/Node7", "name" => "no" ] );
+$documents[4] = new Milko\PHPLib\Container( [ $test->VertexSource() => "nodes/Node8", $test->VertexDestination() => "nodes/Node9", "name" => "yes" ] );
 echo( "»»»[0] " ); print_r( $documents[0] );
 echo( "»»»[1] " ); print_r( $documents[1] );
 echo( "»»»[2] Class: " . get_class( $documents[2] ) . "\n" );
@@ -496,8 +520,8 @@ if( kENGINE == "MONGO" )
 }
 elseif( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'red\' RETURN r"] );' . "\n" );
-	$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'red' RETURN r"] );
+	echo( '$result = $test->CountByQuery( ["query" => "FOR r IN edges FILTER r.color == \'red\' RETURN r"] );' . "\n" );
+	$result = $test->CountByQuery( ["query" => "FOR r IN edges FILTER r.color == 'red' RETURN r"] );
 }
 var_dump( $result );
 
@@ -509,8 +533,8 @@ echo( "\n=======================================================================
 echo( "Update first record:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN test_collection FILTER r.color == \'green\' RETURN r"], [ kTOKEN_OPT_MANY => FALSE ] );' . "\n" );
-	$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN test_collection FILTER r.color == 'green' RETURN r"], [ kTOKEN_OPT_MANY => FALSE ] );
+	echo( '$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN edges FILTER r.color == \'green\' RETURN r"], [ kTOKEN_OPT_MANY => FALSE ] );' . "\n" );
+	$result = $test->Update( [ "color" => "blue", "status" => "changed" ], ["query" => "FOR r IN edges FILTER r.color == 'green' RETURN r"], [ kTOKEN_OPT_MANY => FALSE ] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -530,8 +554,8 @@ echo( "\n" );
 echo( "Update all records:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->Update( [ "color" => "yellow", "status" => "was red" ], ["query" => "FOR r IN test_collection FILTER r.color == \'red\' RETURN r"] );' . "\n" );
-	$result = $test->Update( [ "color" => "yellow", "status" => "was red" ], ["query" => "FOR r IN test_collection FILTER r.color == 'red' RETURN r"] );
+	echo( '$result = $test->Update( [ "color" => "yellow", "status" => "was red" ], ["query" => "FOR r IN edges FILTER r.color == \'red\' RETURN r"] );' . "\n" );
+	$result = $test->Update( [ "color" => "yellow", "status" => "was red" ], ["query" => "FOR r IN edges FILTER r.color == 'red' RETURN r"] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -818,8 +842,8 @@ echo( "\n" );
 echo( "Find first record standard by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+	$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -855,8 +879,8 @@ echo( "\n" );
 echo( "Find first record key by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
+	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
+	$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -873,8 +897,8 @@ echo( "\n" );
 echo( "Find first record handle by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+	$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -891,8 +915,8 @@ echo( "\n=======================================================================
 echo( "Find all records native by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+	$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -909,8 +933,8 @@ echo( "\n" );
 echo( "Find all records standard by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+	$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -946,8 +970,8 @@ echo( "\n" );
 echo( "Find all records key by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
+	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
+	$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -964,8 +988,8 @@ echo( "\n" );
 echo( "Find all records handle by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+	$result = $test->FindByQuery( ["query" => "FOR r IN edges FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -1002,8 +1026,8 @@ echo( "\n" );
 echo( "Count by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.data == \'XXX\' OR r.status == \'replaced\' RETURN r"] );' . "\n" );
-	$result = $test->CountByQuery( ["query" => "FOR r IN test_collection FILTER r.data == 'XXX' OR r.status == 'replaced' RETURN r"] );
+	echo( '$result = $test->CountByQuery( ["query" => "FOR r IN edges FILTER r.data == \'XXX\' OR r.status == \'replaced\' RETURN r"] );' . "\n" );
+	$result = $test->CountByQuery( ["query" => "FOR r IN edges FILTER r.data == 'XXX' OR r.status == 'replaced' RETURN r"] );
 }
 elseif( kENGINE == "MONGO" )
 {
@@ -1020,7 +1044,7 @@ echo( "\n=======================================================================
 echo( "Aggregate records:\n" );
 if( kENGINE == "ARANGO" )
 {
-	$pipeline = ["query" => "FOR r IN test_collection COLLECT theColour = r.color WITH COUNT INTO theCount RETURN{ theColour, theCount }"];
+	$pipeline = ["query" => "FOR r IN edges COLLECT theColour = r.color WITH COUNT INTO theCount RETURN{ theColour, theCount }"];
 	echo( '$pipeline = ' );
 	print_r( $pipeline );
 	echo( '$result = $test->MapReduce( $pipeline );' . "\n" );
