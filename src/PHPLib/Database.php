@@ -415,7 +415,7 @@ abstract class Database extends Container
 		//
 		$collection = $this->collectionRetrieve( $theCollection, $theOptions );
 		if( ($collection === NULL)
-			&& ($theFlags & Server::kFLAG_CREATE) )
+		 && ($theFlags & Server::kFLAG_CREATE) )
 			$collection = $this->collectionCreate( $theCollection, $theOptions );
 
 		//
@@ -790,7 +790,7 @@ abstract class Database extends Container
 	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object.
 	 */
-	abstract protected function collectionCreate( $theCollection, $theOptions );
+	abstract protected function collectionCreate( $theCollection, $theOptions = NULL );
 
 
 	/*===================================================================================
@@ -819,7 +819,7 @@ abstract class Database extends Container
 	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 */
-	abstract protected function collectionRetrieve( $theCollection, $theOptions );
+	abstract protected function collectionRetrieve( $theCollection, $theOptions = NULL );
 
 
 

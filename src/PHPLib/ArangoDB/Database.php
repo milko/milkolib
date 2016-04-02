@@ -239,7 +239,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @return Collection			Collection object.
 	 * @throws \InvalidArgumentException
 	 */
-	protected function collectionCreate( $theCollection, $theOptions )
+	protected function collectionCreate( $theCollection, $theOptions = NULL )
 	{
 		//
 		// Normalise options.
@@ -300,7 +300,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
 	 */
-	protected function collectionRetrieve( $theCollection, $theOptions )
+	protected function collectionRetrieve( $theCollection, $theOptions = NULL )
 	{
 		//
 		// Normalise options.

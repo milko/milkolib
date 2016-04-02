@@ -13,7 +13,9 @@ namespace Milko\PHPLib\MongoDB;
  *									Collection.php										*
  *																						*
  *======================================================================================*/
+
 use Milko\PHPLib\Container;
+use Milko\PHPLib\Server;
 use MongoDB\Model\BSONDocument;
 
 /**
@@ -226,7 +228,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Add key.
 		//
 		if( array_key_exists( $this->KeyOffset(), $document ) )
-			return [ $this->collectionName(), $document[ $this->KeyOffset() ];		// ==>
+			return [ $this->collectionName(), $document[ $this->KeyOffset() ] ];	// ==>
 
 		throw new \InvalidArgumentException (
 			"Data is missing the document key." );								// !@! ==>
@@ -249,7 +251,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses KeyOffset()
 	 */
-	public function NewDocumentKey( $theDocument )
+	public function NewDocumentKey( $theData )
 	{
 		//
 		// Handle BSONDocument.
@@ -510,7 +512,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses Database()
 	 * @uses \MongoDB\Database::selectCollection()
 	 */
-	protected function collectionNew( $theCollection, $theOptions )
+	protected function collectionNew( $theCollection, $theOptions = NULL )
 	{
 		//
 		// Init options.
@@ -899,37 +901,30 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	doFindByHandle																	*
+	 *	doFindHandle																	*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Find by handle.</h4>
 	 *
-	 * We implement this method to use the <tt>findOne</tt> method.
+	 * We implement the method by using the
+	 * {@link triagens\ArangoDb\CollectionHandler::lookupByKeys()} method if the
+	 * {@link kTOKEN_OPT_MANY} option is set; the
+	 * {@link triagens\ArangoDb\CollectionHandler::getById()} method if not.
 	 *
 	 * @param mixed					$theHandle			The document handle(s).
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found document(s).
-	 * @throws \InvalidArgumentException
 	 *
-	 * @uses collectionName()
+	 * @uses Database()
+	 * @uses Connection()
 	 * @uses collectionNew()
-	 * @uses KeyOffset()
-	 * @uses NewDocument()
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentHandle()
-	 * @uses normaliseSelectedDocument()
-	 * @uses \MongoDB\Collection::findOne()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
 	 * @see kTOKEN_OPT_MANY
-	 * @see kTOKEN_OPT_FORMAT
 	 */
-	protected function doFindByHandle( $theHandle, array $theOptions )
+	protected function doFindHandle( $theHandle, array $theOptions )
 	{
-		//
-		// Init local storage.
-		//
-		$list = [];
-
 		//
 		// Convert scalar to array.
 		//
@@ -939,15 +934,15 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Iterate handles.
 		//
+		$result = [];
 		foreach( $theHandle as $handle )
 		{
 			//
 			// Get collection.
 			//
-			if( $handle[ 0 ] == $this->collectionName() )
-				$collection = $this;
-			else
-				$collection = $this->Database()->collectionRetrieve( $theHandle[ 0 ] );
+			$collection =
+				$this->Database()
+					->RetrieveCollection( $handle[ 0 ], Server::kFLAG_ASSERT );
 
 			//
 			// Get by key.
@@ -955,52 +950,22 @@ class Collection extends \Milko\PHPLib\Collection
 			$found =
 				$collection->Connection()->findOne(
 					[ $collection->KeyOffset() => $handle[ 1 ] ] );
+
+			//
+			// Add if found.
+			//
 			if( $found !== NULL )
-			{
-				//
-				// Format document.
-				//
-				switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
-				{
-					case kTOKEN_OPT_FORMAT_STANDARD:
-						$document = $this->NewDocument( $found );
-						$this->normaliseSelectedDocument( $document, $found );
-						$list[] = $document;
-						break;
-
-					case kTOKEN_OPT_FORMAT_NATIVE:
-						$list[] = $found;
-						break;
-
-					case kTOKEN_OPT_FORMAT_HANDLE:
-						$list[] = $this->NewDocumentHandle( $found );
-						break;
-
-					case kTOKEN_OPT_FORMAT_KEY:
-						$list[] = $this->NewDocumentKey( $found );
-						break;
-
-					default:
-						throw new \InvalidArgumentException (
-							"Invalid conversion format code." );				// !@! ==>
-
-				} // Formatted document.
-
-			} // Found.
+				$result[] = $found;
 
 		} // Iterating handles.
 
-		if( $theOptions[ kTOKEN_OPT_MANY ] )
-			return $list;															// ==>
-		if( count( $list ) )
-			return $list[ 0 ];														// ==>
-		return NULL;																// ==>
+		return $result;																// ==>
 
-	} // doFindByHandle.
+	} // doFindHandle.
 
 
 	/*===================================================================================
-	 *	doFindByExample																	*
+	 *	doFindExample																	*
 	 *==================================================================================*/
 
 	/**
@@ -1012,112 +977,43 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We convert the {@link kTOKEN_OPT_SKIP} and {@link kTOKEN_OPT_LIMIT} parameters into
 	 * respectively the <tt>skip</tt> and <tt>limit</tt> native options.
 	 *
-	 * @param mixed					$theDocument		The example document.
-	 * @param array					$theOptions			Find options.
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Driver native options.
 	 * @return mixed				The found records.
-	 * @throws \InvalidArgumentException
 	 *
 	 * @uses Connection()
-	 * @uses NewDocument()
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentHandle()
-	 * @uses normaliseSelectedDocument()
+	 * @uses NewDocumentArray()
 	 * @uses \MongoDB\Collection::find()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
-	 * @see kTOKEN_OPT_FORMAT
 	 */
-	protected function doFindByExample( $theDocument, array $theOptions )
+	protected function doFindExample( $theDocument, array $theOptions )
 	{
 		//
-		// Init local storage.
+		// Convert to native options.
 		//
 		$options = [];
+		if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+			$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+			$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
 
 		//
-		// Normalise filter.
+		// Normalise document.
 		//
-		if( $theDocument === NULL )
-			$filter = [];
-		elseif( $theDocument instanceof \Milko\PHPLib\Container )
-			$filter = $theDocument->toArray();
-		else
-			$filter = (array)$theDocument;
+		$filter = $this->NewDocumentArray( $theDocument );
 
-		//
-		// Handle options.
-		//
-		if( count( $theOptions ) )
-		{
-			//
-			// Force skip if limit is there.
-			//
-			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-				&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
-				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
+		return $this->Connection()->find( $filter, $options );						// ==>
 
-			//
-			// Convert to native options.
-			//
-			if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
-				$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
-			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
-				$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
-		}
-
-		//
-		// Make selection.
-		//
-		$result = $this->Connection()->find( $filter, $options );
-
-		//
-		// Handle native result.
-		//
-		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
-			return $result;															// ==>
-
-		//
-		// Iterate cursor.
-		//
-		$list = [];
-		foreach( $result as $document )
-		{
-			//
-			// Format document.
-			//
-			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
-			{
-				case kTOKEN_OPT_FORMAT_STANDARD:
-					$tmp = $this->NewDocument( $document );
-					$this->normaliseSelectedDocument( $tmp, $document );
-					$list[] = $tmp;
-					break;
-
-				case kTOKEN_OPT_FORMAT_HANDLE:
-					$list[] = $this->NewDocumentHandle( $document );
-					break;
-
-				case kTOKEN_OPT_FORMAT_KEY:
-					$list[] = $this->NewDocumentKey( $document );
-					break;
-
-				default:
-					throw new \InvalidArgumentException (
-						"Invalid conversion format code." );					// !@! ==>
-			}
-		}
-
-		return $list;																// ==>
-
-	} // doFindByExample.
+	} // doFindExample.
 
 
 	/*===================================================================================
-	 *	doFindByQuery																	*
+	 *	doFindQuery																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Query the collection.</h4>
+	 * <h4>Find by query.</h4>
 	 *
 	 * We overload this method to use the {@link \MongoDB\Collection::find()} method, the
 	 * provided example document will be used as the actual selection criteria.
@@ -1130,88 +1026,27 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The found records.
 	 *
 	 * @uses Connection()
-	 * @uses NewDocument()
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentHandle()
-	 * @uses normaliseSelectedDocument()
 	 * @uses \MongoDB\Collection::find()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
-	 * @see kTOKEN_OPT_FORMAT
 	 */
-	protected function doFindByQuery( $theQuery, array $theOptions )
+	protected function doFindQuery( $theQuery, array $theOptions )
 	{
 		//
-		// Init local storage.
+		// Convert to native options.
 		//
 		$options = [];
-
-		//
-		// Handle options.
-		//
 		if( count( $theOptions ) )
 		{
-			//
-			// Force skip if limit is there.
-			//
-			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-				&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
-				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
-
-			//
-			// Convert to native options.
-			//
 			if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
 				$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
 			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
 				$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
 		}
 
-		//
-		// Make selection.
-		//
-		$result = $this->Connection()->find( $theQuery, $options );
+		return $this->Connection()->find( $theQuery, $options );					// ==>
 
-		//
-		// Handle native result.
-		//
-		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
-			return $result;															// ==>
-
-		//
-		// Iterate cursor.
-		//
-		$list = [];
-		foreach( $result as $document )
-		{
-			//
-			// Format document.
-			//
-			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
-			{
-				case kTOKEN_OPT_FORMAT_STANDARD:
-					$tmp = $this->NewDocument( $document );
-					$this->normaliseSelectedDocument( $tmp, $document );
-					$list[] = $tmp;
-					break;
-
-				case kTOKEN_OPT_FORMAT_HANDLE:
-					$list[] = $this->NewDocumentHandle( $document );
-					break;
-
-				case kTOKEN_OPT_FORMAT_KEY:
-					$list[] = $this->NewDocumentKey( $document );
-					break;
-
-				default:
-					throw new \InvalidArgumentException (
-						"Invalid conversion format code." );					// !@! ==>
-			}
-		}
-
-		return $list;																// ==>
-
-	} // doFindByQuery.
+	} // doFindQuery.
 
 
 

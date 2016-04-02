@@ -1224,14 +1224,6 @@ abstract class Collection extends Container
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
 	 * @see kTOKEN_OPT_FORMAT
-	 *
-	 * @example
-	 * // Find first five document.
-	 * $iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ], [ kTOKEN_OPT_SKIP => 0, kTOKEN_OPT_LIMIT => 5 ] );<br/>
-	 * // Find all selected documents.<br/>
-	 * $iterator = $collection->FindByExample( [ 'color' => 'red', 'city' => 'Rome' ] );<br/>
-	 * // Find all documents.<br/>
-	 * $iterator = $collection->FindByExample();
 	 */
 	public function FindByExample( $theDocument = NULL, $theOptions = NULL )
 	{
@@ -1305,7 +1297,7 @@ abstract class Collection extends Container
 		$this->normaliseOptions(
 			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
 		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-			&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+		 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
 		return $this->doFindByQuery( $theQuery, $theOptions );						// ==>
@@ -1463,7 +1455,7 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Driver native options.
 	 * @return mixed				Native collection object.
 	 */
-	abstract protected function collectionNew( $theCollection, $theOptions );
+	abstract protected function collectionNew( $theCollection, $theOptions = NULL );
 	
 	
 	/*===================================================================================
@@ -2131,7 +2123,18 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
 	 */
-	abstract protected function doFindByExample( $theDocument, array $theOptions );
+	protected function doFindByExample( $theDocument, array $theOptions )
+	{
+		//
+		// Select by example.
+		//
+		$cursor = $this->doFindExample( $theDocument, $theOptions );
+		if( $cursor === NULL )
+			return NULL;															// ==>
+
+		return $this->normaliseCursor( $cursor, $theOptions );						// ==>
+
+	} // doFindByExample.
 
 
 	/*===================================================================================
@@ -2180,7 +2183,18 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
 	 */
-	abstract protected function doFindByQuery( $theQuery, array $theOptions );
+	protected function doFindByQuery( $theQuery, array $theOptions )
+	{
+		//
+		// Select by example.
+		//
+		$cursor = $this->doFindQuery( $theQuery, $theOptions );
+		if( $cursor === NULL )
+			return NULL;															// ==>
+
+		return $this->normaliseCursor( $cursor, $theOptions );						// ==>
+
+	} // doFindByQuery.
 
 
 
@@ -2202,11 +2216,62 @@ abstract class Collection extends Container
 	 * This method should search for the provided key(s) and return the resulting cursor,
 	 * the method must be implemented in derived classes.
 	 *
-	 * @param mixed					$theKey				The document identifier.
+	 * @param mixed					$theKey				The document key(s).
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found document(s).
 	 */
 	abstract protected function doFindKey( $theKey, array $theOptions );
+
+
+	/*===================================================================================
+	 *	doFindHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by handle.</h4>
+	 *
+	 * This method should search for the provided handle(s) and return the resulting cursor,
+	 * the method must be implemented in derived classes.
+	 *
+	 * @param mixed					$theHandle			The document handle(s).
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found document(s).
+	 */
+	abstract protected function doFindHandle( $theHandle, array $theOptions );
+
+
+	/*===================================================================================
+	 *	doFindExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by example.</h4>
+	 *
+	 * This method should search for the provided handle(s) and return the resulting cursor,
+	 * the method must be implemented in derived classes.
+	 *
+	 * @param mixed					$theDocument		The example document.
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found document(s).
+	 */
+	abstract protected function doFindExample( $theDocument, array $theOptions );
+
+
+	/*===================================================================================
+	 *	doFindQuery																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find by example.</h4>
+	 *
+	 * This method should search for the provided handle(s) and return the resulting cursor,
+	 * the method must be implemented in derived classes.
+	 *
+	 * @param array					$theQuery			The selection criteria.
+	 * @param array					$theOptions			Find options.
+	 * @return mixed				The found document(s).
+	 */
+	abstract protected function doFindQuery( $theQuery, array $theOptions );
 
 
 
@@ -2234,7 +2299,7 @@ abstract class Collection extends Container
 	 * @param array					$theDocument		Document properties.
 	 * @return mixed				Native database document object.
 	 */
-	abstract protected function toDocumentNative( $theDocument );
+	abstract protected function toDocumentNative( array $theDocument );
 
 
 
@@ -2313,12 +2378,16 @@ abstract class Collection extends Container
 			}
 		}
 
-		if( $theOptions[ kTOKEN_OPT_MANY ] )
-			return $list;															// ==>
-		if( count( $list ) )
-			return $list[ 0 ];														// ==>
+		//
+		// Handle scalar result.
+		//
+		if( array_key_exists( kTOKEN_OPT_MANY, $theOptions )
+		 && ($theOptions[ kTOKEN_OPT_MANY ] === FALSE) )
+			return ( count( $list ) )
+				 ? $list[ 0 ]														// ==>
+				 : NULL;															// ==>
 
-		return NULL;																// ==>
+		return $list;																// ==>
 
 	} // normaliseCursor.
 
@@ -2439,7 +2508,7 @@ abstract class Collection extends Container
 		//
 		// Handle containers.
 		//
-		else
+		elseif( $theDocument instanceof \ArrayObject )
 			$theDocument[ $this->KeyOffset() ] = $theKey;
 
 	} // normaliseInsertedDocument.
