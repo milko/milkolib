@@ -105,13 +105,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return a native database document.</h4>
 	 *
-	 * We overload this method to return BSONDocument.
+	 * We overload this method to return the eventual {@link \MongoDB\Model\BSONDocument}
+	 * provided in the parameter.
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
-	 *
-	 * @uses NewDocumentArray()
-	 * @uses toDocumentNative()
 	 */
 	public function NewNativeDocument( $theData )
 	{
@@ -121,57 +119,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theData instanceof \MongoDB\Model\BSONDocument )
 			return $theData;														// ==>
 
-		return $this->toDocumentNative( $this->NewDocumentArray( $theData ) );		// ==>
+		return parent::NewNativeDocument( $theData );								// ==>
 
 	} // NewNativeDocument.
-
-
-	/*===================================================================================
-	 *	NewDocument																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a {@link Document} instance.</h4>
-	 *
-	 * We overload this method to return a {@link \Milko\PHPLib\Document} instance of the
-	 * correct class, or a {@link \Milko\PHPLib\Container} instance.
-	 *
-	 * @param mixed						$theData			Database native document.
-	 * @param string					$theClass			Expected class name.
-	 * @return \Milko\PHPLib\Container	Standard document object.
-	 *
-	 * @uses ClassOffset()
-	 */
-	public function NewDocument( $theData, $theClass = NULL )
-	{
-		//
-		// Convert document to array.
-		//
-		$document = ( $theData instanceof \Milko\PHPLib\Container )
-				  ? $theData->toArray()
-				  : (array)$theData;
-
-		//
-		// Use provided class name.
-		//
-		if( $theClass !== NULL )
-		{
-			$theClass = (string)$theClass;
-			return new $theClass( $this, $document );								// ==>
-		}
-
-		//
-		// Use class in data.
-		//
-		if( array_key_exists( $this->ClassOffset(), $document ) )
-		{
-			$class = $document[ $this->ClassOffset() ];
-			return new $class( $this, $document );									// ==>
-		}
-
-		return new \Milko\PHPLib\Container( $document );							// ==>
-
-	} // NewDocument.
 
 
 	/*===================================================================================

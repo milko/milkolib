@@ -146,13 +146,11 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Return a native database document.</h4>
 	 *
-	 * We overload this method to handle provided native documents.
+	 * We overload this method to return the eventual {@link triagens\ArangoDb\Document}
+	 * provided in the parameter.
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
-	 *
-	 * @uses NewDocumentArray()
-	 * @uses toDocumentNative()
 	 */
 	public function NewNativeDocument( $theData )
 	{
@@ -162,84 +160,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theData instanceof ArangoDocument )
 			return $theData;														// ==>
 
-		return $this->toDocumentNative( $this->NewDocumentArray( $theData ) );		// ==>
+		return parent::NewNativeDocument( $theData );								// ==>
 
 	} // NewNativeDocument.
-
-
-	/*===================================================================================
-	 *	NewDocument																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert native data to standard document.</h4>
-	 *
-	 * We overload this method by casting the provided data into an array and instantiating
-	 * the expected document.
-	 *
-	 * @param mixed						$theData			Database native document.
-	 * @param string					$theClass			Expected class name.
-	 * @return \Milko\PHPLib\Container	Standard document object.
-	 *
-	 * @uses ClassOffset()
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_STANDARD
-	 */
-	public function NewDocument( $theData, $theClass = NULL )
-	{
-		//
-		// Convert ArangoDocument to aray.
-		//
-		if( $theData instanceof ArangoDocument )
-		{
-			//
-			// Get document data.
-			//
-			$document = $theData->getAll();
-
-			//
-			// Set key.
-			//
-			if( ($key = $theData->getId()) !== NULL )
-				$document[ $this->KeyOffset() ] = $key;
-
-			//
-			// Set revision.
-			//
-			if( ($revision = $theData->getRevision()) !== NULL )
-				$document[ $this->RevisionOffset() ] = $revision;
-
-		} // ArangoDocument.
-
-		//
-		// Convert other types of documents.
-		//
-		elseif( $theData instanceof \Milko\PHPLib\Container )
-			$document = $theData->toArray();
-		else
-			$document = (array)$theData;
-
-		//
-		// Use provided class name.
-		//
-		if( $theClass !== NULL )
-		{
-			$theClass = (string)$theClass;
-			return new $theClass( $this, $document );								// ==>
-		}
-
-		//
-		// Use class in data.
-		//
-		if( array_key_exists( $this->ClassOffset(), $document ) )
-		{
-			$class = $document[ $this->ClassOffset() ];
-			return new $class( $this, $document );									// ==>
-		}
-
-		return new \Milko\PHPLib\Container( $document );							// ==>
-
-	} // NewDocument.
 
 
 	/*===================================================================================
@@ -257,11 +180,31 @@ class Collection extends \Milko\PHPLib\Collection
 	public function NewDocumentArray( $theData )
 	{
 		//
-		// Handle ArangoDocument.
+		// Convert ArangoDocument to array.
 		//
 		if( $theData instanceof ArangoDocument )
-			return $theData->getAll();												// ==>
-		
+		{
+			//
+			// Get document data.
+			//
+			$document = $theData->getAll();
+
+			//
+			// Set key.
+			//
+			if( ($key = $theData->getKey()) !== NULL )
+				$document[ $this->KeyOffset() ] = $key;
+
+			//
+			// Set revision.
+			//
+			if( ($revision = $theData->getRevision()) !== NULL )
+				$document[ $this->RevisionOffset() ] = $revision;
+
+			return $document;														// ==>
+
+		} // ArangoDocument.
+
 		return parent::NewDocumentArray( $theData );								// ==>
 		
 	} // NewDocumentArray.

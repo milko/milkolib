@@ -348,13 +348,24 @@ abstract class Collection extends Container
 	 * can be an array, an instance of {@link Container}, or an object that can be converted
 	 * to an array.
 	 *
-	 * Derived concrete classes must implement this method to handle database native
-	 * documents.
+	 * In this class we call the protected virtual {@link toDocumentNative()} method by
+	 * providing the document converted to an array: that method will take care of
+	 * instantiating the correct object.
+	 *
+	 * Derived classes must implement the above mentioned protected method and should
+	 * overload this method to intercept documents already provided in the native format.
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
+	 *
+	 * @uses NewDocumentArray()
+	 * @uses toDocumentNative()
 	 */
-	abstract public function NewNativeDocument( $theData );
+	public function NewNativeDocument( $theData )
+	{
+		return $this->toDocumentNative( $this->NewDocumentArray( $theData ) );		// ==>
+
+	} // NewNativeDocument.
 
 
 	/*===================================================================================
@@ -364,7 +375,7 @@ abstract class Collection extends Container
 	/**
 	 * <h4>Return a {@link Document} instance.</h4>
 	 *
-	 * This method should instantiate a {@link Document} instance from the provided data
+	 * This method should instantiate a {@link Container} instance from the provided data
 	 * that can be either a database native document, an array or an object that can be
 	 * cast to an array, the resulting document's class is determined in the following
 	 * order:
@@ -380,36 +391,38 @@ abstract class Collection extends Container
 	 * 		{@link Container} object.
 	 * </ul>
 	 *
-	 * The method features these parameters:
-	 *
-	 * <ul>
-	 * 	<li><b>$theData</b>: The document data as a database native document, a
-	 * 		{@link Milko\PHPLib\Container} derived instance, an array or an object that can
-	 * 		be cast to an array.
-	 * 	<li><b>$theClass</b>: The class name of the resulting {@link Document} instance,
-	 * 		omit or provide <tt>NULL</tt> to use the recorded class name, or instantiate a
-	 * 		{@link Document}.
-	 * </ul>
-	 *
-	 * This method is declared virtual, to allow database native derived classes to handle
-	 * their native types.
-	 *
-	 * If the provided data is already a {@link Document} instance, the method should in any
-	 * case attempt to cenvert it, in order to set the correct class or return a clone.
-	 *
-	 * This method is called for {@link kTOKEN_OPT_FORMAT} option
-	 * {@link kTOKEN_OPT_FORMAT_STANDARD}.
-	 *
-	 * Derived concrete classes must implement this method.
-	 *
 	 * @param mixed					$theData			Document data.
 	 * @param string				$theClass			Expected class name.
 	 * @return Document				Standard document object.
-	 *
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_STANDARD
 	 */
-	abstract public function NewDocument( $theData, $theClass = NULL );
+	public function NewDocument( $theData, $theClass = NULL )
+	{
+		//
+		// Convert data to array.
+		//
+		$document = $this->NewDocumentArray( $theData );
+
+		//
+		// Use provided class name.
+		//
+		if( $theClass !== NULL )
+		{
+			$theClass = (string)$theClass;
+			return new $theClass( $this, $document );								// ==>
+		}
+
+		//
+		// Use class in data.
+		//
+		if( array_key_exists( $this->ClassOffset(), $document ) )
+		{
+			$class = $document[ $this->ClassOffset() ];
+			return new $class( $this, $document );									// ==>
+		}
+
+		return $this->toDocument( $document );										// ==>
+
+	} // NewDocument.
 
 
 	/*===================================================================================
@@ -2285,6 +2298,29 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
+	 *	toDocument																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a standard database document.</h4>
+	 *
+	 * This method can be used to return a standard database document, it expects an array
+	 * containing the document data.
+	 *
+	 * In this class we return a {@link Container} instance, in derived classes you can
+	 * overload this method to return a different kind of standard document.
+	 *
+	 * @param array					$theData			Document as an array.
+	 * @return mixed				Native database document object.
+	 */
+	protected function toDocument( array $theData )
+	{
+		return new \Milko\PHPLib\Container( $theData );								// ==>
+
+	} // toDocument.
+
+
+	/*===================================================================================
 	 *	toDocumentNative																*
 	 *==================================================================================*/
 
@@ -2293,7 +2329,7 @@ abstract class Collection extends Container
 	 *
 	 * This method can be used to return a native database document, it expects an array
 	 * containing all the public and internal document properties.
-	 * 
+	 *
 	 * The method is virtual and must be implemented by derived classes.
 	 *
 	 * @param array					$theDocument		Document properties.
@@ -2304,11 +2340,11 @@ abstract class Collection extends Container
 
 
 
-/*=======================================================================================
- *																						*
- *								PROTECTED GENERIC UTILITIES								*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *								PROTECTED GENERIC UTILITIES								*
+	 *																						*
+	 *======================================================================================*/
 
 
 

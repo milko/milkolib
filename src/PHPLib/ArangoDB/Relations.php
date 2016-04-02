@@ -8,9 +8,10 @@
 
 namespace Milko\PHPLib\ArangoDB;
 
-use \Milko\PHPLib\ArangoDB\Collection;
+use Milko\PHPLib\ArangoDB\Collection;
 use Milko\PHPLib\iRelations;
 
+use Milko\PHPLib\Relation;
 use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Collection as ArangoCollection;
 use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
@@ -70,56 +71,41 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	/**
 	 * <h4>Convert a standard document to native data.</h4>
 	 *
-	 * We overload this method to return an ArangoEdge.
+	 * We overload this method to return the eventual {@link triagens\ArangoDb\Edge}
+	 * provided in the parameter.
 	 *
-	 * @param mixed					$theDocument		Document to be converted.
+	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
-	 *
-	 * @uses triagens\ArangoDb\Edge::createFromArray()
 	 */
-	public function NewNativeDocument( $theDocument )
+	public function NewNativeDocument( $theData )
 	{
 		//
-		// Handle native type.
+		// Handle native document.
 		//
-		if( $theDocument instanceof ArangoEdge )
-			return $theDocument;													// ==>
+		if( $theData instanceof ArangoEdge )
+			return $theData;														// ==>
 
-		//
-		// Convert to array.
-		//
-		$document = ( $theDocument instanceof \Milko\PHPLib\Container )
-			? $theDocument->toArray()
-			: (array)$theDocument;
-
-		return ArangoEdge::createFromArray( $document );							// ==>
+		return parent::NewNativeDocument( $theData );								// ==>
 
 	} // NewNativeDocument.
 
 
 	/*===================================================================================
-	 *	NewDocument																		*
+	 *	NewDocumentArray																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Convert native data to standard document.</h4>
+	 * <h4>Return an array from a document.</h4>
 	 *
-	 * We overload this method to get the source and destination vertices from the
-	 * {@link ArangoEdge} object and we return by default a {@link Relation} object.
+	 * We overload this method to handle {@link triagens\ArangoDb\Edge} instances.
 	 *
-	 * @param mixed						$theData			Database native document.
-	 * @param string					$theClass			Expected class name.
-	 * @return \Milko\PHPLib\Container	Standard document object.
-	 *
-	 * @uses VertexSource()
-	 * @uses VertexDest()
-	 * @uses ArangoEdge::getTo()
-	 * @uses ArangoEdge::getFrom()
+	 * @param mixed					$theData			Document data.
+	 * @return array				Document as array.
 	 */
-	public function NewDocument( $theData, $theClass = NULL )
+	public function NewDocumentArray( $theData )
 	{
 		//
-		// Convert ArangoDocument to aray.
+		// Convert ArangoDocument to array.
 		//
 		if( $theData instanceof ArangoDocument )
 		{
@@ -131,7 +117,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 			//
 			// Set key.
 			//
-			if( ($key = $theData->getId()) !== NULL )
+			if( ($key = $theData->getKey()) !== NULL )
 				$document[ $this->KeyOffset() ] = $key;
 
 			//
@@ -159,37 +145,13 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 
 			} // ArangoEdge.
 
+			return $document;														// ==>
+
 		} // ArangoDocument.
 
-		//
-		// Convert other types of documents.
-		//
-		elseif( $theData instanceof \Milko\PHPLib\Container )
-			$document = $theData->toArray();
-		else
-			$document = (array)$theData;
+		return parent::NewDocumentArray( $theData );								// ==>
 
-		//
-		// Use provided class name.
-		//
-		if( $theClass !== NULL )
-		{
-			$theClass = (string)$theClass;
-			return new $theClass( $this, $document );								// ==>
-		}
-
-		//
-		// Use class in data.
-		//
-		if( array_key_exists( $this->ClassOffset(), $document ) )
-		{
-			$class = $document[ $this->ClassOffset() ];
-			return new $class( $this, $document );									// ==>
-		}
-
-		return new \Milko\PHPLib\Relation( $this, $document );						// ==>
-
-	} // NewDocument.
+	} // NewDocumentArray.
 
 
 
@@ -230,286 +192,11 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 
 
 
-/*=======================================================================================
- *																						*
- *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	collectionNew																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a native collection object.</h4>
-	 *
-	 * We overload the inherited method to return an edges collection. When we create it,
-	 * we ensure it is of the correct type; when we retrieve it, we raise an exception if it
-	 * is not of the correct type (<tt>3</tt>).
-	 *
-	 * @param string				$theCollection		Collection name.
-	 * @param array					$theOptions			Driver native options.
-	 * @return mixed				Native collection object.
-	 * @throws \InvalidArgumentException
-	 *
-	 * @uses Database()
-	 * @uses triagens\ArangoDb\CollectionHandler::has()
-	 * @uses triagens\ArangoDb\CollectionHandler::get()
-	 * @uses triagens\ArangoDb\CollectionHandler::create()
-	 */
-	protected function collectionNew( $theCollection, $theOptions = [] )
-	{
-		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
-
-		//
-		// Return existing collection.
-		//
-		if( $handler->has( $theCollection ) )
-		{
-			//
-			// Assert the collection type.
-			//
-			$collection = $handler->get( $theCollection );
-			if( $collection->getType() != \triagens\ArangoDb\Collection::TYPE_EDGE )
-				throw new \InvalidArgumentException (
-					"Invalid collection type: "
-				   ."expecting an edge collection." );							// !@! ==>
-
-			return $collection;														// ==>
-		}
-
-		//
-		// Create collection.
-		//
-		$id =
-			$handler->create(
-				$theCollection,
-				[ "type" => \triagens\ArangoDb\Collection::TYPE_EDGE ] );
-
-		return $handler->get( $id );												// ==>
-
-	} // collectionNew.
-
-
-
-/*=======================================================================================
- *																						*
- *						PROTECTED RECORD MANAGEMENT INTERFACE							*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	doInsertOne																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a document.</h4>
-	 *
-	 * We overload this method to extract the source and destination vertices from the
-	 * document properties and pass them to the {@link ArangoEdgeHandler::saveEdge()}
-	 * method.
-	 *
-	 * @param mixed					$theDocument		The document to be inserted.
-	 * @return mixed				The inserted document's key.
-	 * @throws \InvalidArgumentException
-	 *
-	 * @uses Database()
-	 * @uses collectionName()
-	 * @uses NewNativeDocument()
-	 * @uses \Milko\PHPLib\Document::Validate()
-	 * @uses \Milko\PHPLib\Document::StoreSubdocuments()
-	 * @uses triagens\ArangoDb\DocumentHandler::saveEdge()
-	 */
-	protected function doInsertOne( $theDocument )
-	{
-		//
-		// Prepare document.
-		//
-		if( $theDocument instanceof \Milko\PHPLib\Document )
-		{
-			//
-			// Validate document.
-			//
-			$theDocument->Validate();
-
-			//
-			// Store sub-documents.
-			//
-			$theDocument->StoreSubdocuments();
-
-		} // Document object.
-		
-		//
-		// Init local storage.
-		//
-		$document = $this->NewNativeDocument( $theDocument );
-
-		//
-		// Get vertices.
-		//
-		if( ($srcVertex = $document->getFrom()) === NULL )
-			throw new \InvalidArgumentException (
-				"Missing source vertex." );										// !@! ==>
-		if( ($dstVertex = $document->getTo()) === NULL )
-			throw new \InvalidArgumentException (
-				"Missing destination vertex." );								// !@! ==>
-
-		//
-		// Instantiate edge handler.
-		//
-		$handler = new ArangoEdgeHandler( $this->Database()->Connection() );
-
-		//
-		// Save document.
-		//
-		$key =
-			$handler->saveEdge(
-				$this->collectionName(), $srcVertex, $dstVertex, $document );
-
-		//
-		// Normalise inserted document.
-		//
-		if( $theDocument instanceof \Milko\PHPLib\Container )
-			$this->normaliseInsertedDocument(
-					$theDocument, $document, $key );
-
-		return $key;																// ==>
-
-	} // doInsertOne.
-
-
-	/*===================================================================================
-	 *	doInsertBulk																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a list of documents.</h4>
-	 *
-	 * We overload this method to iterate the provided list and call the
-	 * {@link doInsertOne()} method on each document.
-	 *
-	 * @param array					$theList			The documents list.
-	 * @return array				The document keys.
-	 *
-	 * @uses doInsertOne()
-	 */
-	protected function doInsertBulk( array $theList )
-	{
-		//
-		// Init local storage.
-		//
-		$ids = [];
-
-		//
-		// Iterate documents.
-		//
-		foreach( $theList as $document )
-			$ids[] = $this->doInsertOne( $document );
-
-		return $ids;																// ==>
-
-	} // doInsertBulk.
-
-
-
-/*=======================================================================================
- *																						*
- *							PROTECTED DOCUMENT DELETE INTERFACE							*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	doDeleteOne																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete a document.</h4>
-	 *
-	 * We overload this method to call the
-	 * {@link triagens\ArangoDb\EdgeHandler::removeById()} method.
-	 *
-	 * @param mixed					$theDocument		The document to be deleted.
-	 * @return mixed				The number of deleted documents.
-	 *
-	 * @uses Database()
-	 * @uses collectionName()
-	 * @uses NewNativeDocument()
-	 * @uses normaliseDeletedDocument()
-	 * @uses triagens\ArangoDb\EdgeHandler::removeById()
-	 * @see kTOKEN_OPT_FORMAT
-	 * @see kTOKEN_OPT_FORMAT_NATIVE
-	 */
-	protected function doDeleteOne( $theDocument )
-	{
-		//
-		// Convert document.
-		//
-		$document = $this->NewNativeDocument( $theDocument );
-
-		//
-		// Check document key.
-		//
-		if( ($id = $document->getKey()) !== NULL )
-		{
-			//
-			// Instantiate edge handler.
-			//
-			$handler = new ArangoEdgeHandler( $this->Database()->Connection() );
-
-			//
-			// Remove document.
-			//
-			$count = 0;
-			try
-			{
-				//
-				// Try to delete document.
-				//
-				$handler->removeById(
-					$this->collectionName(), $id, $document->getRevision() );
-
-				//
-				// Normalise deleted document.
-				//
-				if( $theDocument instanceof \Milko\PHPLib\Container )
-					$this->normaliseDeletedDocument( $theDocument );
-
-				return 1;															// ==>
-			}
-			catch( ArangoServerException $error )
-			{
-				//
-				// Handle not found.
-				//
-				if( $error->getCode() != 404 )
-					throw $error;												// !@! ==>
-			}
-
-			return 0;																// ==>
-
-		} // Has key.
-
-		throw new \InvalidArgumentException (
-			"Document is missing its key." );									// !@! ==>
-
-	} // doDeleteOne.
-
-
-
-/*=======================================================================================
- *																						*
- *							PROTECTED SELECTION MANAGEMENT INTERFACE					*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *								PUBLIC GRAPH MANAGEMENT INTERFACE						*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -565,55 +252,347 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 			$handler->edges(
 				$this->collectionName(), $theVertex, $theOptions[ kTOKEN_OPT_DIRECTION ] );
 
-		//
-		// Handle native result.
-		//
-		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
-			return $cursor;															// ==>
-
-		//
-		// Iterate cursor.
-		//
-		$list = [];
-		foreach( $cursor as $document )
-		{
-			//
-			// Format document.
-			//
-			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
-			{
-				case kTOKEN_OPT_FORMAT_STANDARD:
-					$tmp = $this->NewDocument( $document );
-					$this->normaliseSelectedDocument( $tmp, $document );
-					$list[] = $tmp;
-					break;
-
-				case kTOKEN_OPT_FORMAT_HANDLE:
-					$list[] = $this->NewDocumentHandle( $document );
-					break;
-
-				case kTOKEN_OPT_FORMAT_KEY:
-					$list[] = $this->NewDocumentKey( $document );
-					break;
-
-				default:
-					throw new \InvalidArgumentException (
-						"Invalid conversion format code." );					// !@! ==>
-			}
-		}
-
-		return $list;																// ==>
+		return $this->normaliseCursor( $cursor, $theOptions );						// ==>
 
 	} // FindByVertex.
+
+
+
+/*=======================================================================================
+ *																						*
+ *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	collectionNew																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a native collection object.</h4>
+	 *
+	 * We overload the inherited method to return an edges collection. When we create it,
+	 * we ensure it is of the correct type; when we retrieve it, we raise an exception if it
+	 * is not of the correct type (<tt>3</tt>).
+	 *
+	 * @param string				$theCollection		Collection name.
+	 * @param array					$theOptions			Driver native options.
+	 * @return mixed				Native collection object.
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses Database()
+	 * @uses triagens\ArangoDb\CollectionHandler::has()
+	 * @uses triagens\ArangoDb\CollectionHandler::get()
+	 * @uses triagens\ArangoDb\CollectionHandler::create()
+	 */
+	protected function collectionNew( $theCollection, $theOptions = [] )
+	{
+		//
+		// Normalise options.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		//
+		// Init options.
+		//
+		$theOptions[ "type" ] = \triagens\ArangoDb\Collection::TYPE_EDGE;
+
+		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
+
+		//
+		// Return existing collection.
+		//
+		if( $handler->has( $theCollection ) )
+		{
+			//
+			// Get collection.
+			//
+			$collection = $handler->get( $theCollection );
+
+			//
+			// Assert the collection type.
+			//
+			if( $collection->getType() != \triagens\ArangoDb\Collection::TYPE_EDGE )
+				throw new \InvalidArgumentException (
+					"Invalid collection type: "
+					."expecting an edge collection." );							// !@! ==>
+
+			return $collection;														// ==>
+		}
+
+		return $handler->get( $handler->create( $theCollection, $theOptions ) );	// ==>
+
+	} // collectionNew.
+
+
+
+/*=======================================================================================
+ *																						*
+ *						PROTECTED RECORD MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	doInsert																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a document.</h4>
+	 *
+	 * We overload this method to extract the source and destination vertices from the
+	 * document properties and pass them to the {@link ArangoEdgeHandler::saveEdge()}
+	 * method.
+	 *
+	 * @param mixed					$theDocument		The document to be inserted.
+	 * @return mixed				The inserted document's key.
+	 *
+	 * @uses Database()
+	 * @uses Connection()
+	 * @uses triagens\ArangoDb\DocumentHandler::save()
+	 */
+	protected function doInsert( $theDocument )
+	{
+		//
+		// Get vertices.
+		//
+		if( ($srcVertex = $theDocument->getFrom()) === NULL )
+			throw new \InvalidArgumentException (
+				"Missing source vertex." );										// !@! ==>
+		if( ($dstVertex = $theDocument->getTo()) === NULL )
+			throw new \InvalidArgumentException (
+				"Missing destination vertex." );								// !@! ==>
+
+		//
+		// Instantiate edge handler.
+		//
+		$handler = new ArangoEdgeHandler( $this->Database()->Connection() );
+
+		return
+			$handler->saveEdge(
+				$this->collectionName(), $srcVertex, $dstVertex, $theDocument );	// ==>
+
+	} // doInsert.
+
+
+	/*===================================================================================
+	 *	doInsertBulk																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a list of documents.</h4>
+	 *
+	 * We overload this method to iterate the provided list and call the
+	 * {@link doInsertOne()} method on each document.
+	 *
+	 * @param array					$theList			The documents list.
+	 * @return array				The document keys.
+	 *
+	 * @uses doInsertOne()
+	 */
+	protected function doInsertBulk( array $theList )
+	{
+		//
+		// Init local storage.
+		//
+		$ids = [];
+		$handler = new ArangoEdgeHandler( $this->Database()->Connection() );
+
+		//
+		// Iterate documents.
+		//
+		foreach( $theList as $edge )
+		{
+			//
+			// Get vertices.
+			//
+			if( ($srcVertex = $edge->getFrom()) === NULL )
+				throw new \InvalidArgumentException (
+					"Missing source vertex." );									// !@! ==>
+			if( ($dstVertex = $edge->getTo()) === NULL )
+				throw new \InvalidArgumentException (
+					"Missing destination vertex." );							// !@! ==>
+
+			//
+			// Save edge.
+			//
+			$ids[] =
+				$handler->saveEdge(
+					$this->collectionName(), $srcVertex, $dstVertex, $theDocument );	// ==>
+		}
+
+		return $ids;																// ==>
+
+	} // doInsertBulk.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED DOCUMENT DELETE INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	doDelete																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete a document.</h4>
+	 *
+	 * We overload this method to call the
+	 * {@link triagens\ArangoDb\EdgeHandler::removeById()} method.
+	 *
+	 * @param mixed					$theDocument		The document to be deleted.
+	 * @return int					The number of deleted documents.
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses Database()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\EdgeHandler::removeById()
+	 */
+	protected function doDelete( $theDocument )
+	{
+		//
+		// Check document key.
+		//
+		if( ($id = $theDocument->getKey()) !== NULL )
+		{
+			//
+			// Instantiate edge handler.
+			//
+			$handler = new ArangoEdgeHandler( $this->Database()->Connection() );
+
+			//
+			// Remove document.
+			//
+			try
+			{
+				//
+				// Try to delete document.
+				//
+				$handler->removeById(
+					$this->collectionName(), $id, $theDocument->getRevision() );
+
+				return 1;															// ==>
+			}
+			catch( ArangoServerException $error )
+			{
+				//
+				// Handle not found.
+				//
+				if( $error->getCode() != 404 )
+					throw $error;												// !@! ==>
+			}
+
+			return 0;																// ==>
+
+		} // Has key.
+
+		throw new \InvalidArgumentException (
+			"Document is missing its key." );									// !@! ==>
+
+	} // doDelete.
 
 
 
 
 /*=======================================================================================
  *																						*
- *								PROTECTED GENERIC UTILITIES								*
+ *								PROTECTED CONVERSION UTILITIES							*
  *																						*
  *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	toDocument																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a standard database document.</h4>
+	 *
+	 * We overload this method to return {@link \Milko\PHPLib\Relations} instances by
+	 * default.
+	 *
+	 * @param array					$theData			Document as an array.
+	 * @return mixed				Native database document object.
+	 */
+	protected function toDocument( array $theData )
+	{
+		return new Relation( $this, $theData );										// ==>
+
+	} // toDocument.
+
+
+	/*===================================================================================
+	 *	toDocumentNative																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a native database document.</h4>
+	 *
+	 * We implement this method by generating a {@link triagens\ArangoDb\Edge}.
+	 *
+	 * @param array					$theDocument		Document properties.
+	 * @return mixed				Native database document object.
+	 */
+	protected function toDocumentNative( array $theDocument )
+	{
+		//
+		// Create an ArangoDocument.
+		//
+		$document = ArangoEdge::createFromArray( $theDocument );
+
+		//
+		// Set key.
+		//
+		if( ($document->getKey() === NULL)
+		 && array_key_exists( $this->KeyOffset(), $theDocument ) )
+			$document->setInternalKey( $theDocument[ $this->KeyOffset() ] );
+
+		//
+		// Set revision.
+		//
+		if( ($document->getRevision() === NULL)
+		 && array_key_exists( $this->RevisionOffset(), $theDocument ) )
+			$document->setRevision( $theDocument[ $this->RevisionOffset() ] );
+
+		//
+		// Set source vertex.
+		//
+		if( ($document->getFrom() === NULL)
+		 && array_key_exists( $this->VertexSource(), $theDocument ) )
+			$document->setFrom( $theDocument[ $this->VertexSource() ] );
+
+		//
+		// Set destination vertex.
+		//
+		if( ($document->getTo() === NULL)
+		 && array_key_exists( $this->VertexDestination(), $theDocument ) )
+			$document->setFrom( $theDocument[ $this->VertexDestination() ] );
+
+		return $document;															// ==>
+
+	} // toDocumentNative.
+
+
+
+
+	/*=======================================================================================
+	 *																						*
+	 *								PROTECTED GENERIC UTILITIES								*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -627,16 +606,14 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * We overload this method to retrieve and set the source ({@link VertexIn()}) and
 	 * destination ({@link VertexOut()}) vertices.
 	 *
-	 * @param \Milko\PHPLib\Container	$theDocument	The inserted document.
-	 * @param mixed						$theData		The native inserted document.
-	 * @param mixed						$theKey			The document key.
+	 * @param mixed					$theDocument		The inserted document.
+	 * @param mixed					$theData			The native inserted document.
+	 * @param mixed					$theKey				The document key.
 	 *
 	 * @uses Document::VertexIn()
 	 * @uses Document::VertexOut()
 	 */
-	protected function normaliseInsertedDocument( \Milko\PHPLib\Container $theDocument,
-												  						  $theData,
-																		  $theKey)
+	protected function normaliseInsertedDocument( $theDocument, $theData, $theKey )
 	{
 		//
 		// Set source and destination vertices.

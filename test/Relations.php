@@ -90,11 +90,21 @@ $test->Truncate();
 echo( "\n====================================================================================\n\n" );
 
 //
+// Test document conversion.
+//
+echo( "Test document conversion:\n" );
+echo( '$data = [$test->KeyOffset() => "KEY", $test->RevisionOffset() => "REVISION", "data" => "some data"];' . "\n" );
+$data = [$test->KeyOffset() => "KEY", $test->RevisionOffset() => "REVISION", "data" => "some data"];
+print_r( $data );
+
+echo( "\n" );
+
+//
 // Convert to native document from array.
 //
 echo( "Convert to native document from array:\n" );
-echo( '$document = $test->NewNativeDocument( ["data" => "some data"] );' . "\n" );
-$document = $test->NewNativeDocument( ["data" => "some data"] );
+echo( '$document = $test->NewNativeDocument( $data );' . "\n" );
+$document = $test->NewNativeDocument( $data );
 print_r( $document );
 
 echo( "\n" );
@@ -103,8 +113,8 @@ echo( "\n" );
 // Convert to native document from array object.
 //
 echo( "Convert to native document from array object:\n" );
-echo( '$document = $test->NewNativeDocument( new ArrayObject( ["data" => "some data"] ) );' . "\n" );
-$document = $test->NewNativeDocument( new ArrayObject( ["data" => "some data"] ) );
+echo( '$document = $test->NewNativeDocument( new ArrayObject( $data ) );' . "\n" );
+$document = $test->NewNativeDocument( new ArrayObject( $data ) );
 print_r( $document );
 
 echo( "\n" );
@@ -113,8 +123,8 @@ echo( "\n" );
 // Convert to native document from Container.
 //
 echo( "Convert to native document from Container:\n" );
-echo( '$document = $test->NewNativeDocument( new Milko\PHPLib\Container( ["data" => "some data"] ) );' . "\n" );
-$document = $test->NewNativeDocument( new Milko\PHPLib\Container( ["data" => "some data"] ) );
+echo( '$document = $test->NewNativeDocument( new Milko\PHPLib\Container( $data ) );' . "\n" );
+$document = $test->NewNativeDocument( new Milko\PHPLib\Container( $data ) );
 print_r( $document );
 
 echo( "\n" );
@@ -123,8 +133,8 @@ echo( "\n" );
 // Convert to native document from Document.
 //
 echo( "Convert to native document from Document:\n" );
-echo( '$document = $test->NewNativeDocument( new Milko\PHPLib\Document( $test, ["data" => "some data"] ) );' . "\n" );
-$document = $test->NewNativeDocument( new Milko\PHPLib\Document( $test, ["data" => "some data"] ) );
+echo( '$document = $test->NewNativeDocument( new Milko\PHPLib\Document( $test, $data ) );' . "\n" );
+$document = $test->NewNativeDocument( new Milko\PHPLib\Document( $test, $data ) );
 print_r( $document );
 
 echo( "\n====================================================================================\n\n" );
@@ -133,8 +143,8 @@ echo( "\n=======================================================================
 // Convert to document from native data.
 //
 echo( "Convert to document from native data:\n" );
-echo( '$document = $test->NewDocument( $test->NewNativeDocument( ["data" => "some data"] ) );' . "\n" );
-$document = $test->NewDocument( $test->NewNativeDocument( ["data" => "some data"] ) );
+echo( '$document = $test->NewDocument( $test->NewNativeDocument( $data ) );' . "\n" );
+$document = $test->NewDocument( $test->NewNativeDocument( $data ) );
 echo( "Class: " . get_class( $document ) . "\n" );
 print_r( $document->getArrayCopy() );
 
@@ -144,8 +154,8 @@ echo( "\n" );
 // Convert to document from array.
 //
 echo( "Convert to document from array:\n" );
-echo( '$document = $test->NewDocument( ["data" => "some data"] );' . "\n" );
-$document = $test->NewDocument( ["data" => "some data"] );
+echo( '$document = $test->NewDocument( $data );' . "\n" );
+$document = $test->NewDocument( $data );
 echo( "Class: " . get_class( $document ) . "\n" );
 print_r( $document->getArrayCopy() );
 
@@ -155,8 +165,8 @@ echo( "\n" );
 // Convert to document from array object.
 //
 echo( "Convert to document from array object:\n" );
-echo( '$document = $test->NewDocument( new ArrayObject( ["data" => "some data"] ) );' . "\n" );
-$document = $test->NewDocument( new ArrayObject( ["data" => "some data"] ) );
+echo( '$document = $test->NewDocument( new ArrayObject( $data ) );' . "\n" );
+$document = $test->NewDocument( new ArrayObject( $data ) );
 echo( "Class: " . get_class( $document ) . "\n" );
 print_r( $document->getArrayCopy() );
 
@@ -166,8 +176,8 @@ echo( "\n" );
 // Convert to document from Container.
 //
 echo( "Convert to document from Container:\n" );
-echo( '$document = $test->NewDocument( new Milko\PHPLib\Container( ["data" => "some data"] ) );' . "\n" );
-$document = $test->NewDocument( new Milko\PHPLib\Container( ["data" => "some data"] ) );
+echo( '$document = $test->NewDocument( new Milko\PHPLib\Container( $data ) );' . "\n" );
+$document = $test->NewDocument( new Milko\PHPLib\Container( $data ) );
 echo( "Class: " . get_class( $document ) . "\n" );
 print_r( $document->getArrayCopy() );
 
@@ -177,8 +187,8 @@ echo( "\n" );
 // Convert to document from Document.
 //
 echo( "Convert to document from Document:\n" );
-echo( '$document = $test->NewDocument( new Milko\PHPLib\Document( $test, ["data" => "some data"] ) );' . "\n" );
-$document = $test->NewDocument( new Milko\PHPLib\Document( $test, ["data" => "some data"] ) );
+echo( '$document = $test->NewDocument( new Milko\PHPLib\Document( $test, $data ) );' . "\n" );
+$document = $test->NewDocument( new Milko\PHPLib\Document( $test, $data ) );
 echo( "Class: " . get_class( $document ) . "\n" );
 $tmp = $document[ $test->CLassOffset() ];
 echo( "Document class: [$tmp]\n" );
@@ -197,8 +207,8 @@ echo( "\n" );
 // Convert to document with class.
 //
 echo( "Convert to document with class:\n" );
-echo( '$document = $test->NewDocument( ["data" => "some data", $test->ClassOffset() => "DerivedFromDocument"] );' . "\n" );
-$document = $test->NewDocument( ["data" => "some data", $test->ClassOffset() => "DerivedFromDocument"] );
+echo( '$document = $test->NewDocument( array_merge( $data, [$test->ClassOffset() => "DerivedFromDocument"] ) );' . "\n" );
+$document = $test->NewDocument( array_merge( $data, [$test->ClassOffset() => "DerivedFromDocument"] ) );
 echo( "Class: " . get_class( $document ) . "\n" );
 $tmp = $document[ $test->CLassOffset() ];
 echo( "Document class: [$tmp]\n" );
@@ -217,8 +227,8 @@ echo( "\n" );
 // Convert to document from derived class.
 //
 echo( "Convert to document from derived class:\n" );
-echo( '$document = $test->NewDocument( new DerivedFromDocument( $test, ["data" => "some data"] ) );' . "\n" );
-$document = $test->NewDocument( new DerivedFromDocument( $test, ["data" => "some data"] ) );
+echo( '$document = $test->NewDocument( new DerivedFromDocument( $test, $data ) );' . "\n" );
+$document = $test->NewDocument( new DerivedFromDocument( $test, $data ) );
 echo( "Class: " . get_class( $document ) . "\n" );
 $tmp = $document[ $test->CLassOffset() ];
 echo( "Document class: [$tmp]\n" );
@@ -496,6 +506,10 @@ echo( "Get record count:\n" );
 echo( '$result = $test->RecordCount();' . "\n" );
 $result = $test->RecordCount();
 var_dump( $result );
+if( $result == 9 )
+	echo( "SUCCEEDED!\n" );
+else
+	echo( "FAILED!!!\n" );
 
 echo( "\n" );
 
@@ -506,6 +520,10 @@ echo( "Count by example:\n" );
 echo( '$result = $test->CountByExample( [ "color" => "red" ] );' . "\n" );
 $result = $test->CountByExample( [ "color" => "red" ] );
 var_dump( $result );
+if( $result == 3 )
+	echo( "SUCCEEDED!\n" );
+else
+	echo( "FAILED!!!\n" );
 
 echo( "\n" );
 
@@ -524,6 +542,10 @@ elseif( kENGINE == "ARANGO" )
 	$result = $test->CountByQuery( ["query" => "FOR r IN edges FILTER r.color == 'red' RETURN r"] );
 }
 var_dump( $result );
+if( $result == 3 )
+	echo( "SUCCEEDED!\n" );
+else
+	echo( "FAILED!!!\n" );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -1118,6 +1140,10 @@ echo( "Record count:\n" );
 echo( '$result = $test->RecordCount();' . "\n" );
 $result = $test->RecordCount();
 var_dump( $result );
+if( $result == 9 )
+	echo( "SUCCEEDED!\n" );
+else
+	echo( "FAILED!!!\n" );
 
 echo( "\n" );
 
@@ -1128,6 +1154,10 @@ echo( "Count by example:\n" );
 echo( '$result = $test->CountByExample( [ "status" => "replaced" ] );' . "\n" );
 $result = $test->CountByExample( [ "status" => "replaced" ] );
 var_dump( $result );
+if( $result == 1 )
+	echo( "SUCCEEDED!\n" );
+else
+	echo( "FAILED!!!\n" );
 
 echo( "\n" );
 
@@ -1146,6 +1176,10 @@ elseif( kENGINE == "MONGO" )
 	$result = $test->CountByQuery( [ '$or' => [ [ 'data' => 'XXX' ], [ 'status' => 'replaced' ] ] ] );
 }
 var_dump( $result );
+if( $result == 4 )
+	echo( "SUCCEEDED!\n" );
+else
+	echo( "FAILED!!!\n" );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -1191,6 +1225,7 @@ foreach( $result as $key => $document )
 	else
 		print_r( $document );
 }
+echo( "Should be: 4 without color; 1 pink and 4 yellow.\n" );
 
 echo( "\n====================================================================================\n\n" );
 
