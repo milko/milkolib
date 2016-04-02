@@ -316,8 +316,25 @@ var_dump( $document->getKey() );
 echo( "getInternalKey: " );
 var_dump( $document->getInternalKey() );
 echo( "getRevision: " );
+var_dump( $revision = $document->getRevision() );
+echo( "getAll: " );
+print_r( $document->getAll() );
+echo( "\n" );
+
+//
+// Set key and revision.
+//
+echo( "Set key and revision:\n" );
+echo( '$document->setInternalKey( $id );' . "\n" );
+$document->setInternalKey( $id );
+echo( "getKey: " );
+var_dump( $document->getKey() );
+echo( '$document->setRevision( $revision );' . "\n" );
+$document->setRevision( $revision );
+echo( "getRevision: " );
 var_dump( $document->getRevision() );
 echo( "\n" );
+exit;
 
 //
 // Add a document with key.
@@ -341,6 +358,7 @@ var_dump( $document->getInternalKey() );
 echo( "getRevision: " );
 var_dump( $document->getRevision() );
 echo( "\n" );
+exit;
 
 //
 // Create a document with key and revision.
