@@ -16,6 +16,7 @@ namespace Milko\PHPLib\MongoDB;
 
 use Milko\PHPLib\Container;
 use Milko\PHPLib\Server;
+use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 
 /**
@@ -135,6 +136,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @return array				Document as array.
+	 *
+	 * @uses nativeToArray()
 	 */
 	public function NewDocumentArray( $theData )
 	{
@@ -142,7 +145,19 @@ class Collection extends \Milko\PHPLib\Collection
 		// Handle ArangoDocument.
 		//
 		if( $theData instanceof BSONDocument )
-			return $theData->getArrayCopy();										// ==>
+		{
+			//
+			// Convert to array.
+			//
+			$document = $theData->getArrayCopy();
+			
+			//
+			// Traverse document to convert BSONArrays.
+			//
+			$this->nativeToArray( $document );
+
+			return $document;														// ==>
+		}
 
 		return parent::NewDocumentArray( $theData );								// ==>
 
@@ -165,7 +180,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @throws \InvalidArgumentException
 	 *
 	 * @uses KeyOffset()
-	 * @uses collectionName()
+	 * @uses NewHandle()
+	 * @uses NewDocumentArray()
 	 */
 	public function NewDocumentHandle( $theData )
 	{
@@ -175,10 +191,10 @@ class Collection extends \Milko\PHPLib\Collection
 		$document = $this->NewDocumentArray( $theData );
 
 		//
-		// Add key.
+		// Check key.
 		//
 		if( array_key_exists( $this->KeyOffset(), $document ) )
-			return [ $this->collectionName(), $document[ $this->KeyOffset() ] ];	// ==>
+			return $this->NewHandle( $document[ $this->KeyOffset() ] );				// ==>
 
 		throw new \InvalidArgumentException (
 			"Data is missing the document key." );								// !@! ==>
@@ -212,7 +228,7 @@ class Collection extends \Milko\PHPLib\Collection
 			// Check key.
 			//
 			if( $theData->offsetExists( $this->KeyOffset() ) )
-				return $theData[ $this->KeyOffset() ];								// ==>
+				return $theData->offsetGet( $this->KeyOffset() );					// ==>
 
 			throw new \InvalidArgumentException (
 				"Data is missing the document key." );							// !@! ==>
@@ -222,6 +238,28 @@ class Collection extends \Milko\PHPLib\Collection
 		return parent::NewDocumentKey( $theData );									// ==>
 
 	} // NewDocumentKey.
+
+
+	/*===================================================================================
+	 *	NewHandle																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a document handle.</h4>
+	 *
+	 * We implement this method to return an array of two elements: the first is the
+	 * collection name, the second is the document key.
+	 *
+	 * @param mixed					$theKey				Document key.
+	 * @return mixed				Document handle.
+	 *
+	 * @uses collectionName()
+	 */
+	public function NewHandle( $theKey )
+	{
+		return [ $this->collectionName(), (string)$theKey ];						// ==>
+
+	} // NewHandle.
 
 
 
@@ -326,6 +364,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return int					The found records count.
 	 *
 	 * @uses Connection()
+	 * @uses NewDocumentArray()
 	 * @uses \MongoDB\Collection::count()
 	 */
 	public function CountByExample( $theDocument = NULL )
@@ -335,10 +374,8 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		if( $theDocument === NULL )
 			$document = [];
-		elseif( $theDocument instanceof \Milko\PHPLib\Container )
-			$document = $theDocument->toArray();
 		else
-			$document = (array)$theDocument;
+			$document = $this->NewDocumentArray( $theDocument );
 
 		return $this->Connection()->count( $document );								// ==>
 
@@ -393,6 +430,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return array				The result set.
 	 *
 	 * @uses Connection()
+	 * @uses NewDocumentArray()
 	 * @uses \MongoDB\Collection::aggregate()
 	 */
 	public function MapReduce( $thePipeline, $theOptions = NULL )
@@ -413,7 +451,7 @@ class Collection extends \Milko\PHPLib\Collection
 			// Force skip if limit is there.
 			//
 			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
-				&& (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+			 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
 
 			//
@@ -430,7 +468,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$result = [];
 		foreach( $this->Connection()->aggregate( $thePipeline, $options ) as $record )
-			$result[] = (array) $record;
+			$result[] = $this->NewDocumentArray( $record );
 
 		return $result;																// ==>
 
@@ -692,7 +730,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Delete options.
 	 * @return int					The number of deleted documents.
 	 *
-	 * @uses doDeleteByExample()
+	 * @uses Connection()
+	 * @uses \MongoDB\Collection::deleteOne()
+	 * @uses \MongoDB\Collection::deleteMany()
+	 * @see kTOKEN_OPT_MANY
 	 */
 	protected function doDeleteByQuery( $theQuery, array $theOptions )
 	{
@@ -774,7 +815,7 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function doReplace( $theDocument )
 	{
 		//
-		// Convert document.
+		// Replace document.
 		//
 		if( $theDocument->offsetExists( $this->KeyOffset() ) )
 			return
@@ -813,15 +854,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses KeyOffset()
 	 * @uses Connection()
-	 * @uses NewDocument()
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentHandle()
-	 * @uses normaliseSelectedDocument()
 	 * @uses \MongoDB\Collection::find()
-	 * @uses \MongoDB\Collection::count()
 	 * @uses \MongoDB\Collection::findOne()
 	 * @see kTOKEN_OPT_MANY
-	 * @see kTOKEN_OPT_FORMAT
 	 */
 	protected function doFindKey( $theKey, array $theOptions )
 	{
@@ -868,10 +903,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses collectionNew()
-	 * @uses collectionName()
-	 * @uses triagens\ArangoDb\DocumentHandler::getById()
+	 * @uses Database::RetrieveCollection()
+	 * @uses \MongoDB\Collection::findOne()
 	 * @see kTOKEN_OPT_MANY
+	 * @see \Milko\PHPLib\Server::kFLAG_ASSERT
 	 */
 	protected function doFindHandle( $theHandle, array $theOptions )
 	{
@@ -892,7 +927,9 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			$collection =
 				$this->Database()
-					->RetrieveCollection( $handle[ 0 ], Server::kFLAG_ASSERT );
+					->RetrieveCollection(
+						$handle[ 0 ],
+						\Milko\PHPLib\Server::kFLAG_ASSERT );
 
 			//
 			// Get by key.
@@ -1026,6 +1063,56 @@ class Collection extends \Milko\PHPLib\Collection
 		return new \MongoDB\Model\BSONDocument( $theDocument );						// ==>
 
 	} // toDocumentNative.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED SERIALISATION INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	nativeToArray																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert to array.</h4>
+	 *
+	 * This method can be used to convert a native document to an array, it will traverse
+	 * the object and convert all BSONArrays to arrays.
+	 *
+	 * The method expects an array at entry.
+	 *
+	 * @param array				   &$theDocument		Source and destination document.
+	 *
+	 * @uses nativeToArray()
+	 */
+	protected function nativeToArray( array &$theDocument )
+	{
+		//
+		// Traverse source.
+		//
+		$keys = array_keys( $theDocument );
+		foreach( $keys as $key )
+		{
+			//
+			// Convert BSONArray instances.
+			//
+			if( $theDocument[ $key ] instanceof BSONArray )
+				$theDocument[ $key ] = $theDocument[ $key ]->getArrayCopy();
+
+			//
+			// Handle collections.
+			//
+			if( is_array( $theDocument[ $key ] ) )
+				$this->nativeToArray( $theDocument[ $key ] );
+
+		} // Traversing source.
+
+	} // nativeToArray.
 
 
 

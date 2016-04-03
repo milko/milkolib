@@ -78,7 +78,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to call the native object's method.
 	 *
 	 * @uses Database()
-	 * @uses Connection()
 	 * @uses triagens\ArangoDb\CollectionHandler::truncate()
 	 */
 	public function Truncate()
@@ -106,7 +105,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to call the native object's method.
 	 *
 	 * @uses Database()
-	 * @uses Connection()
+	 * @uses collectionName()
 	 * @uses triagens\ArangoDb\CollectionHandler::drop()
 	 */
 	public function Drop()
@@ -124,7 +123,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Drop collection.
 			//
-			$handler->drop( $this->Connection()->getName() );
+			$handler->drop( $this->collectionName() );
 		}
 
 	} // Drop.
@@ -176,6 +175,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @return array				Document as array.
+	 *
+	 * @uses KeyOffset()
+	 * @uses RevisionOffset()
 	 */
 	public function NewDocumentArray( $theData )
 	{
@@ -234,7 +236,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @throws \InvalidArgumentException
 	 *
 	 * @uses KeyOffset()
-	 * @uses collectionName()
+	 * @uses NewHandle()
 	 * @uses NewDocumentArray()
 	 * @uses triagens\ArangoDb\Document::getHandle()
 	 */
@@ -265,8 +267,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Compute handle.
 		//
 		if( array_key_exists( $this->KeyOffset(), $document ) )
-			return
-				$this->collectionName() . '/' . $document[ $this->KeyOffset() ];	// ==>
+			return $this->NewHandle( $document[ $this->KeyOffset() ] );				// ==>
 
 		throw new \InvalidArgumentException (
 			"Data is missing the document key." );								// !@! ==>
@@ -312,6 +313,28 @@ class Collection extends \Milko\PHPLib\Collection
 	} // NewDocumentKey.
 
 
+	/*===================================================================================
+	 *	NewHandle																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a document handle.</h4>
+	 *
+	 * We implement this method to return a string concatenating the collection name and the
+	 * document key, separated by a slash.
+	 *
+	 * @param mixed					$theKey				Document key.
+	 * @return mixed				Document handle.
+	 *
+	 * @uses collectionName()
+	 */
+	public function NewHandle( $theKey )
+	{
+		return $this->collectionName() . '/' . $theKey;								// ==>
+
+	} // NewHandle.
+
+
 
 /*=======================================================================================
  *																						*
@@ -331,6 +354,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to use the {@link kTAG_ARANGO_KEY} constant.
 	 *
 	 * @return string				Document key offset.
+	 *
+	 * @see kTAG_ARANGO_KEY
 	 */
 	public function KeyOffset()									{	return kTAG_ARANGO_KEY;	}
 
@@ -345,6 +370,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to use the {@link kTAG_ARANGO_CLASS} constant.
 	 *
 	 * @return string				Document class offset.
+	 *
+	 * @see kTAG_ARANGO_CLASS
 	 */
 	public function ClassOffset()							{	return kTAG_ARANGO_CLASS;	}
 
@@ -359,6 +386,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We overload this method to use the {@link kTAG_ARANGO_REVISION} constant.
 	 *
 	 * @return string				Document revision offset.
+	 *
+	 * @see kTAG_ARANGO_REVISION
 	 */
 	public function RevisionOffset()					{	return kTAG_ARANGO_REVISION;	}
 
@@ -385,7 +414,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return int					The number of records in the collection.
 	 *
 	 * @uses Database()
-	 * @uses Connection()
+	 * @uses collectionName()
 	 * @uses triagens\ArangoDb\CollectionHandler::count()
 	 */
 	public function RecordCount()
@@ -395,7 +424,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$handler = new ArangoCollectionHandler( $this->Database()->Connection() );
 
-		return $handler->count( $this->Connection()->getName() );					// ==>
+		return $handler->count( $this->collectionName() );							// ==>
 
 	} // RecordCount.
 
@@ -416,7 +445,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return int					The found records count.
 	 *
 	 * @uses Database()
-	 * @uses Connection()
+	 * @uses collectionName()
+	 * @uses NewNativeDocument()
 	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
 	 * @uses triagens\ArangoDb\Cursor::getCount()
 	 */
@@ -434,7 +464,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		return
 			$handler->byExample(
-				$this->Connection()->getName(), $document )
+				$this->collectionName(), $document )
 					->getCount();													// ==>
 
 	} // CountByExample.
@@ -808,6 +838,13 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function doDeleteByExample( $theDocument, array $theOptions )
 	{
 		//
+		// Set native options.
+		//
+		$options = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				 ? []
+				 : [ "limit" => 1 ];
+
+		//
 		// Convert to native document.
 		//
 		$document = $this->NewNativeDocument( $theDocument );
@@ -817,17 +854,9 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$collectionHandler = new ArangoCollectionHandler( $this->Database()->Connection() );
 
-		//
-		// Handle delete all.
-		//
-		if( $theOptions[ kTOKEN_OPT_MANY ] )
-			return
-				$collectionHandler->removeByExample(
-					$this->collectionName(), $document );							// ==>
-
 		return
 			$collectionHandler->removeByExample(
-				$this->collectionName(), $document, ["limit" => 1] );				// ==>
+				$this->collectionName(), $document, $options );						// ==>
 
 	} // doDeleteByExample.
 
@@ -1015,7 +1044,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return int					The number of replaced records.
 	 *
 	 * @uses Database()
-	 * @uses Connection()
+	 * @uses collectionName()
 	 * @uses KeyOffset()
 	 * @uses RevisionOffset()
 	 * @uses triagens\ArangoDb\DocumentHandler::replace()
@@ -1024,14 +1053,9 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function doReplace( $theDocument )
 	{
 		//
-		// Convert to native document.
-		//
-		$document = $this->NewNativeDocument( $theDocument );
-
-		//
 		// Assert document key.
 		//
-		if( ($key = $document->getKey()) !== NULL )
+		if( ($key = $theDocument->getKey()) !== NULL )
 		{
 			//
 			// Get document.
@@ -1046,7 +1070,7 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Find document.
 				//
-				$found = $handler->getById( $this->Connection()->getName(), $key );
+				$found = $handler->getById( $this->collectionName(), $key );
 
 				//
 				// Reset document properties.
@@ -1060,11 +1084,11 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Set document properties.
 				//
-				$properties = array_keys( $document->getAll() );
+				$properties = array_keys( $theDocument->getAll() );
 				$properties = array_diff(
 					$properties, [ $this->KeyOffset(), $this->RevisionOffset() ] );
 				foreach( $properties as $property )
-					$found->set( $property, $document->$property );
+					$found->set( $property, $theDocument->$property );
 
 				//
 				// Replace document.
@@ -1170,6 +1194,8 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				if( $error->getCode() != 404 )
 					throw $error;												// !@! ==>
+
+				return NULL;														// ==>
 			}
 
 		} // Scalar key.
@@ -1191,7 +1217,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * {@link kTOKEN_OPT_MANY} option is set; the
 	 * {@link triagens\ArangoDb\CollectionHandler::getById()} method if not.
 	 *
-	 * @param mixed					theHandle			The document handle(s).
+	 * @param mixed					$theHandle			The document handle(s).
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found document(s).
 	 *
@@ -1269,7 +1295,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The found records.
 	 *
 	 * @uses Database()
-	 * @uses Connection()
+	 * @uses collectionName()
 	 * @uses NewNativeDocument()
 	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
 	 * @see kTOKEN_OPT_SKIP
@@ -1301,7 +1327,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		return
 			$handler->byExample(
-				$this->Connection()->getName(), $document, $options );				// ==>
+				$this->collectionName(), $document, $options );						// ==>
 
 	} // doFindExample.
 
@@ -1368,6 +1394,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param array					$theDocument		Document properties.
 	 * @return mixed				Native database document object.
+	 *
+	 * @uses KeyOffset()
+	 * @uses RevisionOffset()
+	 * @uses triagens\ArangoDb\Document::createFromArray()
 	 */
 	protected function toDocumentNative( array $theDocument )
 	{
@@ -1419,7 +1449,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theData			The native inserted document.
 	 * @param mixed					$theKey				The document key.
 	 *
-	 * @uses Document::RevisionOffset()
+	 * @uses RevisionOffset()
 	 */
 	protected function normaliseInsertedDocument( $theDocument, $theData, $theKey )
 	{
@@ -1450,7 +1480,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param \Milko\PHPLib\Container	$theDocument	The deleted document.
 	 *
-	 * @uses Document::RevisionOffset()
+	 * @uses RevisionOffset()
 	 */
 	protected function normaliseDeletedDocument( \Milko\PHPLib\Container $theDocument )
 	{
@@ -1495,7 +1525,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param \Milko\PHPLib\Container	$theDocument	The inserted document.
 	 * @param mixed						$theData		The native database document.
 	 *
-	 * @uses Document::RevisionOffset()
+	 * @uses RevisionOffset()
 	 */
 	protected function normaliseSelectedDocument( \Milko\PHPLib\Container $theDocument,
 																		  $theData )

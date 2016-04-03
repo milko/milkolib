@@ -1144,16 +1144,16 @@
         },
         {
             "name": "nette/http",
-            "version": "v2.3.5",
+            "version": "v2.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/http.git",
-                "reference": "0cda6627163c940ee86e6a6021943d0dd7d12e37"
+                "reference": "24459307b19456706febbff8dbd033e1ff56ba04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/http/zipball/0cda6627163c940ee86e6a6021943d0dd7d12e37",
-                "reference": "0cda6627163c940ee86e6a6021943d0dd7d12e37",
+                "url": "https://api.github.com/repos/nette/http/zipball/24459307b19456706febbff8dbd033e1ff56ba04",
+                "reference": "24459307b19456706febbff8dbd033e1ff56ba04",
                 "shasum": ""
             },
             "require": {
@@ -1194,7 +1194,7 @@
             ],
             "description": "Nette HTTP Component",
             "homepage": "https://nette.org",
-            "time": "2016-04-01 15:14:14"
+            "time": "2016-04-02 17:09:25"
         },
         {
             "name": "nette/mail",

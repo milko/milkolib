@@ -101,6 +101,11 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @return array				Document as array.
+	 *
+	 * @uses KeyOffset()
+	 * @uses RevisionOffset()
+	 * @uses VertexSource()
+	 * @uses VertexDestination()
 	 */
 	public function NewDocumentArray( $theData )
 	{
@@ -173,6 +178,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * We overload this method to use the {@link kTAG_ARANGO_REL_FROM} constant.
 	 *
 	 * @return mixed				Source vertex document handle.
+	 *
+	 * @see kTAG_ARANGO_REL_FROM
 	 */
 	public function VertexSource()						{	return kTAG_ARANGO_REL_FROM;	}
 
@@ -187,16 +194,18 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * We overload this method to use the {@link kTAG_ARANGO_REL_TO} constant.
 	 *
 	 * @return mixed				Destination vertex document handle.
+	 *
+	 * @see kTAG_ARANGO_REL_TO
 	 */
 	public function VertexDestination()						{	return kTAG_ARANGO_REL_TO;	}
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *								PUBLIC GRAPH MANAGEMENT INTERFACE						*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *								PUBLIC GRAPH MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -212,15 +221,12 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * @param mixed					$theVertex			The vertex document or handle.
 	 * @param array					$theOptions			Find options.
 	 * @return array				The found documents.
-	 * @throws \InvalidArgumentException
 	 *
 	 * @uses Database()
-	 * @uses NewDocument()
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentHandle()
 	 * @uses collectionName()
+	 * @uses normaliseCursor()
 	 * @uses normaliseOptions()
-	 *
+	 * @uses triagens\ArangoDb\EdgeHandler::edges()
 	 * @see kTOKEN_OPT_FORMAT
 	 * @see kTOKEN_OPT_DIRECTION
 	 */
@@ -237,8 +243,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		//
 		// Get vertex handle.
 		//
-		if( $theVertex instanceof \Milko\PHPLib\Container )
-			$theVertex = $theVertex->Handle();
+		if( $theVertex instanceof ArangoEdge )
+			$theVertex = $theVertex->getHandle();
 
 		//
 		// Get edge handler.
@@ -355,8 +361,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * @return mixed				The inserted document's key.
 	 *
 	 * @uses Database()
-	 * @uses Connection()
-	 * @uses triagens\ArangoDb\DocumentHandler::save()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::saveEdge()
 	 */
 	protected function doInsert( $theDocument )
 	{
@@ -395,7 +401,9 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * @param array					$theList			The documents list.
 	 * @return array				The document keys.
 	 *
-	 * @uses doInsertOne()
+	 * @uses Database()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::saveEdge()
 	 */
 	protected function doInsertBulk( array $theList )
 	{
@@ -425,7 +433,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 			//
 			$ids[] =
 				$handler->saveEdge(
-					$this->collectionName(), $srcVertex, $dstVertex, $theDocument );	// ==>
+					$this->collectionName(), $srcVertex, $dstVertex, $edge );
 		}
 
 		return $ids;																// ==>
@@ -588,11 +596,11 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *								PROTECTED GENERIC UTILITIES								*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *								PROTECTED GENERIC UTILITIES								*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -610,8 +618,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * @param mixed					$theData			The native inserted document.
 	 * @param mixed					$theKey				The document key.
 	 *
-	 * @uses Document::VertexIn()
-	 * @uses Document::VertexOut()
+	 * @uses Document::VertexSource()
+	 * @uses Document::VertexDestination()
 	 */
 	protected function normaliseInsertedDocument( $theDocument, $theData, $theKey )
 	{
@@ -645,11 +653,11 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * @param \Milko\PHPLib\Container	$theDocument	The selected document.
 	 * @param mixed						$theData		The native database document.
 	 *
-	 * @uses Document::VertexIn()
-	 * @uses Document::VertexOut()
+	 * @uses Document::VertexSource()
+	 * @uses Document::VertexDestination()
 	 */
 	protected function normaliseSelectedDocument( \Milko\PHPLib\Container $theDocument,
-												  $theData )
+												  						  $theData )
 	{
 		//
 		// Set source and destination vertices.

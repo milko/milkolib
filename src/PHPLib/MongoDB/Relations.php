@@ -10,6 +10,7 @@ namespace Milko\PHPLib\MongoDB;
 
 use Milko\PHPLib\iRelations;
 use Milko\PHPLib\MongoDB\Collection;
+use Milko\PHPLib\Relation;
 
 /*=======================================================================================
  *																						*
@@ -38,63 +39,6 @@ class Relations extends Collection
 
 /*=======================================================================================
  *																						*
- *							PUBLIC DOCUMENT INSTANTIATION INTERFACE						*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	NewDocument																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a {@link Document} instance.</h4>
-	 *
-	 * We overload this method to return a {@link \Milko\PHPLib\Document} instance of the
-	 * correct class, or a {@link \Milko\PHPLib\Relation} instance.
-	 *
-	 * @param mixed						$theData			Database native document.
-	 * @param string					$theClass			Expected class name.
-	 * @return \Milko\PHPLib\Container	Standard document object.
-	 *
-	 * @uses ClassOffset()
-	 */
-	public function NewDocument( $theData, $theClass = NULL )
-	{
-		//
-		// Convert document to array.
-		//
-		$document = ( $theData instanceof \Milko\PHPLib\Container )
-			? $theData->toArray()
-			: (array)$theData;
-
-		//
-		// Use provided class name.
-		//
-		if( $theClass !== NULL )
-		{
-			$theClass = (string)$theClass;
-			return new $theClass( $this, $document );								// ==>
-		}
-
-		//
-		// Use class in data.
-		//
-		if( array_key_exists( $this->ClassOffset(), $document ) )
-		{
-			$class = $document[ $this->ClassOffset() ];
-			return new $class( $this, $document );									// ==>
-		}
-
-		return new \Milko\PHPLib\Relation( $this, $document );						// ==>
-
-	} // NewDocument.
-
-
-
-/*=======================================================================================
- *																						*
  *							PUBLIC OFFSET DECLARATION INTERFACE							*
  *																						*
  *======================================================================================*/
@@ -111,6 +55,8 @@ class Relations extends Collection
 	 * We overload this method to use the {@link kTAG_MONGO_REL_FROM} constant.
 	 *
 	 * @return mixed				Source vertex document handle.
+	 *
+	 * @see kTAG_MONGO_REL_FROM
 	 */
 	public function VertexSource()							{	return kTAG_MONGO_REL_FROM;	}
 
@@ -125,6 +71,8 @@ class Relations extends Collection
 	 * We overload this method to use the {@link kTAG_MONGO_REL_TO} constant.
 	 *
 	 * @return mixed				Destination vertex document handle.
+	 *
+	 * @see kTAG_MONGO_REL_TO
 	 */
 	public function VertexDestination()						{	return kTAG_MONGO_REL_TO;	}
 
@@ -152,13 +100,13 @@ class Relations extends Collection
 	 * @return array				The found documents.
 	 * @throws \InvalidArgumentException
 	 *
-	 * @uses Database()
-	 * @uses NewDocument()
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentHandle()
+	 * @uses Connection()
 	 * @uses collectionName()
+	 * @uses VertexSource()
+	 * @uses VertexDestination()
 	 * @uses normaliseOptions()
-	 *
+	 * @uses NewDocumentHandle()
+	 * @uses \MongoDB\Collection::find()
 	 * @see kTOKEN_OPT_FORMAT
 	 * @see kTOKEN_OPT_DIRECTION
 	 */
@@ -176,7 +124,7 @@ class Relations extends Collection
 		// Get vertex handle.
 		//
 		if( $theVertex instanceof \Milko\PHPLib\Container )
-			$theVertex = $theVertex->Handle();
+			$theVertex = $this->NewDocumentHandle( $theVertex );
 
 		//
 		// Build query.
@@ -198,54 +146,44 @@ class Relations extends Collection
 
 			default:
 				throw new \InvalidArgumentException (
-					"Invalid conversion format code." );					// !@! ==>
+					"Invalid conversion format code." );						// !@! ==>
 		}
 
-		//
-		// Make selection.
-		//
-		$result = $this->Connection()->find( $query );
-
-		//
-		// Handle native result.
-		//
-		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
-			return $result;															// ==>
-
-		//
-		// Iterate cursor.
-		//
-		$list = [];
-		foreach( $result as $document )
-		{
-			//
-			// Format document.
-			//
-			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
-			{
-				case kTOKEN_OPT_FORMAT_STANDARD:
-					$tmp = $this->NewDocument( $document );
-					$this->normaliseSelectedDocument( $tmp, $document );
-					$list[] = $tmp;
-					break;
-
-				case kTOKEN_OPT_FORMAT_HANDLE:
-					$list[] = $this->NewDocumentHandle( $document );
-					break;
-
-				case kTOKEN_OPT_FORMAT_KEY:
-					$list[] = $this->NewDocumentKey( $document );
-					break;
-
-				default:
-					throw new \InvalidArgumentException (
-						"Invalid conversion format code." );					// !@! ==>
-			}
-		}
-
-		return $list;																// ==>
+		return
+			$this->normaliseCursor(
+				$this->Connection()->find( $query ), $theOptions );					// ==>
 
 	} // FindByVertex.
+
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED CONVERSION UTILITIES							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	toDocument																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a standard database document.</h4>
+	 *
+	 * We overload this method to return {@link \Milko\PHPLib\Relations} instances by
+	 * default.
+	 *
+	 * @param array					$theData			Document as an array.
+	 * @return mixed				Native database document object.
+	 */
+	protected function toDocument( array $theData )
+	{
+		return new Relation( $this, $theData );										// ==>
+
+	} // toDocument.
 
 
 

@@ -265,9 +265,6 @@ abstract class Collection extends Container
 	 * This method can be used to retrieve the database object.
 	 *
 	 * @return Database				Database object.
-	 *
-	 * @example
-	 * $database = $this->Database();
 	 */
 	public function Database()								{	return $this->mDatabase;	}
 
@@ -282,9 +279,6 @@ abstract class Collection extends Container
 	 * This method can be used to retrieve the collection native driver object.
 	 *
 	 * @return mixed				Collection native driver object.
-	 *
-	 * @example
-	 * $col = $this->Connection();
 	 */
 	public function Connection()						{	return $this->mNativeObject;	}
 	
@@ -338,37 +332,6 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a native database document.</h4>
-	 *
-	 * This method should return a native database document from the provided data which
-	 * can be an array, an instance of {@link Container}, or an object that can be converted
-	 * to an array.
-	 *
-	 * In this class we call the protected virtual {@link toDocumentNative()} method by
-	 * providing the document converted to an array: that method will take care of
-	 * instantiating the correct object.
-	 *
-	 * Derived classes must implement the above mentioned protected method and should
-	 * overload this method to intercept documents already provided in the native format.
-	 *
-	 * @param mixed					$theData			Document data.
-	 * @return mixed				Database native object.
-	 *
-	 * @uses NewDocumentArray()
-	 * @uses toDocumentNative()
-	 */
-	public function NewNativeDocument( $theData )
-	{
-		return $this->toDocumentNative( $this->NewDocumentArray( $theData ) );		// ==>
-
-	} // NewNativeDocument.
-
-
-	/*===================================================================================
 	 *	NewDocument																		*
 	 *==================================================================================*/
 
@@ -393,7 +356,10 @@ abstract class Collection extends Container
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @param string				$theClass			Expected class name.
-	 * @return Document				Standard document object.
+	 * @return Container			Standard document object.
+	 *
+	 * @used toDocument()
+	 * @used NewDocumentArray()
 	 */
 	public function NewDocument( $theData, $theClass = NULL )
 	{
@@ -423,6 +389,37 @@ abstract class Collection extends Container
 		return $this->toDocument( $document );										// ==>
 
 	} // NewDocument.
+
+
+	/*===================================================================================
+	 *	NewNativeDocument																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a native database document.</h4>
+	 *
+	 * This method should return a native database document from the provided data which
+	 * can be an array, an instance of {@link Container}, or an object that can be converted
+	 * to an array.
+	 *
+	 * In this class we call the protected virtual {@link toDocumentNative()} method by
+	 * providing the document converted to an array: that method will take care of
+	 * instantiating the correct object.
+	 *
+	 * Derived classes must implement the above mentioned protected method and should
+	 * overload this method to intercept documents already provided in the native format.
+	 *
+	 * @param mixed					$theData			Document data.
+	 * @return mixed				Database native object.
+	 *
+	 * @uses NewDocumentArray()
+	 * @uses toDocumentNative()
+	 */
+	public function NewNativeDocument( $theData )
+	{
+		return $this->toDocumentNative( $this->NewDocumentArray( $theData ) );		// ==>
+
+	} // NewNativeDocument.
 
 
 	/*===================================================================================
@@ -517,8 +514,8 @@ abstract class Collection extends Container
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Document key.
 	 *
-	 * @uses NewDocumentArray()
 	 * @uses KeyOffset()
+	 * @uses NewDocumentArray()
 	 */
 	public function NewDocumentKey( $theData )
 	{
@@ -537,6 +534,23 @@ abstract class Collection extends Container
 			"Data is missing the document key." );								// !@! ==>
 
 	} // NewDocumentKey.
+
+
+	/*===================================================================================
+	 *	NewHandle																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a document handle.</h4>
+	 *
+	 * This method should return a document handle from the provided key.
+	 *
+	 * Derived classes must implement this method to handle their native database handles.
+	 *
+	 * @param mixed					$theKey				Document key.
+	 * @return mixed				Document handle.
+	 */
+	abstract public function NewHandle( $theKey );
 
 
 
@@ -697,6 +711,7 @@ abstract class Collection extends Container
 	 * @return array				The document keys.
 	 *
 	 * @uses doInsertBulk()
+	 * @uses NewNativeDocument()
 	 */
 	public function InsertBulk( $theList )
 	{
@@ -761,6 +776,11 @@ abstract class Collection extends Container
 	 * @param mixed					$theDocument		The document(s) to be deleted.
 	 * @param array					$theOptions			Insert options.
 	 * @return int					Number of deleted documents.
+	 *
+	 * @uses doDeleteOne()
+	 * @uses doDeleteMany()
+	 * @uses normaliseOptions()
+	 * @see kTOKEN_OPT_MANY
 	 *
 	 * @example
 	 * // Delete a single document.<br/>
@@ -1429,8 +1449,6 @@ abstract class Collection extends Container
 	 * @param mixed					$thePipeline		The aggregation pipeline.
 	 * @param array					$theOptions			Query options.
 	 * @return array				The result set.
-	 *
-	 * @uses doMapReduce()
 	 */
 	abstract public function MapReduce( $thePipeline, $theOptions = NULL );
 
@@ -1757,6 +1775,8 @@ abstract class Collection extends Container
 	 * @param mixed					$theList			An iterable list of documents in
 	 * 													native database format.
 	 * @return array				Number of deleted methods.
+	 *
+	 * @uses doDeleteOne()
 	 */
 	protected function doDeleteMany( $theList )
 	{
@@ -2002,13 +2022,8 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found document(s).
 	 *
-	 * @uses findKey()
-	 * @uses NewDocument()
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentHandle()
-	 * @uses normaliseSelectedDocument()
-	 * @see kTOKEN_OPT_MANY
-	 * @see kTOKEN_OPT_FORMAT
+	 * @uses doFindKey()
+	 * @uses normaliseCursor()
 	 */
 	protected function doFindByKey( $theKey, array $theOptions )
 	{
@@ -2073,6 +2088,9 @@ abstract class Collection extends Container
 	 * @param mixed					$theHandle			The document handle(s).
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found document(s).
+	 *
+	 * @uses doFindHandle()
+	 * @uses normaliseCursor()
 	 */
 	protected function doFindByHandle( $theHandle, array $theOptions )
 	{
@@ -2135,6 +2153,9 @@ abstract class Collection extends Container
 	 * @param mixed					$theDocument		The example document.
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
+	 *
+	 * @uses doFindExample()
+	 * @uses normaliseCursor()
 	 */
 	protected function doFindByExample( $theDocument, array $theOptions )
 	{
@@ -2195,6 +2216,9 @@ abstract class Collection extends Container
 	 * @param mixed					$theQuery			The selection criteria.
 	 * @param array					$theOptions			Find options.
 	 * @return mixed				The found records.
+	 *
+	 * @uses doFindQuery()
+	 * @uses normaliseCursor()
 	 */
 	protected function doFindByQuery( $theQuery, array $theOptions )
 	{
@@ -2512,8 +2536,8 @@ abstract class Collection extends Container
 	 * @param mixed					$theData			The native inserted document.
 	 * @param mixed					$theKey				The document key.
 	 *
+	 * @uses KeyOffset()
 	 * @uses Document::SetKey()
-	 * @uses Document::KeyOffset()
 	 * @uses Document::IsPersistent()
 	 * @uses Document::IsModified()
 	 */

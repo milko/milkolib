@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -358,8 +358,8 @@ echo( "\n=======================================================================
 // Insert native document.
 //
 echo( "Insert native document:\n" );
-echo( '$document = $test->NewNativeDocument( [$test->VertexSource() => "nodes/Node1", $test->VertexDestination() => "nodes/Node2", "data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );' . "\n" );
-$document = $test->NewNativeDocument( [$test->VertexSource() => "nodes/Node1", $test->VertexDestination() => "nodes/Node2", "data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );
+echo( '$document = $test->NewNativeDocument( [$test->VertexSource() => $nodes->NewHandle( "Node1" ), $test->VertexDestination() => $nodes->NewHandle( "Node2" ), "data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );' . "\n" );
+$document = $test->NewNativeDocument( [$test->VertexSource() => $nodes->NewHandle( "Node1" ), $test->VertexDestination() => $nodes->NewHandle( "Node2" ), "data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -371,21 +371,20 @@ echo( "\n" );
 // Insert container.
 //
 echo( "Insert container:\n" );
-echo( '$document = new Milko\PHPLib\Container( [$test->VertexSource() => "nodes/Node3", $test->VertexDestination() => "nodes/Node4", $test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );' . "\n" );
-$document = new Milko\PHPLib\Container( [$test->VertexSource() => "nodes/Node3", $test->VertexDestination() => "nodes/Node4", $test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );
+echo( '$document = new Milko\PHPLib\Container( [$test->VertexSource() => $nodes->NewHandle( "Node3" ), $test->VertexDestination() => $nodes->NewHandle( "Node4" ), $test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );' . "\n" );
+$document = new Milko\PHPLib\Container( [$test->VertexSource() => $nodes->NewHandle( "Node3" ), $test->VertexDestination() => $nodes->NewHandle( "Node4" ), $test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
 print_r( $document );
-
 echo( "\n" );
 
 //
 // Insert document.
 //
 echo( "Insert document:\n" );
-echo( '$document = new Milko\PHPLib\Document( $test, [$test->VertexSource() => "nodes/Node5", $test->VertexDestination() => "nodes/Node6", "data" => "XXX", "color" => "red"] );' . "\n" );
-$document = new Milko\PHPLib\Document( $test, [$test->VertexSource() => "nodes/Node5", $test->VertexDestination() => "nodes/Node6", "data" => "XXX", "color" => "red"] );
+echo( '$document = new Milko\PHPLib\Document( $test, [$test->VertexSource() => $nodes->NewHandle( "Node5" ), $test->VertexDestination() => $nodes->NewHandle( "Node6" ), "data" => "XXX", "color" => "red"] );' . "\n" );
+$document = new Milko\PHPLib\Document( $test, [$test->VertexSource() => $nodes->NewHandle( "Node5" ), $test->VertexDestination() => $nodes->NewHandle( "Node6" ), "data" => "XXX", "color" => "red"] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -407,8 +406,8 @@ echo( "\n" );
 // Insert relation.
 //
 echo( "Insert relation:\n" );
-echo( '$document = new Milko\PHPLib\Relation( $test, [$test->VertexSource() => "nodes/Node7", $test->VertexDestination() => "nodes/Node8", "data" => "XXX", "color" => "red"] );' . "\n" );
-$document = new Milko\PHPLib\Relation( $test, [$test->VertexSource() => "nodes/Node7", $test->VertexDestination() => "nodes/Node8", "data" => "XXX", "color" => "red"] );
+echo( '$document = new Milko\PHPLib\Relation( $test, [$test->VertexSource() => $nodes->NewHandle( "Node7" ), $test->VertexDestination() => $nodes->NewHandle( "Node8" ), "data" => "XXX", "color" => "red"] );' . "\n" );
+$document = new Milko\PHPLib\Relation( $test, [$test->VertexSource() => $nodes->NewHandle( "Node7" ), $test->VertexDestination() => $nodes->NewHandle( "Node8" ), "data" => "XXX", "color" => "red"] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -431,11 +430,11 @@ echo( "\n=======================================================================
 //
 echo( "Insert many documents:\n" );
 $documents = [];
-$documents[0] = [ $test->VertexSource() => "nodes/Node9", $test->VertexDestination() => "nodes/Node1", $test->KeyOffset() => "ID2", "data" => "XXX", "color" => "yellow" ];
-$documents[1] = $test->NewNativeDocument( [ $test->VertexSource() => "nodes/Node2", $test->VertexDestination() => "nodes/Node3", "name" => "Nati" ] );
-$documents[2] = new Milko\PHPLib\Relation( $test, [ $test->VertexSource() => "nodes/Node4", $test->VertexDestination() => "nodes/Node5", $test->KeyOffset() => 7, "name" => "Cangalovic" ] );
-$documents[3] = new \DerivedFromDocument( $test, [ $test->VertexSource() => "nodes/Node6", $test->VertexDestination() => "nodes/Node7", "name" => "no" ] );
-$documents[4] = new Milko\PHPLib\Container( [ $test->VertexSource() => "nodes/Node8", $test->VertexDestination() => "nodes/Node9", "name" => "yes" ] );
+$documents[0] = [ $test->VertexSource() => $nodes->NewHandle( "Node9" ), $test->VertexDestination() => $nodes->NewHandle( "Node1" ), $test->KeyOffset() => "ID2", "data" => "XXX", "color" => "yellow" ];
+$documents[1] = $test->NewNativeDocument( [ $test->VertexSource() => $nodes->NewHandle( "Node2" ), $test->VertexDestination() => $nodes->NewHandle( "Node3" ), "name" => "Nati" ] );
+$documents[2] = new Milko\PHPLib\Relation( $test, [ $test->VertexSource() => $nodes->NewHandle( "Node4" ), $test->VertexDestination() => $nodes->NewHandle( "Node5" ), $test->KeyOffset() => 7, "name" => "Cangalovic" ] );
+$documents[3] = new \DerivedFromDocument( $test, [ $test->VertexSource() => $nodes->NewHandle( "Node6" ), $test->VertexDestination() => $nodes->NewHandle( "Node7" ), "name" => "no" ] );
+$documents[4] = new Milko\PHPLib\Container( [ $test->VertexSource() => $nodes->NewHandle( "Node8" ), $test->VertexDestination() => $nodes->NewHandle( "Node9" ), "name" => "yes" ] );
 echo( "»»»[0] " ); print_r( $documents[0] );
 echo( "»»»[1] " ); print_r( $documents[1] );
 echo( "»»»[2] Class: " . get_class( $documents[2] ) . "\n" );
@@ -633,8 +632,16 @@ echo( "\n=======================================================================
 // Replace a record.
 //
 echo( "Replace a record:\n" );
-echo( '$result = $test->Replace( [ $test->KeyOffset() => "ID1", "color" => "pink", "status" => "replaced" ] );' . "\n" );
-$result = $test->Replace( [ $test->KeyOffset() => "ID1", "color" => "pink", "status" => "replaced" ] );
+if( kENGINE == "ARANGO" )
+{
+	echo( '$result = $test->Replace( [ $test->KeyOffset() => "ID1", "color" => "pink", "status" => "replaced" ] );' . "\n" );
+	$result = $test->Replace( [ $test->KeyOffset() => "ID1", $test->VertexSource() => $nodes->NewHandle( "Node3" ), $test->VertexDestination () => $nodes->NewHandle( "Node4" ), "color" => "pink", "status" => "replaced" ] );
+}
+elseif( kENGINE == "MONGO" )
+{
+	echo( '$result = $test->Replace( [ $test->KeyOffset() => "ID1", $test->VertexSource() => $nodes->NewHandle( "Node3" ), $test->VertexDestination () => $nodes->NewHandle( "Node4" ), "color" => "pink", "status" => "replaced" ] );' . "\n" );
+	$result = $test->Replace( [ $test->KeyOffset() => "ID1", $test->VertexSource() => $nodes->NewHandle( "Node3" ), $test->VertexDestination () => $nodes->NewHandle( "Node4" ), "color" => "pink", "status" => "replaced" ] );
+}
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "replaced" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "replaced" ] );
