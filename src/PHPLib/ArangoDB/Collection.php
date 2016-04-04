@@ -8,6 +8,7 @@
 
 namespace Milko\PHPLib\ArangoDB;
 
+use Milko\PHPLib\Server;
 use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Collection as ArangoCollection;
 use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
@@ -235,9 +236,6 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				Document handle.
 	 * @throws \InvalidArgumentException
 	 *
-	 * @uses KeyOffset()
-	 * @uses NewHandle()
-	 * @uses NewDocumentArray()
 	 * @uses triagens\ArangoDb\Document::getHandle()
 	 */
 	public function NewDocumentHandle( $theData )
@@ -258,19 +256,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 		} // ArangoDocument.
 
-		//
-		// Convert to array.
-		//
-		$document = $this->NewDocumentArray( $theData );
-
-		//
-		// Compute handle.
-		//
-		if( array_key_exists( $this->KeyOffset(), $document ) )
-			return $this->NewHandle( $document[ $this->KeyOffset() ] );				// ==>
-
-		throw new \InvalidArgumentException (
-			"Data is missing the document key." );								// !@! ==>
+		return parent::NewDocumentHandle( $theData );								// ==>
 
 	} // NewDocumentHandle.
 
@@ -322,6 +308,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We implement this method to return a string concatenating the collection name and the
 	 * document key, separated by a slash.
+	 *
+	 * The method assumes the provided key is valid.
 	 *
 	 * @param mixed					$theKey				Document key.
 	 * @return mixed				Document handle.
@@ -395,7 +383,93 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
- *							PUBLIC RECORD MANAGEMENT INTERFACE							*
+ *							PUBLIC DOCUMENT MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	FindKey																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find a document.</h4>
+	 *
+	 * We implement the method by using the
+	 * {@link triagens\ArangoDb\CollectionHandler::getById()} method.
+	 *
+	 * @param mixed					$theKey				The document key.
+	 * @return Document				The found document or <tt>NULL</tt>.
+	 *
+	 * @uses Database()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
+	 */
+	public function FindKey($theKey )
+	{
+		//
+		// Instantiate document handler.
+		//
+		$handler = new ArangoDocumentHandler( $this->Database()->Connection() );
+
+		//
+		// Try finding the document.
+		//
+		try
+		{
+			return
+				$this->NewDocument(
+					$handler->getById( $this->collectionName(), $theKey ) );		// ==>
+		}
+		catch( ArangoServerException $error )
+		{
+			//
+			// Handle not found.
+			//
+			if( $error->getCode() == 404 )
+				return NULL;														// ==>
+
+			throw $error;														// !@! ==>
+		}
+
+	} // FindKey.
+
+
+	/*===================================================================================
+	 *	FindHandle																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find a document by handle.</h4>
+	 *
+	 * We implement this method by calling the {@link FindKey()} method of the handle's
+	 * collection.
+	 *
+	 * @param mixed					$theHandle			The document handle.
+	 * @return Document				The found document or <tt>NULL</tt>.
+	 *
+	 * @uses FindKey()
+	 */
+	public function FindHandle( $theHandle )
+	{
+		//
+		// Decompose handle.
+		//
+		$handle = explode( '/', $theHandle );
+		
+		return
+			$this->Database()->RetrieveCollection(
+				$handle[ 0 ], Server::kFLAG_ASSERT )
+					->FindKey( $handle[ 1 ] );										// ==>
+
+	} // FindHandle.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC RECORD COUNT INTERFACE							*
  *																						*
  *======================================================================================*/
 

@@ -245,6 +245,8 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		//
 		if( $theVertex instanceof ArangoEdge )
 			$theVertex = $theVertex->getHandle();
+		elseif( is_object( $theVertex ) )
+			$theVertex = $this->NewDocumentHandle( $theVertex );
 
 		//
 		// Get edge handler.

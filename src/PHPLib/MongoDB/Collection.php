@@ -165,44 +165,6 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	NewDocumentHandle																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert a document to a document handle.</h4>
-	 *
-	 * In this class a handle is an array of two elements: the first is the collection name
-	 * and the second is the document key. The collection is by default the current one and
-	 * if the provided document lacks its key, the method will raise an exception.
-	 *
-	 * @param mixed					$theData			Document to reference.
-	 * @return mixed				Document handle.
-	 * @throws \InvalidArgumentException
-	 *
-	 * @uses KeyOffset()
-	 * @uses NewHandle()
-	 * @uses NewDocumentArray()
-	 */
-	public function NewDocumentHandle( $theData )
-	{
-		//
-		// Convert to array.
-		//
-		$document = $this->NewDocumentArray( $theData );
-
-		//
-		// Check key.
-		//
-		if( array_key_exists( $this->KeyOffset(), $document ) )
-			return $this->NewHandle( $document[ $this->KeyOffset() ] );				// ==>
-
-		throw new \InvalidArgumentException (
-			"Data is missing the document key." );								// !@! ==>
-
-	} // NewDocumentHandle.
-
-
-	/*===================================================================================
 	 *	NewDocumentKey																	*
 	 *==================================================================================*/
 
@@ -249,6 +211,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We implement this method to return an array of two elements: the first is the
 	 * collection name, the second is the document key.
+	 *
+	 * The method assumes the provided key is valid.
 	 *
 	 * @param mixed					$theKey				Document key.
 	 * @return mixed				Document handle.
@@ -317,6 +281,67 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @see kTAG_MONGO_REVISION
 	 */
 	public function RevisionOffset()						{	return kTAG_MONGO_REVISION;	}
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC DOCUMENT MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	FindKey																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find a document.</h4>
+	 *
+	 * This method will return the {@link Document} matching the provided key, or
+	 * <tt>NULL</tt> if not found.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed						$theKey			The document key.
+	 * @return \Milko\PHPLib\Document	The found document or <tt>NULL</tt>.
+	 */
+	public function FindKey( $theKey )
+	{
+		//
+		// Make selection.
+		//
+		$result = $this->Connection()->findOne( [ $this->KeyOffset() => $theKey ] );
+		if( $result !== NULL )
+			return $this->NewDocument( $result );									// ==>
+
+		return NULL;																// ==>
+
+	} // FindKey.
+
+
+	/*===================================================================================
+	 *	FindHandle																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find a document by handle.</h4>
+	 *
+	 * We implement this method by calling the {@link FindKey()} method of the handle's
+	 * collection.
+	 *
+	 * @param mixed						$theHandle		The document handle.
+	 * @return \Milko\PHPLib\Document	The found document or <tt>NULL</tt>.
+	 */
+	public function FindHandle( $theHandle )
+	{
+		return
+			$this->Database()->RetrieveCollection(
+				$theHandle[ 0 ], Server::kFLAG_ASSERT )
+				->FindKey( $theHandle[ 1 ] );										// ==>
+
+	} // FindHandle.
 
 
 

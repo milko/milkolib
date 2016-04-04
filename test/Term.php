@@ -60,8 +60,9 @@ echo( "\n" );
 // Insert namespace.
 //
 echo( "Insert namespace:\n" );
-echo( '$key = $namespace->Store();' . "\n" );
-$key = $namespace->Store();
+echo( '$handle = $namespace->Store();' . "\n" );
+$handle = $namespace->Store();
+var_dump( $handle );
 echo( "Class: " . get_class( $namespace ) . "\n" );
 echo( "Modified:   " . (( $namespace->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $namespace->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -101,8 +102,8 @@ echo( "\n" );
 echo( "Insert term:\n" );
 try
 {
-	echo( '$key = $document->Store();' . "\n" );
-	$key = $document->Store();
+	echo( '$handle = $document->Store();' . "\n" );
+	$handle = $document->Store();
 	echo( "FALIED! - Should have raised an exception.\n" );
 }
 catch( RuntimeException $error )
@@ -119,8 +120,9 @@ echo( "\n" );
 echo( "Insert term:\n" );
 echo( '$document->Name( "en", "A term" );' . "\n" );
 $document->Name( "en", "A term" );
-echo( '$key = $document->Store();' . "\n" );
-$key = $document->Store();
+echo( '$handle = $document->Store();' . "\n" );
+$handle = $document->Store();
+var_dump( $handle );
 echo( "Class: " . get_class( $document ) . "\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );

@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -37,8 +37,23 @@ use Milko\PHPLib\MongoDB\Collection;
 //
 // Document test classes.
 //
-class A extends Milko\PHPLib\Document{}
-class B extends Milko\PHPLib\Document{}
+class A extends \Milko\PHPLib\Document{}
+class B extends \Milko\PHPLib\Document{}
+class C extends \Milko\PHPLib\Document
+{
+	protected function doDocumentToReference( $theOffset, \Milko\PHPLib\Document $theDocument )
+	{
+		if( $theOffset == "sub2" )
+			return $theDocument[ $theDocument->Collection()->KeyOffset() ];
+		return parent::doDocumentToReference( $theOffset, $theDocument );
+	}
+	protected function doReferenceToDocument( $theOffset, $theReference )
+	{
+		if( $theOffset == "sub2" )
+			return $this->Collection()->FindKey( $theReference );
+		return parent::doReferenceToDocument( $theOffset, $theReference );
+	}
+}
 
 //
 // Instantiate object.
@@ -176,8 +191,9 @@ echo( "\n=======================================================================
 // Insert B.
 //
 echo( "Insert B:\n" );
-echo( '$key = $B->Store();' . "\n" );
-$key = $B->Store();
+echo( '$handle = $B->Store();' . "\n" );
+$handle = $B->Store();
+var_dump( $handle );
 echo( "Class: " . get_class( $B ) . "\n" );
 echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $B->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -272,23 +288,22 @@ echo( "\n" );
 // Create container document.
 //
 echo( "Create container document:\n" );
-echo( '$document = new Milko\PHPLib\Document( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );' . "\n" );
-$document = new Milko\PHPLib\Document( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );
+echo( '$document = new C( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );' . "\n" );
+$document = new C( $collection, ["name" => "container", "sub1" => $sub1, "sub2" => $sub2] );
 echo( "Class: " . get_class( $document ) . "\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
 print_r( $document->getArrayCopy() );
-
 echo( "\n" );
 
 //
 // Store document.
 //
 echo( "Store document:\n" );
-echo( '$key = $document->Store();' . "\n" );
-$key = $document->Store();
-var_dump( $key );
+echo( '$handle = $document->Store();' . "\n" );
+$handle = $document->Store();
+var_dump( $handle );
 echo( "Class: " . get_class( $document ) . "\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -301,8 +316,9 @@ echo( "\n=======================================================================
 // Retrieve embedded document 1.
 //
 echo( "Retrieve embedded document 1:\n" );
-echo( '$sub1 = $collection->FindByHandle( $document["sub1"] );' . "\n" );
-$sub1 = $collection->FindByHandle( $document["sub1"] );
+echo( '$sub1 = $document->ReferenceToDocument( "sub1" );' . "\n" );
+$sub1 = $document->ReferenceToDocument( "sub1" );
+exit;
 echo( "Class: " . get_class( $sub1 ) . "\n" );
 echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -315,8 +331,8 @@ echo( "\n" );
 // Retrieve embedded document 2.
 //
 echo( "Retrieve embedded document 2:\n" );
-echo( '$sub2 = $collection->FindByHandle( $document["sub2"] );' . "\n" );
-$sub2 = $collection->FindByHandle( $document["sub2"] );
+echo( '$sub2 = $collection->FindByKey( $document["sub2"] );' . "\n" );
+$sub2 = $collection->FindByKey( $document["sub2"] );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );

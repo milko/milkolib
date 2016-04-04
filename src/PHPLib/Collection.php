@@ -485,12 +485,40 @@ abstract class Collection extends Container
 	 * If the provided document does not have its {@link KeyOffset()} property, this method
 	 * should raise an exception.
 	 *
-	 * Derived concrete classes must implement this method.
+	 * Derived classes should implement this method to handle database native document
+	 * types, this class will handle other types.
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Document handle.
+	 *
+	 * @uses KeyOffset()
+	 * @uses NewHandle()
+	 * @uses NewDocumentArray()
+	 * @uses Document::Handle()
 	 */
-	abstract public function NewDocumentHandle( $theData );
+	public function NewDocumentHandle( $theData )
+	{
+		//
+		// Handle standard document.
+		//
+		if( $theData instanceof Document )
+			return $theData->Handle();												// ==>
+
+		//
+		// Convert to array.
+		//
+		$document = $this->NewDocumentArray( $theData );
+
+		//
+		// Compute handle.
+		//
+		if( array_key_exists( $this->KeyOffset(), $document ) )
+			return $this->NewHandle( $document[ $this->KeyOffset() ] );				// ==>
+
+		throw new \InvalidArgumentException (
+			"Data is missing the document key." );								// !@! ==>
+
+	} // NewDocumentHandle.
 
 
 	/*===================================================================================
@@ -544,6 +572,8 @@ abstract class Collection extends Container
 	 * <h4>Return a document handle.</h4>
 	 *
 	 * This method should return a document handle from the provided key.
+	 *
+	 * The method assumes the provided key is valid.
 	 *
 	 * Derived classes must implement this method to handle their native database handles.
 	 *
@@ -1058,6 +1088,51 @@ abstract class Collection extends Container
 		return $this->doReplace( $this->NewNativeDocument( $theDocument ) );		// ==>
 
 	} // Replace.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC DOCUMENT MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	FindKey																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find a document by key.</h4>
+	 *
+	 * This method will return the {@link Document} matching the provided key, or
+	 * <tt>NULL</tt> if not found.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theKey				The document key.
+	 * @return Document				The found document or <tt>NULL</tt>.
+	 */
+	abstract public function FindKey( $theKey );
+
+
+	/*===================================================================================
+	 *	FindHandle																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find a document by handle.</h4>
+	 *
+	 * This method will return the {@link Document} matching the provided handle, or
+	 * <tt>NULL</tt> if not found.
+	 *
+	 * It is the responsibility of the caller to ensure the server is connected.
+	 *
+	 * @param mixed					$theHandle			The document handle.
+	 * @return Document				The found document or <tt>NULL</tt>.
+	 */
+	abstract public function FindHandle( $theHandle );
 
 
 

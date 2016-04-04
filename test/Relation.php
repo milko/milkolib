@@ -31,8 +31,8 @@ require_once( "functions.php" );
 //
 // Document test classes.
 //
-class SRC extends Milko\PHPLib\Document{}
-class DST extends Milko\PHPLib\Document{}
+class SRC extends \Milko\PHPLib\Document{}
+class DST extends \Milko\PHPLib\Document{}
 
 //
 // Instantiate connection.
@@ -209,8 +209,8 @@ echo( "\n=======================================================================
 echo( "Insert edge:\n" );
 try
 {
-	echo( '$key = $edge->Store();' . "\n" );
-	$key = $edge->Store();
+	echo( '$handle = $edge->Store();' . "\n" );
+	$handle = $edge->Store();
 	echo( "FALIED! - Should have raised an exception.\n" );
 }
 catch( RuntimeException $error )
@@ -237,9 +237,9 @@ echo( "\n" );
 // Insert edge.
 //
 echo( "Insert edge:\n" );
-echo( '$key = $edge->Store();' . "\n" );
-$key = $edge->Store();
-var_dump( $key );
+echo( '$handle = $edge->Store();' . "\n" );
+$handle = $edge->Store();
+var_dump( $handle );
 echo( "Class: " . get_class( $edge ) . "\n" );
 echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -278,9 +278,9 @@ echo( "\n" );
 // Insert edge.
 //
 echo( "Insert edge:\n" );
-echo( '$key = $edge->Store();' . "\n" );
-$key = $edge->Store();
-var_dump( $key );
+echo( '$handle = $edge->Store();' . "\n" );
+$handle = $edge->Store();
+var_dump( $handle );
 echo( "Class: " . get_class( $edge ) . "\n" );
 echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -337,6 +337,7 @@ foreach( $result as $document )
 	echo( "Data: " );
 	print_r( $document->getArrayCopy() );
 }
+exit;
 
 echo( "\n====================================================================================\n\n" );
 

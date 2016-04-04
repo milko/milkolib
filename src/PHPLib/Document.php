@@ -173,6 +173,7 @@ class Document extends Container
 	 * @param Collection			$theCollection		Collection name.
 	 * @param array					$theData			Document data.
 	 *
+	 * @uses Collection()
 	 * @see kFLAG_DOC_MODIFIED
 	 */
 	public function __construct( Collection $theCollection, $theData = [] )
@@ -190,7 +191,7 @@ class Document extends Container
 		//
 		// Save old class.
 		//
-		$class = $this->offsetGet( $this->mCollection->ClassOffset() );
+		$class = $this->offsetGet( $this->Collection()->ClassOffset() );
 
 		//
 		// Add class.
@@ -198,12 +199,12 @@ class Document extends Container
 		// and we use the ancestor class method, since the class property is locked.
 		//
 		\ArrayObject::offsetSet(
-			$this->mCollection->ClassOffset(), get_class( $this ) );
+			$this->Collection()->ClassOffset(), get_class( $this ) );
 
 		//
 		// Reset modification state.
 		//
-		if( $class == $this->offsetGet( $this->mCollection->ClassOffset() ) )
+		if( $class == $this->offsetGet( $this->Collection()->ClassOffset() ) )
 			$this->mStatus &= (~ self::kFLAG_DOC_MODIFIED);
 
 	} // Constructor.
@@ -237,6 +238,7 @@ class Document extends Container
 	 * @param mixed					$theValue			Value to set at offset.
 	 * @throws \RuntimeException
 	 *
+	 * @uses Collection()
 	 * @uses lockedOffsets()
 	 * @see kFLAG_DOC_MODIFIED
 	 */
@@ -250,7 +252,7 @@ class Document extends Container
 			//
 			// Prevent modifying class.
 			//
-			if( $theOffset == $this->mCollection->ClassOffset() )
+			if( $theOffset == $this->Collection()->ClassOffset() )
 				throw new \RuntimeException(
 					"You cannot modify the document's class." );				// !@! ==>
 
@@ -297,6 +299,7 @@ class Document extends Container
 	 * @param string				$theOffset			Offset.
 	 * @return void
 	 *
+	 * @uses Collection()
 	 * @uses lockedOffsets()
 	 * @see kFLAG_DOC_MODIFIED
 	 * @see kFLAG_DOC_PERSISTENT
@@ -311,7 +314,7 @@ class Document extends Container
 			//
 			// Prevent modifying class.
 			//
-			if( $theOffset == $this->mCollection->ClassOffset() )
+			if( $theOffset == $this->Collection()->ClassOffset() )
 				throw new \RuntimeException (
 					"You cannot modify the document's class.");						// !@! ==>
 
@@ -336,6 +339,29 @@ class Document extends Container
 		parent::offsetUnset( $theOffset );
 
 	} // offsetUnset.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC MEMBER MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Collection																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document collection.</h4>
+	 *
+	 * This method can be used to retrieve the document collection object.
+	 *
+	 * @return Collection			Document collection object.
+	 */
+	public function Collection()							{	return $this->mCollection;	}
 
 
 
@@ -393,7 +419,7 @@ class Document extends Container
 
 /*=======================================================================================
  *																						*
- *								PUBLIC PERSISTENCE INTERFACE							*
+ *							PUBLIC DOCUMENT PERSISTENCE INTERFACE						*
  *																						*
  *======================================================================================*/
 
@@ -410,20 +436,19 @@ class Document extends Container
 	 * instantiated, if the document is persistent ({@link IsPersistent()}), the document
 	 * will be replaced, if not, it will be inserted.
 	 *
-	 * The method will call the protected {@link doStore()} method that will, in turn, have
-	 * the current document's collection insert or replace the object.
-	 *
-	 * The method will return the stored document key ({@link Container::KeyOffset()}), or
-	 *  <tt>NULL</tt> if the document is persistent and not modified.
+	 * The method will return the document handle.
 	 *
 	 * Note that this method will not validate the document, this will be done by the
 	 * document's {@link Collection}.
 	 *
-	 * @return mixed				The document key.
+	 * @return mixed				The document handle.
 	 *
-	 * @uses doStore()
+	 * @uses Handle()
+	 * @uses Collection()
 	 * @uses IsModified()
 	 * @uses IsPersistent()
+	 * @uses Collection::Insert()
+	 * @uses Collection::Replace()
 	 */
 	public function Store()
 	{
@@ -432,9 +457,22 @@ class Document extends Container
 		//
 		if( $this->IsModified()
 		 || (! $this->IsPersistent()) )
-			return $this->doStore();												// ==>
+		{
+			//
+			// Replace.
+			//
+			if( $this->IsPersistent() )
+				$this->Collection()->Replace( $this );
 
-		return NULL;																// ==>
+			//
+			// Insert.
+			//
+			else
+				$this->Collection()->Insert( $this );
+
+		} // Modified or not persistent.
+
+		return $this->Handle();														// ==>
 
 	} // Store.
 
@@ -476,6 +514,129 @@ class Document extends Container
 	} // StoreSubdocuments.
 
 
+
+/*=======================================================================================
+ *																						*
+ *						PUBLIC SUBDOCUMENT PERSISTENCE INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	DocumentToReference																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a document reference.</h4>
+	 *
+	 * This method should return the reference of the provided document that should be
+	 * stored at the provided offset.
+	 *
+	 * If the offset is empty, the method should return <tt>NULL</tt>; if the referenced
+	 * document cannot be retireved, the method should raise an exception.
+	 *
+	 * If you omit the second parameter, the method will use the value stored at the offset:
+	 * if the value is a {@link Document} instance, the method will use it; if not, the
+	 * method will assume the value is already a reference and will return it.
+	 *
+	 * The method makes use of a protected method, {@link doDocumentToReference}, which
+	 * must be implemented by derived classes: its duty is to determine what kind of
+	 * reference should be stored at the provided offset.
+	 *
+	 * @param string				$theOffset			Sub-document offset.
+	 * @param Document				$theDocument		Sub-document object or
+	 * 													<tt>NULL</tt>.
+	 * @return mixed				The document reference.
+	 *
+	 * @uses doDocumentToReference()
+	 */
+	public function DocumentToReference( $theOffset, $theDocument = NULL )
+	{
+		//
+		// Handle existing value.
+		//
+		if( $theDocument === NULL )
+		{
+			//
+			// Get existing value.
+			//
+			$document = $this->offsetGet( $theOffset );
+
+			//
+			// Reference document.
+			//
+			if( $document instanceof Document )
+				return $this->doDocumentToReference( $theOffset, $document );		// ==>
+
+			return $document;														// ==>
+
+		} // Use existing value.
+
+		//
+		// Handle provided document.
+		//
+		if( $theDocument instanceof Document )
+			return $this->doDocumentToReference( $theOffset, $theDocument );		// ==>
+
+		return $theDocument;														// ==>
+
+	} // DocumentToReference.
+
+
+	/*===================================================================================
+	 *	ReferenceToDocument																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Resolve a document reference.</h4>
+	 *
+	 * This method should return the {@link Document} associated with the provided offset,
+	 * it expects the offset and the reference; if the latter is missing, the method will
+	 * use the value stored at that offset.
+	 *
+	 * If the offset is missing or if the provided reference is <tt>NULL</tt>, the method
+	 * will return <tt>NULL</tt>; if the referenced document cannot be found, the method
+	 * will raise an exception.
+	 *
+	 * The method makes use of a protected method, {@link doReferenceToDocument}, which
+	 * must be implemented by derived classes: its duty is to determine what kind of
+	 * reference is stored at the provided offset and how to resolve it.
+	 *
+	 * @param string				$theOffset			Sub-document offset.
+	 * @param mixed					$theReference		Sub-document reference or
+	 * 													<tt>NULL</tt>.
+	 * @return Document				The referenced document.
+	 *
+	 * @uses doReferenceToDocument()
+	 */
+	public function ReferenceToDocument( $theOffset, $theReference = NULL )
+	{
+		//
+		// Handle existing value.
+		//
+		if( $theReference === NULL )
+		{
+			//
+			// Get existing value.
+			//
+			$theReference = $this->offsetGet( $theOffset );
+			if( $theReference === NULL )
+				return NULL;														// ==>
+
+			//
+			// Has document.
+			//
+			if( $theReference instanceof Document )
+				return $theReference;												// ==>
+
+		} // Use existing value.
+
+		return $this->doReferenceToDocument( $theOffset, $theReference );			// ==>
+
+	} // ReferenceToDocument.
+
+
 	/*===================================================================================
 	 *	Delete																			*
 	 *==================================================================================*/
@@ -493,8 +654,9 @@ class Document extends Container
 	 *
 	 * @return int					The number of deleted records.
 	 *
-	 * @uses doDelete()
+	 * @uses Collection()
 	 * @uses IsPersistent()
+	 * @uses Collection::Delete()
 	 */
 	public function Delete()
 	{
@@ -502,7 +664,7 @@ class Document extends Container
 		// Check if persistent.
 		//
 		if( $this->IsPersistent() )
-			return $this->doDelete();												// ==>
+			return $this->Collection()->Delete( $this );							// ==>
 
 		return 0;																	// ==>
 
@@ -543,7 +705,7 @@ class Document extends Container
 		// Handle persistent object and assert caller
 		//
 		if( ($this->mStatus & self::kFLAG_DOC_PERSISTENT)
-		 && ($theSetter !== $this->mCollection) )
+		 && ($theSetter !== $this->Collection()) )
 			throw new \RuntimeException (
 				"Only the document's collection may set its key "
 			   ."once the document is persistent.");							// !@! ==>
@@ -577,13 +739,25 @@ class Document extends Container
 	/**
 	 * <h4>Return document handle.</h4>
 	 *
-	 * This method can be used to retrieve the document handle.
+	 * This method can be used to retrieve the current document handle; if the document
+	 * does not have its key, the method will raise an exception.
 	 *
 	 * @return string				The document handle.
+	 * @throws \RuntimeException
+	 *
+	 * @uses Collection()
+	 * @uses Collection::NewHandle()
 	 */
 	public function Handle()
 	{
-		return $this->mCollection->NewDocumentHandle( $this );						// ==>
+		//
+		// Check key.
+		//
+		if( ($key = $this->offsetExists( $this->Collection()->KeyOffset() )) !== NULL )
+			return $this->Collection()->NewHandle( $key );							// ==>
+
+		throw new \RuntimeException(
+			"Document is missing its key." );									// !@! ==>
 
 	} // Handle.
 
@@ -631,6 +805,7 @@ class Document extends Container
 	 * @return bool					New or old state.
 	 * @throws \RuntimeException
 	 *
+	 * @uses Collection()
 	 * @uses manageFlagAttribute()
 	 * @see kFLAG_DOC_MODIFIED
 	 */
@@ -646,7 +821,7 @@ class Document extends Container
 		// Assert setter.
 		//
 		if( ($theSetter !== $this)
-		 && ($theSetter !== $this->mCollection) )
+		 && ($theSetter !== $this->Collection()) )
 			throw new \RuntimeException (
 				"Only the current document and its collection " .
 				"are allowed to change the state." );							// !@! ==>
@@ -691,6 +866,7 @@ class Document extends Container
 	 * @return bool					New or old state.
 	 * @throws \RuntimeException
 	 *
+	 * @uses Collection()
 	 * @uses manageFlagAttribute()
 	 * @see kFLAG_DOC_PERSISTENT
 	 */
@@ -705,7 +881,7 @@ class Document extends Container
 		//
 		// Assert setter.
 		//
-		if( $theSetter !== $this->mCollection )
+		if( $theSetter !== $this->Collection() )
 			throw new \RuntimeException (
 				"Only the document's collection " .
 				"is allowed to change the state." );							// !@! ==>
@@ -740,15 +916,16 @@ class Document extends Container
 	 *
 	 * @return array				List of locked offsets.
 	 *
+	 * @uses Collection()
 	 * @uses Collection::KeyOffset()
 	 * @uses Collection::ClassOffset()
 	 * @uses Collection::RevisionOffset()
 	 */
 	protected function lockedOffsets()
 	{
-		return [ $this->mCollection->KeyOffset(),
-				 $this->mCollection->ClassOffset(),
-				 $this->mCollection->RevisionOffset() ];							// ==>
+		return [ $this->Collection()->KeyOffset(),
+				 $this->Collection()->ClassOffset(),
+				 $this->Collection()->RevisionOffset() ];							// ==>
 
 		//
 		// In derived classes:
@@ -782,83 +959,6 @@ class Document extends Container
 	//	return array_merge( parent::requiredOffsets(), [ ... ] );
 
 	} // requiredOffsets.
-
-
-
-/*=======================================================================================
- *																						*
- *								PROTECTED PERSISTENCE INTERFACE							*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	doStore																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Store object.</h4>
-	 *
-	 * This method will store the current document into the container provided when
-	 * instantiated, the method is called by the {@link Store()} method if all necessary
-	 * conditions are met: it will replace or insert the current document.
-	 *
-	 * The method should return the document key ({@link Collection::KeyOffset()}) if the
-	 * document was stored, or <tt>NULL</tt>.
-	 *
-	 * @return mixed				The document key or <tt>NULL</tt>.
-	 *
-	 * @uses Collection::Insert()
-	 * @uses Collection::Replace()
-	 */
-	protected function doStore()
-	{
-		//
-		// Replace.
-		//
-		if( $this->IsPersistent() )
-			$count = $this->mCollection->Replace( $this );
-
-		//
-		// Insert.
-		//
-		else
-			return $this->mCollection->Insert( $this );								// ==>
-
-		//
-		// Handle replaced count.
-		//
-		if( $count )
-			return $this->offsetGet( $this->mCollection->KeyOffset() );				// ==>
-
-		return NULL;																// ==>
-
-	} // doStore.
-
-
-	/*===================================================================================
-	 *	doDelete																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete object.</h4>
-	 *
-	 * This method will delete the current document from the container provided when
-	 * instantiated, the method is called by the {@link Delete()} method if all necessary
-	 * conditions are met.
-	 *
-	 * The method should return the number of deleted records.
-	 *
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses Collection::Delete()
-	 */
-	protected function doDelete()
-	{
-		return $this->mCollection->Delete( $this );									// ==>
-
-	} // doDelete.
 
 
 
@@ -912,7 +1012,7 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	doStoreRelated																	*
+	 *	doStoreSubdocuments																*
 	 *==================================================================================*/
 
 	/**
@@ -959,7 +1059,7 @@ class Document extends Container
 				//
 				// Replace with handle.
 				//
-				$theData[ $key ] = $value->mCollection->NewDocumentHandle( $value );
+				$theData[ $key ] = $this->doDocumentToReference( $key, $value );
 
 			} // Is a document.
 
@@ -967,7 +1067,7 @@ class Document extends Container
 			// Handle arrays and array objects.
 			//
 			elseif( is_array( $value )
-				|| ($value instanceof \ArrayObject) )
+			 || ($value instanceof \ArrayObject) )
 			{
 				//
 				// Convert to array.
@@ -989,7 +1089,76 @@ class Document extends Container
 
 		} // Traversing the document.
 
-	} // doStoreRelated.
+	} // doStoreSubdocuments.
+
+
+
+/*=======================================================================================
+ *																						*
+ *						PROTECTED SUBDOCUMENT PERSISTENCE INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	doDocumentToReference															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Reference embedded documents.</h4>
+	 *
+	 * The duty of this method is to resolve the provided document into a reference to be
+	 * stored at the provided offset.
+	 *
+	 * The method will return the correct type of offset <em>without storing it</em>, if the
+	 * provided document lacks the necessary data to generate the reference, the method
+	 * should raise an exception.
+	 *
+	 * In this class we return a handle by default, derived classes may overload this method
+	 * to handle other reference types.
+	 *
+	 * @param string				$theOffset			Sub-document offset.
+	 * @param Document				$theDocument		Subdocument.
+	 * @return mixed				The document key or handle.
+	 *
+	 * @uses Handle()
+	 */
+	protected function doDocumentToReference( $theOffset, Document $theDocument )
+	{
+		return $theDocument->Handle();												// ==>
+
+	} // doDocumentToReference.
+
+
+	/*===================================================================================
+	 *	doReferenceToDocument															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Resolve embedded documents.</h4>
+	 *
+	 * The duty of this method is to resolve the provided document reference associated with
+	 * the provided offset.
+	 *
+	 * The method will return the {@link Document} instance referenced by the provided
+	 * reference, or raise an exception if the referenced document cannot be resolved.
+	 *
+	 * In this class we assume the provided reference is by default a handle, derived
+	 * classes should overload this method to handle other reference types.
+	 *
+	 * @param string				$theOffset			Sub-document offset.
+	 * @param mixed					$theReference		Subdocument reference.
+	 * @return mixed				The document key or handle.
+	 *
+	 * @uses Collection()
+	 * @uses Collection::NewDocumentHandle()
+	 */
+	protected function doReferenceToDocument( $theOffset, $theReference )
+	{
+		return $this->Collection()->FindHandle( $theReference );					// ==>
+
+	} // doReferenceToDocument.
 
 
 
