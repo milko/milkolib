@@ -3,14 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8bc12787-e3d0-41d0-b0bd-e8bf5e92355d" name="Default" comment="&#10;">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php" afterPath="$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/ArangoDB/Relations.php" afterPath="$PROJECT_DIR$/src/PHPLib/ArangoDB/Relations.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/Collection.php" afterPath="$PROJECT_DIR$/src/PHPLib/Collection.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/Document.php" afterPath="$PROJECT_DIR$/src/PHPLib/Document.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php" afterPath="$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Document.php" afterPath="$PROJECT_DIR$/test/Document.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Relation.php" afterPath="$PROJECT_DIR$/test/Relation.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Term.php" afterPath="$PROJECT_DIR$/test/Term.php" />
     </list>
     <ignored path="milkolib.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,13 +25,15 @@
     <favorites_list name="milkolib" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="Document.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="612" column="75" selection-start-line="612" selection-start-column="20" selection-end-line="612" selection-end-column="75" />
-              <folding />
+            <state relative-caret-position="414">
+              <caret line="636" column="36" selection-start-line="636" selection-start-column="20" selection-end-line="636" selection-end-column="36" />
+              <folding>
+                <marker date="1459807860000" expanded="true" signature="5901:6402" placeholder=" &lt;h4&gt;Instantiate class.&lt;/h4&gt; ..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -45,9 +41,11 @@
       <file leaf-file-name="Collection.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/Collection.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="2351" column="32" selection-start-line="2351" selection-start-column="32" selection-end-line="2351" selection-end-column="32" />
-              <folding />
+            <state relative-caret-position="36330">
+              <caret line="2426" column="32" selection-start-line="2426" selection-start-column="32" selection-end-line="2426" selection-end-column="32" />
+              <folding>
+                <marker date="1459792514000" expanded="true" signature="15858:16643" placeholder=" &lt;h4&gt;Return document handle.&lt;/h4&gt; ..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -55,11 +53,9 @@
       <file leaf-file-name="Collection.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="1323" column="0" selection-start-line="1323" selection-start-column="0" selection-end-line="1323" selection-end-column="0" />
-              <folding>
-                <element signature="e#141#165#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="20640">
+              <caret line="1397" column="0" selection-start-line="1397" selection-start-column="0" selection-end-line="1397" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -67,11 +63,12 @@
       <file leaf-file-name="Collection.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="209" column="37" selection-start-line="209" selection-start-column="37" selection-end-line="209" selection-end-column="37" />
+            <state relative-caret-position="3405">
+              <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="234" selection-end-column="0" />
               <folding>
                 <element signature="e#7#105#0#PHP" expanded="true" />
                 <element signature="e#411#438#0#PHP" expanded="true" />
+                <marker date="1459792514000" expanded="true" signature="4513:4612" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -80,8 +77,8 @@
       <file leaf-file-name="Document.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/Document.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="321" column="0" selection-start-line="321" selection-start-column="0" selection-end-line="321" selection-end-column="0" />
+            <state relative-caret-position="691">
+              <caret line="297" column="5" selection-start-line="297" selection-start-column="5" selection-end-line="297" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -90,7 +87,7 @@
       <file leaf-file-name="Relation.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/Relation.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
+            <state relative-caret-position="405">
               <caret line="34" column="40" selection-start-line="34" selection-start-column="40" selection-end-line="34" selection-end-column="40" />
               <folding />
             </state>
@@ -100,8 +97,8 @@
       <file leaf-file-name="Relations.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Relations.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="368" column="23" selection-start-line="368" selection-start-column="23" selection-end-line="368" selection-end-column="23" />
+            <state relative-caret-position="5175">
+              <caret line="370" column="10" selection-start-line="370" selection-start-column="10" selection-end-line="370" selection-end-column="10" />
               <folding>
                 <element signature="e#139#176#0#PHP" expanded="true" />
               </folding>
@@ -112,7 +109,7 @@
       <file leaf-file-name="EdgeHandler.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/EdgeHandler.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
+            <state relative-caret-position="3120">
               <caret line="215" column="74" selection-start-line="215" selection-start-column="69" selection-end-line="215" selection-end-column="74" />
               <folding />
             </state>
@@ -122,8 +119,8 @@
       <file leaf-file-name="Term.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/Term.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
-              <caret line="124" column="20" selection-start-line="124" selection-start-column="20" selection-end-line="124" selection-end-column="20" />
+            <state relative-caret-position="1770">
+              <caret line="126" column="20" selection-start-line="126" selection-start-column="20" selection-end-line="126" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -132,7 +129,7 @@
       <file leaf-file-name="Collection.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/Collection.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
+            <state relative-caret-position="105">
               <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
               <folding />
             </state>
@@ -212,8 +209,8 @@
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1280" />
-    <option name="height" value="773" />
+    <option name="width" value="2560" />
+    <option name="height" value="1413" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -242,7 +239,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -255,13 +252,7 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="Scratches" />
-      <pane id="ProjectPane">
-        <subPane />
-      </pane>
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
@@ -284,6 +275,17 @@
   </component>
   <component name="RunManager" selected="JavaScript Debug.MongoDataServer.php">
     <configuration default="false" name="MongoDataServer.php" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/milkolib/test/MongoDataServer.php">
+      <method />
+    </configuration>
+    <configuration default="true" type="BashConfigurationType" factoryName="Bash">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <module name="" />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
@@ -374,23 +376,25 @@
       <workItem from="1459536382770" duration="1198000" />
       <workItem from="1459538277871" duration="59226000" />
       <workItem from="1459758816028" duration="18249000" />
+      <workItem from="1459792567623" duration="94000" />
+      <workItem from="1459792677551" duration="6879000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="318198000" />
+    <option name="totallyTimeSpent" value="325171000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="773" extended-state="6" />
+    <frame x="0" y="23" width="2560" height="1413" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21324718" sideWeight="0.49467275" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.55212355" sideWeight="0.5015886" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31659058" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3158301" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27625203" sideWeight="0.49467275" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28038126" sideWeight="0.49467275" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.231303" sideWeight="0.49841145" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24878837" sideWeight="0.5053272" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -516,7 +520,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="16" column="18" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -524,7 +527,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -567,7 +569,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="32" column="5" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -575,7 +576,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="519">
           <caret line="583" column="27" selection-start-line="583" selection-start-column="27" selection-end-line="583" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -583,7 +583,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="284">
           <caret line="76" column="10" selection-start-line="76" selection-start-column="10" selection-end-line="76" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -591,7 +590,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
           <caret line="251" column="20" selection-start-line="251" selection-start-column="20" selection-end-line="251" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -599,7 +597,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2559">
           <caret line="319" column="0" selection-start-line="319" selection-start-column="0" selection-end-line="319" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -614,7 +611,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
           <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -622,7 +618,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
           <caret line="515" column="23" selection-start-line="515" selection-start-column="20" selection-end-line="515" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -630,7 +625,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="413">
           <caret line="125" column="20" selection-start-line="125" selection-start-column="20" selection-end-line="125" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -644,8 +638,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/Term.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="124" column="20" selection-start-line="124" selection-start-column="20" selection-end-line="124" selection-end-column="20" />
+        <state relative-caret-position="1770">
+          <caret line="126" column="20" selection-start-line="126" selection-start-column="20" selection-end-line="126" selection-end-column="20" />
           <folding />
         </state>
       </provider>
@@ -654,13 +648,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-60">
           <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/EdgeHandler.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
+        <state relative-caret-position="3120">
           <caret line="215" column="74" selection-start-line="215" selection-start-column="69" selection-end-line="215" selection-end-column="74" />
           <folding />
         </state>
@@ -668,7 +661,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/Relation.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
+        <state relative-caret-position="405">
           <caret line="34" column="40" selection-start-line="34" selection-start-column="40" selection-end-line="34" selection-end-column="40" />
           <folding />
         </state>
@@ -676,8 +669,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Relations.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="368" column="23" selection-start-line="368" selection-start-column="23" selection-end-line="368" selection-end-column="23" />
+        <state relative-caret-position="5175">
+          <caret line="370" column="10" selection-start-line="370" selection-start-column="10" selection-end-line="370" selection-end-column="10" />
           <folding>
             <element signature="e#139#176#0#PHP" expanded="true" />
           </folding>
@@ -686,18 +679,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="209" column="37" selection-start-line="209" selection-start-column="37" selection-end-line="209" selection-end-column="37" />
+        <state relative-caret-position="3405">
+          <caret line="234" column="0" selection-start-line="234" selection-start-column="0" selection-end-line="234" selection-end-column="0" />
           <folding>
             <element signature="e#7#105#0#PHP" expanded="true" />
             <element signature="e#411#438#0#PHP" expanded="true" />
+            <marker date="1459792514000" expanded="true" signature="4513:4612" placeholder="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
+        <state relative-caret-position="105">
           <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
           <folding />
         </state>
@@ -705,34 +699,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="1323" column="0" selection-start-line="1323" selection-start-column="0" selection-end-line="1323" selection-end-column="0" />
-          <folding>
-            <element signature="e#141#165#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="612" column="75" selection-start-line="612" selection-start-column="20" selection-end-line="612" selection-end-column="75" />
+        <state relative-caret-position="20640">
+          <caret line="1397" column="0" selection-start-line="1397" selection-start-column="0" selection-end-line="1397" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="2351" column="32" selection-start-line="2351" selection-start-column="32" selection-end-line="2351" selection-end-column="32" />
-          <folding />
+        <state relative-caret-position="36330">
+          <caret line="2426" column="32" selection-start-line="2426" selection-start-column="32" selection-end-line="2426" selection-end-column="32" />
+          <folding>
+            <marker date="1459792514000" expanded="true" signature="15858:16643" placeholder=" &lt;h4&gt;Return document handle.&lt;/h4&gt; ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="636" column="36" selection-start-line="636" selection-start-column="20" selection-end-line="636" selection-end-column="36" />
+          <folding>
+            <marker date="1459807860000" expanded="true" signature="5901:6402" placeholder=" &lt;h4&gt;Instantiate class.&lt;/h4&gt; ..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/Document.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="321" column="0" selection-start-line="321" selection-start-column="0" selection-end-line="321" selection-end-column="0" />
+        <state relative-caret-position="691">
+          <caret line="297" column="5" selection-start-line="297" selection-start-column="5" selection-end-line="297" selection-end-column="5" />
           <folding />
         </state>
       </provider>

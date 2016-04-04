@@ -524,25 +524,43 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	DocumentToReference																*
+	 *	CreateReference																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return a document reference.</h4>
+	 * <h4>Create a document reference.</h4>
 	 *
-	 * This method should return the reference of the provided document that should be
-	 * stored at the provided offset.
+	 * The duty of this method is to convert the provided document into a reference of the
+	 * type determined by the provided offset.
 	 *
-	 * If the offset is empty, the method should return <tt>NULL</tt>; if the referenced
-	 * document cannot be retireved, the method should raise an exception.
+	 * The default reference type is a document handle, but in certain cases, when the
+	 * collection is implicit, there is only the need to specify the key: use this method
+	 * whenever you need to store a document reference.
 	 *
-	 * If you omit the second parameter, the method will use the value stored at the offset:
-	 * if the value is a {@link Document} instance, the method will use it; if not, the
-	 * method will assume the value is already a reference and will return it.
+	 * The method expects two parameters:
 	 *
-	 * The method makes use of a protected method, {@link doDocumentToReference}, which
-	 * must be implemented by derived classes: its duty is to determine what kind of
-	 * reference should be stored at the provided offset.
+	 * <ul>
+	 * 	<li><b>$theOffset</b>: The offset that will receive the reference.
+	 * 	<li><b>$theDocument</b>: The document to reference:
+	 * 	 <ul>
+	 * 		<li><tt>NULL</tt>: If omitted or <tt>NULL</tt>, the method will use the value
+	 * 			currently stored at the provided offset:
+	 * 		 <ul>
+	 * 			<li><tt>NULL</tt>: If the offset is missing, the method will return
+	 * 				<tt>NULL</tt>.
+	 * 			<li><tt>{@link Document}</tt>: The document will be referenced.
+	 * 			<li><em>other</em>: Any other value will be assumed to be a reference and
+	 * 				will be returned.
+	 * 		 </ul>
+	 * 		<li><tt>{@link Document}</tt>: The document will be referenced.
+	 * 		<li><em>other</em>: Any other value will be assumed to be a reference and will
+	 * 			be returned as is.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The method makes use of a protected method, {@link doCreateReference}, which must be
+	 * implemented by derived classes: its duty is to determine what kind of reference
+	 * should be stored at the provided offset.
 	 *
 	 * @param string				$theOffset			Sub-document offset.
 	 * @param Document				$theDocument		Sub-document object or
@@ -551,57 +569,63 @@ class Document extends Container
 	 *
 	 * @uses doDocumentToReference()
 	 */
-	public function DocumentToReference( $theOffset, $theDocument = NULL )
+	public function CreateReference( $theOffset, $theDocument = NULL )
 	{
 		//
 		// Handle existing value.
 		//
 		if( $theDocument === NULL )
-		{
-			//
-			// Get existing value.
-			//
-			$document = $this->offsetGet( $theOffset );
-
-			//
-			// Reference document.
-			//
-			if( $document instanceof Document )
-				return $this->doDocumentToReference( $theOffset, $document );		// ==>
-
-			return $document;														// ==>
-
-		} // Use existing value.
+			$theDocument = $this->offsetGet( $theOffset );
 
 		//
-		// Handle provided document.
+		// Handle document.
 		//
 		if( $theDocument instanceof Document )
-			return $this->doDocumentToReference( $theOffset, $theDocument );		// ==>
+			return $this->doCreateReference( $theOffset, $theDocument );			// ==>
 
 		return $theDocument;														// ==>
 
-	} // DocumentToReference.
+	} // CreateReference.
 
 
 	/*===================================================================================
-	 *	ReferenceToDocument																*
+	 *	ResolveReference																*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Resolve a document reference.</h4>
 	 *
-	 * This method should return the {@link Document} associated with the provided offset,
-	 * it expects the offset and the reference; if the latter is missing, the method will
-	 * use the value stored at that offset.
+	 * The duty of this method is to resolve the reference stored at the provided offset
+	 * into a document.
 	 *
-	 * If the offset is missing or if the provided reference is <tt>NULL</tt>, the method
-	 * will return <tt>NULL</tt>; if the referenced document cannot be found, the method
-	 * will raise an exception.
+	 * The default reference type is a document handle, but in certain cases, when the
+	 * collection is implicit, there is only the need to specify the key: use this method
+	 * whenever you need to resolve a document reference.
 	 *
-	 * The method makes use of a protected method, {@link doReferenceToDocument}, which
-	 * must be implemented by derived classes: its duty is to determine what kind of
-	 * reference is stored at the provided offset and how to resolve it.
+	 * The method expects two parameters:
+	 *
+	 * <ul>
+	 * 	<li><b>$theOffset</b>: The offset that will receive the reference.
+	 * 	<li><b>$theReference</b>: The document reference:
+	 * 	 <ul>
+	 * 		<li><tt>NULL</tt>: If omitted or <tt>NULL</tt>, the method will use the value
+	 * 			currently stored at the provided offset:
+	 * 		 <ul>
+	 * 			<li><tt>NULL</tt>: If the offset is missing, the method will return
+	 * 				<tt>NULL</tt>.
+	 * 			<li><tt>{@link Document}</tt>: The document will be returned.
+	 * 			<li><em>other</em>: Any other value will be assumed to be a reference and
+	 * 				will be resolved.
+	 * 		 </ul>
+	 * 		<li><tt>{@link Document}</tt>: The document will be returned.
+	 * 		<li><em>other</em>: Any other value will be assumed to be a reference and will
+	 * 			be resolved.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The method makes use of a protected method, {@link doResolveReference}, which must be
+	 * implemented by derived classes: its duty is to determine what kind of reference is
+	 * stored at the provided offset.
 	 *
 	 * @param string				$theOffset			Sub-document offset.
 	 * @param mixed					$theReference		Sub-document reference or
@@ -610,31 +634,29 @@ class Document extends Container
 	 *
 	 * @uses doReferenceToDocument()
 	 */
-	public function ReferenceToDocument( $theOffset, $theReference = NULL )
+	public function ResolveReference( $theOffset, $theReference = NULL )
 	{
 		//
 		// Handle existing value.
 		//
 		if( $theReference === NULL )
-		{
-			//
-			// Get existing value.
-			//
 			$theReference = $this->offsetGet( $theOffset );
-			if( $theReference === NULL )
-				return NULL;														// ==>
 
-			//
-			// Has document.
-			//
-			if( $theReference instanceof Document )
-				return $theReference;												// ==>
+		//
+		// Handle missing offset.
+		//
+		if( $theReference === NULL )
+			return NULL;															// ==>
 
-		} // Use existing value.
+		//
+		// Handle document.
+		//
+		if( $theReference instanceof Document )
+			return $theReference;													// ==>
 
-		return $this->doReferenceToDocument( $theOffset, $theReference );			// ==>
+		return $this->doResolveReference( $theOffset, $theReference );				// ==>
 
-	} // ReferenceToDocument.
+	} // ResolveReference.
 
 
 	/*===================================================================================
@@ -1059,7 +1081,7 @@ class Document extends Container
 				//
 				// Replace with handle.
 				//
-				$theData[ $key ] = $this->doDocumentToReference( $key, $value );
+				$theData[ $key ] = $this->doCreateReference( $key, $value );
 
 			} // Is a document.
 
@@ -1102,14 +1124,14 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	doDocumentToReference															*
+	 *	doCreateReference																*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Reference embedded documents.</h4>
 	 *
-	 * The duty of this method is to resolve the provided document into a reference to be
-	 * stored at the provided offset.
+	 * The duty of this method is to convert the provided document into a reference which is
+	 * supposed to be stored at the provided offset.
 	 *
 	 * The method will return the correct type of offset <em>without storing it</em>, if the
 	 * provided document lacks the necessary data to generate the reference, the method
@@ -1124,22 +1146,22 @@ class Document extends Container
 	 *
 	 * @uses Handle()
 	 */
-	protected function doDocumentToReference( $theOffset, Document $theDocument )
+	protected function doCreateReference( $theOffset, Document $theDocument )
 	{
 		return $theDocument->Handle();												// ==>
 
-	} // doDocumentToReference.
+	} // doCreateReference.
 
 
 	/*===================================================================================
-	 *	doReferenceToDocument															*
+	 *	doResolveReference																*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Resolve embedded documents.</h4>
 	 *
 	 * The duty of this method is to resolve the provided document reference associated with
-	 * the provided offset.
+	 * the provided offset into a document object.
 	 *
 	 * The method will return the {@link Document} instance referenced by the provided
 	 * reference, or raise an exception if the referenced document cannot be resolved.
@@ -1154,11 +1176,11 @@ class Document extends Container
 	 * @uses Collection()
 	 * @uses Collection::NewDocumentHandle()
 	 */
-	protected function doReferenceToDocument( $theOffset, $theReference )
+	protected function doResolveReference( $theOffset, $theReference )
 	{
 		return $this->Collection()->FindHandle( $theReference );					// ==>
 
-	} // doReferenceToDocument.
+	} // doResolveReference.
 
 
 
