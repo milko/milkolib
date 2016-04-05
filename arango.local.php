@@ -69,7 +69,7 @@ const kARANGO_OPTS_CREATE_DEFAULT = TRUE;
 
 /*=======================================================================================
  *	ARANGODB																			*
- * Default identifier, key, class and revision offsets.									*
+ * Default identifier, key, class,revision and vertex offsets.							*
  *======================================================================================*/
 
 /**
@@ -106,6 +106,18 @@ const kTAG_ARANGO_REL_FROM = '_from';
  * This defines the default offset for destination nodes in a graph edge.
  */
 const kTAG_ARANGO_REL_TO = '_to';
+
+/*=======================================================================================
+ *	ARANGODB																			*
+ * Default collection names.															*
+ *======================================================================================*/
+
+/**
+ * <h4>Default term collection.</h4>
+ *
+ * This defines the default terms collection name.
+ */
+const kTAG_ARANGO_TERMS = 'terms';
 
 
 ?>

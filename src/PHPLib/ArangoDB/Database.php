@@ -8,6 +8,7 @@
 
 namespace Milko\PHPLib\ArangoDB;
 
+use Milko\PHPLib\Server;
 use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Collection as ArangoCollection;
 use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
@@ -92,6 +93,37 @@ class Database extends \Milko\PHPLib\Database
 			ArangoDatabase::delete( $this->Server()->Connection(), $this->databaseName() );
 
 	} // Drop.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC COLLECTION MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	RetrieveTerms																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the terms collection object.</h4>
+	 *
+	 * We implement this method to use the {@link kTAG_ARANGO_TERMS} collection name.
+	 *
+	 * @param string				$theFlags			Flags bitfield.
+	 * @param array					$theOptions			Collection native options.
+	 * @return Collection			Collection object or <tt>NULL</tt>.
+	 */
+	public function RetrieveTerms( $theFlags = Server::kFLAG_DEFAULT, $theOptions = NULL )
+	{
+		return
+			$this->RetrieveCollection(
+				kTAG_ARANGO_TERMS, $theFlags, $theOptions );						// ==>
+
+	} // RetrieveTerms.
 
 
 

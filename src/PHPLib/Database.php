@@ -415,7 +415,7 @@ abstract class Database extends Container
 		//
 		$collection = $this->collectionRetrieve( $theCollection, $theOptions );
 		if( ($collection === NULL)
-		 && ($theFlags & Server::kFLAG_CREATE) )
+			&& ($theFlags & Server::kFLAG_CREATE) )
 			$collection = $this->collectionCreate( $theCollection, $theOptions );
 
 		//
@@ -442,6 +442,28 @@ abstract class Database extends Container
 		return $collection;															// ==>
 
 	} // RetrieveCollection.
+
+
+	/*===================================================================================
+	 *	RetrieveTerms																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the terms collection object.</h4>
+	 *
+	 * This method can be used to retrieve the default terms collection, it has the same
+	 * parameters as the {@link RetrieveCollection()} method, except that the collection
+	 * name is enforced and thus omitted from the parameters list.
+	 *
+	 * Since the collection name is driver dependent, the method must be implemented in
+	 * driver specific derived classes.
+	 *
+	 * @param string				$theFlags			Flags bitfield.
+	 * @param array					$theOptions			Collection native options.
+	 * @return Collection			Collection object or <tt>NULL</tt>.
+	 */
+	abstract public function RetrieveTerms( $theFlags = Server::kFLAG_DEFAULT,
+											$theOptions = NULL );
 
 
 	/*===================================================================================

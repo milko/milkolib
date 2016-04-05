@@ -10,10 +10,18 @@
  */
 
 //
+// Global definitions.
+//
+define( 'kENGINE', "ARANGO" );
+
+//
 // Include local definitions.
 //
 require_once(dirname(__DIR__) . "/includes.local.php");
-require_once(dirname(__DIR__) . "/arango.local.php");
+if( kENGINE == "MONGO" )
+	require_once(dirname(__DIR__) . "/mongo.local.php");
+elseif( kENGINE == "ARANGO" )
+	require_once(dirname(__DIR__) . "/arango.local.php");
 
 //
 // Include utility functions.
@@ -29,14 +37,26 @@ use Milko\PHPLib\Collection;
 //
 // Instantiate object.
 //
-echo( '$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n" );
-$url = "tcp://localhost:8529/test_milkolib/test_collection";
-echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
-$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+if( kENGINE == "MONGO" )
+{
+	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
+	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
+	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
+}
+elseif( kENGINE == "ARANGO" )
+{
+	echo('$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n");
+	$url = "tcp://localhost:8529/test_milkolib/test_collection";
+	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+}
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
 $database = $server->RetrieveDatabase( "test_milkolib" );
-echo( '$collection = $database->RetrieveCollection( "test_collection" );' . "\n" );
-$collection = $database->RetrieveCollection( "test_collection" );
+echo( '$collection = $database->RetrieveTerms( \Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
+$collection = $database->RetrieveTerms( \Milko\PHPLib\Server::kFLAG_CREATE );
+echo( '(string)$collection' . "\n" );
+var_dump( (string)$collection );
 echo( '$collection->Truncate();' . "\n" );
 $collection->Truncate();
 
@@ -77,8 +97,6 @@ echo( "\n=======================================================================
 echo( "Instantiate term:\n" );
 echo( '$document = new Milko\PHPLib\Term( $collection );' . "\n" );
 $document = new Milko\PHPLib\Term( $collection );
-echo( '$document->SetNamespaceByGID( "namespace" );' . "\n" );
-$document->SetNamespaceByGID( "namespace" );
 print_r( $document->getArrayCopy() );
 echo( '$document[ kTAG_LID ] = "code";' . "\n" );
 $document[ kTAG_LID ] = "code";
@@ -87,11 +105,43 @@ print_r( $document->getArrayCopy() );
 echo( "\n" );
 
 //
+// Set namespace by term.
+//
+echo( "Set namespace by term:\n" );
+echo( '$result = $document->SetNamespaceByTerm( $namespace );' . "\n" );
+$result = $document->SetNamespaceByTerm( $namespace );
+var_dump( $result );
+print_r( $document->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Set namespace by GID.
+//
+echo( "Set namespace by GID:\n" );
+echo( '$result = $document->SetNamespaceByGID( $namespace[ kTAG_GID ] );' . "\n" );
+$result = $document->SetNamespaceByGID( $namespace[ kTAG_GID ] );
+var_dump( $result );
+print_r( $document->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Set namespace by term.
+//
+echo( "Set namespace by term:\n" );
+echo( '$result = $document->offsetSet( kTAG_NS, $namespace );' . "\n" );
+$result = $document->offsetSet( kTAG_NS, $namespace );
+print_r( $document->getArrayCopy() );
+
+echo( "\n" );
+
+//
 // Get namespace.
 //
 echo( "Get namespace:\n" );
-echo( '$result = $document->NamespaceTerm();' . "\n" );
-$result = $document->NamespaceTerm();
+echo( '$result = $document->GetNamespaceTerm();' . "\n" );
+$result = $document->GetNamespaceTerm();
 print_r( $result->getArrayCopy() );
 
 echo( "\n" );

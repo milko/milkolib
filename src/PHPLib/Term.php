@@ -25,9 +25,10 @@ use Milko\PHPLib\Document;
  * Objects of this class feature the following properties:
  *
  * <ul>
- * 	<li><tt>{@link kTAG_NS}</tt>: This represents the term <em>namespace</em>, it is a
- * 		document handle ({@link Collection::NewDocumentHandle()}) that references the term
- * 		which is the current term's namespace.
+ * 	<li><tt>{@link kTAG_NS}</tt>: This represents the term <em>namespace</em>, it is the
+ * 		document key of the term which is the current term's namespace. In this class if you
+ * 		set a term object in this offset, its key will be extracted and set: the object will
+ * 		not be committed when the current term is stored.
  * 		<em>This property is optional</em>.
  * 	<li><tt>{@link kTAG_LID}</tt>: This represents the term <em>local identifier</em>, it is
  * 		a string code that uniquely identifies the term among all terms belonging to its
@@ -57,6 +58,9 @@ use Milko\PHPLib\Document;
  *
  * Finally, the {@link RevisionOffset()} property is managed directly by the database
  * driver.
+ *
+ * Term objects <em>should be stored in a default collection</em>, for this reason, the
+ * constructor will enforce that collection in the constructor.
  *
  *	@package	Terms
  *
@@ -97,12 +101,15 @@ class Term extends Document
 	 * We overload the parent constructor to pass the provided object properties through
 	 * the class methods, this is to ensure that the global identifier is set if missing.
 	 *
+	 * <em>It is the responsibility of the caller to ensure the term is associated with the
+	 * correct collection: use {@link Database::TermsCollection()} to get the right
+	 * collection object</em>.
+	 *
 	 * @param Collection			$theCollection		Collection name.
 	 * @param array					$theData			Document data.
 	 *
-	 * @uses setTermNamespace()
-	 * @uses setTermIdentifier()
 	 * @see kTAG_NS
+	 * @see kTAG_LID
 	 * @see kTAG_GID
 	 */
 	public function __construct( Collection $theCollection, $theData = [] )
@@ -203,6 +210,8 @@ class Term extends Document
 				// Handle term namespace.
 				//
 				case kTAG_NS:
+					if( $theValue instanceof Document )
+						$theValue = $this->doCreateReference( kTAG_NS, $theValue );
 					$this->setTermNamespace( $theValue );
 					break;
 
@@ -303,6 +312,9 @@ class Term extends Document
 	 *
 	 * The method will set the key only if the current term is not persistent
 	 * ({@link IsPersistent()}).
+	 *
+	 * @uses Collection()
+	 * @uses IsPersistent()
 	 */
 	public function Validate()
 	{
@@ -318,10 +330,42 @@ class Term extends Document
 		//
 		if( ! $this->IsPersistent() )
 			$this->offsetSet(
-				$this->mCollection->KeyOffset(),
+				$this->Collection()->KeyOffset(),
 				md5( $this->offsetGet( kTAG_GID ) ) );
 
 	} // Validate.
+
+
+	/*===================================================================================
+	 *	Delete																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete object.</h4>
+	 *
+	 * We overload this method to check whether the current term is used as the namespace of
+	 * other terms, in that case we raise an exception.
+	 *
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses Collection()
+	 */
+	public function Delete()
+	{
+		//
+		// Get usage count.
+		//
+		$count =
+			$this->Collection()->CountByExample(
+				[ kTAG_NS => $this->offsetGet( $this->Collection()->KeyOffset() ) ] );
+		if( $count )
+			throw new \RuntimeException (
+				"Cannot delete the term: " .
+				"it is the namespace of $count other terms." );					// !@! ==>
+
+		return parent::Delete();													// ==>
+
+	} // Delete.
 
 
 
@@ -366,12 +410,13 @@ class Term extends Document
 	 * @param string				$theName			Term name in the provided language.
 	 * @return mixed				Old or current name.
 	 *
-	 * @uses getTermKey()
-	 * @uses setTermNamespace()
+	 * @uses manageIndexedProperty()
 	 */
 	public function Name( $theLanguage = NULL, $theName = NULL )
 	{
-		return $this->manageIndexedProperty( kTAG_NAME, $theLanguage, $theName );	// ==>
+		return
+			$this->manageIndexedProperty(
+				kTAG_NAME, $theLanguage, $theName );								// ==>
 
 	} // Name.
 
@@ -411,10 +456,9 @@ class Term extends Document
 	 * 													language.
 	 * @return mixed				Old or current definition.
 	 *
-	 * @uses getTermKey()
-	 * @uses setTermNamespace()
+	 * @uses manageIndexedProperty()
 	 */
-	public function Definition( $theLanguage = NULL, $theName = NULL )
+	public function Definition( $theLanguage = NULL, $theDefinition = NULL )
 	{
 		return
 			$this->manageIndexedProperty(
@@ -424,50 +468,40 @@ class Term extends Document
 
 
 	/*===================================================================================
-	 *	NamespaceTerm																	*
+	 *	SetNamespaceByTerm																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return namespace term.</h4>
+	 * <h4>Set namespace from term object.</h4>
 	 *
-	 * This method can be used to retrieve the namespace term, it will return the term
-	 * document if the namespace is set, or <tt>NULL</tt>.
+	 * This method can be used to set the current namespace with the provided term object,
+	 * the method expects a term object as the parameter and will return the term reference
+	 * after setting it in the {@link kTAG_NS} offset.
 	 *
-	 * @return Term					Namespace term or <tt>NULL</tt>.
+	 * If the term cannot be found, the method will raise an exception.
 	 *
-	 * @uses getTermKey()
-	 * @uses setTermNamespace()
+	 * @param Term					$theNamespace		Namespace term object.
+	 * @return mixed				Namespace reference.
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses CreateReference()
+	 * @uses manageProperty()
+	 * @see kTAG_NS
 	 */
-	public function NamespaceTerm( $theLanguage = NULL, $theName = NULL )
+	public function SetNamespaceByTerm( Term $theNamespace )
 	{
 		//
-		// Get namespace.
+		// Get term reference.
 		//
-		if( ($namespace = $this->offsetGet( kTAG_NS )) !== NULL )
-		{
-			//
-			// Handle namespace object.
-			//
-			if( $namespace instanceof Document )
-				return $namespace;													// ==>
-
+		$reference = $this->CreateReference( kTAG_NS, $theNamespace );
+		if( $reference !== NULL )
 			return
-				$this->mCollection->FindByKey( $namespace );						// ==>
+				$this->manageProperty( kTAG_NS, $reference );						// ==>
 
-		} // Has namespace.
+		throw new \InvalidArgumentException(
+			"Missing term key." );												// !@! ==>
 
-		return NULL;																// ==>
-
-	} // NamespaceTerm.
-
-
-
-/*=======================================================================================
- *																						*
- *								PUBLIC NAMESPACE INTERFACE								*
- *																						*
- *======================================================================================*/
-
+	} // SetNamespaceByTerm.
 
 
 	/*===================================================================================
@@ -477,46 +511,81 @@ class Term extends Document
 	/**
 	 * <h4>Set the namespace given a global identifier.</h4>
 	 *
+	 * This method can be used to set the current namespace from the provided term global
+	 * identifier, the method expects the term global identifier ({@link kTAG_GID}) as the
+	 * parameter and will return the term reference after setting it in the {@link kTAG_NS}
+	 * offset.
+	 *
 	 * This method can be used to set the current term's namespace ({@link kTAG_NS}) given
 	 * the namespace term's global identifier, the method will use the current term's
 	 * collection to locate the right term; if the provided identifier doesn't match any
 	 * terms, the method will raise an exception.
 	 *
-	 * If you provide <tt>NULL</tt>, or an empty string, the method will reset the
-	 * namespace.
-	 *
 	 * @param string				$theIdentifier		Namespace global identifier.
+	 * @return mixed				Namespace reference.
 	 * @throws \InvalidArgumentException
 	 *
-	 * @uses getTermKey()
-	 * @uses setTermNamespace()
+	 * @uses Collection()
+	 * @uses manageProperty()
 	 */
 	public function SetNamespaceByGID( $theIdentifier )
 	{
 		//
-		// Reset namespace.
+		// Select term.
 		//
-		if( ! strlen( $theIdentifier ) )
-			$this->setTermNamespace( $theIdentifier );
+		$cursor =
+			$this->Collection()->FindByExample(
+				[ kTAG_GID => $theIdentifier ],
+				[ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
 
 		//
-		// Reference namespace.
+		// Set namespace.
 		//
-		else
-		{
-			//
-			// Locate term.
-			//
-			$key = $this->getTermKey( (string)$theIdentifier );
-			if( $key !== NULL )
-				$this->offsetSet( kTAG_NS, $key );
-			else
-				throw new \InvalidArgumentException(
-					"Unknown global identifier [$theIdentifier]." );			// !@! ==>
+		foreach( $cursor as $term )
+			return
+				$this->manageProperty( kTAG_NS, $term );							// ==>
 
-		} // Provided identifier.
+		throw new \InvalidArgumentException(
+			"Unknown global identifier [$theIdentifier]." );					// !@! ==>
 
 	} // SetNamespaceByGID.
+
+
+	/*===================================================================================
+	 *	GetNamespaceTerm																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get namespace term object.</h4>
+	 *
+	 * This method can be used to retrieve the namespace term object, if the namespace is
+	 * not set, the method will return <tt>NULL</tt>.
+	 *
+	 * @return Term					Namespace object.
+	 *
+	 * @uses doResolveReference()
+	 * @see kTAG_NS
+	 */
+	public function GetNamespaceTerm()
+	{
+		//
+		// Get namespace.
+		//
+		$namespace = $this->offsetGet( kTAG_NS );
+		if( $namespace !== NULL )
+		{
+			//
+			// Handle document.
+			//
+			if( $namespace instanceof Term )
+				return $namespace;													// ==>
+
+			return $this->doResolveReference( kTAG_NS, $namespace );				// ==>
+		}
+
+		return NULL;																// ==>
+
+	} // GetNamespaceTerm.
 
 
 
@@ -544,6 +613,10 @@ class Term extends Document
 	 * </ul>
 	 *
 	 * @return array				List of locked offsets.
+	 *
+	 * @see kTAG_NS
+	 * @see kTAG_LID
+	 * @see kTAG_GID
 	 */
 	protected function lockedOffsets()
 	{
@@ -571,6 +644,10 @@ class Term extends Document
 	 * </ul>
 	 *
 	 * @return array				List of required offsets.
+	 *
+	 * @see kTAG_LID
+	 * @see kTAG_GID
+	 * @see kTAG_NAME
 	 */
 	protected function requiredOffsets()
 	{
@@ -585,43 +662,74 @@ class Term extends Document
 
 /*=======================================================================================
  *																						*
- *								PROTECTED PERSISTENCE INTERFACE							*
+ *						PROTECTED SUBDOCUMENT PERSISTENCE INTERFACE						*
  *																						*
  *======================================================================================*/
 
 
 
 	/*===================================================================================
-	 *	doDelete																		*
+	 *	doCreateReference																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Delete object.</h4>
+	 * <h4>Reference embedded documents.</h4>
 	 *
-	 * We overload this method to ensure the current term is not used as a namespace
-	 * elsewhere.
+	 * We overload this method to use the term key as the reference to the namespace.
 	 *
-	 * @return int					The number of deleted records.
-	 * @throws \RuntimeException
+	 * @param string				$theOffset			Sub-document offset.
+	 * @param Document				$theDocument		Subdocument.
+	 * @return mixed				The document key or handle.
 	 *
-	 * @uses Collection::CountByExample()
+	 * @see kTAG_NS
 	 */
-	protected function doDelete()
+	protected function doCreateReference( $theOffset, Document $theDocument )
 	{
 		//
-		// Get usage count.
+		// Handle namespace.
 		//
-		$count =
-			$this->mCollection->CountByExample(
-				[ kTAG_NS => $this->offsetGet( $this->mCollection->KeyOffset() ) ] );
-		if( $count )
-			throw new \RuntimeException (
-				"Cannot delete the term: " .
-				"it is the namespace of $count other terms." );					// !@! ==>
+		if( $theOffset == kTAG_NS )
+			return $theDocument[ $theDocument->Collection()->KeyOffset() ];
 
-		return parent::doDelete();													// ==>
+		return parent::doCreateReference( $theOffset, $theDocument );				// ==>
 
-	} // doDelete.
+	} // doCreateReference.
+
+
+	/*===================================================================================
+	 *	doResolveReference																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Resolve embedded documents.</h4>
+	 *
+	 * The duty of this method is to resolve the provided document reference associated with
+	 * the provided offset into a document object.
+	 *
+	 * The method will return the {@link Document} instance referenced by the provided
+	 * reference, or raise an exception if the referenced document cannot be resolved.
+	 *
+	 * In this class we assume the provided reference is by default a handle, derived
+	 * classes should overload this method to handle other reference types.
+	 *
+	 * @param string				$theOffset			Sub-document offset.
+	 * @param mixed					$theReference		Subdocument reference.
+	 * @return mixed				The document key or handle.
+	 *
+	 * @uses Collection()
+	 * @see kTAG_NS
+	 */
+	protected function doResolveReference( $theOffset, $theReference )
+	{
+		//
+		// Handle namespace.
+		//
+		if( $theOffset == kTAG_NS )
+			return $this->Collection()->FindKey( $theReference );
+
+		return parent::doResolveReference( $theOffset, $theReference );				// ==>
+
+	} // doResolveReference.
 
 
 
@@ -660,8 +768,9 @@ class Term extends Document
 	 * @param mixed					$theNamespace		Term namespace key.
 	 * @throws \RuntimeException
 	 *
-	 * @uses getTermGID()
+	 * @uses Collection()
 	 * @uses makeTermGID()
+	 * @uses Collection::FindKey()
 	 * @see kTAG_NS
 	 * @see kTAG_LID
 	 * @see kTAG_GID
@@ -687,9 +796,9 @@ class Term extends Document
 				//
 				// Get namespace global identifier.
 				//
-				$gid = $this->getTermGID( $theNamespace );
-				if( $gid !== NULL )
-					$this->mNamespaceGID = $gid;
+				$term = $this->Collection()->FindKey( $theNamespace );
+				if( $term !== NULL )
+					$this->mNamespaceGID = $term->offsetGet( kTAG_GID );
 				else
 					throw new \RuntimeException(
 						"Unknown term [$theNamespace]." );						// !@! ==>
@@ -791,86 +900,6 @@ class Term extends Document
 		return $theIdentifier;														// ==>
 
 	} // makeTermGID.
-
-
-
-/*=======================================================================================
- *																						*
- *							PROTECTED REFERENCE INTERFACE								*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	getTermGID																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return terrm global identifier.</h4>
-	 *
-	 * Given a term key ({@link Collection::KeyOffset()}) this method will return the
-	 * corresponding term's global identifier ({@link kTAG_GID}), or <tt>NULL</tt> if the
-	 * key is not found.
-	 *
-	 * By default we use the current term's collection.
-	 *
-	 * @param mixed					$theKey				Term key.
-	 * @return string				Term global identifier or <tt>NULL</tt>.
-	 *
-	 * @uses Collection::FindByKey()
-	 * @see kTAG_GID
-	 */
-	protected function getTermGID( $theKey )
-	{
-		//
-		// Select term.
-		//
-		$term = $this->mCollection->FindByKey( $theKey );
-		if( $term !== NULL )
-			return $term[ kTAG_GID ];												// ==>
-
-		return NULL;																// ==>
-
-	} // getTermGID.
-
-
-	/*===================================================================================
-	 *	getTermKey																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return terrm key.</h4>
-	 *
-	 * Given a term global identifier ({@link kTAG_GID}) this method will return the
-	 * corresponding term's key ({@link  ({@link Collection::KeyOffset()}), or <tt>NULL</tt>
-	 * if the global identifier matches no term.
-	 *
-	 * By default we use the current term's collection.
-	 *
-	 * @param mixed					$theGID				Term global identifier.
-	 * @return string				Term key or <tt>NULL</tt>.
-	 *
-	 * @uses Collection::FindByExample()
-	 * @see kTAG_GID
-	 * @see kTOKEN_OPT_LIMIT
-	 */
-	protected function getTermKey( $theGID )
-	{
-		//
-		// Select term.
-		//
-		$term =
-			$this->mCollection->FindByExample(
-				[ kTAG_GID => $theGID ],
-				[ kTOKEN_OPT_LIMIT => 1 ] );
-		if( count( $term ) )
-			return $term[ 0 ][ $this->mCollection->KeyOffset() ];					// ==>
-
-		return NULL;																// ==>
-
-	} // getTermKey.
-
 
 
 

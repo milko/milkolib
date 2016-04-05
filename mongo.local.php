@@ -34,7 +34,7 @@ const kMONGO_OPTS_CLIENT_DEFAULT = 'mongodb://localhost:27017';
 
 /*=======================================================================================
  *	MONGODB																				*
- * Default identifier, key, class and revision offsets.									*
+ * Default identifier, key, class,revision and vertex offsets.							*
  *======================================================================================*/
 
 /**
@@ -72,6 +72,18 @@ const kTAG_MONGO_REL_FROM = '_from';
  * This defines the default offset for destination nodes in a graph edge.
  */
 const kTAG_MONGO_REL_TO = '_to';
+
+/*=======================================================================================
+ *	MONGODB																				*
+ * Default collection names.															*
+ *======================================================================================*/
+
+/**
+ * <h4>Default term collection.</h4>
+ *
+ * This defines the default terms collection name.
+ */
+const kTAG_MONGO_TERMS = '_terms';
 
 
 ?>

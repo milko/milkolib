@@ -13,6 +13,7 @@ namespace Milko\PHPLib\MongoDB;
  *									Database.php										*
  *																						*
  *======================================================================================*/
+use Milko\PHPLib\Server;
 
 /**
  * <h4>MongoDB database object.</h4>
@@ -74,6 +75,37 @@ class Database extends \Milko\PHPLib\Database
 		$this->Connection()->drop( $theOptions );
 
 	} // Drop.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC COLLECTION MANAGEMENT INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	RetrieveTerms																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the terms collection object.</h4>
+	 *
+	 * We implement this method to use the {@link kTAG_MONGO_TERMS} collection name.
+	 *
+	 * @param string				$theFlags			Flags bitfield.
+	 * @param array					$theOptions			Collection native options.
+	 * @return Collection			Collection object or <tt>NULL</tt>.
+	 */
+	public function RetrieveTerms( $theFlags = Server::kFLAG_DEFAULT, $theOptions = NULL )
+	{
+		return
+			$this->RetrieveCollection(
+				kTAG_MONGO_TERMS, $theFlags, $theOptions );							// ==>
+
+	} // RetrieveTerms.
 
 
 
