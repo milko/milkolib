@@ -775,7 +775,7 @@ class Document extends Container
 		//
 		// Check key.
 		//
-		if( ($key = $this->offsetExists( $this->Collection()->KeyOffset() )) !== NULL )
+		if( ($key = $this->offsetGet( $this->Collection()->KeyOffset() )) !== NULL )
 			return $this->Collection()->NewHandle( $key );							// ==>
 
 		throw new \RuntimeException(

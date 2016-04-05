@@ -457,7 +457,7 @@ class Collection extends \Milko\PHPLib\Collection
 		// Decompose handle.
 		//
 		$handle = explode( '/', $theHandle );
-		
+
 		return
 			$this->Database()->RetrieveCollection(
 				$handle[ 0 ], Server::kFLAG_ASSERT )

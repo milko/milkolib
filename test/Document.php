@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -295,7 +295,17 @@ echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
 print_r( $document->getArrayCopy() );
-exit;
+
+echo( "\n" );
+
+//
+// Add embedded documents.
+//
+echo( "Add embedded documents:\n" );
+echo( '$document[ "sub1" ] = $sub1;' . "\n" );
+$document[ "sub1" ] = $sub1;
+echo( '$document[ "sub2" ] = $sub2;' . "\n" );
+$document[ "sub2" ] = $sub2;
 
 echo( "\n" );
 
@@ -334,6 +344,21 @@ echo( "\n" );
 echo( "Retrieve embedded document 2:\n" );
 echo( '$sub2 = $document->ResolveReference( "sub2" );' . "\n" );
 $sub2 = $document->ResolveReference( "sub2" );
+echo( "Class: " . get_class( $sub2 ) . "\n" );
+echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $sub2->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Retrieve embedded document 2.
+//
+echo( "Retrieve embedded document 2:\n" );
+echo( '$sub2 = $document->ResolveReference( $document[ "sub2" ] );' . "\n" );
+$sub2 = $document->ResolveReference( $document[ "sub2" ] );
+var_dump( $document[ "sub2" ] );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
