@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Relation object test suite.
+ * Edge object test suite.
  *
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
@@ -95,7 +95,7 @@ echo( "Instantiate edge:\n" );
 try
 {
 	echo( '$edge = new Milko\PHPLib\Relation( $nodes, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );' . "\n" );
-	$edge = new Milko\PHPLib\Relation( $nodes, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );
+	$edge = new Milko\PHPLib\Edge( $nodes, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );
 	echo( "FALIED! - Should have raised an exception.\n" );
 }
 catch( InvalidArgumentException $error )
@@ -111,7 +111,7 @@ echo( "\n" );
 //
 echo( "Instantiate edge:\n" );
 echo( '$edge = new Milko\PHPLib\Relation( $predicates, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );' . "\n" );
-$edge = new Milko\PHPLib\Relation( $predicates, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );
+$edge = new Milko\PHPLib\Edge( $predicates, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );
 echo( "Class: " . get_class( $edge ) . "\n" );
 echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -337,7 +337,6 @@ foreach( $result as $document )
 	echo( "Data: " );
 	print_r( $document->getArrayCopy() );
 }
-exit;
 
 echo( "\n====================================================================================\n\n" );
 

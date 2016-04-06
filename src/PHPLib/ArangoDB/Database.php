@@ -306,7 +306,7 @@ class Database extends \Milko\PHPLib\Database
 			switch( $theOptions[ "type" ] )
 			{
 				case ArangoCollection::TYPE_EDGE:
-					return new Relations( $this, $theCollection, $theOptions );		// ==>
+					return new Edges( $this, $theCollection, $theOptions );		// ==>
 
 				case ArangoCollection::TYPE_DOCUMENT:
 					return new Collection( $this, $theCollection, $theOptions );	// ==>

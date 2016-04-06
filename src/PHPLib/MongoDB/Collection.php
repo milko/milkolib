@@ -583,7 +583,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We implement this method to use the {@link \MongoDB\Collection::insertOne()} method.
 	 *
-	 * @param mixed					$theDocument		The document to be inserted.
+	 * @param mixed					$theDocument		Database native format document.
 	 * @return mixed				The inserted document's key.
 	 *
 	 * @uses Connection()
@@ -607,7 +607,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * We overload this method to use the {@link \MongoDB\Collection::insertMany()} method.
 	 *
-	 * @param array					$theList			The documents list.
+	 * @param array					$theList			Native format documents list.
 	 * @return array				The document keys.
 	 *
 	 * @uses Connection()

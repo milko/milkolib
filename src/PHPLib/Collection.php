@@ -1612,7 +1612,7 @@ abstract class Collection extends Container
 	 * This method must be implemented in derived classes to handle the specific database
 	 * driver.
 	 *
-	 * @param mixed					$theDocument		The document to be inserted.
+	 * @param mixed					$theDocument		Database native format document.
 	 * @return mixed				The inserted document's key.
 	 */
 	abstract protected function doInsert( $theDocument );
@@ -1736,7 +1736,7 @@ abstract class Collection extends Container
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theList			The documents list.
+	 * @param array					$theList			Native format documents list.
 	 * @return array				The document keys.
 	 */
 	abstract protected function doInsertBulk( array $theList );

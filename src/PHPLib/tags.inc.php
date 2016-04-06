@@ -87,5 +87,18 @@ const kTAG_NAME				= '@4';
  */
 const kTAG_DESCRIPTION		= '@5';
 
+/*=======================================================================================
+ *	NODE PROPERTIES																		*
+ *======================================================================================*/
+
+/**
+ * <h4>Node type.</h4>
+ *
+ * The property holds an enumerated set of values defining the type of node.
+ *
+ * Type: <tt>array</tt>.
+ */
+const kTAG_NODE_TYPE		= '@6';
+
 
 ?>

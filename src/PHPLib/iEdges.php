@@ -1,9 +1,9 @@
 <?php
 
 /**
- * iRelations.php
+ * iEdges.php
  *
- * This file contains the definition of the {@link iRelations} interface.
+ * This file contains the definition of the {@link iEdges} interface.
  */
 
 namespace Milko\PHPLib;
@@ -22,7 +22,7 @@ use Milko\PHPLib\Container;
 
 /*=======================================================================================
  *																						*
- *									iRelations.php										*
+ *										iEdges.php										*
  *																						*
  *======================================================================================*/
 
@@ -32,10 +32,11 @@ use Milko\PHPLib\Container;
  * This interface declares the methods that an edge collection should implement.
  * 
  * Edge collections inherit all the functionality of the {@link Collection} class and add
- * an interface which is specific to collections of {@link Edge} instances; rather than
- * deriving from the {@link Collection} class, we chhoose here to declare an interface that
- * edge collections derived from concrete collection classes should implement.
- * 
+ * an interface which is specific to collections of {@link Edge} instance.
+ *
+ * We declare this interface to add edge management to concrete derived {@link Collection}
+ * classes.
+ *
  * This interface declares the following methods:
  *
  * <ul>
@@ -44,7 +45,7 @@ use Milko\PHPLib\Container;
  * 		<li><b>{@link VertexIn()}</b>: Return the relationship source offset.
  * 		<li><b>{@link VertexOut()}</b>: Return the relationship destination offset.
  *   </ul>
- * 	<li><em>Record related:</em>
+ * 	<li><em>Relationships management:</em>
  *   <ul>
  * 		<li><b>{@link FindByVertex()}</b>: Find edges connected to a vertex.
  *   </ul>
@@ -56,7 +57,7 @@ use Milko\PHPLib\Container;
  *	@version	1.00
  *	@since		30/03/2016
  */
-interface iRelations
+interface iEdges
 {
 
 
@@ -160,7 +161,7 @@ interface iRelations
 
 
 
-} // interface iRelations.
+} // interface iEdges.
 
 
 ?>

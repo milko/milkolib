@@ -1,20 +1,21 @@
 <?php
 
 /**
- * Relations.php
+ * Edges.php
  *
  * This file contains the definition of the {@link Relations} class.
  */
 
 namespace Milko\PHPLib\MongoDB;
 
-use Milko\PHPLib\iRelations;
+use Milko\PHPLib\Container;
+use Milko\PHPLib\iEdges;
 use Milko\PHPLib\MongoDB\Collection;
-use Milko\PHPLib\Relation;
+use Milko\PHPLib\Edge;
 
 /*=======================================================================================
  *																						*
- *									Relations.php										*
+ *										Edges.php										*
  *																						*
  *======================================================================================*/
 
@@ -23,7 +24,7 @@ use Milko\PHPLib\Relation;
  *
  * This <em>concrete</em> class is the implementation of an edge collection, it overloads
  * the inherited {@link Collection} interface and implements the
- * {@link iRelations} interface.
+ * {@link iEdges} interface.
  *
  *	@package	Data
  *
@@ -31,8 +32,8 @@ use Milko\PHPLib\Relation;
  *	@version	1.00
  *	@since		01/04/2016
  */
-class Relations extends Collection
-				implements iRelations
+class Edges extends Collection
+			implements iEdges
 {
 
 
@@ -123,7 +124,7 @@ class Relations extends Collection
 		//
 		// Get vertex handle.
 		//
-		if( $theVertex instanceof \Milko\PHPLib\Container )
+		if( $theVertex instanceof Container )
 			$theVertex = $this->NewDocumentHandle( $theVertex );
 
 		//
@@ -157,6 +158,89 @@ class Relations extends Collection
 
 
 
+/*=======================================================================================
+ *																						*
+ *						PROTECTED RECORD MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	doInsert																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a document.</h4>
+	 *
+	 * We overload this method to assert that both source and destination vertices are
+	 * present.
+	 *
+	 * @param mixed					$theDocument		Database native format document.
+	 * @return mixed				The inserted document's key.
+	 *
+	 * @uses Database()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::saveEdge()
+	 */
+	protected function doInsert( $theDocument )
+	{
+		//
+		// Check vertices.
+		//
+		if( ! $theDocument->offsetExists( $this->VertexSource() ) )
+			throw new \InvalidArgumentException (
+				"Missing source vertex." );										// !@! ==>
+		if( ! $theDocument->offsetExists( $this->VertexDestination() ) )
+			throw new \InvalidArgumentException (
+				"Missing destination vertex." );								// !@! ==>
+
+		return parent::doInsert( $theDocument );
+
+	} // doInsert.
+
+
+	/*===================================================================================
+	 *	doInsertBulk																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a list of documents.</h4>
+	 *
+	 * We overload this method to iterate the provided list and call the
+	 * {@link doInsertOne()} method on each document.
+	 *
+	 * @param array					$theList			Native format documents list.
+	 * @return array				The document keys.
+	 *
+	 * @uses Database()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::saveEdge()
+	 */
+	protected function doInsertBulk( array $theList )
+	{
+		//
+		// Iterate documents.
+		//
+		foreach( $theList as $document )
+		{
+			//
+			// Check vertices.
+			//
+			if( ! $document->offsetExists( $this->VertexSource() ) )
+				throw new \InvalidArgumentException (
+					"Missing source vertex." );									// !@! ==>
+			if( ! $document->offsetExists( $this->VertexDestination() ) )
+				throw new \InvalidArgumentException (
+					"Missing destination vertex." );							// !@! ==>
+		}
+
+		return parent::doInsertBulk( $theList );									// ==>
+
+	} // doInsertBulk.
+
+
+
 
 /*=======================================================================================
  *																						*
@@ -181,13 +265,13 @@ class Relations extends Collection
 	 */
 	protected function toDocument( array $theData )
 	{
-		return new Relation( $this, $theData );										// ==>
+		return new Edge( $this, $theData );										// ==>
 
 	} // toDocument.
 
 
 
-} // class Relations.
+} // class Edges.
 
 
 ?>

@@ -243,7 +243,7 @@ class Database extends \Milko\PHPLib\Database
 			{
 				case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
 					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
-					return new Relations( $this, $theCollection, $theOptions );		// ==>
+					return new Edges( $this, $theCollection, $theOptions );		// ==>
 					break;
 
 				case kTOKEN_OPT_COLLECTION_TYPE_DOC:

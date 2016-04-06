@@ -407,7 +407,7 @@ echo( "\n" );
 //
 echo( "Insert relation:\n" );
 echo( '$document = new Milko\PHPLib\Relation( $test, [$test->VertexSource() => $nodes->NewHandle( "Node7" ), $test->VertexDestination() => $nodes->NewHandle( "Node8" ), "data" => "XXX", "color" => "red"] );' . "\n" );
-$document = new Milko\PHPLib\Relation( $test, [$test->VertexSource() => $nodes->NewHandle( "Node7" ), $test->VertexDestination() => $nodes->NewHandle( "Node8" ), "data" => "XXX", "color" => "red"] );
+$document = new Milko\PHPLib\Edge( $test, [$test->VertexSource() => $nodes->NewHandle( "Node7" ), $test->VertexDestination() => $nodes->NewHandle( "Node8" ), "data" => "XXX", "color" => "red"] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -432,7 +432,7 @@ echo( "Insert many documents:\n" );
 $documents = [];
 $documents[0] = [ $test->VertexSource() => $nodes->NewHandle( "Node9" ), $test->VertexDestination() => $nodes->NewHandle( "Node1" ), $test->KeyOffset() => "ID2", "data" => "XXX", "color" => "yellow" ];
 $documents[1] = $test->NewNativeDocument( [ $test->VertexSource() => $nodes->NewHandle( "Node2" ), $test->VertexDestination() => $nodes->NewHandle( "Node3" ), "name" => "Nati" ] );
-$documents[2] = new Milko\PHPLib\Relation( $test, [ $test->VertexSource() => $nodes->NewHandle( "Node4" ), $test->VertexDestination() => $nodes->NewHandle( "Node5" ), $test->KeyOffset() => 7, "name" => "Cangalovic" ] );
+$documents[2] = new Milko\PHPLib\Edge( $test, [ $test->VertexSource() => $nodes->NewHandle( "Node4" ), $test->VertexDestination() => $nodes->NewHandle( "Node5" ), $test->KeyOffset() => 7, "name" => "Cangalovic" ] );
 $documents[3] = new \DerivedFromDocument( $test, [ $test->VertexSource() => $nodes->NewHandle( "Node6" ), $test->VertexDestination() => $nodes->NewHandle( "Node7" ), "name" => "no" ] );
 $documents[4] = new Milko\PHPLib\Container( [ $test->VertexSource() => $nodes->NewHandle( "Node8" ), $test->VertexDestination() => $nodes->NewHandle( "Node9" ), "name" => "yes" ] );
 echo( "»»»[0] " ); print_r( $documents[0] );

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Relations.php
+ * Edges.php
  *
  * This file contains the definition of the {@link Relations} class.
  */
@@ -9,9 +9,9 @@
 namespace Milko\PHPLib\ArangoDB;
 
 use Milko\PHPLib\ArangoDB\Collection;
-use Milko\PHPLib\iRelations;
+use Milko\PHPLib\iEdges;
 
-use Milko\PHPLib\Relation;
+use Milko\PHPLib\Edge;
 use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Collection as ArangoCollection;
 use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
@@ -33,7 +33,7 @@ use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
 
 /*=======================================================================================
  *																						*
- *									Relations.php										*
+ *										Edges.php										*
  *																						*
  *======================================================================================*/
 
@@ -42,7 +42,7 @@ use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
  *
  * This <em>concrete</em> class is the implementation of a ArangoDB edge collection, it
  * overloads the inherited {@link Collection} interface and implements the
- * {@link iRelations} interface.
+ * {@link iEdges} interface.
  *
  *	@package	Data
  *
@@ -50,8 +50,8 @@ use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
  *	@version	1.00
  *	@since		30/03/2016
  */
-class Relations extends \Milko\PHPLib\ArangoDB\Collection
-				implements \Milko\PHPLib\iRelations
+class Edges extends Collection
+			implements iEdges
 {
 
 
@@ -306,7 +306,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		//
 		// Init options.
 		//
-		$theOptions[ "type" ] = \triagens\ArangoDb\Collection::TYPE_EDGE;
+		$theOptions[ "type" ] = ArangoCollection::TYPE_EDGE;
 
 		//
 		// Get collection handler.
@@ -326,7 +326,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 			//
 			// Assert the collection type.
 			//
-			if( $collection->getType() != \triagens\ArangoDb\Collection::TYPE_EDGE )
+			if( $collection->getType() != ArangoCollection::TYPE_EDGE )
 				throw new \InvalidArgumentException (
 					"Invalid collection type: "
 					."expecting an edge collection." );							// !@! ==>
@@ -359,7 +359,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * document properties and pass them to the {@link ArangoEdgeHandler::saveEdge()}
 	 * method.
 	 *
-	 * @param mixed					$theDocument		The document to be inserted.
+	 * @param mixed					$theDocument		Database native format document.
 	 * @return mixed				The inserted document's key.
 	 *
 	 * @uses Database()
@@ -400,7 +400,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 * We overload this method to iterate the provided list and call the
 	 * {@link doInsertOne()} method on each document.
 	 *
-	 * @param array					$theList			The documents list.
+	 * @param array					$theList			Native format documents list.
 	 * @return array				The document keys.
 	 *
 	 * @uses Database()
@@ -539,7 +539,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 	 */
 	protected function toDocument( array $theData )
 	{
-		return new Relation( $this, $theData );										// ==>
+		return new Edge( $this, $theData );										// ==>
 
 	} // toDocument.
 
@@ -628,7 +628,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		//
 		// Set source and destination vertices.
 		//
-		if( $theDocument instanceof \Milko\PHPLib\Relation )
+		if( $theDocument instanceof \Milko\PHPLib\Edge )
 		{
 			$theDocument->offsetSet( $this->VertexSource(), $theData->getFrom() );
 			$theDocument->offsetSet( $this->VertexDestination(), $theData->getTo() );
@@ -667,7 +667,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 		// if that is not the case, we assume the vertex references are in the properties.
 		//
 		if( ($theData instanceof ArangoEdge)
-		 && ($theDocument instanceof \Milko\PHPLib\Relation) )
+		 && ($theDocument instanceof \Milko\PHPLib\Edge) )
 		{
 			$theDocument->offsetSet( $this->VertexSource(), $theData->getFrom() );
 			$theDocument->offsetSet( $this->VertexDestination(), $theData->getTo() );
@@ -682,7 +682,7 @@ class Relations extends \Milko\PHPLib\ArangoDB\Collection
 
 
 
-} // class Relations.
+} // class Edges.
 
 
 ?>
