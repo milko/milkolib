@@ -21,7 +21,7 @@ require_once( 'tokens.inc.php' );
 /**
  * Global node type definitions.
  */
-require_once( 'node_types.inc.php' );
+require_once('types.inc.php');
 
 use Milko\PHPLib\Container;
 
@@ -41,19 +41,15 @@ use Milko\PHPLib\Container;
  * 	<li><tt>{@link kTAG_NODE_TYPE}</tt>: The node type. Nodes must feature a type that will
  * 		be used when traversing graphs, there types are:
  * 	 <ul>
- * 		<li><tt>{@link kTYPE_NODE_GRAPH}</tt>: Graph nodes represent the entry point to a
- * 			graph, they can be considered as the root node of an ontology.
+ * 		<li><tt>{@link kTYPE_NODE_GRAPH}</tt>: Graph nodes represent the entry point of a
+ * 			graph, they can be considered as the root node of the ontology.
  * 		<li><tt>{@link kTYPE_NODE_ROOT}</tt>: Root nodes represent entry points to a graph,
- * 			they do not necessarily act as the root of the graph, but rather as a set of
- * 			alternative entry points that represent different thematic views of the graph.
- * 		<li><tt>{@link kTYPE_NODE_TYPE}</tt>: Type nodes are used as containers of a
- * 			structure and represent proxies to that structure. This category indicates that
- * 			the current node is a placeholder for the elements that it references and should
- * 			not be considered as a concrete element in the traversal.
- * 		<li><tt>{@link kTYPE_NODE_ENUM}</tt>: Nodes of this type represent controlled
- * 			vocabulary entry points, they contain the
- * 			structure and represent proxies to that structure. This category indicates that
- * 			the current node is a placeholder for the element that it references.
+ * 			they represent a set of alternative entry points that constitute different
+ * 			thematic views of the graph.
+ * 		<li><tt>{@link kTYPE_NODE_TYPE}</tt>: Type nodes define a structure or data type.
+ * 		<li><tt>{@link kTYPE_NODE_CATEGORY}</tt>: Category nodes act as categorised
+ * 			containers.
+ * 		<li><tt>{@link kTYPE_NODE_ENUMERATION}</tt>: Controlled vocabulary element.
  * 	 </ul>
  * </ul>
  *
@@ -70,61 +66,58 @@ trait tNode
 
 /*=======================================================================================
  *																						*
- *							PUBLIC NODE TYPE MANAGEMENT INTERFACE						*
+ *							PUBLIC MEMBER MANAGEMENT INTERFACE							*
  *																						*
  *======================================================================================*/
 
 
 
 	/*===================================================================================
-	 *	FindByVertex																	*
+	 *	NodeType																		*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Find by vertex.</h4>
+	 * <h4>Manage node type.</h4>
 	 *
-	 * This method will return all edges that are connected to the provided vertex, the
-	 * method features two parameters:
+	 * This method can be used to manage the node type ({@link kTAG_NODE_TYPE}), the method
+	 * features one parameter which can take the following values:
 	 *
 	 * <ul>
-	 *	<li><b>$theVertex</b>: The vertex {@link Document} or handle.
-	 *	<li><b>$theOptions</b>: An array of options:
+	 *	<li><tt>NULL</tt>: Return the current type.
+	 *	<li><em>other</em>: Set the type with the provided value, only the following values
+	 * 		are accepted, or an exception will be raised:
 	 * 	 <ul>
-	 * 		<li><b>{@link kTOKEN_OPT_DIRECTION}</b>: This option determines the relationship
-	 * 			direction:
-	 * 		 <ul>
-	 *			<li><tt>{@link kTOKEN_OPT_DIRECTION_IN}</tt>: Incoming relationships.
-	 *			<li><tt>{@link kTOKEN_OPT_DIRECTION_OUT}</tt>: Outgoing relationships.
-	 *			<li><tt>{@link kTOKEN_OPT_DIRECTION_ANY}</tt>: Incoming and outgoing
-	 * 				relationships.
-	 * 		 </ul>
-	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
-	 * 		 <ul>
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
-	 * 				database result.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return {@link Document}
-	 * 				instances.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return
-	 * 				(@link NewDocumentHandle()}) instances.
-	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return document key(s).
-	 * 		 </ul>
+	 * 		<li><tt>{@link kTYPE_NODE_GRAPH}</tt>: Graph nodes represent the entry point of a
+	 * 			graph, they can be considered as the root node of the ontology.
+	 * 		<li><tt>{@link kTYPE_NODE_ROOT}</tt>: Root nodes represent entry points to a graph,
+	 * 			they represent a set of alternative entry points that constitute different
+	 * 			thematic views of the graph.
+	 * 		<li><tt>{@link kTYPE_NODE_TYPE}</tt>: Type nodes define a structure or data type.
+	 * 		<li><tt>{@link kTYPE_NODE_CATEGORY}</tt>: Category nodes act as categorised
+	 * 			containers.
+	 * 		<li><tt>{@link kTYPE_NODE_ENUMERATION}</tt>: Controlled vocabulary element.
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * If the provided {@link kTOKEN_OPT_MANY} option is <tt>FALSE</tt>, the method will
-	 * return a scalar result (except if the {@link kTOKEN_OPT_FORMAT} is
-	 * {@link kTOKEN_OPT_FORMAT_NATIVE}), if not, it will return an array of results.
+	 * The method will return the current value.
 	 *
-	 * By default the method will return documents as {@link Document} derived instances
-	 * and select both relationship directions.
-	 *
-	 * It is the responsibility of the caller to ensure the server is connected.
-	 *
-	 * @param mixed					$theVertex			The vertex document or handle.
-	 * @param array					$theOptions			Find options.
-	 * @return array				The found documents.
+	 * @param string				$theValue			The node type.
+	 * @return string				The current value.
 	 */
-	public function FindByVertex( $theVertex, $theOptions = NULL );
+	public function NodeType( $theValue = NULL )
+	{
+		//
+		// Assert type.
+		//
+		if( $theValue !== NULL )
+		{
+			switch( $theValue )
+			{
+				
+			}
+		}
+
+	} // NodeType.
 
 
 
