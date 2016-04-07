@@ -666,7 +666,12 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $handler->has( $theCollection ) )
 			return $handler->get( $theCollection );									// ==>
 
-		return $handler->get( $handler->create( $theCollection, $theOptions ) );	// ==>
+		//
+		// Create collection.
+		//
+		$collection = $handler->create( $theCollection, $theOptions );
+
+		return $handler->get( $collection );										// ==>
 
 	} // collectionNew.
 

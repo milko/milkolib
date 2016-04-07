@@ -34,6 +34,11 @@ require_once( "functions.php" );
 class DerivedFromDocument extends \Milko\PHPLib\Document {}
 
 //
+// Enable exception logging.
+//
+triagens\ArangoDb\Exception::enableLogging();
+
+//
 // Instantiate object.
 //
 if( kENGINE == "MONGO" )

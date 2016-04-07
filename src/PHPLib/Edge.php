@@ -9,14 +9,9 @@
 namespace Milko\PHPLib;
 
 /**
- * Global tag definitions.
+ * Global predicate definitions.
  */
-require_once( 'tags.inc.php' );
-
-/**
- * Global token definitions.
- */
-require_once( 'tokens.inc.php' );
+require_once('predicates.inc.php');
 
 use Milko\PHPLib\Document;
 

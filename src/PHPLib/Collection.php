@@ -11,7 +11,7 @@ namespace Milko\PHPLib;
 /**
  * Global tag definitions.
  */
-require_once( 'tags.inc.php' );
+require_once('descriptors.inc.php');
 
 /**
  * Global token definitions.

@@ -9,14 +9,24 @@
 namespace Milko\PHPLib;
 
 /**
- * Global tag definitions.
- */
-require_once( 'tags.inc.php' );
-
-/**
  * Global token definitions.
  */
 require_once( 'tokens.inc.php' );
+
+/**
+ * Global type definitions.
+ */
+require_once( 'types.inc.php' );
+
+/**
+ * Global kind definitions.
+ */
+require_once( 'kinds.inc.php' );
+
+/**
+ * Global descriptor definitions.
+ */
+require_once('descriptors.inc.php');
 
 use Milko\PHPLib\Container;
 use Milko\PHPLib\Collection;
@@ -32,7 +42,7 @@ use Milko\PHPLib\Collection;
  *
  * This class is essentially a {@link Container} that keeps track of its class name, it is
  * the ancestor of all persistent classes, thus includes the global tokens
- * ({@link 'tokens.inc.php'}}, and global tags ({@link 'tags.inc.php'}).
+ * ({@link 'tokens.inc.php'}}, and global tags ({@link 'descriptors.inc.php'}).
  *
  * The class constructor will set in its {@link Collection::ClassOffset()} property the name
  * of its current class. This must be taken into consideration, because when instantiating
