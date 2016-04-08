@@ -11,6 +11,7 @@ $url = "http://api.dhsprogram.com/rest/dhs/indicators?perpage=100&page=@@@";
 $page = 1;
 $hierarchy = [];
 $occurrence = [];
+$denominators = [];
 $categories = [ "Level 1" => [], "Level 2" => [], "Level 3" => [] ];
 
 //
@@ -54,19 +55,48 @@ while( count( $packet[ 'Data' ] ) )
 							$categories[ "Level $i" ][] = $value;
 					}
 				}
+
+				//
+				// Collect denominator.
+				//
+				if( $field == 'Denominator' )
+				{
+					if( ! in_array( $value, $denominators ) )
+						$denominators[] = $value;
+				}
 			}
 
 			//
 			// Load hierarchy.
 			//
+//			if( ! array_key_exists( $row[ "Level3" ], $hierarchy ) )
+//				$hierarchy[ $row[ "Level3" ] ] = [];
+//			$level1 = & $hierarchy[ $row[ "Level3" ] ];
+//			if( ! array_key_exists( $row[ "Level1" ], $level1 ) )
+//				$level1[ $row[ "Level1" ] ] = [];
+//			$level2 = & $level1[ $row[ "Level1" ] ];
+//			if( ! in_array( $row[ "Level2" ], $level2 ) )
+//				$level2[] = $row[ "Level2" ];
+
 			if( ! array_key_exists( $row[ "Level3" ], $hierarchy ) )
 				$hierarchy[ $row[ "Level3" ] ] = [];
 			$level1 = & $hierarchy[ $row[ "Level3" ] ];
 			if( ! array_key_exists( $row[ "Level1" ], $level1 ) )
 				$level1[ $row[ "Level1" ] ] = [];
 			$level2 = & $level1[ $row[ "Level1" ] ];
-			if( ! in_array( $row[ "Level2" ], $level2 ) )
-				$level2[] = $row[ "Level2" ];
+			if( strlen( $row[ "Denominator" ] ) )
+			{
+				if( ! array_key_exists( $row[ "Level2" ], $level2 ) )
+					$level2[ $row[ "Level2" ] ] = [];
+				$level3 = & $level2[ $row[ "Level2" ] ];
+				if( ! in_array( $row[ "Denominator" ], $level3 ) )
+					$level3[] = $row[ "Denominator" ];
+			}
+			else
+			{
+				if( ! in_array( $row[ "Level2" ], $level2 ) )
+					$level2[] = $row[ "Level2" ];
+			}
 		}
 	}
 
@@ -83,6 +113,11 @@ echo( "\n\n" );
 
 echo( "Field occurrance: " );
 print_r( $occurrence );
+
+echo( "\n\n" );
+
+echo( "Denominators: " );
+print_r( $denominators );
 
 echo( "\n\n" );
 

@@ -618,6 +618,46 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *									STATIC HANDLE INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	GetHandleComponents																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return handle components.</h4>
+	 *
+	 * We overload this method to parse the handle into an array and use the parent method
+	 * to set the parameters.
+	 *
+	 * @param mixed					$theHandle			The object handle.
+	 * @param string			   &$theCollection		Receives collection name.
+	 * @param mixed				   &$theIdentifier		Receives object key.
+	 */
+	static function GetHandleComponents( $theHandle,
+										 &$theCollection,
+										 &$theIdentifier )
+	{
+		//
+		// Parse components.
+		//
+		$handle = explode( '/', $theHandle );
+
+		//
+		// Extract components.
+		//
+		parent::GetHandleComponents( $handle, $theCollection, $theIdentifier );
+
+	} // GetHandleComponents.
+
+
+
+/*=======================================================================================
+ *																						*
  *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
  *																						*
  *======================================================================================*/

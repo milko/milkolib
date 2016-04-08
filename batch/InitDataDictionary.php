@@ -26,12 +26,10 @@ require_once ("defines.inc.php" );
 require_once( dirname(__DIR__) . "/includes.local.php" );
 
 //
-// Include local definitions.
+// Include database definitions.
 //
-if( kENGINE == "MONGO" )
-	require_once( dirname(__DIR__) . "/mongo.local.php" );
-elseif( kENGINE == "ARANGO" )
-	require_once( dirname(__DIR__) . "/arango.local.php" );
+require_once( kPATH_LIBRARY_ROOT . "/mongo.local.php" );
+require_once( kPATH_LIBRARY_ROOT . "/arango.local.php" );
 
 //
 // Include definitions.
@@ -60,44 +58,117 @@ require_once ("loadTerms.php" );
 //triagens\ArangoDb\Exception::enableLogging();
 
 //
-// Set environment dependent variables.
+// Set default arguments.
 //
-switch( kENGINE )
+if( $argc == 1 )
 {
-	case "MONGO":
-		$dsn = kDSN_MONGO;
-		$terms_name = kTAG_MONGO_TERMS;
-		break;
+	$engine = kENGINE;
+	switch( kENGINE )
+	{
+		case "MONGO":
+			$datasource_name = kDSN_MONGO;
+			break;
 
-	case "ARANGO":
-		$dsn = kDSN_ARANGO;
-		$terms_name = kTAG_ARANGO_TERMS;
-		break;
+		case "ARANGO":
+			$datasource_name = kDSN_ARANGO;
+			break;
 
-	default:
-		exit( "The database engine can be \"ARANGO\" or \"MONGO\"\n" );				// ==>
+		default:
+			exit( "The database engine can be \"ARANGO\" or \"MONGO\"\n" );			// ==>
+	}
+	$database_name = kDB;
 }
+
+//
+// Load default engine arguments.
+//
+elseif( $argc == 2 )
+{
+	$engine = $argv[ 1 ];
+	switch( $engine )
+	{
+		case "MONGO":
+			$datasource_name = kDSN_MONGO;
+			break;
+
+		case "ARANGO":
+			$datasource_name = kDSN_ARANGO;
+			break;
+
+		default:
+			exit( "The database engine can be \"ARANGO\" or \"MONGO\"\n" );			// ==>
+	}
+	$database_name = kDB;
+}
+
+//
+// Load default engine and database arguments.
+//
+elseif( $argc == 3 )
+{
+	$engine = $argv[ 1 ];
+	$database_name = $argv[ 2 ];
+	switch( $engine )
+	{
+		case "MONGO":
+			$datasource_name = kDSN_MONGO;
+			break;
+
+		case "ARANGO":
+			$datasource_name = kDSN_ARANGO;
+			break;
+
+		default:
+			exit( "The database engine can be \"ARANGO\" or \"MONGO\"\n" );			// ==>
+	}
+}
+
+//
+// Get script arguments.
+//
+elseif( $argc == 4 )
+{
+	$engine = $argv[ 1 ];
+	switch( kENGINE )
+	{
+		case "MONGO":
+		case "ARANGO":
+			break;
+
+		default:
+			exit( "The database engine can be \"ARANGO\" or \"MONGO\"\n" );			// ==>
+	}
+	$database_name = $argv[ 2 ];
+	$datasource_name = $argv[ 3 ];
+}
+
+//
+// Check script arguments.
+//
+else
+	exit( "Usage: php -f InitDataDictionary.php "
+		 ."<engine> <database_name> <data_source_name>\n" );						// ==>
 
 //
 // Inform.
 //
 echo( "********************************************************************************\n" );
-echo( "* Database engine:    " . kENGINE . "\n" );
-echo( "* Data source:        $dsn\n" );
-echo( "* Database name:      " . kDB . "\n" );
+echo( "* Database engine:    $engine\n" );
+echo( "* Data source:        $datasource_name\n" );
+echo( "* Database name:      $database_name\n" );
 echo( "********************************************************************************\n" );
 
 //
 // Instantiate data source.
 //
-switch( kENGINE )
+switch( $engine )
 {
 	case "MONGO":
-		$server = new \Milko\PHPLib\MongoDB\DataServer( $dsn );
+		$server = new \Milko\PHPLib\MongoDB\DataServer( $datasource_name );
 		break;
 
 	case "ARANGO":
-		$server = new \Milko\PHPLib\ArangoDB\DataServer( $dsn );
+		$server = new \Milko\PHPLib\ArangoDB\DataServer( $datasource_name );
 		break;
 }
 
@@ -106,13 +177,13 @@ switch( kENGINE )
 //
 $database =
 	$server->RetrieveDatabase(
-		kDB,
+		$database_name,
 		\Milko\PHPLib\Server::kFLAG_CREATE | \Milko\PHPLib\Server::kFLAG_CONNECT );
 
 //
 // Instantiate terms collection.
 //
-$collection = $database->RetrieveCollection( $terms_name, \Milko\PHPLib\Server::kFLAG_CREATE );
+$collection = $database->RetrieveTerms( \Milko\PHPLib\Server::kFLAG_CREATE );
 echo( "* Terms collection:   $collection\n" );
 echo( "********************************************************************************\n" );
 

@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -178,6 +178,55 @@ echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
 print_r( $document->getArrayCopy() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Generate a global identifier by namespace key.
+//
+echo( "Generate a global identifier by namespace key:\n" );
+if( kENGINE == "MONGO" )
+{
+	echo( '\Milko\PHPLib\MongoDB\Collection::GetHandleComponents( $handle, $col, $key );' . "\n" );
+	\Milko\PHPLib\MongoDB\Collection::GetHandleComponents( $handle, $col, $key );
+}
+elseif( kENGINE == "ARANGO" )
+{
+	echo( '\Milko\PHPLib\ArangoDB\Collection::GetHandleComponents( $handle, $col, $key );' . "\n" );
+	\Milko\PHPLib\ArangoDB\Collection::GetHandleComponents( $handle, $col, $key );
+}
+var_dump( $col );
+var_dump( $key );
+echo( '$result = Term::MakeGID( "ID", $key, $collection );' . "\n" );
+$result = Term::MakeGID( "ID", $key, $collection );
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Generate a global identifier by namespace global identifier.
+//
+echo( "Generate a global identifier by namespace global identifier:\n" );
+echo( '$result = Term::MakeGID( "ID", "" );' . "\n" );
+$result = Term::MakeGID( "ID", "" );
+var_dump( $result );
+echo( '$result = Term::MakeGID( "ID", "ns" );' . "\n" );
+$result = Term::MakeGID( "ID", "ns" );
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Get a term by global identifier.
+//
+echo( "Get a term by global identifier:\n" );
+echo( '$result = Term::GetByGID( $database, ":namespace:code" );' . "\n" );
+$result = Term::GetByGID( $database, ":namespace:code" );
+echo( "Class: " . get_class( $result ) . "\n" );
+echo( "Modified:   " . (( $result->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $result->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $result->getArrayCopy() );
 
 echo( "\n====================================================================================\n\n" );
 

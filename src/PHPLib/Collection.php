@@ -1484,11 +1484,11 @@ abstract class Collection extends Container
 
 
 
-/*=======================================================================================
- *																						*
- *							PUBLIC AGGREGATION FRAMEWORK INTERFACE						*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *							PUBLIC AGGREGATION FRAMEWORK INTERFACE						*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -1526,6 +1526,46 @@ abstract class Collection extends Container
 	 * @return array				The result set.
 	 */
 	abstract public function MapReduce( $thePipeline, $theOptions = NULL );
+
+
+
+/*=======================================================================================
+ *																						*
+ *									STATIC HANDLE INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	GetHandleComponents																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return handle components.</h4>
+	 *
+	 * This method can be used to parse and retrieve the provided handle components, it will
+	 * return the collection name and object key in the provided reference parameters.
+	 *
+	 * The method should be implemented in derived concrete classes to handle database
+	 * specific handles, in this class we assume the handle is an array of two elements, the
+	 * first is the collection name and the second is the object key.
+	 *
+	 * @param mixed					$theHandle			The object handle.
+	 * @param string			   &$theCollection		Receives collection name.
+	 * @param mixed				   &$theIdentifier		Receives object key.
+	 */
+	static function GetHandleComponents( $theHandle,
+										&$theCollection,
+										&$theIdentifier )
+	{
+		//
+		// Extract components.
+		//
+		$theCollection = $theHandle[ 0 ];
+		$theIdentifier = $theHandle[ 1 ];
+
+	} // GetHandleComponents.
 
 	
 	

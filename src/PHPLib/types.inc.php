@@ -246,5 +246,23 @@ const kTYPE_LANG_STRING = ':type:string:lang';
  */
 const kTYPE_LANG_STRINGS = ':type:string:langs';
 
+/*=======================================================================================
+ *	FUNCTIONAL TYPES																	*
+ *======================================================================================*/
+
+/**
+ * <h3>Attribute.</h3><p />
+ *
+ * This data type defines an object that functionas as an attribute.
+ */
+const kTYPE_ATTRIBUTE = ':type:attribute';
+
+/**
+ * <h3>Property.</h3><p />
+ *
+ * This data type defines an object that functionas as a property.
+ */
+const kTYPE_PROPERTY = ':type:property';
+
 
 ?>

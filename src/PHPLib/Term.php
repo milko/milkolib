@@ -591,6 +591,128 @@ class Term extends Document
 
 /*=======================================================================================
  *																						*
+ *							STATIC IDENTIFICATION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	MakeGID																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a term global identifier.</h4>
+	 *
+	 * This method will return a global identifier given a term namespace and local
+	 * identifier, the method expects the following parameters:
+	 *
+	 * <ul>
+	 * 	<li><b>$theIdentifier</b>: The term local identifier.
+	 * 	<li><b>$theNamespace</b>: The term namespace: if the next parameter is provided, it
+	 * 		means that the namespace is expressed as the namespace term key; if the next
+	 * 		parameter is omitted, it means that the namespace was provided as the namespace
+	 * 		term global identifier. The namespace is optional.
+	 * 	<li><b>$theCollection</b>: The terms collection, used only when providing the
+	 * 		namespace as a term object key, if the key is not found, the method will raise
+	 * 		an exception.
+	 * </ul>
+	 *
+	 * @param string				$theIdentifier		Local identifier.
+	 * @param string				$theNamespace		Namespace term key.
+	 * @param Collection			$theCollection		Terms collection.
+	 * @return string				Global identifier.
+	 * @throws \RuntimeException
+	 *
+	 * @uses Collection::FindByKey()
+	 * @see kTAG_NS
+	 * @see kTAG_LID
+	 * @see kTAG_GID
+	 */
+	static function MakeGID( $theIdentifier, $theNamespace = NULL, $theCollection = NULL )
+	{
+		//
+		// Handle namespace.
+		//
+		if( $theNamespace !== NULL )
+		{
+			//
+			// Handle namespace key.
+			//
+			if( $theCollection !== NULL )
+			{
+				//
+				// Get namespace term.
+				//
+				$term = $theCollection->FindByKey( $theNamespace );
+				if( $term === NULL )
+					throw new \RuntimeException(
+						"Unknown term [$theNamespace]." );						// !@! ==>
+
+				//
+				// Set namespace global identifier.
+				//
+				$theNamespace = $term->offsetGet( kTAG_GID );
+			}
+
+			return $theNamespace . kTOKEN_NAMESPACE_SEPARATOR . $theIdentifier;		// ==>
+
+		} // Provided namespace.
+
+		return $theIdentifier;														// ==>
+
+	} // MakeGID.
+
+
+	/*===================================================================================
+	 *	GetByGID																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a term by global identifier.</h4>
+	 *
+	 * This method will return a term object given a global identifier, or <tt>NULL</tt> if
+	 * not found.
+	 *
+	 * The method expects as first parameter either the database or the terms collection,
+	 * and as second parameter the global identifier.
+	 *
+	 * @param mixed					$theCollection		Database or collection.
+	 * @param string				$theIdentifier		Global identifier.
+	 * @return Term					Term object or <tt>NULL</tt>.
+	 * @throws \RuntimeException
+	 *
+	 * @uses Collection::FindByKey()
+	 * @see kTAG_GID
+	 */
+	static function GetByGID( $theCollection, $theIdentifier )
+	{
+		//
+		// Get terms collection.
+		//
+		if( $theCollection instanceof Database )
+		{
+			$theCollection = $theCollection->RetrieveTerms();
+			if( $theCollection === NULL )
+				return NULL;														// ==>
+		}
+
+		//
+		// Get by global identifier.
+		//
+		$cursor = $theCollection->FindByKey( md5( $theIdentifier ) );
+		$cursor = $theCollection->FindByExample( [ kTAG_GID => $theIdentifier ] );
+		if( count( $cursor ) )
+			return $cursor[ 0 ];													// ==>
+
+		return NULL;																// ==>
+
+	} // GetByGID.
+
+
+
+/*=======================================================================================
+ *																						*
  *							PROTECTED VALIDATION INTERFACE								*
  *																						*
  *======================================================================================*/
@@ -769,7 +891,7 @@ class Term extends Document
 	 * @throws \RuntimeException
 	 *
 	 * @uses Collection()
-	 * @uses makeTermGID()
+	 * @uses MakeGID()
 	 * @uses Collection::FindKey()
 	 * @see kTAG_NS
 	 * @see kTAG_LID
@@ -810,9 +932,9 @@ class Term extends Document
 			//
 			$this->offsetSet(
 				kTAG_GID,
-				$this->makeTermGID(
-					$this->mNamespaceGID,
-					$this->offsetGet( kTAG_LID ) ) );
+				self::MakeGID(
+					$this->offsetGet( kTAG_LID ),
+					$this->mNamespaceGID ) );
 
 		} // Namespace changed.
 
@@ -840,7 +962,7 @@ class Term extends Document
 	 * @param string				$theIdentifier		Term local identifier.
 	 * @throws \InvalidArgumentException
 	 *
-	 * @uses makeTermGID()
+	 * @uses MakeGID()
 	 * @see kTAG_LID
 	 * @see kTAG_GID
 	 */
@@ -854,7 +976,7 @@ class Term extends Document
 			//
 			// Check identifier.
 			//
-			if( ! strlen( $theIdentifier ) )
+			if( $theIdentifier === NULL )
 				throw new \InvalidArgumentException(
 					"Cannot reset term local identifier." );					// !@! ==>
 
@@ -863,43 +985,13 @@ class Term extends Document
 			//
 			$this->offsetSet(
 				kTAG_GID,
-				$this->makeTermGID(
-					$this->mNamespaceGID,
-					(string)$theIdentifier ) );
+				self::MakeGID(
+					$theIdentifier,
+					$this->mNamespaceGID ) );
 
 		} // Identifier changed.
 
 	} // setTermIdentifier.
-
-
-	/*===================================================================================
-	 *	makeTermGID																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Compute terrm global identifier.</h4>
-	 *
-	 * This method will compute the current term's global identifier ({@link kTAG_GID})
-	 * using the cached namespace global identifier ({@link mNamespaceGID}) and the current
-	 * term's local identifier ({@link kTAG_LID}), and return the value.
-	 *
-	 * @param string				$theNamespace		Term namespace global identifier.
-	 * @param string				$theIdentifier		Term local identifier.
-	 * @return string				Term global identifier.
-	 *
-	 * @see kTOKEN_NAMESPACE_SEPARATOR
-	 */
-	protected function makeTermGID( $theNamespace, $theIdentifier )
-	{
-		//
-		// Handle namespace.
-		//
-		if( strlen( $theNamespace ) )
-			return $theNamespace . kTOKEN_NAMESPACE_SEPARATOR . $theIdentifier;		// ==>
-
-		return $theIdentifier;														// ==>
-
-	} // makeTermGID.
 
 
 

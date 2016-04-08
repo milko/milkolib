@@ -118,5 +118,28 @@ const kKIND_SUMMARY = ':kind:summary';
  */
 const kKIND_LOOKUP = ':kind:lookup';
 
+/*=======================================================================================
+ *	VERTEX TYPES																		*
+ *======================================================================================*/
+
+/**
+ * <h3>Root.</h3><p />
+ *
+ * An entry point of a structure. Items of this kind represents a door or entry point of a
+ * structure, they can be either the element from which the whole structure originates from,
+ * or an element that represents a specific thematic entry point.
+ */
+const kKIND_ROOT = ':kind:root';
+
+/**
+ * <h3>Type.</h3><p />
+ *
+ * A type or definition. Items of this kind are used as a type definition or to define
+ * controlled vocabularies, they are used as proxies to the structure they hold. When
+ * traversing an enumerated set tree, elements of this kind will not be either displayed or
+ * made available for setting.
+ */
+const kKIND_TYPE = ':kind:type';
+
 
 ?>
