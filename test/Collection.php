@@ -58,7 +58,7 @@ elseif( kENGINE == "ARANGO" )
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
 $database = $server->GetDatabase( "test_milkolib" );
 echo( '$test = $database->RetrieveCollection( "test_collection" );' . "\n" );
-$test = $database->RetrieveCollection( "test_collection" );
+$test = $database->GetCollection( "test_collection" );
 echo( '$test->Truncate();' . "\n" );
 $test->Truncate();
 

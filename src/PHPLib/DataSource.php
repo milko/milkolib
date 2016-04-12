@@ -267,9 +267,9 @@ class Datasource extends Container
 	 *
 	 * @return string
 	 *
-	 * @uses toURL()
+	 * @uses URL()
 	 */
-	public function __toString()								{	return $this->toURL();	}
+	public function __toString()								{	return $this->URL();	}
 
 
 
@@ -675,7 +675,7 @@ class Datasource extends Container
 
 /*=======================================================================================
  *																						*
- *								PROTECTED URI UTILITIES									*
+ *								PUBLIC URI UTILITIES									*
  *																						*
  *======================================================================================*/
 
@@ -701,11 +701,11 @@ class Datasource extends Container
 	 *
 	 * @example
 	 * <code>
-	 * $test = $dsn->toURL();										// Return full URL.<br/>
-	 * $test = $dsn->toURL( [ Milko\PHPLib\Datasource::PATH ] );	// Return URL without path.
+	 * $test = $dsn->URL();										// Return full URL.
+	 * $test = $dsn->URL( [ Milko\PHPLib\Datasource::PATH ] );	// Return URL without path.
 	 * </code>
 	 */
-	protected function toURL( $theExcluded = [] )
+	public function URL( $theExcluded = [] )
 	{
 		//
 		// Init local storage.
@@ -836,7 +836,7 @@ class Datasource extends Container
 
 		return $dsn;																// ==>
 
-	} // toURL.
+	} // URL.
 
 
 

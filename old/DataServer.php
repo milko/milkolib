@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DataServer.php
+ * Server.php
  *
  * This file contains the definition of the {@link DataServer} class.
  */
@@ -13,7 +13,7 @@ use Milko\PHPLib\Database;
 
 /*=======================================================================================
  *																						*
- *									DataServer.php										*
+ *									Server.php										*
  *																						*
  *======================================================================================*/
 
@@ -70,7 +70,7 @@ use Milko\PHPLib\Database;
  *	@version	1.00
  *	@since		07/02/2016
  *
- *	@example	../../test/DataServer.php
+ *	@example	../../test/Server.php
  *	@example
  * $server = new Milko\PHPLib\DataServer( 'protocol://user:pass@host:9090' );<br/>
  * $server->Connect();<br/>

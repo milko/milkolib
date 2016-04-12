@@ -8,9 +8,8 @@
 
 namespace Milko\PHPLib;
 
-use Milko\PHPLib\Container;
-use Milko\PHPLib\Datasource;
 use Milko\PHPLib\Database;
+use Milko\PHPLib\Datasource;
 
 /*=======================================================================================
  *																						*
@@ -543,13 +542,32 @@ abstract class Server extends Container
 		// Assert value change and connection.
 		//
 		if( $this->isConnected()
-		 && ($theValue !== NULL) )
+			&& ($theValue !== NULL) )
 			throw new \RuntimeException(
 				"Cannot modify fragment while server is connected." );			// !@! ==>
 
 		return $this->mDatasource->Fragment( $theValue );							// ==>
 
 	} // Fragment.
+
+
+	/*===================================================================================
+	 *	URL																				*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return server URL.</h4><p />
+	 *
+	 * We use the {@link Datasource::URL()} method here.
+	 *
+	 * @param array				$theExcluded		List of excluded offsets.
+	 * @return string
+	 */
+	public function URL( $theExcluded = [] )
+	{
+		return $this->mDatasource->URL( $theExcluded );								// ==>
+
+	} // URL.
 
 
 
@@ -804,14 +822,9 @@ abstract class Server extends Container
 			return $database;														// ==>
 
 		//
-		// Normalise database name.
-		//
-		$theDatabase = (string)$theDatabase;
-
-		//
 		// Create and register database.
 		//
-		$database = $this->databaseCreate( $theDatabase, $theOptions );
+		$database = $this->databaseCreate( (string)$theDatabase, $theOptions );
 		$this->offsetSet( $theDatabase, $database );
 
 		return $database;															// ==>
@@ -854,11 +867,6 @@ abstract class Server extends Container
 		$this->isConnected( self::kFLAG_CONNECT );
 
 		//
-		// Normalise database name.
-		//
-		$theDatabase = (string)$theDatabase;
-
-		//
 		// Match working databases.
 		//
 		if( $this->offsetExists( $theDatabase ) )
@@ -867,7 +875,7 @@ abstract class Server extends Container
 		//
 		// Check if database exists.
 		//
-		$database = $this->databaseRetrieve( $theDatabase );
+		$database = $this->databaseRetrieve( (string)$theDatabase );
 		if( $database instanceof Database )
 		{
 			//
@@ -1049,7 +1057,9 @@ abstract class Server extends Container
 	 * The first parameter represents the database name, the second parameter represents a
 	 * set of native options provided to the driver when creating the database.
 	 *
-	 * This method must be implemented by derived concrete classes.
+	 * The main duty of this method is to instantiate the correct {@link Database} derived
+	 * instance according to the current server native type, for this reason this method
+	 * must be implemented by derived concrete classes.
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param array					$theOptions			Database native options.
@@ -1065,28 +1075,34 @@ abstract class Server extends Container
 	/**
 	 * <h4>Return a database object.</h4><p />
 	 *
-	 * This method should return a {@link Database} object corresponding to the provided
+	 * This method will return a {@link Database} object corresponding to the provided
 	 * name, or <tt>NULL</tt> if the provided name does not correspond to any database in
 	 * the server.
+	 *
+	 * The first parameter represents the database name, the second parameter represents a
+	 * set of native options provided to the driver when creating the database.
 	 *
 	 * The method assumes that the server is connected, it is the responsibility of the
 	 * caller to ensure this.
 	 *
-	 * This method exists to allow instantiating the relevant derived concrete class.
-	 *
-	 * The provided parameter represents a set of native options provided to the driver for
-	 * performing the operation: if needed, in derived concrete classes you should define
-	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-	 * method, this will guarantee that the options will always be used when performing this
-	 * operation.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param array					$theOptions			Database native options.
 	 * @return Database				Database object or <tt>NULL</tt> if not found.
+	 *
+	 * @uses databaseList()
+	 * @uses databaseCreate()
 	 */
-	abstract protected function databaseRetrieve( $theDatabase, $theOptions = NULL );
+	protected function databaseRetrieve( $theDatabase, $theOptions = NULL )
+	{
+		//
+		// Check if database exists.
+		//
+		if( in_array( $theDatabase, $this->databaseList() ) )
+			return $this->databaseCreate( $theDatabase );							// ==>
+
+		return NULL;																// ==>
+
+	} // databaseRetrieve.
 
 
 	/*===================================================================================

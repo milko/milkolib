@@ -9,6 +9,7 @@
 namespace Milko\PHPLib\ArangoDB;
 
 use Milko\PHPLib\Server;
+
 use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Collection as ArangoCollection;
 use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
@@ -70,60 +71,27 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>Drop the current database.</h4>
 	 *
-	 * We overload this method to first check if the database exists, if that is the case,
-	 * we call the native object's method to delete it.
+	 * We overload this method to use the {@link triagens\ArangoDb\Database::delete()}
+	 * method.
 	 *
 	 * The options parameter is ignored here.
 	 *
-	 * @param string				$theCollection		Collection name.
-	 * @param string				$theFlags			Flags bitfield.
-	 * @param array					$theOptions			Database native options.
-	 * @return boolean				<tt>TRUE</tt> dropped, <tt>FALSE</tt> not found.
+	 * @param mixed					$theOptions			Database native options.
 	 *
-	 * @uses Server()
 	 * @uses databaseName()
+	 * @uses Server::isConnected()
 	 * @uses triagens\ArangoDb\Database::delete()
 	 */
 	public function Drop( $theOptions = NULL )
 	{
 		//
-		// Check if database exists.
+		// Assert connection.
 		//
-		if( in_array( $this->databaseName(), $this->Server()->ListDatabases() ) )
-			ArangoDatabase::delete( $this->Server()->Connection(), $this->databaseName() );
+		$this->mServer->isConnected( Server::kFLAG_CONNECT );
+
+		ArangoDatabase::delete( $this->mServer->Connection(), $this->databaseName() );
 
 	} // Drop.
-
-
-
-/*=======================================================================================
- *																						*
- *							PUBLIC COLLECTION MANAGEMENT INTERFACE						*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	RetrieveTerms																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return the terms collection object.</h4>
-	 *
-	 * We implement this method to use the {@link kTAG_ARANGO_TERMS} collection name.
-	 *
-	 * @param string				$theFlags			Flags bitfield.
-	 * @param array					$theOptions			Collection native options.
-	 * @return Collection			Collection object or <tt>NULL</tt>.
-	 */
-	public function RetrieveTerms( $theFlags = Server::kFLAG_DEFAULT, $theOptions = NULL )
-	{
-		return
-			$this->RetrieveCollection(
-				kTAG_ARANGO_TERMS, $theFlags, $theOptions );						// ==>
-
-	} // RetrieveTerms.
 
 
 
@@ -136,7 +104,7 @@ class Database extends \Milko\PHPLib\Database
 
 
 	/*===================================================================================
-	 *	databaseNew																		*
+	 *	databaseCreate																	*
 	 *==================================================================================*/
 
 	/**
@@ -153,22 +121,21 @@ class Database extends \Milko\PHPLib\Database
 	 * @param array					$theOptions			Native driver options.
 	 * @return ArangoConnection		Native database object.
 	 *
-	 * @uses Server()
-	 * @uses ArangoDatabase::create()
-	 *
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_DATABASE
+	 * @uses Server::ListDatabases()
+	 * @uses triagens\ArangoDb\Database::create()
+	 * @uses triagens\ArangoDb\Connection::setDatabase()
 	 */
-	protected function databaseNew( $theDatabase, $theOptions = NULL )
+	protected function databaseCreate( $theDatabase, $theOptions = NULL )
 	{
 		//
-		// Create connection.
+		// Get server connection options.
 		//
-		$connection = new ArangoConnection( $this->Server()->GetOptions() );
+		$connection = new ArangoConnection( $this->mServer->GetOptions() );
 
 		//
 		// Create database.
 		//
-		if( ! in_array( $theDatabase, $this->Server()->ListDatabases() ) )
+		if( ! in_array( $theDatabase, $this->mServer->ListDatabases() ) )
 			ArangoDatabase::create( $connection, $theDatabase );
 
 		//
@@ -178,7 +145,7 @@ class Database extends \Milko\PHPLib\Database
 
 		return $connection;															// ==>
 
-	} // databaseNew.
+	} // databaseCreate.
 
 
 	/*===================================================================================
@@ -188,20 +155,19 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>Return the database name.</h4>
 	 *
-	 * We overload this method to use the native object.
+	 * We overload this method to use the native database method.
 	 *
 	 * The options parameter is ignored here.
 	 *
 	 * @param array					$theOptions			Native driver options.
 	 * @return string				The database name.
 	 *
-	 * @uses Connection()
 	 * @uses triagens\ArangoDb\Database::getInfo()
 	 */
 	protected function databaseName( $theOptions = NULL )
 	{
 		return
-			ArangoDatabase::getInfo( $this->Connection() )
+			ArangoDatabase::getInfo( $this->mConnection )
 				[ 'result' ][ 'name' ];												// ==>
 
 	} // databaseName.
@@ -217,103 +183,46 @@ class Database extends \Milko\PHPLib\Database
 
 
 	/*===================================================================================
-	 *	collectionList																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>List server databases.</h4>
-	 *
-	 * We overload this method to instantiate a collection handler from which we get the
-	 * collection names.
-	 *
-	 * We only consider the non system collection names in the returned value.
-	 *
-	 * The options parameter is ignored here.
-	 *
-	 * @param array					$theOptions			Collection native options.
-	 * @return array				List of database collection names.
-	 *
-	 * @uses Connection()
-	 * @uses triagens\ArangoDb\CollectionHandler::getAllCollections()
-	 */
-	protected function collectionList( $theOptions )
-	{
-		//
-		// Normalise options.
-		//
-		if( $theOptions === NULL )
-			$theOptions = [];
-
-		//
-		// Get collection handler.
-		//
-		$collectionHandler = new ArangoCollectionHandler( $this->Connection() );
-
-		return array_keys(
-			$collectionHandler->getAllCollections( ['excludeSystem' => TRUE] ) );	// ==>
-
-	} // collectionList.
-
-
-	/*===================================================================================
 	 *	collectionCreate																*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Create collection.</h4>
 	 *
-	 * We overload this method to instantiate a ArangoDB version of the {@link Collection}
-	 * class or of the {@link Relations} class if the provided collection type is
-	 * <tt>3</tt>.
+	 * We overload this method to instantiate the correct version of the {@link Collection}
+	 * class according to the {@link kTOKEN_OPT_COLLECTION_TYPE} options parameter.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param array					$theOptions			Collection native options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object.
 	 * @throws \InvalidArgumentException
 	 */
-	protected function collectionCreate( $theCollection, $theOptions = NULL )
+	protected function collectionCreate( $theCollection, array $theOptions )
 	{
 		//
-		// Normalise options.
+		// Parse collection type.
 		//
-		if( $theOptions === NULL )
-			$theOptions = [];
-		elseif( array_key_exists( kTOKEN_OPT_COLLECTION_TYPE, $theOptions ) )
+		switch( $tmp = $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] )
 		{
-			switch( $tmp = $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] )
-			{
-				case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
-					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
-					$theOptions[ "type" ] = ArangoCollection::TYPE_EDGE;
-					break;
+			//
+			// Documents collection.
+			//
+			case kTOKEN_OPT_COLLECTION_TYPE_DOC:
+				unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
+				$theOptions[ "type" ] = ArangoCollection::TYPE_DOCUMENT;
+				return new Collection( $this, $theCollection, $theOptions );		// ==>
 
-				case kTOKEN_OPT_COLLECTION_TYPE_DOC:
-					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
-					$theOptions[ "type" ] = ArangoCollection::TYPE_DOCUMENT;
-					break;
-
-				default:
-					throw new \InvalidArgumentException (
-						"Invalid collection type [$tmp]." );					// !@! ==>
-			}
+			//
+			// Edges collection.
+			//
+			case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
+				unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
+				$theOptions[ "type" ] = ArangoCollection::TYPE_EDGE;
+				return new Edges( $this, $theCollection, $theOptions );				// ==>
 		}
 
-		//
-		// Handle collection tyoe.
-		//
-		if( array_key_exists( "type", $theOptions ) )
-		{
-			switch( $theOptions[ "type" ] )
-			{
-				case ArangoCollection::TYPE_EDGE:
-					return new Edges( $this, $theCollection, $theOptions );		// ==>
-
-				case ArangoCollection::TYPE_DOCUMENT:
-					return new Collection( $this, $theCollection, $theOptions );	// ==>
-			}
-		}
-
-		return new Collection( $this, $theCollection, $theOptions );				// ==>
+		throw new \InvalidArgumentException (
+			"Invalid collection type [$tmp]." );								// !@! ==>
 
 	} // collectionCreate.
 
@@ -325,59 +234,64 @@ class Database extends \Milko\PHPLib\Database
 	/**
 	 * <h4>Return a collection object.</h4>
 	 *
-	 * We overload this method to check whether the collection exists and to instantiate a
-	 * ArangoDB version of the {@link Collection} class.
+	 * We overload this method by checking whether the collection exists and call the
+	 * {@link collectionCreate()} method to return the correct collection type.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param array					$theOptions			Collection native options.
+	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
+	 *
+	 * @uses collectionList()
+	 * @uses collectionCreate()
 	 */
-	protected function collectionRetrieve( $theCollection, $theOptions = NULL )
+	protected function collectionRetrieve( $theCollection, array $theOptions )
 	{
 		//
-		// Normalise options.
+		// Check existing collections.
 		//
-		if( $theOptions === NULL )
-			$theOptions = [];
-
-		//
-		// Check working collections.
-		//
-		$collection = $this->offsetGet( $theCollection );
-		if( $collection !== NULL )
-		{
-			//
-			// Assert edge collection.
-			//
-			if( array_key_exists( kTOKEN_OPT_COLLECTION_TYPE, $theOptions ) )
-			{
-				//
-				// Decode collection type.
-				//
-				switch( $tmp = $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] )
-				{
-					case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
-						if( $collection->Connection()->getType()
-							!= ArangoCollection::TYPE_EDGE )
-							throw new \RuntimeException(
-								"Expecting an edges collection." );				// !@! ==>
-						break;
-
-					case kTOKEN_OPT_COLLECTION_TYPE_DOC:
-						if( $collection->Connection()->getType()
-							!= ArangoCollection::TYPE_DOCUMENT )
-							throw new \RuntimeException(
-								"Expecting a documents collection." );			// !@! ==>
-						break;
-				}
-			}
-			
-			return $collection;														// ==>
-		}
+		if( in_array( (string)$theCollection, $this->collectionList() ) )
+			return $this->collectionCreate( $theCollection, $theOptions );			// ==>
 
 		return NULL;																// ==>
 
 	} // collectionRetrieve.
+
+
+	/*===================================================================================
+	 *	collectionList																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>List database collections.</h4>
+	 *
+	 * This method should return the list of database collection names.
+	 *
+	 * This method assumes that the server is connected, it is the responsibility of the
+	 * caller to ensure this.
+	 *
+	 * The provided parameter represents a set of native options provided to the driver for
+	 * performing the operation.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param array					$theOptions			Native driver options.
+	 * @return array				List of database collection names.
+	 *
+	 * @uses triagens\ArangoDb\CollectionHandler::getAllCollections()
+	 */
+	protected function collectionList( array $theOptions )
+	{
+		//
+		// Instantiate collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->mConnection );
+
+		return
+			array_keys(
+				$handler->getAllCollections(
+					[ 'excludeSystem' => TRUE, 'keys' => 'names' ] ) );				// ==>
+
+	} // collectionList.
 
 
 } // class Database.

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DataServer.php
+ * Server.php
  *
  * This file contains the definition of the MongoDB {@link DataServer} class.
  */
@@ -12,7 +12,7 @@ use \MongoDB\Client;
 
 /*=======================================================================================
  *																						*
- *									DataServer.php										*
+ *										Server.php										*
  *																						*
  *======================================================================================*/
 
@@ -23,22 +23,16 @@ use \MongoDB\Client;
  * implements the inherited virtual interface to provide an object that can manage MongoDB
  * databases, collections and documents.
  *
+ * This class makes use of the {@link https://github.com/mongodb/mongo-php-library.git} PHP
+ * library to communicate with the server.
+ *
  *	@package	Data
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
  *	@since		18/02/2016
- *
- *	@example	../../test/MongoDataServer.php
- *	@example
- * $server = new Milko\PHPLib\DataServer();<br/>
- * $databases = $server->ListDatabases( kFLAG_CONNECT );<br/>
- * $database = $server->RetrieveDatabase( $databases[ 0 ] );<br/>
- * // Work with that database...<br/>
- * $server->DatabaseDrop( $databases[ 0 ] );<br/>
- * // Dropped the database.
  */
-class DataServer extends \Milko\PHPLib\DataServer
+class Server extends \Milko\PHPLib\Server
 {
 
 
@@ -60,14 +54,13 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 *
 	 * We override the constructor to provide a default connection URL.
 	 *
-	 * @param string				$theConnection		Data source name.
-	 *
-	 * @see kMONGO_OPTS_CLIENT_DEFAULT
+	 * @param string			$theConnection		Data source name.
+	 * @param mixed				$theOptions			Server connection options.
 	 *
 	 * @example
 	 * $dsn = new DataSource( 'mongodb://user:pass@host:27017/database/collection' );
 	 */
-	public function __construct( $theConnection = NULL )
+	public function __construct( $theConnection = NULL, $theOptions = NULL )
 	{
 		//
 		// Init local storage.
@@ -78,7 +71,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 		//
 		// Call parent constructor.
 		//
-		parent::__construct( $theConnection );
+		parent::__construct( $theConnection, $theOptions );
 
 	} // Constructor.
 
@@ -117,7 +110,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 			$theOptions = [];
 		
 		return new Client(
-			$this->toURL( [ \Milko\PHPLib\Datasource::PATH ] ),
+			$this->URL( [ \Milko\PHPLib\Datasource::PATH ] ),
 			$uri_opts,
 			$theOptions );															// ==>
 
@@ -143,6 +136,34 @@ class DataServer extends \Milko\PHPLib\DataServer
  *																						*
  *======================================================================================*/
 
+
+
+	/*===================================================================================
+	 *	databaseCreate																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create database.</h4>
+	 *
+	 * In this class we instantiate a {@link Database} object.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param array					$theOptions			Database native options.
+	 * @return Database				Database object.
+	 */
+	protected function databaseCreate( $theDatabase, $theOptions = NULL )
+	{
+		//
+		// Init local storage.
+		//
+		if( $theOptions === NULL )
+			$theOptions = [];
+
+		return
+			new \Milko\PHPLib\MongoDB\Database(
+				$this, $theDatabase, $theOptions );									// ==>
+
+	} // databaseCreate.
 
 
 	/*===================================================================================
@@ -173,77 +194,13 @@ class DataServer extends \Milko\PHPLib\DataServer
 		//
 		// Ask client for list.
 		//
-		$list = $this->Connection()->listDatabases( $theOptions );
+		$list = $this->mConnection->listDatabases( $theOptions );
 		foreach( $list as $element )
 			$databases[] = $element->getName();
 
 		return $databases;															// ==>
 
 	} // databaseList.
-
-
-	/*===================================================================================
-	 *	databaseCreate																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Create database.</h4>
-	 *
-	 * In this class we instantiate a {@link Database} object.
-	 *
-	 * @param string				$theDatabase		Database name.
-	 * @param array					$theOptions			Database native options.
-	 * @return Database				Database object.
-	 */
-	protected function databaseCreate( $theDatabase, $theOptions = NULL )
-	{
-		//
-		// Init local storage.
-		//
-		if( $theOptions === NULL )
-			$theOptions = [];
-
-		return new Database( $this, $theDatabase, $theOptions );					// ==>
-
-	} // databaseCreate.
-
-
-	/*===================================================================================
-	 *	databaseRetrieve																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a database object.</h4>
-	 *
-	 * In this class we first check whether the database exists in the server, if that is
-	 * the case, we instantiate a {@link Database} object, if not, we return <tt>NULL</tt>.
-	 *
-	 * @param string				$theDatabase		Database name.
-	 * @param array					$theOptions			Database native options.
-	 * @return Database				Database object or <tt>NULL</tt> if not found.
-	 *
-	 * @uses databaseList()
-	 */
-	protected function databaseRetrieve( $theDatabase, $theOptions = NULL )
-	{
-		//
-		// Check if database exists.
-		//
-		if( in_array( $theDatabase, $this->databaseList() ) )
-		{
-			//
-			// Init local storage.
-			//
-			if( $theOptions === NULL )
-				$theOptions = [];
-			
-			return new Database( $this, $theDatabase, $theOptions );				// ==>
-		
-		} // Among server databases.
-
-		return NULL;																// ==>
-
-	} // databaseRetrieve.
 
 
 

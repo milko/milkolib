@@ -60,7 +60,7 @@ class test_Database extends Milko\PHPLib\Database
 	protected function newDatabase( $theDatabase, $theOptions )	{
 		return (string)$theDatabase;	}
 	protected function databaseName() {
-		return $this->mNativeObject;	}
+		return $this->mConnection;	}
 	protected function collectionList() {
 		return array_merge( ["cl1", "cl2", "cl3" ], $this->WorkingCollections() );	}
 	protected function collectionCreate( $theCollection, $theOptions ) {
@@ -131,7 +131,7 @@ echo( "\n" );
 //
 echo( "Instantiate collection from database:\n" );
 echo( '$test = $db->RetrieveCollection( "pippo" );' . "\n" );
-$test = $db->RetrieveCollection( "pippo" );
+$test = $db->GetCollection( "pippo" );
 echo( '$name = (string)$test;' . "\n" );
 $name = (string)$test;
 echo( "$name\n" );

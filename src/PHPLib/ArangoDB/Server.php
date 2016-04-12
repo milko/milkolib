@@ -1,63 +1,51 @@
 <?php
 
 /**
- * DataServer.php
+ * Server.php
  *
- * This file contains the definition of the ArangoDB {@link DataServer} class.
+ * This file contains the definition of the ArangoDB {@link Server} class.
  */
 
 namespace Milko\PHPLib\ArangoDB;
 
+use \Milko\PHPLib\Server;
+
 use triagens\ArangoDb\Database as ArangoDatabase;
-use triagens\ArangoDb\Collection as ArangoCollection;
-use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
-use triagens\ArangoDb\Endpoint as ArangoEndpoint;
 use triagens\ArangoDb\Connection as ArangoConnection;
 use triagens\ArangoDb\ConnectionOptions as ArangoConnectionOptions;
-use triagens\ArangoDb\DocumentHandler as ArangoDocumentHandler;
-use triagens\ArangoDb\Document as ArangoDocument;
-use triagens\ArangoDb\Exception as ArangoException;
-use triagens\ArangoDb\Export as ArangoExport;
-use triagens\ArangoDb\ConnectException as ArangoConnectException;
-use triagens\ArangoDb\ClientException as ArangoClientException;
-use triagens\ArangoDb\ServerException as ArangoServerException;
-use triagens\ArangoDb\Statement as ArangoStatement;
 use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
 
 /*=======================================================================================
  *																						*
- *									DataServer.php										*
+ *										Server.php										*
  *																						*
  *======================================================================================*/
 
 /**
- * <h4>ArangoDB data server object.</h4>
+ * <h4>ArangoDB server object.</h4>
  *
  * This <em>concrete</em> class is the implementation of a ArangoDB data server, it
  * implements the inherited virtual interface to provide an object that can manage ArangoDB
- * databases, collections and documents.
+ * database.
  *
  * This class makes use of the {@link https://github.com/arangodb/arangodb-php.git} PHP
  * library to communicate with the server. This class will store a connection object that
  * has no defined database, when creating {@link Database} objects, this class will create
  * a connection with the same parameters and a defined database name.
  *
+ * The class adds the following public methods:
+ *
+ * <ul>
+ * 	<li><b>{@link GetOptions()}</b>: Return the native connection options.
+ * </ul>
+ *
  *	@package	Data
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
  *	@since		21/02/2016
- *
- *	@example	../../test/ArangoDataServer.php
- *	@example
- * $server = new Milko\PHPLib\DataServer();<br/>
- * $databases = $server->ListDatabases( kFLAG_CONNECT );<br/>
- * $database = $server->RetrieveDatabase( $databases[ 0 ] );<br/>
- * // Work with that database...<br/>
- * $server->DatabaseDrop( $databases[ 0 ] );<br/>
- * // Dropped the database.
  */
-class DataServer extends \Milko\PHPLib\DataServer
+class Server extends \Milko\PHPLib\Server
 {
 
 
@@ -77,18 +65,19 @@ class DataServer extends \Milko\PHPLib\DataServer
 	/**
 	 * <h4>Instantiate class.</h4>
 	 *
-	 * We override the constructor to provide a default connection URL.
+	 * We override the constructor to provide a default connection URL
+	 * ({@link kARANGO_OPTS_CLIENT_DEFAULT}).
 	 *
-	 * @param string				$theConnection		Data source name.
-	 *
-	 * @uses defaultConnectionOptions()
-	 *
-	 * @see kARANGO_OPTS_CLIENT_DEFAULT
+	 * @param string			$theConnection		Data source name.
+	 * @param mixed				$theOptions			Server connection options.
 	 *
 	 * @example
+	 * <code>
+	 * $dsn = new DataSource();
 	 * $dsn = new DataSource( 'tcp://127.0.0.1:8529/_system/test_collection' );
+	 * </code>
 	 */
-	public function __construct( $theConnection = NULL )
+	public function __construct( $theConnection = NULL, $theOptions = NULL )
 	{
 		//
 		// Init local storage.
@@ -99,17 +88,17 @@ class DataServer extends \Milko\PHPLib\DataServer
 		//
 		// Call parent constructor.
 		//
-		parent::__construct( $theConnection );
+		parent::__construct( $theConnection, $theOptions );
 
 	} // Constructor.
 
 
 
 /*=======================================================================================
-*																						*
-*								PUBLIC OPTIONS INTERFACE								*
-*																						*
-*======================================================================================*/
+ *																						*
+ *								PUBLIC OPTIONS INTERFACE								*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -130,16 +119,6 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * @uses Port()
 	 * @uses User()
 	 * @uses Password()
-	 *
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_ENDPOINT
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_AUTH_TYPE
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_AUTH_USER
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_AUTH_PASSWD
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_CONNECTION
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_TIMEOUT
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_RECONNECT
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_CREATE
-	 * @see triagens\ArangoDb\ConnectionOptions::OPTION_UPDATE_POLICY
 	 */
 	public function GetOptions()
 	{
@@ -270,14 +249,36 @@ class DataServer extends \Milko\PHPLib\DataServer
 
 
 	/*===================================================================================
+	 *	databaseCreate																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create database.</h4>
+	 *
+	 * We overload this method to return a database of the correct type.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param array					$theOptions			Database native options.
+	 * @return Database				Database object.
+	 */
+	protected function databaseCreate( $theDatabase, $theOptions = NULL )
+	{
+		return
+			new \Milko\PHPLib\ArangoDB\Database(
+				$this, $theDatabase, $theOptions );									// ==>
+
+	} // databaseCreate.
+
+
+	/*===================================================================================
 	 *	databaseList																	*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>List server databases.</h4>
 	 *
-	 * In this class we ask the Arango client for the list of user databases and extract
-	 * their names.
+	 * In this class we ask the Arango client for the list of user databases by default and
+	 * extract their names.
 	 *
 	 * The options parameter is ignored here.
 	 *
@@ -290,59 +291,11 @@ class DataServer extends \Milko\PHPLib\DataServer
 	protected function databaseList( $theOptions = NULL )
 	{
 		return
-			ArangoDatabase::listUserDatabases
-					( $this->Connection() )[ 'result' ];							// ==>
+			ArangoDatabase::listUserDatabases(
+				$this->mConnection )
+					[ 'result' ];													// ==>
 
 	} // databaseList.
-
-
-	/*===================================================================================
-	 *	databaseCreate																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Create database.</h4>
-	 *
-	 * In this class we instantiate a {@link Database} object.
-	 *
-	 * @param string				$theDatabase		Database name.
-	 * @param array					$theOptions			Database native options.
-	 * @return Database				Database object.
-	 */
-	protected function databaseCreate( $theDatabase, $theOptions = NULL )
-	{
-		return new Database( $this, $theDatabase, $theOptions );					// ==>
-
-	} // databaseCreate.
-
-
-	/*===================================================================================
-	 *	databaseRetrieve																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a database object.</h4>
-	 *
-	 * In this class we first check whether the database exists in the server, if that is
-	 * the case, we instantiate a {@link Database} object, if not, we return <tt>NULL</tt>.
-	 *
-	 * @param string				$theDatabase		Database name.
-	 * @param array					$theOptions			Database native options.
-	 * @return Database				Database object or <tt>NULL</tt> if not found.
-	 *
-	 * @uses databaseList()
-	 */
-	protected function databaseRetrieve( $theDatabase, $theOptions = NULL )
-	{
-		//
-		// Check if database exists.
-		//
-		if( in_array( $theDatabase, $this->databaseList() ) )
-			return new Database( $this, $theDatabase, $theOptions );				// ==>
-
-		return NULL;																// ==>
-
-	} // databaseRetrieve.
 
 
 
@@ -362,12 +315,8 @@ class DataServer extends \Milko\PHPLib\DataServer
 	 * <h4>Normalise connection options.</h4>
 	 *
 	 * This method is called by the constructor to complete the provided connection options
-	 * with the default values, these values are defined in the {@link includes.inc.php}
+	 * with the default values, these values are defined in the {@link arango.local.php}
 	 * file, except for the update policy which is hard coded here to <tt>last</tt>.
-	 *
-	 * @see kARANGO_OPTS_AUTH_DEFAULT kARANGO_OPTS_PERSIST_DEFAULT
-	 * @see kARANGO_OPTS_TIMEOUT_DEFAULT kARANGO_OPTS_RECONNECT_DEFAULT
-	 * @see kARANGO_OPTS_CREATE_DEFAULT
 	 */
 	protected function defaultConnectionOptions()
 	{
@@ -417,7 +366,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 
 
 
-} // class DataServer.
+} // class Server.
 
 
 ?>

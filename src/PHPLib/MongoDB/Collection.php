@@ -337,7 +337,7 @@ class Collection extends \Milko\PHPLib\Collection
 	public function FindHandle( $theHandle )
 	{
 		return
-			$this->Database()->RetrieveCollection(
+			$this->Database()->GetCollection(
 				$theHandle[ 0 ], Server::kFLAG_ASSERT )
 				->FindKey( $theHandle[ 1 ] );										// ==>
 
@@ -928,7 +928,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses Database::RetrieveCollection()
+	 * @uses Database::GetCollection()
 	 * @uses \MongoDB\Collection::findOne()
 	 * @see kTOKEN_OPT_MANY
 	 * @see \Milko\PHPLib\Server::kFLAG_ASSERT
@@ -952,7 +952,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			$collection =
 				$this->Database()
-					->RetrieveCollection(
+					->GetCollection(
 						$handle[ 0 ],
 						\Milko\PHPLib\Server::kFLAG_ASSERT );
 

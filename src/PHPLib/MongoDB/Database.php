@@ -102,7 +102,7 @@ class Database extends \Milko\PHPLib\Database
 	public function RetrieveTerms( $theFlags = Server::kFLAG_DEFAULT, $theOptions = NULL )
 	{
 		return
-			$this->RetrieveCollection(
+			$this->GetCollection(
 				kTAG_MONGO_TERMS, $theFlags, $theOptions );							// ==>
 
 	} // RetrieveTerms.
@@ -133,7 +133,7 @@ class Database extends \Milko\PHPLib\Database
 	 * @uses Server()
 	 * @uses \MongoDB\Client::selectDatabase()
 	 */
-	protected function databaseNew( $theDatabase, $theOptions = NULL )
+	protected function databaseCreate( $theDatabase, $theOptions = NULL )
 	{
 		//
 		// Init local storage.

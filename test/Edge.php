@@ -69,7 +69,7 @@ echo( "\n" );
 //
 echo( "Instantiate nodes collection:\n" );
 echo( '$nodes = $database->RetrieveCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
-$nodes = $database->RetrieveCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );
+$nodes = $database->GetCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );
 var_dump( get_class( $nodes ) );
 echo( '$nodes->Truncate();' . "\n" );
 $nodes->Truncate();
@@ -81,7 +81,7 @@ echo( "\n" );
 //
 echo( "Instantiate predicates collection:\n" );
 echo( '$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );' . "\n" );
-$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );
+$predicates = $database->GetCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );
 var_dump( get_class( $predicates ) );
 echo( '$predicates->Truncate();' . "\n" );
 $predicates->Truncate();

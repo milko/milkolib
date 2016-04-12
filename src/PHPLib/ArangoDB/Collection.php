@@ -459,7 +459,7 @@ class Collection extends \Milko\PHPLib\Collection
 		$handle = explode( '/', $theHandle );
 
 		return
-			$this->Database()->RetrieveCollection(
+			$this->Database()->GetCollection(
 				$handle[ 0 ], Server::kFLAG_ASSERT )
 					->FindKey( $handle[ 1 ] );										// ==>
 

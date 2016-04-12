@@ -70,7 +70,7 @@ echo( "\n" );
 //
 echo( "Instantiate nodes collection:\n" );
 echo( '$nodes = $database->RetrieveCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
-$nodes = $database->RetrieveCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );
+$nodes = $database->GetCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );
 var_dump( get_class( $nodes ) );
 echo( '$nodes->Truncate();' . "\n" );
 $nodes->Truncate();

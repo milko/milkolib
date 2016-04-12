@@ -94,7 +94,7 @@ echo( "\n=======================================================================
 //
 echo( "Retrieve collection:\n" );
 echo( '$result = $test->RetrieveCollection( "test_collection" );' . "\n" );
-$result = $test->RetrieveCollection( "test_collection" );
+$result = $test->GetCollection( "test_collection" );
 echo( "$result ==> " );
 echo( ( "$result" == "test_collection" ) ? "OK\n" : "FALIED\n" );
 
@@ -105,7 +105,7 @@ echo( "\n" );
 //
 echo( "Retrieve non existing collection:\n" );
 echo( '$result = $test->RetrieveCollection( "UNKNOWN" );' . "\n" );
-$result = $test->RetrieveCollection( "UNKNOWN" );
+$result = $test->GetCollection( "UNKNOWN" );
 var_dump( $result );
 echo( "$result ==> " );
 echo( ( $result === NULL ) ? "OK\n" : "FALIED\n" );
@@ -117,7 +117,7 @@ echo( "\n=======================================================================
 //
 echo( "Create collection:\n" );
 echo( '$result = $test->RetrieveCollection( "NewCollection", \Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
-$result = $test->RetrieveCollection( "NewCollection", \Milko\PHPLib\Server::kFLAG_CREATE );
+$result = $test->GetCollection( "NewCollection", \Milko\PHPLib\Server::kFLAG_CREATE );
 echo( '$list = $test->ListCollections();' . "\n" );
 $list = $test->ListCollections();
 print_r( $list );

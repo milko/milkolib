@@ -63,7 +63,7 @@ class test_Database extends Milko\PHPLib\Database
 	protected function databaseNew( $theDatabase, $theOptions )	{
 		return (string)$theDatabase;	}
 	protected function databaseName() {
-		return $this->mNativeObject;	}
+		return $this->mConnection;	}
 	protected function collectionList( $theOptions ) {
 		return array_merge( ["cl1", "cl2", "cl3" ], $this->WorkingCollections() );	}
 	protected function collectionCreate( $theCollection, $theOptions ) {
