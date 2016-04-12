@@ -8,29 +8,19 @@
 
 namespace Milko\PHPLib\ArangoDB;
 
-use Milko\PHPLib\Server;
-
-use triagens\ArangoDb\Database as ArangoDatabase;
-use triagens\ArangoDb\Collection as ArangoCollection;
-use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
-use triagens\ArangoDb\Endpoint as ArangoEndpoint;
-use triagens\ArangoDb\Connection as ArangoConnection;
-use triagens\ArangoDb\ConnectionOptions as ArangoConnectionOptions;
-use triagens\ArangoDb\DocumentHandler as ArangoDocumentHandler;
-use triagens\ArangoDb\Document as ArangoDocument;
-use triagens\ArangoDb\Exception as ArangoException;
-use triagens\ArangoDb\Export as ArangoExport;
-use triagens\ArangoDb\ConnectException as ArangoConnectException;
-use triagens\ArangoDb\ClientException as ArangoClientException;
-use triagens\ArangoDb\ServerException as ArangoServerException;
-use triagens\ArangoDb\Statement as ArangoStatement;
-use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
-
 /*=======================================================================================
  *																						*
  *									Database.php										*
  *																						*
  *======================================================================================*/
+
+use Milko\PHPLib\Database;
+use Milko\PHPLib\ArangoDB\Server;
+
+use triagens\ArangoDb\Database as ArangoDatabase;
+use triagens\ArangoDb\Collection as ArangoCollection;
+use triagens\ArangoDb\CollectionHandler as ArangoCollectionHandler;
+use triagens\ArangoDb\Connection as ArangoConnection;
 
 /**
  * <h4>ArangoDB database object.</h4>
@@ -119,7 +109,7 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param array					$theOptions			Native driver options.
-	 * @return ArangoConnection		Native database object.
+	 * @return mixed				Native database object.
 	 *
 	 * @uses Server::ListDatabases()
 	 * @uses triagens\ArangoDb\Database::create()
@@ -225,36 +215,6 @@ class Database extends \Milko\PHPLib\Database
 			"Invalid collection type [$tmp]." );								// !@! ==>
 
 	} // collectionCreate.
-
-
-	/*===================================================================================
-	 *	collectionRetrieve																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a collection object.</h4>
-	 *
-	 * We overload this method by checking whether the collection exists and call the
-	 * {@link collectionCreate()} method to return the correct collection type.
-	 *
-	 * @param string				$theCollection		Collection name.
-	 * @param array					$theOptions			Native driver options.
-	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
-	 *
-	 * @uses collectionList()
-	 * @uses collectionCreate()
-	 */
-	protected function collectionRetrieve( $theCollection, array $theOptions )
-	{
-		//
-		// Check existing collections.
-		//
-		if( in_array( (string)$theCollection, $this->collectionList() ) )
-			return $this->collectionCreate( $theCollection, $theOptions );			// ==>
-
-		return NULL;																// ==>
-
-	} // collectionRetrieve.
 
 
 	/*===================================================================================

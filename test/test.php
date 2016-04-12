@@ -14,7 +14,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -54,7 +54,6 @@ elseif( kENGINE == "ARANGO" )
 	echo( (string)$test . ' ==> ' );
 	echo( ( "$test" == kARANGO_OPTS_CLIENT_DEFAULT ) ? "OK\n" : "FALIED\n" );
 }
-exit;
 
 echo( "\n" );
 
@@ -63,24 +62,25 @@ echo( "\n" );
 //
 if( kENGINE == "MONGO" )
 {
-	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
-	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
-	echo( '$test = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
-	$test = new \Milko\PHPLib\MongoDB\DataServer( $url );
+	echo( '$url = "mongodb://localhost:27017/test_milkolib";' . "\n" );
+	$url = "mongodb://localhost:27017/test_milkolib";
+	echo( '$test = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
+	$test = new \Milko\PHPLib\MongoDB\Server( $url );
 	echo( '$result = (string)$test;' . "\n" );
 	echo( (string)$test . " ==> " );
 	echo( ( "$test" == $url ) ? "OK\n" : "FALIED\n" );
 }
 elseif( kENGINE == "ARANGO" )
 {
-	echo( '$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n" );
-	$url = "tcp://localhost:8529/test_milkolib/test_collection";
-	echo( '$test = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
-	$test = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+	echo( '$url = "tcp://localhost:8529/test_milkolib";' . "\n" );
+	$url = "tcp://localhost:8529/test_milkolib";
+	echo( '$test = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
+	$test = new \Milko\PHPLib\ArangoDB\Server( $url );
 	echo( '$result = (string)$test;' . "\n" );
 	echo( (string)$test . " ==> " );
 	echo( ( "$test" == $url ) ? "OK\n" : "FALIED\n" );
 }
+exit;
 
 echo( "\n====================================================================================\n\n" );
 

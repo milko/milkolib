@@ -106,7 +106,7 @@ abstract class Database extends Container
 	 * $database = $server->GetDatabase( "database" );
 	 * </code>
 	 */
-	public function __construct( DataServer $theServer, $theDatabase, $theOptions = NULL )
+	public function __construct( Server $theServer, $theDatabase, $theOptions = NULL )
 	{
 		//
 		// Call parent constructor.
@@ -568,7 +568,7 @@ abstract class Database extends Container
 	/**
 	 * <h4>Return a collection object.</h4>
 	 *
-	 * This method should return a {@link Collection} object corresponding to the provided
+	 * This method will return a {@link Collection} object corresponding to the provided
 	 * name, or <tt>NULL</tt> if the provided name does not correspond to any collection in
 	 * the database.
 	 *
@@ -576,18 +576,26 @@ abstract class Database extends Container
 	 * caller to ensure this.
 	 *
 	 * The provided parameter represents a set of native options provided to the driver for
-	 * performing the operation: if needed, in derived concrete classes you should define
-	 * globally a set of options and subtitute a <tt>NULL</tt> value with them in this
-	 * method, this will guarantee that the options will always be used when performing this
-	 * operation.
-	 *
-	 * This method must be implemented by derived concrete classes.
+	 * performing the operation.
 	 *
 	 * @param string				$theCollection		Collection name.
 	 * @param array					$theOptions			Native driver options.
 	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
+	 *
+	 * @uses collectionList()
+	 * @uses collectionCreate()
 	 */
-	abstract protected function collectionRetrieve( $theCollection, array $theOptions );
+	protected function collectionRetrieve( $theCollection, array $theOptions )
+	{
+		//
+		// Check existing collections.
+		//
+		if( in_array( (string)$theCollection, $this->collectionList( $theOptions ) ) )
+			return $this->collectionCreate( $theCollection, $theOptions );			// ==>
+
+		return NULL;																// ==>
+
+	} // collectionRetrieve.
 
 
 	/*===================================================================================

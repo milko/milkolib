@@ -13,7 +13,9 @@ namespace Milko\PHPLib\MongoDB;
  *									Database.php										*
  *																						*
  *======================================================================================*/
-use Milko\PHPLib\Server;
+
+use Milko\PHPLib\Database;
+use Milko\PHPLib\MongoDB\Server;
 
 /**
  * <h4>MongoDB database object.</h4>
@@ -80,37 +82,6 @@ class Database extends \Milko\PHPLib\Database
 
 /*=======================================================================================
  *																						*
- *							PUBLIC COLLECTION MANAGEMENT INTERFACE						*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	RetrieveTerms																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return the terms collection object.</h4>
-	 *
-	 * We implement this method to use the {@link kTAG_MONGO_TERMS} collection name.
-	 *
-	 * @param string				$theFlags			Flags bitfield.
-	 * @param array					$theOptions			Collection native options.
-	 * @return Collection			Collection object or <tt>NULL</tt>.
-	 */
-	public function RetrieveTerms( $theFlags = Server::kFLAG_DEFAULT, $theOptions = NULL )
-	{
-		return
-			$this->GetCollection(
-				kTAG_MONGO_TERMS, $theFlags, $theOptions );							// ==>
-
-	} // RetrieveTerms.
-
-
-
-/*=======================================================================================
- *																						*
  *						PROTECTED DATABASE MANAGEMENT INTERFACE							*
  *																						*
  *======================================================================================*/
@@ -118,7 +89,7 @@ class Database extends \Milko\PHPLib\Database
 
 
 	/*===================================================================================
-	 *	databaseNew																		*
+	 *	databaseCreate																	*
 	 *==================================================================================*/
 
 	/**
@@ -128,9 +99,8 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param array					$theOptions			Native driver options.
-	 * @return \MongoDB\Database	Native database object.
+	 * @return mixed				Native database object.
 	 *
-	 * @uses Server()
 	 * @uses \MongoDB\Client::selectDatabase()
 	 */
 	protected function databaseCreate( $theDatabase, $theOptions = NULL )
@@ -142,7 +112,7 @@ class Database extends \Milko\PHPLib\Database
 			$theOptions = [];
 
 		return
-			$this->Server()
+			$this->mServer
 				->Connection()
 					->selectDatabase( $theDatabase, $theOptions );					// ==>
 
@@ -161,12 +131,11 @@ class Database extends \Milko\PHPLib\Database
 	 * @param array					$theOptions			Native driver options.
 	 * @return string				The database name.
 	 *
-	 * @uses Server()
 	 * @uses \MongoDB\Database::getDatabaseName()
 	 */
 	protected function databaseName( $theOptions = NULL )
 	{
-		return $this->Connection()->getDatabaseName();								// ==>
+		return $this->mConnection->getDatabaseName();								// ==>
 
 	} // databaseName.
 
@@ -178,42 +147,6 @@ class Database extends \Milko\PHPLib\Database
  *																						*
  *======================================================================================*/
 
-
-
-	/*===================================================================================
-	 *	collectionList																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>List database collections.</h4>
-	 *
-	 * We overload this method to use the native driver object, we only consider the
-	 * collection names in the returned value.
-	 *
-	 * @param array					$theOptions			Collection native options.
-	 * @return array				List of database collection names.
-	 *
-	 * @uses Connection()
-	 * @uses \MongoDB\Database::listCollections()
-	 */
-	protected function collectionList( $theOptions )
-	{
-		//
-		// Init local storage.
-		//
-		$collections = [];
-		if( $theOptions === NULL )
-			$theOptions = [];
-
-		//
-		// Ask database for list.
-		//
-		$list = $this->Connection()->listCollections( $theOptions );
-		foreach( $list as $element )
-			$collections[] = $element->getName();
-
-		return $collections;														// ==>
-	}
 
 
 	/*===================================================================================
@@ -230,68 +163,61 @@ class Database extends \Milko\PHPLib\Database
 	 * @param array					$theOptions			Collection native options.
 	 * @return Collection			Collection object.
 	 */
-	protected function collectionCreate( $theCollection, $theOptions = NULL )
+	protected function collectionCreate( $theCollection, array $theOptions )
 	{
 		//
-		// Normalise options.
+		// Parse collection type.
 		//
-		if( $theOptions === NULL )
-			$theOptions = [];
-		elseif( array_key_exists( kTOKEN_OPT_COLLECTION_TYPE, $theOptions ) )
+		switch( $tmp = $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] )
 		{
-			switch( $tmp = $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] )
-			{
-				case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
-					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
-					return new Edges( $this, $theCollection, $theOptions );		// ==>
-					break;
+			//
+			// Documents collection.
+			//
+			case kTOKEN_OPT_COLLECTION_TYPE_DOC:
+				unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
+				$theOptions[ "type" ] = ArangoCollection::TYPE_DOCUMENT;
+				return new Collection( $this, $theCollection, $theOptions );		// ==>
 
-				case kTOKEN_OPT_COLLECTION_TYPE_DOC:
-					unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
-					return new Collection( $this, $theCollection, $theOptions );	// ==>
-					break;
-
-				default:
-					throw new \InvalidArgumentException (
-						"Invalid collection type [$tmp]." );					// !@! ==>
-			}
+			//
+			// Edges collection.
+			//
+			case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
+				unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
+				$theOptions[ "type" ] = ArangoCollection::TYPE_EDGE;
+				return new Edges( $this, $theCollection, $theOptions );				// ==>
 		}
 
-		return new Collection( $this, $theCollection, $theOptions );				// ==>
+		throw new \InvalidArgumentException (
+			"Invalid collection type [$tmp]." );								// !@! ==>
 	}
 
 
 	/*===================================================================================
-	 *	collectionRetrieve																*
+	 *	collectionList																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return a collection object.</h4>
+	 * <h4>List database collections.</h4>
 	 *
-	 * We overload this method to check whether the collection exists and to instantiate a
-	 * MongoDB version of the {@link Collection} class.
+	 * We overload this method to use the native driver object, we only consider the
+	 * collection names in the returned value.
 	 *
-	 * @param string				$theCollection		Collection name.
 	 * @param array					$theOptions			Collection native options.
-	 * @return Collection			Collection object or <tt>NULL</tt> if not found.
+	 * @return array				List of database collection names.
 	 *
-	 * @uses collectionList()
+	 * @uses \MongoDB\Database::listCollections()
 	 */
-	protected function collectionRetrieve( $theCollection, $theOptions = NULL )
+	protected function collectionList( array $theOptions )
 	{
 		//
-		// Normalise options.
+		// Ask database for list.
 		//
-		if( $theOptions === NULL )
-			$theOptions = [];
+		$collections = [];
+		$list = $this->mConnection->listCollections( $theOptions );
+		foreach( $list as $element )
+			$collections[] = $element->getName();
 
-		//
-		// Check if collection exists.
-		//
-		if( in_array( $theCollection, $this->collectionList( $theOptions ) ) )
-			return $this->offsetGet( $theCollection );								// ==>
-
-		return NULL;																// ==>
+		return $collections;														// ==>
 	}
 
 
