@@ -219,7 +219,7 @@ echo( "\n" );
 //
 echo( "Retrieve database:\n" );
 echo( '$db = $test->RetrieveDatabase( "db0" );' . "\n" );
-$db = $test->RetrieveDatabase( "db0" );
+$db = $test->GetDatabase( "db0" );
 print_r( $db );
 
 echo( "\n" );
@@ -229,7 +229,7 @@ echo( "\n" );
 //
 echo( "Create database:\n" );
 echo( '$db = $test->RetrieveDatabase( "NewDB" );' . "\n" );
-$db = $test->RetrieveDatabase( "NewDB" );
+$db = $test->GetDatabase( "NewDB" );
 echo( '$list = $test->WorkingDatabases();' . "\n" );
 $list = $test->WorkingDatabases();
 print_r( $list );
@@ -253,7 +253,7 @@ echo( "\n" );
 //
 echo( "Drop database:\n" );
 echo( '$db = $test->DropDatabase( "db0" );' . "\n" );
-$db = $test->DropDatabase( "db0" );
+$db = $test->DelDatabase( "db0" );
 echo( '$list = $test->WorkingDatabases();' . "\n" );
 $list = $test->WorkingDatabases();
 print_r( $list );

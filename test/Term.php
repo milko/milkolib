@@ -52,7 +52,7 @@ elseif( kENGINE == "ARANGO" )
 	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
 }
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
-$database = $server->RetrieveDatabase( "test_milkolib" );
+$database = $server->GetDatabase( "test_milkolib" );
 echo( '$collection = $database->RetrieveTerms( \Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
 $collection = $database->RetrieveTerms( \Milko\PHPLib\Server::kFLAG_CREATE );
 echo( '(string)$collection' . "\n" );

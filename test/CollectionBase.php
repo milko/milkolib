@@ -106,7 +106,7 @@ echo( '$server = new test_DataServer( $url' . " );\n" );
 $server = new test_DataServer( $url );
 echo( "$server\n" );
 echo( '$db = $server->RetrieveDatabase( "db0" );' . "\n" );
-$db = $server->RetrieveDatabase( "db0" );
+$db = $server->GetDatabase( "db0" );
 echo( '$name = (string)$db;' . "\n" );
 
 echo( "\n" );

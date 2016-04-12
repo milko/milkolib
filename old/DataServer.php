@@ -18,7 +18,7 @@ use Milko\PHPLib\Database;
  *======================================================================================*/
 
 /**
- * <h4>Data server ancestor object.</h4>
+ * <h4>Data server ancestor object.</h4><p />
  *
  * This <em>abstract</em> class is the ancestor of all classes representing data server
  * instances.
@@ -83,7 +83,7 @@ use Milko\PHPLib\Database;
 abstract class DataServer extends Server
 {
 	/**
-	 * <h4>Working databases.</h4>
+	 * <h4>Working databases.</h4><p />
 	 *
 	 * This data member holds the <i>working list of database objects</i>, it is an array
 	 * indexed by the database name with the relative {@link Database} objects as value.
@@ -110,7 +110,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Instantiate class.</h4>
+	 * <h4>Instantiate class.</h4><p />
 	 *
 	 * We overload the constructor to parse the connection string's path: if it was
 	 * provided, the first element of the path will be considered as a database name and
@@ -183,7 +183,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Return the server list of databases.</h4>
+	 * <h4>Return the server list of databases.</h4><p />
 	 *
 	 * This method can be used to retrieve the list of database names present on the server,
 	 * the method features the following parameters:
@@ -229,7 +229,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return the working list of databases.</h4>
+	 * <h4>Return the working list of databases.</h4><p />
 	 *
 	 * This method can be used to retrieve the list of working database names.
 	 *
@@ -247,7 +247,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Return a database object.</h4>
+	 * <h4>Return a database object.</h4><p />
 	 *
 	 * This method can be used to create or retrieve a database object, it features the
 	 * following parameters:
@@ -289,9 +289,9 @@ abstract class DataServer extends Server
 	 * $server = new DataServer( 'driver://user:pass@host:8989' );<br/>
 	 * $db = $server->RetrieveDatabase( "database", kFLAG_CONNECT | kFLAG_CREATE );
 	 */
-	public function RetrieveDatabase( $theDatabase,
-									  $theFlags = self::kFLAG_DEFAULT,
-									  $theOptions = NULL )
+	public function GetDatabase( $theDatabase,
+								 $theFlags = self::kFLAG_DEFAULT,
+								 $theOptions = NULL )
 	{
 		//
 		// Init local storage.
@@ -343,7 +343,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Dispose of a database object.</h4>
+	 * <h4>Dispose of a database object.</h4><p />
 	 *
 	 * This method can be used to dispose of a database object contained in the working
 	 * databases collection.
@@ -396,7 +396,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Drop a database.</h4>
+	 * <h4>Drop a database.</h4><p />
 	 *
 	 * This method can be used to drop a database, it features the following parameters:
 	 *
@@ -428,9 +428,9 @@ abstract class DataServer extends Server
 	 *
 	 * @uses RetrieveDatabase()
 	 */
-	public function DropDatabase( $theDatabase,
-								  $theFlags = self::kFLAG_CONNECT,
-								  $theOptions = NULL )
+	public function DelDatabase( $theDatabase,
+								 $theFlags = self::kFLAG_CONNECT,
+								 $theOptions = NULL )
 	{
 		//
 		// Init local storage.
@@ -440,7 +440,7 @@ abstract class DataServer extends Server
 		//
 		// Retrieve database.
 		//
-		$database = $this->RetrieveDatabase( $theDatabase, $theFlags, $theOptions );
+		$database = $this->GetDatabase( $theDatabase, $theFlags, $theOptions );
 		if( $database instanceof Database )
 		{
 			//
@@ -479,7 +479,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>List server databases.</h4>
+	 * <h4>List server databases.</h4><p />
 	 *
 	 * This method should return the list of server database names.
 	 *
@@ -505,7 +505,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Create database.</h4>
+	 * <h4>Create database.</h4><p />
 	 *
 	 * This method should create and return a {@link Database} object corresponding to the
 	 * provided name, if the operation fails, the method should raise an exception.
@@ -538,7 +538,7 @@ abstract class DataServer extends Server
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Return a database object.</h4>
+	 * <h4>Return a database object.</h4><p />
 	 *
 	 * This method should return a {@link Database} object corresponding to the provided
 	 * name, or <tt>NULL</tt> if the provided name does not correspond to any database in

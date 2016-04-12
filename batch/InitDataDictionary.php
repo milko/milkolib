@@ -176,7 +176,7 @@ switch( $engine )
 // Instantiate database.
 //
 $database =
-	$server->RetrieveDatabase(
+	$server->GetDatabase(
 		$database_name,
 		\Milko\PHPLib\Server::kFLAG_CREATE | \Milko\PHPLib\Server::kFLAG_CONNECT );
 

@@ -2,28 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8bc12787-e3d0-41d0-b0bd-e8bf5e92355d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/PHPLib/iDatasource.php" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/Collection.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/DataServer.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/Database.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/Document.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/DocumentSet.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/Edge.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/Server.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/Term.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PHPLib/iEdges.php" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/old/Server.php" afterPath="$PROJECT_DIR$/src/Server.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/arango.local.php" afterPath="$PROJECT_DIR$/arango.local.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/includes.local.php" afterPath="$PROJECT_DIR$/includes.local.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo.local.php" afterPath="$PROJECT_DIR$/mongo.local.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/Container.php" afterPath="$PROJECT_DIR$/src/PHPLib/Container.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/MongoDB/DataServer.php" afterPath="$PROJECT_DIR$/src/PHPLib/MongoDB/DataServer.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/descriptors.inc.php" afterPath="$PROJECT_DIR$/src/PHPLib/descriptors.inc.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/kinds.inc.php" afterPath="$PROJECT_DIR$/src/PHPLib/kinds.inc.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/predicates.inc.php" afterPath="$PROJECT_DIR$/src/PHPLib/predicates.inc.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/tokens.inc.php" afterPath="$PROJECT_DIR$/src/PHPLib/tokens.inc.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/types.inc.php" afterPath="$PROJECT_DIR$/src/PHPLib/types.inc.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/DataSource.php" afterPath="$PROJECT_DIR$/test/DataSource.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/batch/InitDataDictionary.php" afterPath="$PROJECT_DIR$/batch/InitDataDictionary.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/old/DataServer.php" afterPath="$PROJECT_DIR$/old/DataServer.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Collection.php" afterPath="$PROJECT_DIR$/test/Collection.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/CollectionBase.php" afterPath="$PROJECT_DIR$/test/CollectionBase.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/DataServerBase.php" afterPath="$PROJECT_DIR$/test/DataServerBase.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Database.php" afterPath="$PROJECT_DIR$/test/Database.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/DatabaseBase.php" afterPath="$PROJECT_DIR$/test/DatabaseBase.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Document.php" afterPath="$PROJECT_DIR$/test/Document.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/DocumentSet.php" afterPath="$PROJECT_DIR$/test/DocumentSet.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Edge.php" afterPath="$PROJECT_DIR$/test/Edge.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Relations.php" afterPath="$PROJECT_DIR$/test/Relations.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Term.php" afterPath="$PROJECT_DIR$/test/Term.php" />
     </list>
     <ignored path="milkolib.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -44,12 +36,12 @@
     <favorites_list name="milkolib" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="Datasource.php" pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Datasource.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/Datasource.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-21">
-              <caret line="705" column="14" selection-start-line="705" selection-start-column="14" selection-end-line="705" selection-end-column="14" />
+            <state relative-caret-position="129">
+              <caret line="672" column="0" selection-start-line="376" selection-start-column="0" selection-end-line="672" selection-end-column="0" />
               <folding>
                 <element signature="e#7#115#0#PHP" expanded="true" />
               </folding>
@@ -57,24 +49,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="iDatasource.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/PHPLib/iDatasource.php">
+      <file leaf-file-name="Server.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Server.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="222" column="14" selection-start-line="222" selection-start-column="14" selection-end-line="222" selection-end-column="14" />
+            <state relative-caret-position="264">
+              <caret line="962" column="0" selection-start-line="962" selection-start-column="0" selection-end-line="962" selection-end-column="0" />
               <folding>
-                <element signature="e#7#121#0#PHP" expanded="true" />
+                <element signature="e#7#97#0#PHP" expanded="true" />
+                <element signature="e#124#151#0#PHP" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Datasource.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/Datasource.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="221" column="88" selection-start-line="221" selection-start-column="88" selection-end-line="221" selection-end-column="88" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -87,7 +70,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/Cursor.php" />
         <option value="$PROJECT_DIR$/test/Relations.php" />
         <option value="$PROJECT_DIR$/test/Relation.php" />
         <option value="$PROJECT_DIR$/mongo.local.php" />
@@ -138,6 +120,7 @@
         <option value="$PROJECT_DIR$/test/Datasource.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/iDatasource.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Datasource.php" />
+        <option value="$PROJECT_DIR$/src/Server.php" />
       </list>
     </option>
   </component>
@@ -196,88 +179,11 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PHPLib" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="snippets" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="old" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="batch" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
+        <subPane />
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -288,15 +194,15 @@
     <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scrap" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/PHPLib" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/PHPLib/MongoDB" />
       <recent name="$PROJECT_DIR$/src/PHPLib/ArangoDB" />
-      <recent name="$PROJECT_DIR$/defines" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/scrap" />
     </key>
   </component>
   <component name="RunManager" selected="JavaScript Debug.MongoDataServer.php">
@@ -406,23 +312,24 @@
       <workItem from="1460368595476" duration="324000" />
       <workItem from="1460448486413" duration="91000" />
       <workItem from="1460448663033" duration="3491000" />
+      <workItem from="1460452772590" duration="8314000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="397511000" />
+    <option name="totallyTimeSpent" value="405825000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23505655" sideWeight="0.49467275" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23828755" sideWeight="0.49467275" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.55212355" sideWeight="0.5015886" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31316188" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29159936" sideWeight="0.49467275" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2907916" sideWeight="0.49467275" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.231303" sideWeight="0.49841145" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24878837" sideWeight="0.5053272" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -472,7 +379,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Edges.php" />
     <entry file="file://$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="263">
@@ -504,21 +410,9 @@
     <entry file="file://$PROJECT_DIR$/src/PHPLib/tTerm.php" />
     <entry file="file://$PROJECT_DIR$/test/test.php" />
     <entry file="file://$PROJECT_DIR$/src/PHPLib/enum.inc.php" />
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/iEdges.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-915">
-          <caret line="25" column="28" selection-start-line="25" selection-start-column="28" selection-end-line="25" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/iEdges.php" />
     <entry file="file://$PROJECT_DIR$/src/PHPLib/tNode.php" />
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Edge.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-465">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Edge.php" />
     <entry file="file://$PROJECT_DIR$/src/PHPLib/Container.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="486">
@@ -526,13 +420,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Server.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Server.php" />
     <entry file="file://$PROJECT_DIR$/src/PHPLib/Datasource.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -565,13 +453,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/DataServer.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="289" column="53" selection-start-line="289" selection-start-column="53" selection-end-line="289" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/DataServer.php" />
     <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/CollectionHandler.php" />
     <entry file="file://$PROJECT_DIR$/batch/loadNamespaces.php" />
     <entry file="file://$PROJECT_DIR$/includes.local.php">
@@ -644,20 +526,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Term.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="683" column="6" selection-start-line="683" selection-start-column="6" selection-end-line="683" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="733" column="20" selection-start-line="733" selection-start-column="20" selection-end-line="733" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Term.php" />
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php" />
     <entry file="file://$PROJECT_DIR$/batch/loadTerms.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
@@ -701,44 +571,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Database.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="843" column="32" selection-start-line="843" selection-start-column="32" selection-end-line="843" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Collection.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="579">
-          <caret line="698" column="6" selection-start-line="698" selection-start-column="6" selection-end-line="698" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/Datasource.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="221" column="88" selection-start-line="221" selection-start-column="88" selection-end-line="221" selection-end-column="88" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Database.php" />
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Collection.php" />
     <entry file="file://$PROJECT_DIR$/old/iEdges.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-495">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#7#101#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/iDatasource.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="222" column="14" selection-start-line="222" selection-start-column="14" selection-end-line="222" selection-end-column="14" />
-          <folding>
-            <element signature="e#7#121#0#PHP" expanded="true" />
+            <element signature="e#7#101#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -747,7 +587,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -755,16 +594,44 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3465">
           <caret line="238" column="0" selection-start-line="238" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/iDatasource.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3270">
+          <caret line="222" column="14" selection-start-line="222" selection-start-column="14" selection-end-line="222" selection-end-column="14" />
+          <folding>
+            <element signature="e#7#121#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/Datasource.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3225">
+          <caret line="221" column="88" selection-start-line="221" selection-start-column="88" selection-end-line="221" selection-end-column="88" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/Datasource.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-21">
-          <caret line="705" column="14" selection-start-line="705" selection-start-column="14" selection-end-line="705" selection-end-column="14" />
+        <state relative-caret-position="129">
+          <caret line="672" column="0" selection-start-line="376" selection-start-column="0" selection-end-line="672" selection-end-column="0" />
           <folding>
             <element signature="e#7#115#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Server.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="962" column="0" selection-start-line="962" selection-start-column="0" selection-end-line="962" selection-end-column="0" />
+          <folding>
+            <element signature="e#7#97#0#PHP" expanded="true" />
+            <element signature="e#124#151#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>

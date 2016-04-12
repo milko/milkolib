@@ -63,7 +63,7 @@ echo( "\n" );
 //
 echo( "Retrieve database:\n" );
 echo( '$test = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
-$test = $server->RetrieveDatabase( "test_milkolib" );
+$test = $server->GetDatabase( "test_milkolib" );
 echo( "$test ==> " );
 echo( ( "$test" == "test_milkolib" ) ? "OK\n" : "FALIED\n" );
 

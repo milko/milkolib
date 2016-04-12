@@ -61,7 +61,7 @@ echo( "\n" );
 //
 echo( "Instantiate database:\n" );
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
-$database = $server->RetrieveDatabase( "test_milkolib" );
+$database = $server->GetDatabase( "test_milkolib" );
 
 echo( "\n" );
 

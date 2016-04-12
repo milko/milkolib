@@ -56,7 +56,7 @@ elseif( kENGINE == "ARANGO" )
 	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
 }
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
-$database = $server->RetrieveDatabase( "test_milkolib" );
+$database = $server->GetDatabase( "test_milkolib" );
 echo( '$test = $database->RetrieveCollection( "test_collection" );' . "\n" );
 $test = $database->RetrieveCollection( "test_collection" );
 echo( '$test->Truncate();' . "\n" );

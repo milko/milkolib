@@ -127,7 +127,7 @@ echo( "\n" );
 //
 echo( "Instantiate database from server:\n" );
 echo( '$db = $server->RetrieveDatabase( "db0" );' . "\n" );
-$db = $server->RetrieveDatabase( "db0" );
+$db = $server->GetDatabase( "db0" );
 echo( '$name = (string)$db;' . "\n" );
 $name = (string)$db;
 echo( "$name\n" );

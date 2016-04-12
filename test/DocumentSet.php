@@ -38,7 +38,7 @@ $url = "mongodb://localhost:27017/test_milkolib/test_collection";
 echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
 $server = new \Milko\PHPLib\MongoDB\DataServer( $url );
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
-$database = $server->RetrieveDatabase( "test_milkolib" );
+$database = $server->GetDatabase( "test_milkolib" );
 echo( '$collection = $database->RetrieveCollection( "test_collection" );' . "\n" );
 $collection = $database->RetrieveCollection( "test_collection" );
 
