@@ -24,7 +24,7 @@
  *======================================================================================*/
 
 /**
- * <h3>Categorical.</h3><p />
+ * <h4>Categorical.</h4><p />
  *
  * This kind indicates that the property can take on one or more of a limited, and usually
  * fixed, number of possible values. In general, properties which take their values from an
@@ -33,7 +33,7 @@
 const kKIND_CATEGORICAL = ':kind:categorical';
 
 /**
- * <h3>Quantitative.</h3><p />
+ * <h4>Quantitative.</h4><p />
  *
  * This kind indicates that the property is one whose type of information is based on
  * quantities or quantifiable data which is continuous. In general numerical values which
@@ -42,7 +42,7 @@ const kKIND_CATEGORICAL = ':kind:categorical';
 const kKIND_QUANTITATIVE = ':kind:quantitative';
 
 /**
- * <h3>Discrete.</h3><p />
+ * <h4>Discrete.</h4><p />
  *
  * This kind indicates that the property is one which may take an indefinite number of
  * values, which differentiates it from a categorical property, and whose values are not
@@ -55,7 +55,7 @@ const kKIND_DISCRETE = ':kind:discrete';
  *======================================================================================*/
 
 /**
- * <h3>Recommended.</h3><p />
+ * <h4>Recommended.</h4><p />
  *
  * This kind indicates that the property is recommended, encouraged or important, but not
  * necessarily required or mandatory.
@@ -63,21 +63,21 @@ const kKIND_DISCRETE = ':kind:discrete';
 const kKIND_RECOMMENDED = ':kind:recommended';
 
 /**
- * <h3>Required.</h3><p />
+ * <h4>Required.</h4><p />
  *
  * This kind indicates that the property is required or mandatory.
  */
 const kKIND_REQUIRED = ':kind:required';
 
 /**
- * <h3>Private display.</h3><p />
+ * <h4>Private display.</h4><p />
  *
  * This kind indicates that the data property should not be displayed to clients.
  */
 const kKIND_PRIVATE_DISPLAY = ':kind:private:display';
 
 /**
- * <h3>Private search.</h3><p />
+ * <h4>Private search.</h4><p />
  *
  * This kind indicates that the data property should not be available to clients for
  * searching.
@@ -85,7 +85,7 @@ const kKIND_PRIVATE_DISPLAY = ':kind:private:display';
 const kKIND_PRIVATE_SEARCH = ':kind:private:search';
 
 /**
- * <h3>Private modify.</h3><p />
+ * <h4>Private modify.</h4><p />
  *
  * This kind indicates that the data property is reserved by the object, which means that it
  * is automatically managed by the class and should not be explicitly set or modified by
@@ -98,21 +98,21 @@ const kKIND_PRIVATE_MODIFY = ':kind:private:modify';
  *======================================================================================*/
 
 /**
- * <h3>List.</h3><p />
+ * <h4>List.</h4><p />
  *
  * This kind indicates that the property is a list of values, each of the defined data type.
  */
 const kKIND_LIST = ':kind:list';
 
 /**
- * <h3>Summary.</h3><p />
+ * <h4>Summary.</h4><p />
  *
  * This kind indicates that the property can be used to group results in a summary.
  */
 const kKIND_SUMMARY = ':kind:summary';
 
 /**
- * <h3>Lookup.</h3><p />
+ * <h4>Lookup.</h4><p />
  *
  * This kind indicates that the property can be searched upon using auto-complete.
  */
@@ -123,7 +123,7 @@ const kKIND_LOOKUP = ':kind:lookup';
  *======================================================================================*/
 
 /**
- * <h3>Root.</h3><p />
+ * <h4>Root.</h4><p />
  *
  * An entry point of a structure. Items of this kind represents a door or entry point of a
  * structure, they can be either the element from which the whole structure originates from,
@@ -132,7 +132,7 @@ const kKIND_LOOKUP = ':kind:lookup';
 const kKIND_ROOT = ':kind:root';
 
 /**
- * <h3>Type.</h3><p />
+ * <h4>Type.</h4><p />
  *
  * A type or definition. Items of this kind are used as a type definition or to define
  * controlled vocabularies, they are used as proxies to the structure they hold. When

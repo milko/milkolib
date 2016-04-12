@@ -8,7 +8,7 @@
 
 namespace Milko\PHPLib;
 
-use Milko\PHPLib\DataSource;
+use Milko\PHPLib\Datasource;
 
 /*=======================================================================================
  *																						*
@@ -52,7 +52,7 @@ use Milko\PHPLib\DataSource;
  * $server = new Milko\PHPLib\Server( 'protocol://user:pass@host:9090' );<br/>
  * $connection = $server->Connect();
  */
-abstract class Server extends DataSource
+abstract class Server extends Datasource
 {
 	/**
 	 * <h4>Server connection object.</h4>

@@ -15,7 +15,7 @@ namespace Milko\PHPLib;
  *======================================================================================*/
 
 /**
- * <h4>Container base object.</h4>
+ * <h4>Container base object.</h4><p />
  *
  * This class is the ancestor of classes that that handle structured data and that can be
  * persistent.
@@ -87,7 +87,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Return a value at a given offset.</h4>
+	 * <h4>Return a value at a given offset.</h4><p />
 	 *
 	 * We  overload this method to handle the case in which the offset doesn't exist: if
 	 * that is the case we return <tt>NULL</tt> instead of issuing a warning.
@@ -118,7 +118,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Set a value at a given offset.</h4>
+	 * <h4>Set a value at a given offset.</h4><p />
 	 *
 	 * We overload this method to handle the <tt>NULL</tt> value in the <tt>$theValue</tt>
 	 * parameter: if the offset exists it will be deleted, if not, the method will do
@@ -154,7 +154,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Reset a value at a given offset.</h4>
+	 * <h4>Reset a value at a given offset.</h4><p />
 	 *
 	 * We overload this method to prevent warnings when a non-existing offset is provided,
 	 * in that case we do nothing.
@@ -187,7 +187,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Return object's offsets.</h4>
+	 * <h4>Return object's offsets.</h4><p />
 	 *
 	 * This method has the same function as the PHP function {@link \array_keys()}, it will
 	 * return all the object's offset keys as an array.
@@ -202,7 +202,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Return object's offset values.</h4>
+	 * <h4>Return object's offset values.</h4><p />
 	 *
 	 * This method has the same function as the PHP function {@link array_values()}, it
 	 * will return all the object's offset values as an array.
@@ -217,7 +217,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return the object properties as an aray.</h4>
+	 * <h4>Return the object properties as an aray.</h4><p />
 	 *
 	 * This method can be used to convert the object properties to an array, this will
 	 * take care of converting embedded objects deriving from this class.
@@ -257,7 +257,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 	
 	/**
-	 * <h4>Manage an attribute</h4>
+	 * <h4>Manage an attribute</h4><p />
 	 *
 	 * This library implements a standard interface for managing attributes using
 	 * accessor methods, attributes are stored in the object's data members, this method
@@ -321,7 +321,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage a property</h4>
+	 * <h4>Manage a property</h4><p />
 	 *
 	 * Properties in this class are stored in an array and accessed by offset, besides this
 	 * method, dedicated accessor methods can be used: this method should be used to provide
@@ -386,7 +386,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage an indexed property</h4>
+	 * <h4>Manage an indexed property</h4><p />
 	 *
 	 * This method can be used to manage a property structured as an associative array, the
 	 * method accepts the following parameters:
@@ -501,7 +501,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage a flag attribute.</h4>
+	 * <h4>Manage a flag attribute.</h4><p />
 	 *
 	 * This method can be used to manage a bitfield attribute, the method expects the
 	 * following parameters:
@@ -566,7 +566,7 @@ class Container extends \ArrayObject
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Convert embedded objects to array.</h4>
+	 * <h4>Convert embedded objects to array.</h4><p />
 	 *
 	 * This method is used by the {@link toArray()} method to convert embedded properties
 	 * derived from this class, it willtraverse the object's properties structured

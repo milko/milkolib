@@ -1,9 +1,9 @@
 <?php
 
 /**
- * DataSource.php
+ * Datasource.php
  *
- * This file contains the definition of the {@link milko\php\DataSource} class.
+ * This file contains the definition of the {@link milko\php\Datasource} class.
  */
 
 namespace Milko\PHPLib;
@@ -12,12 +12,12 @@ use Milko\PHPLib\Container;
 
 /*=======================================================================================
  *																						*
- *									DataSource.php										*
+ *									Datasource.php										*
  *																						*
  *======================================================================================*/
 
 /**
- * <h4>Data source or URL object.</h4>
+ * <h4>Data source or URL object.</h4><p />
  *
  * This class implements a data source, that is, an URL that contains the connection
  * properties needed by classes representing connection instances, such as servers and
@@ -38,20 +38,9 @@ use Milko\PHPLib\Container;
  * </ul>
  *
  * There is also a set of member accessor methods that can be used to manage the data source
- * elements:
+ * elements, these are declared by the {@link iDatasource} interface.
  *
- * <ul>
- *	<li><b>{@link Protocol()}</b>: Manages the protocol.
- *	<li><b>{@link Host()}</b>: Manages the host.
- *	<li><b>{@link Port()}</b>: Manages the port.
- *	<li><b>{@link User()}</b>: Manages the user name.
- *	<li><b>{@link Password()}</b>: Manages the user password.
- *	<li><b>{@link Path()}</b>: Manages the path.
- *	<li><b>{@link Query()}</b>: Manages the query.
- *	<li><b>{@link Fragment()}</b>: Manages the fragment.
- * </ul>
- *
- * Casting the object to a string will return its data source name.
+ * Casting the object to a string will return its data source name or URL.
  *
  * There is no value checking when setting properties, this is the responsibility of the
  * caller: to ensure the URL is valid instantiate a new object.
@@ -62,13 +51,15 @@ use Milko\PHPLib\Container;
  *	@version	1.00
  *	@since		05/02/2016
  *
- *	@example	../../test/DataSource.php
+ *	@example	../../test/Datasource.php
  *	@example
- * $dsn = new Milko\PHPLib\Datasource( 'protocol://user:pass@host:9090/dir/file?arg=val#frag' );
- *	@example
- * $dsn = new Milko\PHPLib\Datasource( 'protocol://user:pass@host1:9090,host2,host3:8080/dir/file?arg=val#frag' );
+ * <code>
+ * $dsn1 = new Milko\PHPLib\Datasource( 'protocol://user:pass@host:9090/dir/file?arg=val#frag' );
+ * $dsn2 = new Milko\PHPLib\Datasource( 'protocol://user:pass@host1:9090,host2,host3:8080/dir/file?arg=val#frag' );
+ * </code>
  */
-class DataSource extends Container
+class Datasource extends Container
+				 implements iDatasource
 {
 	/**
 	 * Protocol.
@@ -157,13 +148,11 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Instantiate class.</h4>
+	 * <h4>Instantiate class.</h4><p />
 	 *
 	 * The object must be instantiated from a data source name, if the provided connection
-	 * string is invalid, the method will raise an exception.
-	 *
-	 * The method will raise an exception if the provided URL is not parsable, or if either
-	 * the scheme or the host are missing.
+	 * string is invalid, or if either the scheme or the host are missing, the method will
+	 * raise an exception.
 	 *
 	 * @param string			$theConnection		Data source name.
 	 * @throws \InvalidArgumentException
@@ -177,7 +166,10 @@ class DataSource extends Container
 	 * @uses Fragment()
 	 *
 	 * @example
+	 * <code>
 	 * $dsn = new DataSource( 'html://user:pass@host:8080/dir/file?arg=val#frag' );
+	 * $dsn = new Datasource( 'protocol://user:password@host1:9090,host2,host3:9191/dir/file?arg=val#frag' );
+	 * </code>
 	 */
 	public function __construct( $theConnection )
 	{
@@ -265,7 +257,7 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return data source name</h4>
+	 * <h4>Return data source name</h4><p />
 	 *
 	 * In this class we consider the data source name as the global identifier; here we
 	 * return it as is, in derived classes you should be careful to shadow sensitive data.
@@ -294,7 +286,7 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Set a value at a given offset.</h4>
+	 * <h4>Set a value at a given offset.</h4><p />
 	 *
 	 * We overload this method to check the port value: it can either be an array or an
 	 * integer, if that is not the case, an exception will be raised.
@@ -343,7 +335,7 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Reset a value at a given offset.</h4>
+	 * <h4>Reset a value at a given offset.</h4><p />
 	 *
 	 * We overload this method to prevent deleting the host and protocol.
 	 * We also delete the password when deleting the user.
@@ -389,24 +381,22 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage data source protocol.</h4>
+	 * <h4>Manage data source protocol.</h4><p />
 	 *
-	 * This method will manage the data source protocol, provide <tt>NULL</tt> to retrieve
-	 * the current value, or any other type to set it. The protocol is required, so providing
-	 * <tt>FALSE</tt> will result in an exception.
-	 *
-	 * The method will return the current value.
+	 * We implement this method by using {@link manageProperty()} with the {@link PROT}
+	 * offset.
 	 *
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see PROT
-	 *
 	 * @example
-	 * $test = $dsn->Protocol( 'html' );	// Set protocol to <tt>html</tt>.<br/>
-	 * $test = $dsn->Protocol(); // Retrieve current protocol.
+	 * <code>
+	 * $test = $dsn->Protocol( 'html' );	// Set protocol to html.
+	 * $test = $dsn->Protocol();			// Retrieve current protocol.
+	 * $test = $dsn->Protocol( FALSE );		// Raises an exception!
+	 * </code>
 	 */
 	public function Protocol( $theValue = NULL )
 	{
@@ -420,27 +410,22 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage data source host.</h4>
+	 * <h4>Manage data source host.</h4><p />
 	 *
-	 * This method will manage the data source host, provide <tt>NULL</tt> to retrieve the
-	 * current value, or any other type to set it. The host is required, so providing
-	 * <tt>FALSE</tt> will result in an exception.
-	 *
-	 * The host can be provided either as a string, for a single host, or as an array for
-	 * multiple hosts.
-	 *
-	 * The method will return the current value.
+	 * We implement this method by using {@link manageProperty()} with the {@link HOST}
+	 * offset.
 	 *
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string|array
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see HOST
-	 *
 	 * @example
-	 * $test = $dsn->Host( 'example.net' );	// Set host.<br/>
-	 * $test = $dsn->Host(); // Retrieve current host.
+	 * <code>
+	 * $test = $dsn->Host( 'example.net' );	// Set host.
+	 * $test = $dsn->Host();				// Retrieve current host.
+	 * $test = $dsn->Host( FALSE );			// Raises an exception!
+	 * </code>
 	 */
 	public function Host( $theValue = NULL )
 	{
@@ -454,29 +439,23 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage data source port.</h4>
+	 * <h4>Manage data source port.</h4><p />
 	 *
-	 * This method will manage the data source port, provide <tt>NULL</tt> to retrieve
-	 * the current value, <tt>FALSE</tt> to delete the host, or any other type to set it.
-	 *
-	 * The host can be provided either as an integer, for a single port, or as an array for
-	 * multiple ports; a single port must be provided as an integer value, or an exception
-	 * will be thrown.
-	 *
-	 * The method will return the old value when deleting and the current value in all other
-	 * cases.
+	 * We implement this method by using {@link manageProperty()} with the {@link PORT}
+	 * offset.
 	 *
 	 * @param mixed				$theValue			Value or operation.
 	 * @return int
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see PORT
-	 *
 	 * @example
-	 * $test = $dsn->Port( 8080 );	// Set port.<br/>
-	 * $test = $dsn->Port(); // Retrieve current port.
-	 * $test = $dsn->Port( FALSE ); // Remove port, returns old value.
+	 * <code>
+	 * $test = $dsn->Port( 8080 );		// Set port.
+	 * $test = $dsn->Port();			// Retrieve current port.
+	 * $test = $dsn->Port( FALSE );		// Remove port, returns old value.
+	 * $test = $dsn->Port( "string" );	// Raises an exception!
+	 * </code>
 	 */
 	public function Port( $theValue = NULL )
 	{
@@ -490,27 +469,22 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage data source user name.</h4>
+	 * <h4>Manage data source user name.</h4><p />
 	 *
-	 * This method will manage the data source user name, provide <tt>NULL</tt> to retrieve
-	 * the current value, <tt>FALSE</tt> to delete the user, or any other type to set it.
-	 *
-	 * If you delete the user, also the eventual password will be deleted.
-	 *
-	 * The method will return the old value when deleting and the current value in all other
-	 * cases.
+	 * We implement this method by using {@link manageProperty()} with the {@link USER}
+	 * offset.
 	 *
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see USER
-	 *
 	 * @example
-	 * $test = $dsn->User( 'admin' );	// Set user name.<br/>
-	 * $test = $dsn->User(); // Retrieve current user name.
-	 * $test = $dsn->User( FALSE ); // Remove user and password, returns old user name.
+	 * <code>
+	 * $test = $dsn->User( 'admin' );	// Set user name.
+	 * $test = $dsn->User();			// Retrieve current user name.
+	 * $test = $dsn->User( FALSE );		// Remove user and password, returns old user name.
+	 * </code>
 	 */
 	public function User( $theValue = NULL )
 	{
@@ -524,26 +498,22 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage data source user password.</h4>
+	 * <h4>Manage data source user password.</h4><p />
 	 *
-	 * This method will manage the data source user password, provide <tt>NULL</tt> to
-	 * retrieve the current value, <tt>FALSE</tt> to delete the password, or any other type
-	 * to set it.
-	 *
-	 * The method will return the old value when deleting and the current value in all other
-	 * cases.
+	 * We implement this method by using {@link manageProperty()} with the {@link PASS}
+	 * offset.
 	 *
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see PASS
-	 *
 	 * @example
-	 * $test = $dsn->Password( 'secret' );	// Set user password.<br/>
-	 * $test = $dsn->Password(); // Retrieve current user password.
-	 * $test = $dsn->Password( FALSE ); // Remove user password, returns old value.
+	 * <code>
+	 * $test = $dsn->Password( 'secret' );	// Set user password.
+	 * $test = $dsn->Password();			// Retrieve current user password.
+	 * $test = $dsn->Password( FALSE );		// Remove user password, returns old value.
+	 * </code>
 	 */
 	public function Password( $theValue = NULL )
 	{
@@ -557,25 +527,10 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage data source path.</h4>
+	 * <h4>Manage data source path.</h4><p />
 	 *
-	 * This method will manage the data source path, provide <tt>NULL</tt> to retrieve the
-	 * current value, <tt>FALSE</tt> to delete the path, or any other type to
-	 * set it.
-	 *
-	 * This method features a second parameter that can be used to retrieve the path value
-	 * as an array featuring the different elements of the path:
-	 *
-	 * <ul>
-	 * 	<li><tt>NULL</tt>: The method will return the path string.
-	 * 	<li><tt>TRUE</tt>: The method will split the path using the
-	 * 		{@link DIRECTORY_SEPARATOR} token.
-	 * 	<li><em>other</em>: The provided value will be converted to a string and the method
-	 * 		will split the path using the provided token.
-	 * </ul>
-	 *
-	 * The method will return the old value when deleting and the current value in all other
-	 * cases.
+	 * We implement this method by using {@link manageProperty()} with the {@link PATH}
+	 * offset.
 	 *
 	 * @param mixed				$theValue			Value or operation.
 	 * @param boolean			$asArray			<tt>TRUE</tt> return as array.
@@ -583,12 +538,12 @@ class DataSource extends Container
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see PATH
-	 *
 	 * @example
-	 * $test = $dsn->Path( 'directory/file' );	// Set path.<br/>
-	 * $test = $dsn->Path(); // Retrieve current path.
-	 * $test = $dsn->Path( FALSE ); // Remove path, returns old value.
+	 * <code>
+	 * $test = $dsn->Path( 'directory/file' );	// Set path.
+	 * $test = $dsn->Path();					// Retrieve current path.
+	 * $test = $dsn->Path( FALSE );				// Remove path, returns old value.
+	 * </code>
 	 */
 	public function Path( $theValue = NULL )
 	{
@@ -602,15 +557,10 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage data source query.</h4>
+	 * <h4>Manage data source query.</h4><p />
 	 *
-	 * This method will manage the data source query, provide <tt>NULL</tt> to retrieve the
-	 * current value, <tt>FALSE</tt> to delete the query, or an associative array to set it;
-	 * if you provide any other type, this will be interpreted as a string and it will be
-	 * parsed and converted to an array before setting it.
-	 *
-	 * The method will return the old value when deleting and the current value in all other
-	 * cases.
+	 * We implement this method by using {@link manageProperty()} with the {@link QUERY}
+	 * offset.
 	 *
 	 * @param mixed				$theValue			Value or operation.
 	 * @return array
@@ -618,13 +568,13 @@ class DataSource extends Container
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see QUERY
-	 *
 	 * @example
-	 * $test = $dsn->Query( [ 'arg' => 'val' ] ); // Set query by array.<br/>
-	 * $test = $dsn->Query( 'arg=val' ); // Set query by string.<br/>
-	 * $test = $dsn->Path(); // Retrieve current query.
-	 * $test = $dsn->Query( FALSE ); // Remove query, returns old value.
+	 * <code>
+	 * $test = $dsn->Query( [ 'arg' => 'val' ] );	// Set query by array.
+	 * $test = $dsn->Query( 'arg=val' );			// Set query by string.
+	 * $test = $dsn->Path();						// Retrieve current query.
+	 * $test = $dsn->Query( FALSE );				// Remove query, returns old value.
+	 * </code>
 	 */
 	public function Query( $theValue = NULL )
 	{
@@ -698,25 +648,22 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Manage data source fragment.</h4>
+	 * <h4>Manage data source fragment.</h4><p />
 	 *
-	 * This method will manage the data source fragment, provide <tt>NULL</tt> to retrieve
-	 * the current value, <tt>FALSE</tt> to delete the fragment, or any other type to set it.
-	 *
-	 * The method will return the old value when deleting and the current value in all other
-	 * cases.
+	 * We implement this method by using {@link manageProperty()} with the {@link FRAG}
+	 * offset.
 	 *
 	 * @param mixed				$theValue			Value or operation.
 	 * @return string
 	 *
 	 * @uses manageProperty()
 	 *
-	 * @see FRAG
-	 *
 	 * @example
-	 * $test = $dsn->Fragment( 'frag' ); // Set fragment.<br/>
-	 * $test = $dsn->Fragment(); // Retrieve current fragment.
-	 * $test = $dsn->Fragment( FALSE ); // Remove fragment, returns old value.
+	 * <code>
+	 * $test = $dsn->Fragment( 'frag' );	// Set fragment.
+	 * $test = $dsn->Fragment();			// Retrieve current fragment.
+	 * $test = $dsn->Fragment( FALSE );		// Remove fragment, returns old value.
+	 * </code>
 	 */
 	public function Fragment( $theValue = NULL )
 	{
@@ -739,21 +686,24 @@ class DataSource extends Container
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return the data source URL.</h4>
+	 * <h4>Return the data source URL.</h4><p />
 	 *
-	 * This method can be used to return an URL from the current data source, it accepts an
-	 * array parameter containing the URL offsets <em>to be excluded</em>.
+	 * This method can be used to return an URL from the current data source.
+	 *
+	 * The method accepts a parameter that can be used to exclude specific elements from the
+	 * returned URL: provide an array with the offsets you wish to exclude.
 	 *
 	 * @param array				$theExcluded		List of excluded offsets.
 	 * @return string
 	 *
 	 * @uses manageProperty()
-	 *
 	 * @see PROT USER PASS HOST PORT PATH QUERY FRAG
 	 *
 	 * @example
-	 * $test = $dsn->toURL();	// Return full URL.<br/>
-	 * $test = $dsn->toURL( [ self::PATH ] );	// Return URL without path.
+	 * <code>
+	 * $test = $dsn->toURL();										// Return full URL.<br/>
+	 * $test = $dsn->toURL( [ Milko\PHPLib\Datasource::PATH ] );	// Return URL without path.
+	 * </code>
 	 */
 	protected function toURL( $theExcluded = [] )
 	{
@@ -890,7 +840,7 @@ class DataSource extends Container
 
 
 
-} // class DataSource.
+} // class Datasource.
 
 
 ?>

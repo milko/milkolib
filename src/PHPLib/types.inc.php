@@ -24,14 +24,14 @@
  *======================================================================================*/
 
 /**
- * <h3>Mixed.</h3><p />
+ * <h4>Mixed.</h4><p />
  *
  * A mixed data type indicates that the referred property may take any data type.
  */
 const kTYPE_MIXED = ':type:mixed';
 
 /**
- * <h3>String.</h3><p />
+ * <h4>String.</h4><p />
  *
  * A string data type indicates that the referred property may hold UNICODE characters, this
  * type does not include binary data.
@@ -39,7 +39,7 @@ const kTYPE_MIXED = ':type:mixed';
 const kTYPE_STRING = ':type:string';
 
 /**
- * <h3>Integer.</h3><p />
+ * <h4>Integer.</h4><p />
  *
  * An integer data type indicates that the referred property may hold a 32 or 64 bit
  * integral numeric values.
@@ -47,7 +47,7 @@ const kTYPE_STRING = ':type:string';
 const kTYPE_INT = ':type:int';
 
 /**
- * <h3>Float.</h3><p />
+ * <h4>Float.</h4><p />
  *
  * A float data type indicates that the referred property may hold a floating point number,
  * also known as double or real. The precision of such value is not inferred, in general it
@@ -56,7 +56,7 @@ const kTYPE_INT = ':type:int';
 const kTYPE_FLOAT = ':type:float';
 
 /**
- * <h3>Boolean.</h3><p />
+ * <h4>Boolean.</h4><p />
  *
  * Boolean values can take one of two states: on or true, or off or false.
  */
@@ -67,7 +67,7 @@ const kTYPE_BOOLEAN = ':type:bool';
  *======================================================================================*/
 
 /**
- * <h3>Link.</h3><p />
+ * <h4>Link.</h4><p />
  *
  * A link data type indicates that the referred property is a string representing an URL
  * which is an internet link or network address.
@@ -75,7 +75,7 @@ const kTYPE_BOOLEAN = ':type:bool';
 const kTYPE_URL = ':type:string:url';
 
 /**
- * <h3>String date.</h3><p />
+ * <h4>String date.</h4><p />
  *
  * This type defines a date in which the day and month may be omitted, it is a string
  * providing the date in <tt>YYYYMMDD</tt> format in which the day, or the day and month can
@@ -84,7 +84,7 @@ const kTYPE_URL = ':type:string:url';
 const kTYPE_STRING_DATE = ':type:string:date';
 
 /**
- * <h3>String latitude.</h3><p />
+ * <h4>String latitude.</h4><p />
  *
  * This type defines a latitude expressed in <tt>HDDMMSS.SSSS</tt> where <tt>H</tt> is the
  * hemisphere (<tt>N</tt> or <tt>S</tt>), <tt>DD</tt> is the degrees, <tt>MM</tt> is the
@@ -97,7 +97,7 @@ const kTYPE_STRING_DATE = ':type:string:date';
 const kTYPE_STRING_LAT = ':type:string:lat';
 
 /**
- * <h3>String longitude.</h3><p />
+ * <h4>String longitude.</h4><p />
  *
  * This type defines a longitude expressed in <tt>HDDDMMSS.SSSS</tt> where <tt>H</tt> is the
  * hemisphere (<tt>E</tt> or <tt>W</tt>), <tt>DDD</tt> is the degrees, <tt>MM</tt> is the
@@ -114,7 +114,7 @@ const kTYPE_STRING_LON = ':type:string:lon';
  *======================================================================================*/
 
 /**
- * <h3>Object reference.</h3><p />
+ * <h4>Object reference.</h4><p />
  *
  * This type indicates that the property references another object, the value will contain
  * the name of the collection in which the reference object resides and the object key, the
@@ -123,7 +123,7 @@ const kTYPE_STRING_LON = ':type:string:lon';
 const kTYPE_REF = ':type:ref';
 
 /**
- * <h3>Collection reference.</h3><p />
+ * <h4>Collection reference.</h4><p />
  *
  * This type indicates that the property references another object belonging to the same
  * collection, the value will contain the key of the referenced object.
@@ -131,7 +131,7 @@ const kTYPE_REF = ':type:ref';
 const kTYPE_REF_SELF = ':type:ref-self';
 
 /**
- * <h3>Term reference.</h3><p />
+ * <h4>Term reference.</h4><p />
  *
  * This type indicates that the property references a term object, the value will contain
  * the key of the referenced term.
@@ -143,14 +143,14 @@ const kTYPE_REF_TERM = ':type:ref-term';
  *======================================================================================*/
 
 /**
- * <h3>Date.</h3><p />
+ * <h4>Date.</h4><p />
  *
  * Date in the native database format.
  */
 const kTYPE_DATE = ':type:date';
 
 /**
- * <h3>Timestamp.</h3><p />
+ * <h4>Timestamp.</h4><p />
  *
  * Time stamp in the native database format.
  */
@@ -161,7 +161,7 @@ const kTYPE_TIMESTAMP = ':type:time-stamp';
  *======================================================================================*/
 
 /**
- * <h3>Enumeration.</h3><p />
+ * <h4>Enumeration.</h4><p />
  *
  * An enumerated property may hold only one value selected from a controlled vocabulary, in
  * general, the controlled vocabulary will be a set of terms and the selected value will be
@@ -170,7 +170,7 @@ const kTYPE_TIMESTAMP = ':type:time-stamp';
 const kTYPE_ENUM = ':type:enum';
 
 /**
- * <h3>Enumerated set.</h3><p />
+ * <h4>Enumerated set.</h4><p />
  *
  * An enumerated set property may hold one or more unique values selected from a controlled
  * vocabulary, in general, the controlled vocabulary will be a set of terms and the selected
@@ -183,7 +183,7 @@ const kTYPE_ENUM_SET = ':type:enum-set';
  *======================================================================================*/
 
 /**
- * <h3>List.</h3><p />
+ * <h4>List.</h4><p />
  *
  * This data type defines a list of elements whose value type is not inferred. This data
  * type usually applies to arrays.
@@ -191,7 +191,7 @@ const kTYPE_ENUM_SET = ':type:enum-set';
 const kTYPE_ARRAY = ':type:array';
 
 /**
- * <h3>Structure.</h3><p />
+ * <h4>Structure.</h4><p />
  *
  * This data type defines a structure or an associative array in which the element key is
  * represented by an indicator identifier.
@@ -199,7 +199,7 @@ const kTYPE_ARRAY = ':type:array';
 const kTYPE_STRUCT = ':type:struct';
 
 /**
- * <h3>Shape.</h3><p />
+ * <h4>Shape.</h4><p />
  *
  * This data type defines a geometric shapewhich is expressed as a GeoJSON construct, it is
  * an array composed by two key/value elements:
@@ -229,7 +229,7 @@ const kTYPE_STRUCT = ':type:struct';
 const kTYPE_SHAPE = ':type:shape';
 
 /**
- * <h3>Language string.</h3><p />
+ * <h4>Language string.</h4><p />
  *
  * This data type defines a list of strings expressed in different languages. The list
  * elements are composed by key/value pairs, the key is expressed as the language code and
@@ -238,7 +238,7 @@ const kTYPE_SHAPE = ':type:shape';
 const kTYPE_LANG_STRING = ':type:string:lang';
 
 /**
- * <h3>Language strings.</h3><p />
+ * <h4>Language strings.</h4><p />
  *
  * This data type defines a list of strings expressed in different languages. The list
  * elements are composed by key/value pairs, the key is expressed as the language code and
@@ -251,14 +251,14 @@ const kTYPE_LANG_STRINGS = ':type:string:langs';
  *======================================================================================*/
 
 /**
- * <h3>Attribute.</h3><p />
+ * <h4>Attribute.</h4><p />
  *
  * This data type defines an object that functionas as an attribute.
  */
 const kTYPE_ATTRIBUTE = ':type:attribute';
 
 /**
- * <h3>Property.</h3><p />
+ * <h4>Property.</h4><p />
  *
  * This data type defines an object that functionas as a property.
  */

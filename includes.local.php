@@ -7,7 +7,7 @@
  *======================================================================================*/
 
 /**
- *	<h4>Local include file.</h4>
+ *	<h4>Local include file.</h4><p />
  *
  * This file contains the local definitions for this library, here users should set the
  * locations of the library files and other data dependant on the local environment.
@@ -26,7 +26,7 @@
  *======================================================================================*/
 
 /**
- * <h4>Library root path.</h4>
+ * <h4>Library root path.</h4><p />
  *
  * This defines the library root directory.
  */
@@ -38,7 +38,7 @@ define( 'kPATH_LIBRARY_ROOT', __DIR__ . DIRECTORY_SEPARATOR);
  *======================================================================================*/
 
 /**
- * <h4>Autoload script include.</h4>
+ * <h4>Autoload script include.</h4><p />
  *
  * This will include the composer autoload script.
  */

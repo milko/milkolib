@@ -117,7 +117,7 @@ class DataServer extends \Milko\PHPLib\DataServer
 			$theOptions = [];
 		
 		return new Client(
-			$this->toURL( [ \Milko\PHPLib\DataSource::PATH ] ),
+			$this->toURL( [ \Milko\PHPLib\Datasource::PATH ] ),
 			$uri_opts,
 			$theOptions );															// ==>
 

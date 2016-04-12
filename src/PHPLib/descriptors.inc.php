@@ -30,7 +30,7 @@
  *======================================================================================*/
 
 /**
- * <h3>Namespace reference.</h3><p />
+ * <h4>Namespace reference.</h4><p />
  *
  * The property holds the <em>reference to the object</em> that represents the current
  * object's <em>namespace</em>, expressed as a <em>document identifier</em>.
@@ -41,7 +41,7 @@
 const kTAG_NS				= '@1';
 
 /**
- * <h3>Local identifier.</h3><p />
+ * <h4>Local identifier.</h4><p />
  *
  * The property holds the object <em>local</em> identifier, that is, the code that uniquely
  * identifies the object <em>within its namespace</em>.
@@ -52,7 +52,7 @@ const kTAG_NS				= '@1';
 const kTAG_LID				= '@2';
 
 /**
- * <h3>Global identifier.</h3><p />
+ * <h4>Global identifier.</h4><p />
  *
  * The property holds the object <em>global</em> identifier, that is, the code that uniquely
  * identifies the term <em>among all namespaces</em>.
@@ -67,7 +67,7 @@ const kTAG_LID				= '@2';
 const kTAG_GID				= '@3';
 
 /**
- * <h3>Type.</h3><p />
+ * <h4>Type.</h4><p />
  *
  * The property holds an <em>enumerated set of values</em> belonging to a controlled
  * vocabulary which <em>defines the type of the object</em>, it should describe the
@@ -79,7 +79,7 @@ const kTAG_GID				= '@3';
 const kTAG_TYPE				= '@4';
 
 /**
- * <h3>Kind.</h3><p />
+ * <h4>Kind.</h4><p />
  *
  * The property holds an <em>enumerated set of values</em> belonging to a controlled
  * vocabulary which <em>defines the function of the object</em>, it should describe the
@@ -91,7 +91,7 @@ const kTAG_TYPE				= '@4';
 const kTAG_KIND				= '@5';
 
 /**
- * <h3>Name.</h3><p />
+ * <h4>Name.</h4><p />
  *
  * The property holds the object's <em>name</em> or <em>label</em>, it represents a short
  * description that can be used as a label and that should give a rough idea of what the
@@ -106,7 +106,7 @@ const kTAG_KIND				= '@5';
 const kTAG_NAME				= '@6';
 
 /**
- * <h3>Description.</h3><p />
+ * <h4>Description.</h4><p />
  *
  * The property holds the object's <em>description</em> or <em>definition</em>, it
  * represents a text that <em>describes in detail</em> the current object.
@@ -117,7 +117,7 @@ const kTAG_NAME				= '@6';
 const kTAG_DESCRIPTION		= '@7';
 
 /**
- * <h3>Creation stamp.</h3><p />
+ * <h4>Creation stamp.</h4><p />
  *
  * The property holds the object's <em>creation time stamp</em>.
  *
@@ -127,7 +127,7 @@ const kTAG_DESCRIPTION		= '@7';
 const kTAG_CREATION			= '@8';
 
 /**
- * <h3>Modification stamp.</h3><p />
+ * <h4>Modification stamp.</h4><p />
  *
  * The property holds the object's <em>modification time stamp</em>.
  *
@@ -141,7 +141,7 @@ const kTAG_MODIFICATION		= '@9';
  *======================================================================================*/
 
 /**
- * <h3>Symbol.</h3><p />
+ * <h4>Symbol.</h4><p />
  *
  * The property holds the object <em>symbol</em> or <em>constant<em>, which is a string that
  * serves as a variable name for the object; the symbol should be unique within a context.
@@ -152,7 +152,7 @@ const kTAG_MODIFICATION		= '@9';
 const kTAG_SYMBOL			= '@A';
 
 /**
- * <h3>Synonyms.</h3><p />
+ * <h4>Synonyms.</h4><p />
  *
  * The property holds a list of symbols which refer to <em>synonyms of the current
  * descriptor</em>, the property is structured as a list of strings.
@@ -163,7 +163,7 @@ const kTAG_SYMBOL			= '@A';
 const kTAG_SYNONYMS			= '@B';
 
 /**
- * <h3>Reference count.</h3><p />
+ * <h4>Reference count.</h4><p />
  *
  * The property holds an <em>number of objects that reference the current one</em>, when
  * inserted for the first time the value is <tt>0</tt>, the object cannot be deleted if this
@@ -175,7 +175,7 @@ const kTAG_SYNONYMS			= '@B';
 const kTAG_REF_COUNT		= '@C';
 
 /**
- * <h3>Minimum value.</h3><p />
+ * <h4>Minimum value.</h4><p />
  *
  * The property holds a number representing the <em>minimum value</em> for instances of the
  * current descriptor.
@@ -186,7 +186,7 @@ const kTAG_REF_COUNT		= '@C';
 const kTAG_MIN_VAL			= '@D';
 
 /**
- * <h3>Maximum value.</h3><p />
+ * <h4>Maximum value.</h4><p />
  *
  * The property holds a number representing the <em>maximum value</em> for instances of the
  * current descriptor.
@@ -197,7 +197,7 @@ const kTAG_MIN_VAL			= '@D';
 const kTAG_MAX_VAL			= '@E';
 
 /**
- * <h3>Pattern.</h3><p />
+ * <h4>Pattern.</h4><p />
  *
  * The property holds a string representing the <em>expected pattern of the string</em>
  * descriptor value, this is used to validate strings.
@@ -208,7 +208,7 @@ const kTAG_MAX_VAL			= '@E';
 const kTAG_PATTERN			= '@F';
 
 /**
- * <h3>Minimum expected value.</h3><p />
+ * <h4>Minimum expected value.</h4><p />
  *
  * The property holds a number representing the <em>lowest valid value</em> for this
  * descriptor.
@@ -219,7 +219,7 @@ const kTAG_PATTERN			= '@F';
 const kTAG_MIN_VAL_EXPECTED	= '@10';
 
 /**
- * <h3>Maximum expected value.</h3><p />
+ * <h4>Maximum expected value.</h4><p />
  *
  * The property holds a number representing the <em>highest valid value</em> for this
  * descriptor.
@@ -234,7 +234,7 @@ const kTAG_MAX_VAL_EXPECTED	= '@11';
  *======================================================================================*/
 
 /**
- * <h3>Available serial identifier.</h3><p />
+ * <h4>Available serial identifier.</h4><p />
  *
  * This value holds the next available serial identifier for client defined descriptors.
  */

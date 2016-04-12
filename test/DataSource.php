@@ -21,7 +21,7 @@ require_once( "functions.php" );
 //
 // Reference class.
 //
-use Milko\PHPLib\DataSource;
+use Milko\PHPLib\Datasource;
 
 //
 // Instantiate object.
@@ -29,7 +29,7 @@ use Milko\PHPLib\DataSource;
 echo( '$url = "protocol://user:password@host:9090/dir/file?arg1=val1& arg2 =val2&arg3#frag";' . "\n" );
 $url = "protocol://user:password@host:9090/dir/file?arg1=val1& arg2 =val2&arg3#frag";
 echo( '$test = new Milko\PHPLib\DataSource( $url' . " );\n\n" );
-$test = new Milko\PHPLib\DataSource( $url );
+$test = new Milko\PHPLib\Datasource( $url );
 
 //
 // Retrieve data source name.
@@ -46,7 +46,7 @@ echo( "\n=======================================================================
 //
 echo( "Retrieve protocol:\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::PROT ];' . "\n" );
-$result = dumpValue( $test[ Milko\PHPLib\DataSource::PROT ] );
+$result = dumpValue( $test[ Milko\PHPLib\Datasource::PROT ] );
 echo( "Result: $result\n" );
 echo( '$result = $test->Protocol();' . "\n" );
 $result = dumpValue( $test->Protocol() );
@@ -59,7 +59,7 @@ echo( "\n" );
 //
 echo( "Retrieve host:\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::HOST ];' . "\n" );
-$result = dumpValue( $test[ Milko\PHPLib\DataSource::HOST ] );
+$result = dumpValue( $test[ Milko\PHPLib\Datasource::HOST ] );
 echo( "Result: $result\n" );
 echo( '$result = $test->Host();' . "\n" );
 $result = dumpValue( $test->Host() );
@@ -71,7 +71,7 @@ echo( "\n" );
 //
 echo( "Retrieve port:\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::PORT ];' . "\n" );
-$result = dumpValue( $test[ Milko\PHPLib\DataSource::PORT ] );
+$result = dumpValue( $test[ Milko\PHPLib\Datasource::PORT ] );
 echo( "Result: $result\n" );
 echo( '$result = $test->Port();' . "\n" );
 $result = dumpValue( $test->Port() );
@@ -83,7 +83,7 @@ echo( "\n" );
 //
 echo( "Retrieve user:\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::USER ];' . "\n" );
-$result = dumpValue( $test[ Milko\PHPLib\DataSource::USER ] );
+$result = dumpValue( $test[ Milko\PHPLib\Datasource::USER ] );
 echo( "Result: $result\n" );
 echo( '$result = $test->User();' . "\n" );
 $result = dumpValue( $test->User() );
@@ -95,7 +95,7 @@ echo( "\n" );
 //
 echo( "Retrieve password:\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::PASS ];' . "\n" );
-$result = dumpValue( $test[ Milko\PHPLib\DataSource::PASS ] );
+$result = dumpValue( $test[ Milko\PHPLib\Datasource::PASS ] );
 echo( "Result: $result\n" );
 echo( '$result = $test->Password();' . "\n" );
 $result = dumpValue( $test->Password() );
@@ -107,7 +107,7 @@ echo( "\n" );
 //
 echo( "Retrieve path:\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::PATH ];' . "\n" );
-$result = dumpValue( $test[ Milko\PHPLib\DataSource::PATH ] );
+$result = dumpValue( $test[ Milko\PHPLib\Datasource::PATH ] );
 echo( "Result: $result\n" );
 echo( '$result = $test->Path();' . "\n" );
 $result = dumpValue( $test->Path() );
@@ -119,7 +119,7 @@ echo( "\n" );
 //
 echo( "Retrieve fragment:\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::FRAG ];' . "\n" );
-$result = dumpValue( $test[ Milko\PHPLib\DataSource::FRAG ] );
+$result = dumpValue( $test[ Milko\PHPLib\Datasource::FRAG ] );
 echo( "Result: $result\n" );
 echo( '$result = $test->Fragment();' . "\n" );
 $result = dumpValue( $test->Fragment() );
@@ -131,7 +131,7 @@ echo( "\n" );
 //
 echo( "Retrieve query:\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::QUERY ];' . "\n" );
-$result = $test[ Milko\PHPLib\DataSource::QUERY ];
+$result = $test[ Milko\PHPLib\Datasource::QUERY ];
 echo( "Result:\n" );
 var_dump( $result );
 echo( '$result = $test->Query();' . "\n" );
@@ -181,7 +181,7 @@ echo( '$result = $test->Protocol( FALSE );' . "\n" );
 try{ $result = $test->Protocol( FALSE ); echo( "Failed!\n" ); }
 catch( Exception $error ){ echo( $error->getMessage() . "\n" ); }
 echo( '$result = $test[ Milko\PHPLib\DataSource::PROT ] = NULL;' . "\n" );
-try{ $result = $test[ Milko\PHPLib\DataSource::PROT ] = NULL; echo( "Failed!\n" ); }
+try{ $result = $test[ Milko\PHPLib\Datasource::PROT ] = NULL; echo( "Failed!\n" ); }
 catch( Exception $error ){ echo( $error->getMessage() . "\n" ); }
 
 echo( "\n" );
@@ -194,7 +194,7 @@ echo( '$result = $test->Host( FALSE );' . "\n" );
 try{ $result = $test->Host( FALSE ); echo( "Failed!\n" ); }
 catch( Exception $error ){ echo( $error->getMessage() . "\n" ); }
 echo( '$result = $test[ Milko\PHPLib\DataSource::HOST ] = NULL;' . "\n" );
-try{ $result = $test[ Milko\PHPLib\DataSource::HOST ] = NULL; echo( "Failed!\n" ); }
+try{ $result = $test[ Milko\PHPLib\Datasource::HOST ] = NULL; echo( "Failed!\n" ); }
 catch( Exception $error ){ echo( $error->getMessage() . "\n" ); }
 
 echo( "\n" );
@@ -207,7 +207,7 @@ echo( '$result = $test->Port( "should be an integer" );' . "\n" );
 try{ $result = $test->Port( "should be an integer" ); echo( "Failed!\n" ); }
 catch( Exception $error ){ echo( $error->getMessage() . "\n" ); }
 echo( '$result = $test[ Milko\PHPLib\DataSource::PORT ] = "should be an integer";' . "\n" );
-try{ $test[ Milko\PHPLib\DataSource::PORT ] = "should be an integer"; echo( "Failed!\n" ); }
+try{ $test[ Milko\PHPLib\Datasource::PORT ] = "should be an integer"; echo( "Failed!\n" ); }
 catch( Exception $error ){ echo( $error->getMessage() . "\n" ); }
 echo( '$result = $test->Port( "9090" );' . "\n" );
 try{ $result = $test->Port( "9090" ); echo( "This is supported!\n" ); }
@@ -218,18 +218,18 @@ echo( "\n=======================================================================
 //
 // Multiple hosts.
 //
-echo( '$url = "protocol://user:password@host1:9090,host2,host3:9191/dir/file";' . "\n" );
-$url = "protocol://user:password@host1:9090,host2,host3:9191/dir/file";
+echo( '$url = "protocol://user:password@host1:9090,host2,host3:9191/dir/file?key=value#fragment";' . "\n" );
+$url = "protocol://user:password@host1:9090,host2,host3:9191/dir/file?key=value#fragment";
 echo( '$test = new Milko\PHPLib\DataSource( $url' . " );\n" );
-$test = new Milko\PHPLib\DataSource( $url );
+$test = new Milko\PHPLib\Datasource( $url );
 echo( "$test\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::PROT ];' . "\n" );
-$result = dumpValue( $test[ Milko\PHPLib\DataSource::PROT ] );
+$result = dumpValue( $test[ Milko\PHPLib\Datasource::PROT ] );
 echo( "Result: $result\n" );
 echo( '$result = $test[ Milko\PHPLib\DataSource::HOST ];' . "\n" );
-print_r( $test[ Milko\PHPLib\DataSource::HOST ] );
+print_r( $test[ Milko\PHPLib\Datasource::HOST ] );
 echo( '$result = $test[ Milko\PHPLib\DataSource::PORT ];' . "\n" );
-print_r( $test[ Milko\PHPLib\DataSource::PORT ] );
+print_r( $test[ Milko\PHPLib\Datasource::PORT ] );
 echo( '$result = (string)$test;' . "\n" );
 $result = (string)$test;
 echo( "$result\n" );

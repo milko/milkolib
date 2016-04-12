@@ -24,7 +24,7 @@
  *======================================================================================*/
 
 /**
- * <h3>Subclass of.</h3><p />
+ * <h4>Subclass of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship is a subclass of the object
  * of the relationship, in other words, the subject is derived from the object.
@@ -32,7 +32,7 @@
 const kPREDICATE_SUBCLASS_OF = ':predicate:SUBCLASS-OF';
 
 /**
- * <h3>Subrank of.</h3><p />
+ * <h4>Subrank of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship belongs to the next lowest
  * rank than the object of the relationship.
@@ -40,7 +40,7 @@ const kPREDICATE_SUBCLASS_OF = ':predicate:SUBCLASS-OF';
 const kPREDICATE_SUBRANK_OF = ':predicate:SUBRANK-OF';
 
 /**
- * <h3>Subset of.</h3><p />
+ * <h4>Subset of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship represents a subset of the
  * object of the relationship, in other words, the subject is contained by the object.
@@ -48,7 +48,7 @@ const kPREDICATE_SUBRANK_OF = ':predicate:SUBRANK-OF';
 const kPREDICATE_SUBSET_OF = ':predicate:SUBSET-OF';
 
 /**
- * <h3>Part of.</h3><p />
+ * <h4>Part of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship is a part or a component of
  * the object of the relationship.
@@ -56,7 +56,7 @@ const kPREDICATE_SUBSET_OF = ':predicate:SUBSET-OF';
 const kPREDICATE_PART_OF = ':predicate:PART-OF';
 
 /**
- * <h3>Type of.</h3><p />
+ * <h4>Type of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship represents the type of the
  * object of the relationship. This predicate can also be as a group and a proxy: it may
@@ -67,7 +67,7 @@ const kPREDICATE_PART_OF = ':predicate:PART-OF';
 const kPREDICATE_TYPE_OF = ':predicate:TYPE-OF';
 
 /**
- * <h3>Function of.</h3><p />
+ * <h4>Function of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship represents a function or
  * trait group of the object of the relationship, in other words, the subject is a group of
@@ -76,7 +76,7 @@ const kPREDICATE_TYPE_OF = ':predicate:TYPE-OF';
 const kPREDICATE_FUNCTION_OF = ':predicate:FUNCTION-OF';
 
 /**
- * <h3>Collection of.</h3><p />
+ * <h4>Collection of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship is a collection belonging
  * to the object of the relationship. This predicate is similar to the attribute of
@@ -87,7 +87,7 @@ const kPREDICATE_FUNCTION_OF = ':predicate:FUNCTION-OF';
 const kPREDICATE_COLLECTION_OF = ':predicate:COLLECTION-OF';
 
 /**
- * <h3>Attribute of.</h3><p />
+ * <h4>Attribute of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship is an attribute of the
  * object of the relationship, this means that the subject of the relationship belongs to
@@ -96,7 +96,7 @@ const kPREDICATE_COLLECTION_OF = ':predicate:COLLECTION-OF';
 const kPREDICATE_ATTRIBUTE_OF = ':predicate:ATTRIBUTE-OF';
 
 /**
- * <h3>Property of.</h3><p />
+ * <h4>Property of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship is a property of the object
  * of the relationship, this means that the subject of the relationship is a feature.
@@ -104,7 +104,7 @@ const kPREDICATE_ATTRIBUTE_OF = ':predicate:ATTRIBUTE-OF';
 const kPREDICATE_PROPERTY_OF = ':predicate:PROPERTY-OF';
 
 /**
- * <h3>Enumeration of.</h3><p />
+ * <h4>Enumeration of.</h4><p />
  *
  * This predicate relates vertex elements of an enumerated set, it indicates that the
  * subject of the relationship is an enumerated set item instance. If the object of the
@@ -114,7 +114,7 @@ const kPREDICATE_PROPERTY_OF = ':predicate:PROPERTY-OF';
 const kPREDICATE_ENUM_OF = ':predicate:ENUM-OF';
 
 /**
- * <h3>Instance of.</h3><p />
+ * <h4>Instance of.</h4><p />
  *
  * This predicate relates a type to its instance, it indicates that the object of the
  * relationship is an instance of the subject of the relationship.
@@ -126,7 +126,7 @@ const kPREDICATE_INSTANCE_OF = ':predicate:INSTANCE-OF';
  *======================================================================================*/
 
 /**
- * <h3>Preferred.</h3><p />
+ * <h4>Preferred.</h4><p />
  *
  * This predicate indicates that the object of the relationship is the preferred choice, in
  * other words, if possible, one should use the object of the relationship in place of the
@@ -138,7 +138,7 @@ const kPREDICATE_INSTANCE_OF = ':predicate:INSTANCE-OF';
 const kPREDICATE_PREFERRED = ':predicate:PREFERRED';
 
 /**
- * <h3>Valid.</h3><p />
+ * <h4>Valid.</h4><p />
  *
  * This predicate indicates that the object of the relationship is the valid choice, in
  * other words, the subject of the relationship is obsolete or not valid, and one should use
@@ -151,7 +151,7 @@ const kPREDICATE_PREFERRED = ':predicate:PREFERRED';
 const kPREDICATE_VALID = ':predicate:VALID';
 
 /**
- * <h3>Legacy.</h3><p />
+ * <h4>Legacy.</h4><p />
  *
  * This predicate indicates that the object of the relationship is the former or legacy
  * version, in other words, the object of the relationship is obsolete or not in use. This
@@ -168,7 +168,7 @@ const kPREDICATE_LEGACY = ':predicate:LEGACY';
  *======================================================================================*/
 
 /**
- * <h3>Cross-reference.</h3><p />
+ * <h4>Cross-reference.</h4><p />
  *
  * This predicate indicates that the subject of the relationship is related to the object of
  * the relationship. This predicate does not represent any specific type of relationship,
@@ -180,7 +180,7 @@ const kPREDICATE_LEGACY = ':predicate:LEGACY';
 const kPREDICATE_XREF = ':predicate:XREF';
 
 /**
- * <h3>Exact cross-reference.</h3><p />
+ * <h4>Exact cross-reference.</h4><p />
  *
  * This predicate indicates that the object of the relationship can be used in place of the
  * subject of the relationship. If the predicate is found in both directions, one could say

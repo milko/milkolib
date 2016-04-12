@@ -25,14 +25,14 @@
  *======================================================================================*/
 
 /**
- * <h3>Tag prefix token.</h3><p />
+ * <h4>Tag prefix token.</h4><p />
  *
  * This token is prepended to the serial number to compile tags.
  */
 const kTOKEN_TAG_PREFIX = '@';
 
 /**
- * <h3>Namespace separator token.</h3><p />
+ * <h4>Namespace separator token.</h4><p />
  *
  * This is used to separate namespaces from codes.
  */
@@ -43,7 +43,7 @@ const kTOKEN_NAMESPACE_SEPARATOR = ':';
  *======================================================================================*/
 
 /**
- * <h3>Single or multiple.</h3><p />
+ * <h4>Single or multiple.</h4><p />
  *
  * This token represents a boolean flag which indicates whether to process one or more
  * elements: if <tt>TRUE</tt>, it means that more than one element is to be processed; if
@@ -52,7 +52,7 @@ const kTOKEN_NAMESPACE_SEPARATOR = ':';
 const kTOKEN_OPT_MANY = '$doAll';
 
 /**
- * <h3>Result format.</h3><p />
+ * <h4>Result format.</h4><p />
  *
  * This token represents a controlled vocabulary that determines the format in which query
  * retults should be returned:
@@ -69,7 +69,7 @@ const kTOKEN_OPT_MANY = '$doAll';
 const kTOKEN_OPT_FORMAT = '$doFormat';
 
 /**
- * <h3>Native result format.</h3><p />
+ * <h4>Native result format.</h4><p />
  *
  * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
  * indicates that a query result should be returned in the native database driver format.
@@ -77,7 +77,7 @@ const kTOKEN_OPT_FORMAT = '$doFormat';
 const kTOKEN_OPT_FORMAT_NATIVE = 'N';
 
 /**
- * <h3>Standard result format.</h3><p />
+ * <h4>Standard result format.</h4><p />
  *
  * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
  * indicates that a query result should be returned as a set of
@@ -86,7 +86,7 @@ const kTOKEN_OPT_FORMAT_NATIVE = 'N';
 const kTOKEN_OPT_FORMAT_STANDARD = 'S';
 
 /**
- * <h3>Document handle result format.</h3><p />
+ * <h4>Document handle result format.</h4><p />
  *
  * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
  * indicates that a query result should be returned as a set of document handles.
@@ -94,7 +94,7 @@ const kTOKEN_OPT_FORMAT_STANDARD = 'S';
 const kTOKEN_OPT_FORMAT_HANDLE = 'H';
 
 /**
- * <h3>Document key result format.</h3><p />
+ * <h4>Document key result format.</h4><p />
  *
  * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
  * indicates that a query result should be returned as a set of document keys.
@@ -102,14 +102,14 @@ const kTOKEN_OPT_FORMAT_HANDLE = 'H';
 const kTOKEN_OPT_FORMAT_KEY = 'K';
 
 /**
- * <h3>Skip.</h3><p />
+ * <h4>Skip.</h4><p />
  *
  * This token represents the number of elements to skip before returning a list of values.
  */
 const kTOKEN_OPT_SKIP = '$skip';
 
 /**
- * <h3>Limit.</h3><p />
+ * <h4>Limit.</h4><p />
  *
  * This token represents the number of elements to select from a list of values.
  */
@@ -120,7 +120,7 @@ const kTOKEN_OPT_LIMIT = '$limit';
  *======================================================================================*/
 
 /**
- * <h3>Relationship direction.</h3><p />
+ * <h4>Relationship direction.</h4><p />
  *
  * This token represents a controlled vocabulary that defines the direction of a
  * relationship:
@@ -134,21 +134,21 @@ const kTOKEN_OPT_LIMIT = '$limit';
 const kTOKEN_OPT_DIRECTION = '$direction';
 
 /**
- * <h3>Incoming relationships.</h3><p />
+ * <h4>Incoming relationships.</h4><p />
  *
  * This token indicates relationships directed towards the current vertex.
  */
 const kTOKEN_OPT_DIRECTION_IN = 'in';
 
 /**
- * <h3>Outgoing relationships.</h3><p />
+ * <h4>Outgoing relationships.</h4><p />
  *
  * This token indicates relationships stemming from the current vertex.
  */
 const kTOKEN_OPT_DIRECTION_OUT = 'out';
 
 /**
- * <h3>Any direction.</h3><p />
+ * <h4>Any direction.</h4><p />
  *
  * This token indicates both incoming and outgoing relationships.
  */
@@ -159,7 +159,7 @@ const kTOKEN_OPT_DIRECTION_ANY = 'any';
  *======================================================================================*/
 
 /**
- * <h3>Collection type.</h3><p />
+ * <h4>Collection type.</h4><p />
  *
  * This token represents a controlled vocabulary that defines the type of a collection:
  *
@@ -171,7 +171,7 @@ const kTOKEN_OPT_DIRECTION_ANY = 'any';
 const kTOKEN_OPT_COLLECTION_TYPE = '$collType';
 
 /**
- * <h3>Document collection.</h3><p />
+ * <h4>Document collection.</h4><p />
  *
  * This token indicates a collection of type <em>document</em>, collections of this type
  * store document records.
@@ -179,7 +179,7 @@ const kTOKEN_OPT_COLLECTION_TYPE = '$collType';
 const kTOKEN_OPT_COLLECTION_TYPE_DOC = 'docu';
 
 /**
- * <h3>Edge collection.</h3><p />
+ * <h4>Edge collection.</h4><p />
  *
  * This token indicates a collection of type <em>edge</em>, collections of this type store
  * predicate documents which represent a directed relationship from a source document to
