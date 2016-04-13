@@ -14,7 +14,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -54,8 +54,37 @@ elseif( kENGINE == "ARANGO" )
 	echo( (string)$test . ' ==> ' );
 	echo( ( "$test" == kARANGO_OPTS_CLIENT_DEFAULT ) ? "OK\n" : "FALIED\n" );
 }
+echo( "Class: " . get_class( $test ) . "\n" );
+echo( "Protocol: " );
+var_dump( $test->Protocol() );
+echo( "Host: " );
+var_dump( $test->Host() );
+echo( "Port: " );
+var_dump( $test->Port() );
+echo( "Path: " );
+var_dump( $test->Path() );
 
 echo( "\n" );
+
+//
+// List server databases.
+//
+echo( "List server databases:\n" );
+echo( '$list = $test->ListDatabases();' . "\n" );
+$list = $test->ListDatabases();
+print_r( $list );
+
+echo( "\n" );
+
+//
+// List working databases.
+//
+echo( "List working databases:\n" );
+echo( '$list = array_keys( $test->ListWorkingDatabases() );' . "\n" );
+$list = array_keys( $test->ListWorkingDatabases() );
+print_r( $list );
+
+echo( "\n====================================================================================\n\n" );
 
 //
 // Instantiate object.
@@ -80,15 +109,34 @@ elseif( kENGINE == "ARANGO" )
 	echo( (string)$test . " ==> " );
 	echo( ( "$test" == $url ) ? "OK\n" : "FALIED\n" );
 }
+echo( "Class: " . get_class( $test ) . "\n" );
+echo( "Protocol: " );
+var_dump( $test->Protocol() );
+echo( "Host: " );
+var_dump( $test->Host() );
+echo( "Port: " );
+var_dump( $test->Port() );
+echo( "Path: " );
+var_dump( $test->Path() );
 
-echo( "\n====================================================================================\n\n" );
+echo( "\n" );
 
 //
 // List server databases.
 //
-echo( "List databases:\n" );
+echo( "List server databases:\n" );
 echo( '$list = $test->ListDatabases();' . "\n" );
 $list = $test->ListDatabases();
+print_r( $list );
+
+echo( "\n" );
+
+//
+// List working databases.
+//
+echo( "List working databases:\n" );
+echo( '$list = array_keys( $test->ListWorkingDatabases() );' . "\n" );
+$list = array_keys( $test->ListWorkingDatabases() );
 print_r( $list );
 
 echo( "\n====================================================================================\n\n" );
@@ -126,6 +174,24 @@ $db = $test->NewDatabase( "NewDB" );
 echo( '$list = $test->ListDatabases();' . "\n" );
 $list = $test->ListDatabases();
 print_r( $list );
+echo( '$list = array_keys( $test->ListWorkingDatabases() );' . "\n" );
+$list = array_keys( $test->ListWorkingDatabases() );
+print_r( $list );
+
+echo( "\n" );
+
+//
+// Forget working database.
+//
+echo( "Forget working database:\n" );
+echo( '$test->ForgetWorkingDatabase( "NewDB" );' . "\n" );
+$test->ForgetWorkingDatabase( "NewDB" );
+echo( '$list = $test->ListDatabases();' . "\n" );
+$list = $test->ListDatabases();
+print_r( $list );
+echo( '$list = array_keys( $test->ListWorkingDatabases() );' . "\n" );
+$list = array_keys( $test->ListWorkingDatabases() );
+print_r( $list );
 
 echo( "\n" );
 
@@ -137,6 +203,9 @@ echo( '$db = $test->DelDatabase( "test_milkolib" );' . "\n" );
 $db = $test->DelDatabase( "test_milkolib" );
 echo( '$list = $test->ListDatabases();' . "\n" );
 $list = $test->ListDatabases();
+print_r( $list );
+echo( '$list = array_keys( $test->ListWorkingDatabases() );' . "\n" );
+$list = array_keys( $test->ListWorkingDatabases() );
 print_r( $list );
 
 

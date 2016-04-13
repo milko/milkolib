@@ -8,7 +8,7 @@
 
 namespace Milko\PHPLib\ArangoDB;
 
-use \Milko\PHPLib\Server;
+use Milko\PHPLib\Server;
 
 use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Connection as ArangoConnection;
@@ -139,7 +139,7 @@ class Server extends \Milko\PHPLib\Server
 		// Set authorisation type.
 		//
 		$options[ ArangoConnectionOptions::OPTION_AUTH_TYPE ]
-			= $this->offsetGet( ArangoConnectionOptions::OPTION_AUTH_TYPE );
+			= $this->mDatasource->offsetGet( ArangoConnectionOptions::OPTION_AUTH_TYPE );
 
 		//
 		// Set user.
@@ -157,31 +157,32 @@ class Server extends \Milko\PHPLib\Server
 		// Set connection persistence.
 		//
 		$options[ ArangoConnectionOptions::OPTION_CONNECTION ]
-			= $this->offsetGet( ArangoConnectionOptions::OPTION_CONNECTION );
+			= $this->mDatasource->offsetGet( ArangoConnectionOptions::OPTION_CONNECTION );
 
 		//
 		// Set connection time-out.
 		//
 		$options[ ArangoConnectionOptions::OPTION_TIMEOUT ]
-			= $this->offsetGet( ArangoConnectionOptions::OPTION_TIMEOUT );
+			= $this->mDatasource->offsetGet( ArangoConnectionOptions::OPTION_TIMEOUT );
 
 		//
 		// Set time-out reconnect.
 		//
 		$options[ ArangoConnectionOptions::OPTION_RECONNECT ]
-			= $this->offsetGet( ArangoConnectionOptions::OPTION_RECONNECT );
+			= $this->mDatasource->offsetGet( ArangoConnectionOptions::OPTION_RECONNECT );
 
 		//
 		// Set creation option.
 		//
 		$options[ ArangoConnectionOptions::OPTION_CREATE ]
-			= $this->offsetGet( ArangoConnectionOptions::OPTION_CREATE );
+			= $this->mDatasource->offsetGet( ArangoConnectionOptions::OPTION_CREATE );
 
 		//
 		// Set update policy.
 		//
 		$options[ ArangoConnectionOptions::OPTION_UPDATE_POLICY ]
-			= $this->offsetGet( ArangoConnectionOptions::OPTION_UPDATE_POLICY );
+			= $this->mDatasource->offsetGet(
+				ArangoConnectionOptions::OPTION_UPDATE_POLICY );
 
 		return $options;															// ==>
 
@@ -323,43 +324,49 @@ class Server extends \Milko\PHPLib\Server
 		//
 		// Set authorisation type.
 		//
-		if( ! $this->offsetExists( ArangoConnectionOptions::OPTION_AUTH_TYPE ) )
-			$this->offsetSet( ArangoConnectionOptions::OPTION_AUTH_TYPE,
+		if( ! $this->mDatasource->offsetExists(
+			ArangoConnectionOptions::OPTION_AUTH_TYPE ) )
+			$this->mDatasource->offsetSet( ArangoConnectionOptions::OPTION_AUTH_TYPE,
 				kARANGO_OPTS_AUTH_DEFAULT );
 
 		//
 		// Set connection persistence.
 		//
-		if( ! $this->offsetExists( ArangoConnectionOptions::OPTION_CONNECTION ) )
-			$this->offsetSet( ArangoConnectionOptions::OPTION_CONNECTION,
+		if( ! $this->mDatasource->offsetExists(
+			ArangoConnectionOptions::OPTION_CONNECTION ) )
+			$this->mDatasource->offsetSet( ArangoConnectionOptions::OPTION_CONNECTION,
 				kARANGO_OPTS_PERSIST_DEFAULT );
 
 		//
 		// Set connection time-out.
 		//
-		if( ! $this->offsetExists( ArangoConnectionOptions::OPTION_TIMEOUT ) )
-			$this->offsetSet( ArangoConnectionOptions::OPTION_TIMEOUT,
+		if( ! $this->mDatasource->offsetExists(
+			ArangoConnectionOptions::OPTION_TIMEOUT ) )
+			$this->mDatasource->offsetSet( ArangoConnectionOptions::OPTION_TIMEOUT,
 				kARANGO_OPTS_TIMEOUT_DEFAULT );
 
 		//
 		// Set time-out reconnect.
 		//
-		if( ! $this->offsetExists( ArangoConnectionOptions::OPTION_RECONNECT ) )
-			$this->offsetSet( ArangoConnectionOptions::OPTION_RECONNECT,
+		if( ! $this->mDatasource->offsetExists(
+			ArangoConnectionOptions::OPTION_RECONNECT ) )
+			$this->mDatasource->offsetSet( ArangoConnectionOptions::OPTION_RECONNECT,
 				kARANGO_OPTS_RECONNECT_DEFAULT );
 
 		//
 		// Set creation option.
 		//
-		if( ! $this->offsetExists( ArangoConnectionOptions::OPTION_CREATE ) )
-			$this->offsetSet( ArangoConnectionOptions::OPTION_CREATE,
+		if( ! $this->mDatasource->offsetExists(
+			ArangoConnectionOptions::OPTION_CREATE ) )
+			$this->mDatasource->offsetSet( ArangoConnectionOptions::OPTION_CREATE,
 				kARANGO_OPTS_CREATE_DEFAULT );
 
 		//
 		// Set update policy.
 		//
-		if( ! $this->offsetExists( ArangoConnectionOptions::OPTION_UPDATE_POLICY ) )
-			$this->offsetSet( ArangoConnectionOptions::OPTION_UPDATE_POLICY,
+		if( ! $this->mDatasource->offsetExists(
+			ArangoConnectionOptions::OPTION_UPDATE_POLICY ) )
+			$this->mDatasource->offsetSet( ArangoConnectionOptions::OPTION_UPDATE_POLICY,
 				ArangoUpdatePolicy::LAST );
 
 	} // defaultConnectionOptions.

@@ -82,7 +82,7 @@ class test_Collection extends Milko\PHPLib\Collection
 	protected function newCollection( $theCollection, $theOptions ) {
 		return (string)$theCollection;	}
 	protected function collectionName() {
-		return $this->mNativeObject;	}
+		return $this->mConnection;	}
 
 	//
 	// Declare record management interface,

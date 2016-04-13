@@ -84,10 +84,10 @@ class test_Collection extends Milko\PHPLib\Collection
 	//
 	public function Drop( $theOptions = NULL ) {}
 	public function Truncate( $theOptions = NULL ) {}
-	protected function collectionNew( $theCollection, $theOptions ) {
+	protected function collectionCreate( $theCollection, $theOptions ) {
 		return (string)$theCollection;	}
 	protected function collectionName() {
-		return $this->mNativeObject;	}
+		return $this->mConnection;	}
 
 	//
 	// Declare record management interface,

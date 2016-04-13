@@ -48,13 +48,57 @@ use Milko\PHPLib\Datasource;
  * When a connection is open, none of the {@link Datasource} properties can be modified,
  * attempting to do so will trigger an exception.
  *
+ * The class implements the following public interface:
+ *
+ * <ul>
+ * 	<li>Connections:
+ * 	 <ul>
+ * 		<li><b>{@link Connect()}</b>: Connect the server.
+ * 		<li><b>{@link Disconnect()}</b>: Disconnect the server.
+ * 	 </ul>
+ * 	<li>Connection status:
+ * 	 <ul>
+ * 		<li><b>{@link Connection()}</b>: Return the current server native connection.
+ * 		<li><b>{@link isConnected()}</b>: Return the connection status.
+ * 	 </ul>
+ * 	<li>Database management:
+ * 	 <ul>
+ * 		<li><b>{@link NewDatabase()}</b>: Create a {@link Database} instance.
+ * 		<li><b>{@link GetDatabase()}</b>: Return an existing {@link Database} instance.
+ * 		<li><b>{@link DelDatabase()}</b>: Drop a {@link Database} instance.
+ * 		<li><b>{@link ListDatabases()}</b>: List server databases.
+ * 	 </ul>
+ * 	<li>Working database management:
+ * 	 <ul>
+ * 		<li><b>{@link ListWorkingDatabases()}</b>: Return working database instances.
+ * 		<li><b>{@link ForgetWorkingDatabase()}</b>: Unregister working database.
+ * 	 </ul>
+ * </ul>
+ *
+ * The class declares the following protected interface which must be implemented in derived
+ * concrete classes:
+ *
+ * <ul>
+ * 	<li>Connections:
+ * 	 <ul>
+ * 		<li><b>{@link connectionCreate()}</b>: Create a native connection.
+ * 		<li><b>{@link connectionDestruct()}</b>: Close a native connection.
+ * 	 </ul>
+ * 	<li>Database management:
+ * 	 <ul>
+ * 		<li><b>{@link databaseCreate()}</b>: Create a {@link Database} instance.
+ * 		<li><b>{@link databaseRetrieve()}</b>: Return an existing {@link Database} instance.
+ * 		<li><b>{@link databaseList()}</b>: List server databases.
+ * 	 </ul>
+ * </ul>
+ *
  *	@package	Core
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
  *	@since		06/02/2016
  *
- *	@example	../../test/Server.php
+ *	@example	/test/Server.php
  *	@example
  * <code>
  * $server = new Milko\PHPLib\Server( 'protocol://user:pass@host:9090' );
@@ -909,7 +953,7 @@ abstract class Server extends Container
 	 *
 	 * @param string				$theDatabase		Database name.
 	 * @param array					$theOptions			Database native options.
-	 * @return boolean				<tt>TRUE</tt> dropped, <tt>NULL</tt> not found.
+	 * @return mixed				<tt>TRUE</tt> dropped, <tt>NULL</tt> not found.
 	 *
 	 * @uses GetDatabase()
 	 * @uses Database::Drop()
@@ -967,6 +1011,75 @@ abstract class Server extends Container
 		return [];																	// ==>
 
 	} // ListDatabases.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC WORKING DATABASE INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ListWorkingDatabases															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the server list of working databases.</h4><p />
+	 *
+	 * This method can be used to retrieve the list of working databases registered on the
+	 * server, the method will return an associative array of {@link Database} instances
+	 * indexed by the database name.
+	 *
+	 * @return array				List of working database objects.
+	 */
+	public function ListWorkingDatabases()
+	{
+		return $this->getArrayCopy();												// ==>
+
+	} // WorkingDatabases.
+
+
+	/*===================================================================================
+	 *	ForgetWorkingDatabase															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Clear a working database.</h4><p />
+	 *
+	 * This method can be used to unregister a working database, it will not drop it, but
+	 * only remove it from the list of working databases.
+	 *
+	 * The method will return <tt>TRUE</tt> if the database was unregistered, or
+	 * <tt>NULL</tt> if it didn't find the database.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @return mixed				<tt>TRUE</tt> unregistered, <tt>NULL</tt> not found.
+	 */
+	public function ForgetWorkingDatabase( $theDatabase )
+	{
+		//
+		// Get database status.
+		//
+		$status = ( $this->offsetExists( $theDatabase ) )
+				? TRUE
+				: NULL;
+
+		//
+		// Unregister database.
+		//
+		if( $this->offsetExists( $theDatabase ) )
+		{
+			$this->offsetUnset( $theDatabase );
+
+			return TRUE;															// ==>
+		}
+
+		return NULL;																// ==>
+
+	} // ForgetWorkingDatabase.
 
 
 

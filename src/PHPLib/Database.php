@@ -8,14 +8,14 @@
 
 namespace Milko\PHPLib;
 
-use Milko\PHPLib\Server;
-use Milko\PHPLib\Collection;
-
 /*=======================================================================================
  *																						*
  *									Database.php										*
  *																						*
  *======================================================================================*/
+
+use Milko\PHPLib\Server;
+use Milko\PHPLib\Collection;
 
 /**
  * <h4>Database ancestor object.</h4>
@@ -29,10 +29,50 @@ use Milko\PHPLib\Collection;
  * The class features two attributes:
  *
  * <ul>
- * 	<li><tt>{@link $mServer}</tt>: This attribute contains a {@link Server} instance to
+ * 	<li><tt>{@link $mServer}</tt>: This attribute contains the {@link Server} instance to
  * 		which the database belongs.
  * 	<li><tt>{@link $mConnection}</tt>: This attribute contains the database native
  * 		connection object.
+ * </ul>
+ *
+ * The class implements the following public interface:
+ *
+ * <ul>
+ * 	<li>Connections:
+ * 	 <ul>
+ * 		<li><b>{@link Server()}</b>: Return database {@link Server}.
+ * 		<li><b>{@link Connection()}</b>: Return database native connection.
+ * 	 </ul>
+ * 	<li>Collection management:
+ * 	 <ul>
+ * 		<li><b>{@link NewCollection()}</b>: Create a {@link Collection} instance.
+ * 		<li><b>{@link GetCollection()}</b>: Return an existing {@link Collection} instance.
+ * 		<li><b>{@link DelCollection()}</b>: Drop a {@link Collection} instance.
+ * 		<li><b>{@link ListCollections()}</b>: List database collections.
+ * 	 </ul>
+ * 	<li>Working collection management:
+ * 	 <ul>
+ * 		<li><b>{@link ListWorkingCollections()}</b>: Return working collection instances.
+ * 		<li><b>{@link ForgetWorkingCollection()}</b>: Unregister working collection.
+ * 	 </ul>
+ * </ul>
+ *
+ * The class declares the following protected interface which must be implemented in derived
+ * concrete classes:
+ *
+ * <ul>
+ * 	<li>Connections:
+ * 	 <ul>
+ * 		<li><b>{@link databaseCreate()}</b>: Create a native database instance.
+ * 		<li><b>{@link databaseName()}</b>: Return the current database name.
+ * 	 </ul>
+ * 	<li>Collection management:
+ * 	 <ul>
+ * 		<li><b>{@link collectionCreate()}</b>: Create a {@link Collection} instance.
+ * 		<li><b>{@link collectionRetrieve()}</b>: Return an existing {@link Collection}
+ * 			instance.
+ * 		<li><b>{@link collectionList()}</b>: List database collections.
+ * 	 </ul>
  * </ul>
  *
  *	@package	Core
@@ -95,7 +135,6 @@ abstract class Database extends Container
 	 * @example
 	 * <code>
 	 * $server = new Server( 'driver://user:pass@host:8989' );
-	 * $server->Connect();
 	 * $database = new Database( $server, "database" );
 	 * </code>
 	 *
@@ -465,6 +504,75 @@ abstract class Database extends Container
 		return $this->collectionList( $theOptions );								// ==>
 
 	} // ListCollections.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC WORKING COLLECTION INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ListWorkingCollections															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the database list of working collections.</h4><p />
+	 *
+	 * This method can be used to retrieve the list of working collections registered on the
+	 * database, the method will return an associative array of {@link Collection} instances
+	 * indexed by the collection name.
+	 *
+	 * @return array				List of working collection objects.
+	 */
+	public function ListWorkingCollections()
+	{
+		return $this->getArrayCopy();												// ==>
+
+	} // ListWorkingCollections.
+
+
+	/*===================================================================================
+	 *	ForgetWorkingCollection															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Clear a working collection.</h4><p />
+	 *
+	 * This method can be used to unregister a working collection, it will not drop it, but
+	 * only remove it from the list of working collections.
+	 *
+	 * The method will return <tt>TRUE</tt> if the collection was unregistered, or
+	 * <tt>NULL</tt> if it didn't find the collection.
+	 *
+	 * @param string				$theCollection		Collection name.
+	 * @return mixed				<tt>TRUE</tt> unregistered, <tt>NULL</tt> not found.
+	 */
+	public function ForgetWorkingCollection( $theCollection )
+	{
+		//
+		// Get collection status.
+		//
+		$status = ( $this->offsetExists( $theCollection ) )
+			? TRUE
+			: NULL;
+
+		//
+		// Unregister collection.
+		//
+		if( $this->offsetExists( $theCollection ) )
+		{
+			$this->offsetUnset( $theCollection );
+
+			return TRUE;															// ==>
+		}
+
+		return NULL;																// ==>
+
+	} // ForgetWorkingCollection.
 
 
 
