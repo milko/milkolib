@@ -14,8 +14,9 @@ namespace Milko\PHPLib\MongoDB;
  *																						*
  *======================================================================================*/
 
-use Milko\PHPLib\Container;
-use Milko\PHPLib\Server;
+use Milko\PHPLib\Document;
+use Milko\PHPLib\MongoDB\Database;
+
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 
@@ -108,8 +109,7 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Drop the current collection.</h4>
 	 *
-	 * We implement this method by first checking if the collection exists and calling the
-	 * {@link \MongoDB\Collection::drop()} method.
+	 * We implement this method by calling the {@link \MongoDB\Collection::drop()} method.
 	 *
 	 * @param array					$theOptions			Native driver options.
 	 * @return mixed				<tt>TRUE</tt> dropped, <tt>NULL</tt> not found.
@@ -121,26 +121,13 @@ class Collection extends \Milko\PHPLib\Collection
 	public function Drop( $theOptions = NULL )
 	{
 		//
-		// Check if collection exists.
+		// Drop collection.
 		//
-		if( in_array( $this->collectionName(), $this->mDatabase->ListCollections() ) )
-		{
-			//
-			// Init options.
-			//
-			if( $theOptions === NULL )
-				$theOptions = [];
+		$result = $this->mConnection->drop( $theOptions );
 
-			//
-			// Drop collection.
-			//
-			$this->mConnection->drop( $theOptions );
-
-			return TRUE;															// ==>
-
-		} // Collection exists.
-
-		return NULL;																// ==>
+		return ( $result->ok )
+			 ? TRUE																	// ==>
+			 : NULL;																// ==>
 
 	} // Drop.
 
@@ -382,6 +369,92 @@ class Collection extends \Milko\PHPLib\Collection
 		return $this->InsertMany( $theDocuments );									// ==>
 
 	} // InsertBulk.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC UPDATE INTERFACE									*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Replace																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Replace document.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::replaceOne()} method.
+	 *
+	 * If the provided document doesn't have its key ({@link KeyOffset()}), the method will
+	 * raise an exception.
+	 *
+	 * @param mixed					$theDocument		The replacement document.
+	 * @return int					The number of replaced documents.
+	 *
+	 * @uses NewDocumentKey()
+	 * @uses NewNativeDocument()
+	 * @uses \MongoDB\Collection::replaceOne()
+	 */
+	public function Replace( $theDocument )
+	{
+		//
+		// Get document key.
+		// This will throw if key is missing.
+		//
+		$key = $this->NewDocumentKey( $theDocument );
+
+		return
+			$this->Connection()->replaceOne(
+				[ $this->KeyOffset() => $key ],
+				$this->NewNativeDocument( $theDocument ) )
+					->getModifiedCount();											// ==>
+
+	} // Replace.
+
+
+	/*===================================================================================
+	 *	Update																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Update documents.</h4>
+	 *
+	 * We implement this method to use the {@link \MongoDB\Collection::updateOne()} method
+	 * to update a single document and {@link \MongoDB\Collection::updateMany()} method to
+	 * update many records.
+	 *
+	 * @param array					$theCriteria		The modification criteria.
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theOptions			Update options.
+	 * @return int					The number of modified records.
+	 *
+	 * @uses \MongoDB\Collection::updateOne()
+	 * @uses \MongoDB\Collection::updateMany()
+	 */
+	public function Update( array $theCriteria,
+							$theFilter = NULL,
+							array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
+	{
+		//
+		// Normalise query.
+		//
+		if( $theFilter === NULL )
+			$theFilter = [];
+
+		//
+		// Update all documents.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? $this->mConnection->updateMany( $theFilter, $theCriteria )
+				: $this->mConnection->updateOne( $theFilter, $theCriteria );
+
+		return $result->getModifiedCount();											// ==>
+
+	} // Update.
 
 
 

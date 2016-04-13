@@ -14,8 +14,8 @@ namespace Milko\PHPLib\ArangoDB;
  *																						*
  *======================================================================================*/
 
-use Milko\PHPLib\Database;
 use Milko\PHPLib\Document;
+use Milko\PHPLib\ArangoDB\Database;
 
 use triagens\ArangoDb\Database as ArangoDatabase;
 use triagens\ArangoDb\Collection as ArangoCollection;
@@ -481,6 +481,196 @@ class Collection extends \Milko\PHPLib\Collection
 		return $ids;																// ==>
 
 	} // InsertBulk.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC UPDATE INTERFACE									*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Replace																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Replace document.</h4>
+	 *
+	 * We implement this method by converting the provided document to native format,
+	 * checking whether the key exists and calling the
+	 * {@link triagens\ArangoDb\DocumentHandler::replaceById()} method.
+	 *
+	 * If the document was replaced, the method will return <tt>1</tt>, if the document was
+	 * not found, the method will return <tt>0</tt>; any other error will trigger an
+	 * exception.
+	 *
+	 * If the provided document doesn't have its key ({@link KeyOffset()}), the method will
+	 * raise an exception.
+	 *
+	 * @param mixed					$theDocument		The replacement document.
+	 * @return int					The number of replaced documents.
+	 *
+	 * @uses NewDocumentKey()
+	 * @uses NewNativeDocument()
+	 * @uses triagens\ArangoDb\DocumentHandler::replaceById()
+	 */
+	public function Replace( $theDocument )
+	{
+		//
+		// Get document key.
+		// This will throw if key is missing.
+		//
+		$key = $this->NewDocumentKey( $theDocument );
+
+		//
+		// Convert replacement document.
+		//
+		$document = $this->NewNativeDocument( $theDocument );
+
+		//
+		// Instantiate document handler.
+		//
+		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
+
+		//
+		// Assert document exists.
+		//
+		try
+		{
+			//
+			// Replace document.
+			//
+			$handler->replaceById( $this->collectionName(), $key, $document );
+
+			return 1;																// ==>
+
+		} // Found document.
+
+		//
+		// Handle missing document.
+		//
+		catch( ArangoServerException $error )
+		{
+			//
+			// Skip not found.
+			//
+			if( $error->getCode() != 404 )
+				throw $error;													// !@! ==>
+
+		} // Document not found.
+
+		return 0;																	// ==>
+
+	} // Replace.
+
+
+	/*===================================================================================
+	 *	Update																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Update documents.</h4>
+	 *
+	 * We implement this method by applying the provided filter and modifying the returned
+	 * documents.
+	 *
+	 * @param array					$theCriteria		The modification criteria.
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theOptions			Update options.
+	 * @return int					The number of modified records.
+	 *
+	 * @uses NewNativeDocument()
+	 * @uses NewDocumentKey()
+	 * @uses triagens\ArangoDb\Cursor::getCount()
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 * @uses triagens\ArangoDb\Document::set()
+	 * @uses triagens\ArangoDb\DocumentHandler::update()
+	 */
+	public function Update( array $theCriteria,
+								  $theFilter = NULL,
+							array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
+	{
+		//
+		// Normalise query.
+		//
+		if( $theFilter === NULL )
+			$theFilter =
+				[ 'query' => 'FOR r IN @@collection RETURN r',
+					'bindVars' => [ '@collection' => $this->collectionName() ] ];
+
+		//
+		// Select documents.
+		//
+		$statement = new ArangoStatement( $this->mDatabase->Connection(), $theFilter );
+		$cursor = $statement->execute();
+		$count = $cursor->getCount();
+
+		//
+		// Handle selection.
+		//
+		if( $count )
+		{
+			//
+			// Instantiate document handler.
+			//
+			$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
+
+			//
+			// Process selection.
+			//
+			foreach( $cursor as $document )
+			{
+				//
+				// Update document.
+				//
+				foreach( $theCriteria as $key => $value )
+					$document->set( $key, $value );
+
+				//
+				// Update document.
+				//
+				$handler->update( $document, [ 'keepNull' => FALSE ] );
+
+				//
+				// Handle only first.
+				//
+				if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+					return 1;														// ==>
+
+			} // Iterating documents.
+
+		} // Non empty selection.
+
+		return $count;																// ==>
+
+	} // Update.
+
+
+	/*===================================================================================
+	 *	UpdateByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Update documents by example.</h4>
+	 *
+	 * We implement this method by using the
+	 * {@link triagens\ArangoDb\CollectionHandler::byExample()} method and applying the
+	 * modifications to the returned selection.
+	 *
+	 * @param array					$theCriteria		The modification criteria.
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Update options.
+	 * @return int					The number of modified records.
+	 */
+	public function UpdateByExample( array $theCriteria,
+									 array $theDocument = [],
+									 array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
+	{
+
+	} // UpdateByExample.
 
 
 

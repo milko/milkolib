@@ -14,7 +14,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -42,15 +42,15 @@ if( kENGINE == "MONGO" )
 {
 	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
 	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
-	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\Server( $url );
 }
 elseif( kENGINE == "ARANGO" )
 {
 	echo( '$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n" );
 	$url = "tcp://localhost:8529/test_milkolib/test_collection";
-	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\Server( $url );
 }
 echo( '$result = (string)$server;' . "\n" );
 echo( (string)$server . " ==> " );
@@ -83,8 +83,8 @@ echo( "\n" );
 // List working collections.
 //
 echo( "List working collections:\n" );
-echo( '$list = $test->WorkingCollections();' . "\n" );
-$list = $test->WorkingCollections();
+echo( '$list = array_keys( $test->ListWorkingCollections() );' . "\n" );
+$list = array_keys( $test->ListWorkingCollections() );
 print_r( $list );
 
 echo( "\n====================================================================================\n\n" );
@@ -116,13 +116,13 @@ echo( "\n=======================================================================
 // Create collection.
 //
 echo( "Create collection:\n" );
-echo( '$result = $test->RetrieveCollection( "NewCollection", \Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
-$result = $test->GetCollection( "NewCollection", \Milko\PHPLib\Server::kFLAG_CREATE );
+echo( '$result = $test->NewCollection( "NewCollection" );' . "\n" );
+$result = $test->NewCollection( "NewCollection" );
 echo( '$list = $test->ListCollections();' . "\n" );
 $list = $test->ListCollections();
 print_r( $list );
-echo( '$list = $test->WorkingCollections();' . "\n" );
-$list = $test->WorkingCollections();
+echo( '$list = array_keys( $test->ListWorkingCollections() );' . "\n" );
+$list = array_keys( $test->ListWorkingCollections() );
 print_r( $list );
 
 echo( "\n" );
@@ -131,13 +131,13 @@ echo( "\n" );
 // Forget collection.
 //
 echo( "Forget collection:\n" );
-echo( '$result = $test->ForgetCollection( "NewCollection" );' . "\n" );
-$result = $test->ForgetCollection( "NewCollection" );
+echo( '$result = $test->ForgetWorkingCollection( "NewCollection" );' . "\n" );
+$result = $test->ForgetWorkingCollection( "NewCollection" );
 echo( '$list = $test->ListCollections();' . "\n" );
 $list = $test->ListCollections();
 print_r( $list );
-echo( '$list = $test->WorkingCollections();' . "\n" );
-$list = $test->WorkingCollections();
+echo( '$list = array_keys( $test->ListWorkingCollections() );' . "\n" );
+$list = array_keys( $test->ListWorkingCollections() );
 print_r( $list );
 
 echo( "\n" );
@@ -146,13 +146,13 @@ echo( "\n" );
 // Drop collection.
 //
 echo( "Drop collection:\n" );
-echo( '$result = $test->DropCollection( "test_collection" );' . "\n" );
-$result = $test->DropCollection( "test_collection" );
+echo( '$result = $test->DelCollection( "test_collection" );' . "\n" );
+$result = $test->DelCollection( "test_collection" );
 echo( '$list = $test->ListCollections();' . "\n" );
 $list = $test->ListCollections();
 print_r( $list );
-echo( '$list = $test->WorkingCollections();' . "\n" );
-$list = $test->WorkingCollections();
+echo( '$list = array_keys( $test->ListWorkingCollections() );' . "\n" );
+$list = array_keys( $test->ListWorkingCollections() );
 print_r( $list );
 
 

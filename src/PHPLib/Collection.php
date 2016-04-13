@@ -68,11 +68,16 @@ use Milko\PHPLib\Container;
  * 		<li><b>{@link NewDocumentHandle()}</b>: Extract the handle from a document.
  * 		<li><b>{@link NewDocumentKey()}</b>: Extract the key from a document.
  * 	 </ul>
- * 	<li>Persistence:
+ * 	<li>Insertion:
  * 	 <ul>
  * 		<li><b>{@link Insert()}</b>: Insert a single document.
  * 		<li><b>{@link InsertMany()}</b>: Insert a set of documents.
  * 		<li><b>{@link InsertBulk()}</b>: Insert a bulk set of documents.
+ * 	 </ul>
+ * 	<li>Modification:
+ * 	 <ul>
+ * 		<li><b>{@link Replace()}</b>: Replace a document.
+ * 		<li><b>{@link Update()}</b>: Update collection documents.
  * 	 </ul>
  * </ul>
  *
@@ -707,6 +712,123 @@ abstract class Collection extends Container
 	 * @return array				The document unique identifiers.
 	 */
 	abstract public function InsertBulk( $theDocuments );
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC UPDATE INTERFACE									*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Replace																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Replace document.</h4>
+	 *
+	 * This method can be used to replace the provided document in the collection, the
+	 * method expects the document to be provided as a native database document, an array or
+	 * an object that can be cast to array, the method will return the number of replaced
+	 * documents.
+	 *
+	 * The method expects the replacement document to have its key, if that is missing, the
+	 * method should raise an exception.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theDocument		The replacement document.
+	 * @return int					The number of replaced documents.
+	 */
+	abstract public function Replace( $theDocument );
+
+
+	/*===================================================================================
+	 *	Update																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Update documents.</h4>
+	 *
+	 * This method should update the documents selected by the provided filter using the
+	 * provided modification criteria. The options parameter may contain the following
+	 * values:
+	 *
+	 * <ul>
+	 * 	<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to update
+	 * 		the first selected document, or all the selected documents:
+	 * 	 <ul>
+	 * 		<li><tt>TRUE</tt>: Update all records selected by the filter.
+	 * 		<li><tt>FALSE</tt>: Update the first record selected by the filter.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The filter parameter may be <tt>NULL</tt>, in which case it should select all
+	 * documents, if not, it should be provided as a database native query.
+	 *
+	 * The criteria parameter must be provided as an array in which properties with a
+	 * <tt>NULL</tt> values are expected to be deleted.
+	 *
+	 * The method should return the number of modified documents.
+	 *
+	 * Concrete derived classes must implement this method.
+	 *
+	 * @param array					$theCriteria		The modification criteria.
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theOptions			Update options.
+	 * @return int					The number of modified records.
+	 */
+	abstract public function Update( array $theCriteria,
+									 $theFilter = NULL,
+									 array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] );
+
+
+	/*===================================================================================
+	 *	UpdateByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Update documents by example.</h4>
+	 *
+	 * This method should update the documents matching the provided example document using
+	 * the provided modification criteria. The options parameter may contain the following
+	 * values:
+	 *
+	 * <ul>
+	 * 	<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to update
+	 * 		the first selected document, or all the selected documents:
+	 * 	 <ul>
+	 * 		<li><tt>TRUE</tt>: Update all records selected by the filter.
+	 * 		<li><tt>FALSE</tt>: Update the first record selected by the filter.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The example document parameter must be provided as an array and if empty, it should
+	 * select all documents. The method should select all documents in the collection whose
+	 * properties match all the properties of the provided example document, this means that
+	 * the method will generate a query that puts in <tt>AND</tt> all the provided document
+	 * offsets.
+	 *
+	 * The criteria parameter must be provided as an array in which properties with a
+	 * <tt>NULL</tt> values are expected to be deleted.
+	 *
+	 * The method should return the number of modified documents.
+	 *
+	 * Concrete derived classes must implement this method.
+	 *
+	 * @param array					$theCriteria		The modification criteria.
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Update options.
+	 * @return int					The number of modified records.
+	 */
+	abstract public function UpdateByExample(
+		array $theCriteria,
+		array $theDocument = [],
+		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ]
+	);
 
 
 

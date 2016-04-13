@@ -8,6 +8,16 @@
 
 namespace Milko\PHPLib;
 
+/**
+ * Global tag definitions.
+ */
+require_once('descriptors.inc.php');
+
+/**
+ * Global token definitions.
+ */
+require_once( 'tokens.inc.php' );
+
 /*=======================================================================================
  *																						*
  *									Database.php										*
@@ -493,7 +503,7 @@ abstract class Database extends Container
 		//
 		// Assert connection.
 		//
-		$this->mServer->isConnected( self::kFLAG_CONNECT );
+		$this->mServer->isConnected( Server::kFLAG_CONNECT );
 
 		//
 		// Normalise options.

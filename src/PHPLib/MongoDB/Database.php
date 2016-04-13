@@ -60,7 +60,6 @@ class Database extends \Milko\PHPLib\Database
 	 *
 	 * @param array					$theOptions			Native driver options.
 	 *
-	 * @uses Connection()
 	 * @uses \MongoDB\Database::drop()
 	 */
 	public function Drop( $theOptions = NULL )
@@ -74,7 +73,7 @@ class Database extends \Milko\PHPLib\Database
 		//
 		// Call native method.
 		//
-		$this->Connection()->drop( $theOptions );
+		$this->mConnection->drop( $theOptions );
 
 	} // Drop.
 
@@ -175,7 +174,6 @@ class Database extends \Milko\PHPLib\Database
 			//
 			case kTOKEN_OPT_COLLECTION_TYPE_DOC:
 				unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
-				$theOptions[ "type" ] = ArangoCollection::TYPE_DOCUMENT;
 				return new Collection( $this, $theCollection, $theOptions );		// ==>
 
 			//
@@ -183,7 +181,6 @@ class Database extends \Milko\PHPLib\Database
 			//
 			case kTOKEN_OPT_COLLECTION_TYPE_EDGE:
 				unset( $theOptions[ kTOKEN_OPT_COLLECTION_TYPE ] );
-				$theOptions[ "type" ] = ArangoCollection::TYPE_EDGE;
 				return new Edges( $this, $theCollection, $theOptions );				// ==>
 		}
 
