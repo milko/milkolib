@@ -60,7 +60,9 @@ const kTOKEN_OPT_MANY = '$doAll';
  * <ul>
  * 	<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the result in the database driver
  * 		native format.
- * 	<li><tt>{@link kTOKEN_OPT_FORMAT_STANDARD}</tt>: Return the result as
+ * 	<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return the result as
+ * 		{@link Milko\PHPLib\Container} instances.
+ * 	<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return the result as
  * 		{@link Milko\PHPLib\Document} instances.
  * 	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return the result as a set of document
  * 		handles.
@@ -77,13 +79,22 @@ const kTOKEN_OPT_FORMAT = '$doFormat';
 const kTOKEN_OPT_FORMAT_NATIVE = 'N';
 
 /**
- * <h4>Standard result format.</h4><p />
+ * <h4>Container result format.</h4><p />
  *
  * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
  * indicates that a query result should be returned as a set of
- * {@link Milko\PHPLib\Document} instances.
+ * {@link Milko\PHPLib\Container} instances.
  */
-const kTOKEN_OPT_FORMAT_STANDARD = 'S';
+const kTOKEN_OPT_FORMAT_CONTAINER = 'C';
+
+/**
+ * <h4>Document result format.</h4><p />
+ *
+ * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
+ * indicates that a query result should be returned as a set of
+ * {@link Milko\PHPLib\Document} derived instances.
+ */
+const kTOKEN_OPT_FORMAT_DOCUMENT = 'D';
 
 /**
  * <h4>Document handle result format.</h4><p />

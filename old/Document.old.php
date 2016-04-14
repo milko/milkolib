@@ -64,7 +64,7 @@ use Milko\PHPLib\Collection;
  *
  * These offsets are declared by the enclosing collection, which is also responsible of
  * instantiating ({@link Collection::NewDocument()} and serialising
- * {@link Collection::NewNativeDocument()} the document: this is because the above property
+ * {@link Collection::NewDocumentNative()} the document: this is because the above property
  * tags depend on the native database engine and may also depend on the business logic of
  * the collection; for this reason, when a document is instantiated by a collection, the
  * latter is stored in an attribute.

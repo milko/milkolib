@@ -100,7 +100,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
+	 *	NewDocumentNative																*
 	 *==================================================================================*/
 
 	/**
@@ -112,7 +112,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
 	 */
-	public function NewNativeDocument( $theData )
+	public function NewDocumentNative( $theData )
 	{
 		//
 		// Handle native type.
@@ -120,9 +120,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theData instanceof \MongoDB\Model\BSONDocument )
 			return $theData;														// ==>
 
-		return parent::NewNativeDocument( $theData );								// ==>
+		return parent::NewDocumentNative( $theData );								// ==>
 
-	} // NewNativeDocument.
+	} // NewDocumentNative.
 
 
 	/*===================================================================================

@@ -55,7 +55,7 @@ use Milko\PHPLib\Container;
  *   <ul>
  * 		<li><b>{@link NewDocument()}</b>: Convert native data to a standard
  * 			{@link Document}.
- * 		<li><b>{@link NewNativeDocument()}</b>: Convert a standard {@link Document} to
+ * 		<li><b>{@link NewDocumentNative()}</b>: Convert a standard {@link Document} to
  * 			native data.
  * 		<li><b>{@link NewDocumentHandle()}</b>: Convert a document to a document reference.
  *   </ul>
@@ -392,7 +392,7 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
+	 *	NewDocumentNative																*
 	 *==================================================================================*/
 
 	/**
@@ -415,11 +415,11 @@ abstract class Collection extends Container
 	 * @uses NewDocumentArray()
 	 * @uses toDocumentNative()
 	 */
-	public function NewNativeDocument( $theData )
+	public function NewDocumentNative( $theData )
 	{
 		return $this->toDocumentNative( $this->NewDocumentArray( $theData ) );		// ==>
 
-	} // NewNativeDocument.
+	} // NewDocumentNative.
 
 
 	/*===================================================================================
@@ -741,7 +741,7 @@ abstract class Collection extends Container
 	 * @return array				The document keys.
 	 *
 	 * @uses doInsertBulk()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 */
 	public function InsertBulk( $theList )
 	{
@@ -750,7 +750,7 @@ abstract class Collection extends Container
 		//
 		$list = [];
 		foreach( $theList as $document )
-			$list[] = $this->NewNativeDocument( $document );
+			$list[] = $this->NewDocumentNative( $document );
 
 		return $this->doInsertBulk( $list );										// ==>
 
@@ -1081,11 +1081,11 @@ abstract class Collection extends Container
 	 * @return int					The number of replaced records.
 	 *
 	 * @uses doReplace()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 */
 	public function Replace( $theDocument )
 	{
-		return $this->doReplace( $this->NewNativeDocument( $theDocument ) );		// ==>
+		return $this->doReplace( $this->NewDocumentNative( $theDocument ) );		// ==>
 
 	} // Replace.
 
@@ -1204,7 +1204,7 @@ abstract class Collection extends Container
 		$this->normaliseOptions(
 			kTOKEN_OPT_MANY, FALSE, $theOptions );
 		$this->normaliseOptions(
-			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_DOCUMENT, $theOptions );
 
 		return $this->doFindByKey( $theKey, $theOptions );							// ==>
 
@@ -1273,7 +1273,7 @@ abstract class Collection extends Container
 		$this->normaliseOptions(
 			kTOKEN_OPT_MANY, FALSE, $theOptions );
 		$this->normaliseOptions(
-			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_DOCUMENT, $theOptions );
 
 		return $this->doFindByHandle( $theHandle, $theOptions );					// ==>
 
@@ -1339,7 +1339,7 @@ abstract class Collection extends Container
 		// Normalise options.
 		//
 		$this->normaliseOptions(
-			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_DOCUMENT, $theOptions );
 		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
 		 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
@@ -1403,7 +1403,7 @@ abstract class Collection extends Container
 		// Normalise options.
 		//
 		$this->normaliseOptions(
-			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_DOCUMENT, $theOptions );
 		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
 		 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
 			$theOptions[ kTOKEN_OPT_SKIP ] = 0;
@@ -1667,7 +1667,7 @@ abstract class Collection extends Container
 	 *
 	 * This method will insert the provided document into the current collection, the
 	 * document should be provided in a format compatible with the
-	 * {@link NewNativeDocument()} method.
+	 * {@link NewDocumentNative()} method.
 	 *
 	 * The method will first follow the following workflow:
 	 *
@@ -1687,7 +1687,7 @@ abstract class Collection extends Container
 	 * @return mixed				The inserted document's key.
 	 *
 	 * @uses doInsert()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
 	 * @uses Document::StoreSubdocuments()
@@ -1713,7 +1713,7 @@ abstract class Collection extends Container
 		//
 		// Convert to native document.
 		//
-		$document = $this->NewNativeDocument( $theDocument );
+		$document = $this->NewDocumentNative( $theDocument );
 
 		//
 		// Insert the document.
@@ -1821,13 +1821,13 @@ abstract class Collection extends Container
 	 *
 	 * This method should delete the provided document from the current collection, the
 	 * document should be provided in a format compatible with the
-	 * {@link NewNativeDocument()} method.
+	 * {@link NewDocumentNative()} method.
 	 *
 	 * When implementing the method you <em>must</em> follow this workflow:
 	 *
 	 * <ul>
 	 * 	<li>Prepare the document to be deleted, generally by calling the protected method
-	 * 		{@link NewNativeDocument()}, or by retrieving its key.
+	 * 		{@link NewDocumentNative()}, or by retrieving its key.
 	 * 	<li>Check the document key ({@link KeyOffset()}): if it is missing raise an
 	 * 		exception.
 	 * 	<li>Delete the document.
@@ -1843,7 +1843,7 @@ abstract class Collection extends Container
 	 * @return int					The number of deleted documents.
 	 *
 	 * @uses doDelete()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses normaliseDeletedDocument()
 	 */
 	protected function doDeleteOne( $theDocument )
@@ -1851,7 +1851,7 @@ abstract class Collection extends Container
 		//
 		// Convert to native format.
 		//
-		$document = $this->NewNativeDocument( $theDocument );
+		$document = $this->NewDocumentNative( $theDocument );
 
 		//
 		// Delete document.
@@ -1878,7 +1878,7 @@ abstract class Collection extends Container
 	 *
 	 * This method should delete the provided list of documents from the current collection,
 	 * the documents in the list should be provided in the database native format, as
-	 * returned by the {@link NewNativeDocument()} method.
+	 * returned by the {@link NewDocumentNative()} method.
 	 *
 	 * The provided list should either be an array or an iterable object.
 	 *
@@ -2533,7 +2533,7 @@ abstract class Collection extends Container
 			//
 			switch( $theOptions[ kTOKEN_OPT_FORMAT ] )
 			{
-				case kTOKEN_OPT_FORMAT_STANDARD:
+				case kTOKEN_OPT_FORMAT_DOCUMENT:
 					$tmp = $this->NewDocument( $document );
 					$this->normaliseSelectedDocument( $tmp, $document );
 					$list[] = $tmp;

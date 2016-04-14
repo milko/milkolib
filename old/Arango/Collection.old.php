@@ -140,7 +140,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
+	 *	NewDocumentNative																*
 	 *==================================================================================*/
 
 	/**
@@ -152,7 +152,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
 	 */
-	public function NewNativeDocument( $theData )
+	public function NewDocumentNative( $theData )
 	{
 		//
 		// Handle native document.
@@ -160,9 +160,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theData instanceof ArangoDocument )
 			return $theData;														// ==>
 
-		return parent::NewNativeDocument( $theData );								// ==>
+		return parent::NewDocumentNative( $theData );								// ==>
 
-	} // NewNativeDocument.
+	} // NewDocumentNative.
 
 
 	/*===================================================================================
@@ -520,7 +520,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
 	 * @uses triagens\ArangoDb\Cursor::getCount()
 	 */
@@ -529,7 +529,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Convert document to ArangoDocument.
 		//
-		$document = $this->NewNativeDocument( $theDocument );
+		$document = $this->NewDocumentNative( $theDocument );
 
 		//
 		// Get collection handler.
@@ -792,7 +792,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses Connection()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	protected function doInsertBulk( array $theList )
@@ -809,7 +809,7 @@ class Collection extends \Milko\PHPLib\Collection
 		foreach( $theList as $document )
 			$ids[] =
 				$handler->save( $this->Connection(),
-								$this->NewNativeDocument( $document ) );
+								$this->NewDocumentNative( $document ) );
 
 		return $ids;																// ==>
 
@@ -950,7 +950,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses triagens\ArangoDb\CollectionHandler::removeByExample()
 	 * @see kTOKEN_OPT_MANY
 	 */
@@ -966,7 +966,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Convert to native document.
 		//
-		$document = $this->NewNativeDocument( $theDocument );
+		$document = $this->NewDocumentNative( $theDocument );
 
 		//
 		// Get collection handler.
@@ -1415,7 +1415,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses Database()
 	 * @uses collectionName()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
 	 * @see kTOKEN_OPT_SKIP
 	 * @see kTOKEN_OPT_LIMIT
@@ -1434,7 +1434,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Normalise document.
 		//
-		$document = $this->NewNativeDocument( $theDocument );
+		$document = $this->NewDocumentNative( $theDocument );
 
 		//
 		// Get collection handler.

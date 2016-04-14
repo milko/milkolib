@@ -65,7 +65,7 @@ class Edges extends Collection
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
+	 *	NewDocumentNative																*
 	 *==================================================================================*/
 
 	/**
@@ -77,7 +77,7 @@ class Edges extends Collection
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
 	 */
-	public function NewNativeDocument( $theData )
+	public function NewDocumentNative( $theData )
 	{
 		//
 		// Handle native document.
@@ -85,9 +85,9 @@ class Edges extends Collection
 		if( $theData instanceof ArangoEdge )
 			return $theData;														// ==>
 
-		return parent::NewNativeDocument( $theData );								// ==>
+		return parent::NewDocumentNative( $theData );								// ==>
 
-	} // NewNativeDocument.
+	} // NewDocumentNative.
 
 
 	/*===================================================================================
@@ -236,7 +236,7 @@ class Edges extends Collection
 		// Normalise options.
 		//
 		$this->normaliseOptions(
-			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_DOCUMENT, $theOptions );
 		$this->normaliseOptions(
 			kTOKEN_OPT_DIRECTION, kTOKEN_OPT_DIRECTION_ANY, $theOptions );
 

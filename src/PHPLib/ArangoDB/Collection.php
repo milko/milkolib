@@ -205,7 +205,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
+	 *	NewDocumentNative																*
 	 *==================================================================================*/
 
 	/**
@@ -217,7 +217,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
 	 */
-	public function NewNativeDocument( $theData )
+	public function NewDocumentNative( $theData )
 	{
 		//
 		// Handle native document.
@@ -225,9 +225,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theData instanceof ArangoDocument )
 			return $theData;														// ==>
 
-		return parent::NewNativeDocument( $theData );								// ==>
+		return parent::NewDocumentNative( $theData );								// ==>
 
-	} // NewNativeDocument.
+	} // NewDocumentNative.
 
 
 	/*===================================================================================
@@ -514,7 +514,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return int					The number of replaced documents.
 	 *
 	 * @uses NewDocumentKey()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses triagens\ArangoDb\DocumentHandler::replaceById()
 	 */
 	public function Replace( $theDocument )
@@ -528,7 +528,7 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		// Convert replacement document.
 		//
-		$document = $this->NewNativeDocument( $theDocument );
+		$document = $this->NewDocumentNative( $theDocument );
 
 		//
 		// Instantiate document handler.
@@ -582,7 +582,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Update options.
 	 * @return int					The number of modified records.
 	 *
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses NewDocumentKey()
 	 * @uses triagens\ArangoDb\Cursor::getCount()
 	 * @uses triagens\ArangoDb\Statement::execute()
@@ -664,13 +664,773 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theDocument		The example document.
 	 * @param array					$theOptions			Update options.
 	 * @return int					The number of modified records.
+	 *
+	 * @uses collectionName()
+	 * @uses documentNativeCreate()
+	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
+	 * @uses triagens\ArangoDb\DocumentHandler::update()
+	 * @uses triagens\ArangoDb\Document::set()
 	 */
 	public function UpdateByExample( array $theCriteria,
-									 array $theDocument = [],
+									 array $theDocument,
 									 array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
 	{
+		//
+		// Normalise document.
+		//
+		$document = $this->documentNativeCreate( $theDocument );
+
+		//
+		// Get collection and document handlers.
+		//
+		$documentHandler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
+		$collectionHandler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		//
+		// Select documents.
+		//
+		$cursor =
+			$collectionHandler->byExample(
+				$this->collectionName(), $document );
+
+		//
+		// Iterate documents.
+		//
+		$count = 0;
+		foreach( $cursor as $document )
+		{
+			//
+			// Update document.
+			//
+			foreach( $theCriteria as $key => $value )
+				$document->set( $key, $value );
+
+			//
+			// Update document.
+			//
+			$documentHandler->update( $document, [ 'keepNull' => FALSE ] );
+
+			//
+			// Handle only first.
+			//
+			if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+				return 1;														// ==>
+
+		} // Iterating selection.
 
 	} // UpdateByExample.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC SELECTION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Find																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by query.</h4>
+	 *
+	 * We overload this method to execute a {@link triagens\ArangoDb\Statement}, the
+	 * provided filter should be an array holding the <tt>query</tt> key.
+	 *
+	 * <em>The options parameters {@link kTOKEN_OPT_SKIP} and {@link kTOKEN_OPT_LIMIT} are
+	 * ignored in this method: you must set them directly into the query</em>.
+	 *
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses formatCursor()
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 */
+	public function Find(
+		$theFilter,
+		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Init query.
+		//
+		if( ! count( $theFilter ) )
+			$theFilter = [
+				'query' => 'FOR r IN @@collection RETURN r',
+				'bindVars' => [ '@collection' => $this->collectionName() ] ];
+
+		//
+		// Create statement.
+		//
+		$statement = new ArangoStatement( $this->mDatabase->Connection(), $theFilter );
+
+		//
+		// Execute statement.
+		//
+		$result = $statement->execute();
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $result;															// ==>
+
+		return $this->formatCursor( $result, $theOptions[ kTOKEN_OPT_FORMAT ] );	// ==>
+
+	} // Find.
+
+
+	/*===================================================================================
+	 *	FindByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by key.</h4>
+	 *
+	 * We implement the method by using the
+	 * {@link triagens\ArangoDb\CollectionHandler::lookupByKeys()} method if the
+	 * {@link kTOKEN_OPT_MANY} option is set; the
+	 * {@link triagens\ArangoDb\CollectionHandler::getById()} method if not.
+	 *
+	 * @param mixed					$theKey				Single or set of document keys.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses formatCursor()
+	 * @uses formatDocument()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\CollectionHandler::lookupByKeys()
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
+	 */
+	public function FindByKey(
+		$theKey,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Handle list.
+		//
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			//
+			// Instantiate collection handler.
+			//
+			$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+			//
+			// Get documents.
+			//
+			$result =
+				$handler->lookupByKeys(
+					$this->mConnection->getID(), (array)$theKey );
+
+			//
+			// Handle native result.
+			//
+			if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+				return $result;														// ==>
+
+			return
+				$this->formatCursor(
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+
+		} // Set of keys.
+
+		//
+		// Try finding document.
+		//
+		try
+		{
+			//
+			// Instantiate document handler.
+			//
+			$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
+
+			//
+			// Find document.
+			//
+			$result = $handler->getById( $this->collectionName(), $theKey );
+
+			//
+			// Handle native result.
+			//
+			if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+				return $result;														// ==>
+
+			return
+				$this->formatDocument(
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+
+		} // Document found.
+
+		//
+		// Handle missing document.
+		//
+		catch( ArangoServerException $error )
+		{
+			//
+			// Handle exceptions.
+			//
+			if( $error->getCode() != 404 )
+				throw $error;													// !@! ==>
+
+		} // Document not found.
+
+		return NULL;																// ==>
+
+	} // FindByKey.
+
+
+	/*===================================================================================
+	 *	FindByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by handle.</h4>
+	 *
+	 * We implement the method by using the
+	 * {@link triagens\ArangoDb\CollectionHandler::lookupByKeys()} method if the
+	 * {@link kTOKEN_OPT_MANY} option is set; the
+	 * {@link triagens\ArangoDb\CollectionHandler::getById()} method if not.
+	 *
+	 * @param mixed					$theHandle			Single or set of document handles.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses formatDocument()
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
+	 */
+	public function FindByHandle(
+		$theHandle,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Instantiate document handler.
+		//
+		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
+
+		//
+		// Handle list.
+		//
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			//
+			// Iterate handles.
+			//
+			$result = [];
+			foreach( $theHandle as $handle )
+			{
+				//
+				// Decompose handle.
+				//
+				$handle = explode( '/', $handle );
+
+				//
+				// Try finding document.
+				//
+				try
+				{
+					//
+					// Find document.
+					//
+					$document = $handler->getById( $handle[ 0 ], $handle[ 1 ] );
+
+					//
+					// Format document.
+					//
+					$result[] =
+						$this->formatDocument(
+							$document, $theOptions[ kTOKEN_OPT_FORMAT ] );
+
+				} // Document found.
+
+				//
+				// Handle missing document.
+				//
+				catch( ArangoServerException $error )
+				{
+					//
+					// Handle exceptions.
+					//
+					if( $error->getCode() != 404 )
+						throw $error;											// !@! ==>
+
+				} // Document not found.
+
+			} // Iterating handles.
+
+			return $result;															// ==>
+
+		} // List of handles.
+
+		//
+		// Decompose handle.
+		//
+		$handle = explode( '/', $theHandle );
+
+		//
+		// Try finding document.
+		//
+		try
+		{
+			//
+			// Find document.
+			//
+			$document = $handler->getById( $handle[ 0 ], $handle[ 1 ] );
+
+			return
+				$this->formatDocument(
+					$document, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+
+		} // Document found.
+
+		//
+		// Handle missing document.
+		//
+		catch( ArangoServerException $error )
+		{
+			//
+			// Handle exceptions.
+			//
+			if( $error->getCode() != 404 )
+				throw $error;													// !@! ==>
+
+		} // Document not found.
+
+		return NULL;																// ==>
+
+	} // FindByHandle.
+
+
+	/*===================================================================================
+	 *	FindByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by example.</h4>
+	 *
+	 * We overload this method to use the
+	 * {@link triagens\ArangoDb\CollectionHandler::byExample()} method.
+	 *
+	 * We convert the {@link kTOKEN_OPT_SKIP} and {@link kTOKEN_OPT_LIMIT} parameters into
+	 * respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses formatCursor()
+	 * @uses NewDocumentNative()
+	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
+	 */
+	public function FindByExample(
+		array $theDocument,
+		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Convert to native options.
+		//
+		$options = [];
+		if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+			$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+		{
+			$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
+			if( ! array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+				$options[ 'skip' ] = 0;
+		}
+
+		//
+		// Normalise document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		//
+		// Select documents.
+		//
+		$result =
+			$handler->byExample(
+				$this->collectionName(), $document, $options );
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $result;															// ==>
+
+		return
+			$this->formatCursor(
+				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
+
+	} // FindByExample.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC COUNTING INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Count																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the documents count.</h4>
+	 *
+	 * We overload this method to use the
+	 * {@link triagens\ArangoDb\CollectionHandler::count()} method.
+	 *
+	 * @return int					The total number of documents in the collection.
+	 *
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\CollectionHandler::count()
+	 */
+	public function Count()
+	{
+		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		return $handler->count( $this->collectionName() );							// ==>
+
+	} // Count.
+
+
+	/*===================================================================================
+	 *	CountByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the number of documents by query.</h4>
+	 *
+	 * We overload this method to execute a {@link triagens\ArangoDb\Statement} and calling
+	 * the {@link triagens\ArangoDb\Cursor::getCount()} method on the statement result, the
+	 * provided filter should be an array holding the <tt>query</tt> key.
+	 *
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @return int					The number of selected documents.
+	 *
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 * @uses triagens\ArangoDb\Cursor::getCount()
+	 */
+	public function CountByQuery( $theFilter )
+	{
+		//
+		// Init query.
+		//
+		if( ! count( $theFilter ) )
+			$theFilter = [
+				'query' => 'FOR r IN @@collection RETURN r',
+				'bindVars' => [ '@collection' => $this->collectionName() ] ];
+
+		//
+		// Create statement.
+		//
+		$statement = new ArangoStatement( $this->mDatabase->Connection(), $theFilter );
+
+		//
+		// Execute statement.
+		//
+		$result = $statement->execute();
+
+		return $result->getCount();													// ==>
+
+	} // CountByQuery.
+
+
+	/*===================================================================================
+	 *	CountByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by example.</h4>
+	 *
+	 * We overload this method to execute
+	 * {@link triagens\ArangoDb\CollectionHandler::byExample()} and call the
+	 * {@link triagens\ArangoDb\Cursor::getCount()} method on the result.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @return int					The number of selected documents.
+	 *
+	 * @uses collectionName()
+	 * @uses NewDocumentNative()
+	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
+	 * @uses triagens\ArangoDb\Cursor::getCount()
+	 */
+	public function CountByExample( array $theDocument )
+	{
+		//
+		// Normalise document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		//
+		// Select documents.
+		//
+		$result =
+			$handler->byExample(
+				$this->collectionName(), $document );
+
+		return $result->getCount();													// ==>
+
+	} // CountByExample.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC DELETION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Delete																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by query.</h4>
+	 *
+	 * We overload this method to perform a selection query and delete the first or all
+	 * selected documents by using the
+	 * {@link triagens\ArangoDb\CollectionHandler::removeByKeys()} method.
+	 *
+	 * @param mixed					$theFilter			The deletion criteria.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 * @uses triagens\ArangoDb\CollectionHandler::removeByKeys()
+	 */
+	public function Delete(
+		$theFilter,
+		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
+	{
+		//
+		// Perform query.
+		//
+		$statement = new ArangoStatement( $this->mDatabase->Connection(), $theFilter );
+		$cursor = $statement->execute();
+
+		//
+		// Handle empty result.
+		//
+		if( ! $cursor->getCount() )
+			return 0;																// ==>
+
+		//
+		// Collect keys.
+		//
+		$keys = [];
+		foreach( $cursor as $document )
+		{
+			$keys[] = $document->getKey();
+			if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+				break;															// =>
+		}
+
+		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		//
+		// Remove by keys.
+		//
+		$result = $handler->removeByKeys( $this->collectionName(), $keys );
+
+		return $result[ 'removed' ];												// ==>
+
+	} // Delete.
+
+
+	/*===================================================================================
+	 *	DeleteByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by key.</h4>
+	 *
+	 * We overload this method to use the
+	 * {@link triagens\ArangoDb\CollectionHandler::removeByKeys()} method.
+	 *
+	 * @param mixed					$theKey				Single or set of document keys.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::removeByKeys()
+	 */
+	public function DeleteByKey(
+		$theKey,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE ] )
+	{
+		//
+		// Normalise keys.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			$theKey = [ $theKey ];
+		else
+			$theKey = (array)$theKey;
+
+		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		//
+		// Remove by keys.
+		//
+		$result =
+			$handler->removeByKeys(
+				$this->collectionName(), $theKey );
+
+		return $result[ 'removed' ];												// ==>
+
+	} // DeleteByKey.
+
+
+	/*===================================================================================
+	 *	DeleteByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by handle.</h4>
+	 *
+	 * We implement the method by aggregating the handles and calling the
+	 * {@link triagens\ArangoDb\CollectionHandler::removeByKeys()} method.
+	 *
+	 * @param mixed					$theHandle			Single or set of document handles.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses triagens\ArangoDb\DocumentHandler::removeByKeys()
+	 */
+	public function DeleteByHandle(
+		$theHandle,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE ] )
+	{
+		//
+		// Normalise handles.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			$theHandle = [ $theHandle ];
+		else
+			$theHandle = (array)$theHandle;
+
+		//
+		// Aggregate handles.
+		//
+		$handles = [];
+		foreach( $theHandle as $handle )
+		{
+			//
+			// Decompose handle.
+			//
+			$handle = explode( '/', $handle );
+
+			//
+			// Aggregate.
+			//
+			if( array_key_exists( $handle[ 0 ], $handles ) )
+				$handles[ $handle[ 0 ] ] = $handle[ 1 ];
+			else
+				$handles[ $handle[ 0 ] ] = [ $handle[ 1 ] ];
+		}
+
+		//
+		// Iterate handles.
+		//
+		$count = 0;
+		foreach( $handles as $collection => $keys )
+		{
+			//
+			// Get collection handler.
+			//
+			$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+			//
+			// Remove by keys.
+			//
+			$result = $handler->removeByKeys( $collection, $keys );
+
+			//
+			// Increment.
+			//
+			$count += $result[ 'removed' ];
+		}
+
+		return $count;																// ==>
+
+	} // DeleteByHandle.
+
+
+	/*===================================================================================
+	 *	DeleteByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by example.</h4>
+	 *
+	 * We overload this method to use the
+	 * {@link triagens\ArangoDb\CollectionHandler::removeByExample()} method.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses collectionName()
+	 * @uses NewDocumentNative()
+	 * @uses triagens\ArangoDb\CollectionHandler::removeByExample()
+	 */
+	public function DeleteByExample(
+		array $theDocument,
+		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
+	{
+		//
+		// Set native options.
+		//
+		$options = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				 ? []
+				 : [ "limit" => 1 ];
+
+		//
+		// Convert to native document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Get collection handler.
+		//
+		$collectionHandler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		return
+			$collectionHandler->removeByExample(
+				$this->collectionName(), $document, $options );						// ==>
+
+	} // DeleteByExample.
 
 
 
@@ -823,7 +1583,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses collectionName()
 	 */
-	public function documentHandleCreate( $theKey )
+	protected function documentHandleCreate( $theKey )
 	{
 		return $this->collectionName() . '/' . (string)$theKey;						// ==>
 

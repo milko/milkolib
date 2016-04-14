@@ -186,7 +186,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
+	 *	NewDocumentNative																*
 	 *==================================================================================*/
 
 	/**
@@ -198,7 +198,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param mixed					$theData			Document data.
 	 * @return mixed				Database native object.
 	 */
-	public function NewNativeDocument( $theData )
+	public function NewDocumentNative( $theData )
 	{
 		//
 		// Handle native document.
@@ -206,9 +206,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theData instanceof BSONDocument )
 			return $theData;														// ==>
 
-		return parent::NewNativeDocument( $theData );								// ==>
+		return parent::NewDocumentNative( $theData );								// ==>
 
-	} // NewNativeDocument.
+	} // NewDocumentNative.
 
 
 	/*===================================================================================
@@ -396,7 +396,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return int					The number of replaced documents.
 	 *
 	 * @uses NewDocumentKey()
-	 * @uses NewNativeDocument()
+	 * @uses NewDocumentNative()
 	 * @uses \MongoDB\Collection::replaceOne()
 	 */
 	public function Replace( $theDocument )
@@ -410,7 +410,7 @@ class Collection extends \Milko\PHPLib\Collection
 		return
 			$this->Connection()->replaceOne(
 				[ $this->KeyOffset() => $key ],
-				$this->NewNativeDocument( $theDocument ) )
+				$this->NewDocumentNative( $theDocument ) )
 					->getModifiedCount();											// ==>
 
 	} // Replace.
@@ -455,6 +455,564 @@ class Collection extends \Milko\PHPLib\Collection
 		return $result->getModifiedCount();											// ==>
 
 	} // Update.
+
+
+	/*===================================================================================
+	 *	UpdateByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Update documents by example.</h4>
+	 *
+	 * We implement this method by using the {@link Update()} method, since the example
+	 * document corresponds to a MongoDB query.
+	 *
+	 * @param array					$theCriteria		The modification criteria.
+	 * @param array					$theDocument		The example document.
+	 * @param array					$theOptions			Update options.
+	 * @return int					The number of modified records.
+	 *
+	 * @uses Update()
+	 */
+	public function UpdateByExample( array $theCriteria,
+									 array $theDocument,
+									 array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
+	{
+		return $this->Update( $theCriteria, $theDocument, $theOptions );			// ==>
+
+	} // UpdateByExample.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC SELECTION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Find																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by query.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::find()} method, we
+	 * convert the {@link kTOKEN_OPT_SKIP} and {@link kTOKEN_OPT_LIMIT} parameters into
+	 * respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 *
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses formatCursor()
+	 * @uses \MongoDB\Collection::find()
+	 */
+	public function Find(
+		$theFilter,
+		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Convert to native options.
+		//
+		$options = [];
+		if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+			$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+		{
+			$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
+			if( ! array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+				$options[ 'skip' ] = 0;
+		}
+
+		//
+		// Find documents.
+		//
+		$result = $this->mConnection->find( $theFilter, $options );
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $result;															// ==>
+
+		return
+			$this->formatCursor(
+				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
+
+	} // Find.
+
+
+	/*===================================================================================
+	 *	FindByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by key.</h4>
+	 *
+	 * We implement this method to use the {@link \MongoDB\Collection::findOne()} method for
+	 * a single key and {@link \MongoDB\Collection::find()} for a set of keys.
+	 *
+	 * @param mixed					$theKey				Single or set of document keys.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses KeyOffset()
+	 * @uses formatCursor()
+	 * @uses formatDocument()
+	 * @uses \MongoDB\Collection::find()
+	 * @uses \MongoDB\Collection::findOne()
+	 */
+	public function FindByKey(
+		$theKey,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Set selection filter.
+		//
+		$filter = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? [ $this->KeyOffset() => [ '$in' => (array)$theKey ] ]
+				: [ $this->KeyOffset() => $theKey ];
+
+		//
+		// Make selection.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? $this->mConnection->find( $filter )
+				: $this->mConnection->findOne( $filter );
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $result;															// ==>
+
+		//
+		// Handle single key.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			return
+				$this->formatDocument(
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+
+		return $this->formatCursor( $result, $theOptions[ kTOKEN_OPT_FORMAT ] );	// ==>
+
+	} // FindByKey.
+
+
+	/*===================================================================================
+	 *	FindByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by handle.</h4>
+	 *
+	 * We implement this method to use the {@link \MongoDB\Collection::findOne()} method for
+	 * both a single key and a set of keys.
+	 *
+	 * @param mixed					$theHandle			Single or set of document handles.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses KeyOffset()
+	 * @uses formatDocument()
+	 * @uses \MongoDB\Collection::findOne()
+	 */
+	public function FindByHandle(
+		$theHandle,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Handle list.
+		//
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			//
+			// Iterate handles.
+			//
+			$result = [];
+			foreach( $theHandle as $handle )
+			{
+				//
+				// Get collection.
+				//
+				$collection = $this->mDatabase->GetCollection( $handle[ 0 ] );
+				if( $collection instanceof Collection )
+				{
+					//
+					// Get by key.
+					//
+					$found =
+						$collection->Connection()->findOne(
+							[ $collection->KeyOffset() => $handle[ 1 ] ] );
+
+					//
+					// Add if found.
+					//
+					if( $found !== NULL )
+						$result[] =
+							$this->formatDocument(
+								$found, $theOptions[ kTOKEN_OPT_FORMAT ] );
+
+				} // Collection exists.
+
+			} // Iterating handles.
+
+			return $result;															// ==>
+
+		} // List of handles.
+
+		//
+		// Get collection.
+		//
+		$collection = $this->mDatabase->GetCollection( $theHandle[ 0 ] );
+		if( $collection instanceof Collection )
+		{
+			//
+			// Get by key.
+			//
+			$found =
+				$collection->Connection()->findOne(
+					[ $collection->KeyOffset() => $theHandle[ 1 ] ] );
+
+			//
+			// Add if found.
+			//
+			if( $found !== NULL )
+				return
+					$this->formatDocument(
+						$found, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+
+		} // Collection exists.
+
+		return NULL;																// ==>
+
+	} // FindByHandle.
+
+
+	/*===================================================================================
+	 *	FindByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by example.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::find()} method, the
+	 * provided example document will be used as the actual selection criteria.
+	 *
+	 * We convert the {@link kTOKEN_OPT_SKIP} and {@link kTOKEN_OPT_LIMIT} parameters into
+	 * respectively the <tt>skip</tt> and <tt>limit</tt> native options.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses formatCursor()
+	 * @uses \MongoDB\Collection::find()
+	 */
+	public function FindByExample(
+		array $theDocument,
+		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Convert to native options.
+		//
+		$options = [];
+		if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+			$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+		if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+		{
+			$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
+			if( ! array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+				$options[ 'skip' ] = 0;
+		}
+
+		//
+		// Make selection.
+		//
+		$result = $this->mConnection->find( $theDocument, $options );
+
+		//
+		// Handle native result.
+		//
+		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+			return $result;															// ==>
+
+		return
+			$this->formatCursor(
+				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
+
+	} // FindByExample.
+
+
+
+	/*=======================================================================================
+	 *																						*
+	 *								PUBLIC COUNTING INTERFACE								*
+	 *																						*
+	 *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Count																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the documents count.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::count()} method.
+	 *
+	 * @return int					The total number of documents in the collection.
+	 *
+	 * @uses \MongoDB\Collection::count()
+	 */
+	public function Count()
+	{
+		return $this->mConnection->count();											// ==>
+
+	} // Count.
+
+
+	/*===================================================================================
+	 *	CountByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the number of documents by query.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::count()} method.
+	 *
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @return int					The number of selected documents.
+	 *
+	 * @uses \MongoDB\Collection::count()
+	 */
+	public function CountByQuery( $theFilter )
+	{
+		return $this->mConnection->count( $theFilter );								// ==>
+
+	} // CountByQuery.
+
+
+	/*===================================================================================
+	 *	CountByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by example.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::count()} method.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @return int					The number of selected documents.
+	 *
+	 * @uses \MongoDB\Collection::count()
+	 */
+	public function CountByExample( array $theDocument )
+	{
+		return $this->mConnection->count( $theDocument );							// ==>
+
+	} // CountByExample.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC DELETION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Delete																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by query.</h4>
+	 *
+	 * We overload this method to call the {@link \MongoDB\Collection::deleteOne()} method
+	 * to delete the first document and the {@link \MongoDB\Collection::deleteMany()} to
+	 * delete all matching documents.
+	 *
+	 * @param mixed					$theFilter			The deletion criteria.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses \MongoDB\Collection::deleteOne()
+	 * @uses \MongoDB\Collection::deleteMany()
+	 * @uses \MongoDB\Cursor::getDeletedCount()
+	 */
+	public function Delete(
+		$theFilter,
+		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
+	{
+		//
+		// Delete documents.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? $this->Connection()->deleteMany( $theFilter )
+				: $this->Connection()->deleteOne( $theFilter );
+
+		return $result->getDeletedCount();											// ==>
+
+	} // Delete.
+
+
+	/*===================================================================================
+	 *	DeleteByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by key.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::deleteOne()} method
+	 * to delete a single document and {@link \MongoDB\Collection::deleteMany()} method to
+	 * delete a list of documents.
+	 *
+	 * @param mixed					$theKey				Single or set of document keys.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses KeyOffset()
+	 * @uses \MongoDB\Collection::deleteOne()
+	 * @uses \MongoDB\Collection::deleteMany()
+	 * @uses \MongoDB\Cursor::getDeletedCount()
+	 */
+	public function DeleteByKey(
+		$theKey,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE ] )
+	{
+		//
+		// Set selection filter.
+		//
+		$filter = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? [ $this->KeyOffset() => [ '$in' => (array)$theKey ] ]
+				: [ $this->KeyOffset() => $theKey ];
+
+		//
+		// Delete documents.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? $this->Connection()->deleteMany( $filter )
+				: $this->Connection()->deleteOne( $filter );
+
+		return $result->getDeletedCount();											// ==>
+
+	} // DeleteByKey.
+
+
+	/*===================================================================================
+	 *	DeleteByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by handle.</h4>
+	 *
+	 * We implement the method by aggregating the handles and calling the
+	 * {@link \MongoDB\Collection::deleteMany()} method if there is more than one key per
+	 * collection or {@link \MongoDB\Collection::deleteOne()} method if there is a single
+	 * key.
+	 *
+	 * @param mixed					$theHandle			Single or set of document handles.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses \MongoDB\Collection::deleteOne()
+	 * @uses \MongoDB\Collection::deleteMany()
+	 * @uses \MongoDB\Cursor::getDeletedCount()
+	 */
+	public function DeleteByHandle(
+		$theHandle,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE ] )
+	{
+		//
+		// Normalise handles.
+		//
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			$theHandle = [ $theHandle ];
+		else
+			$theHandle = (array)$theHandle;
+
+		//
+		// Aggregate handles.
+		//
+		$handles = [];
+		foreach( $theHandle as $handle )
+		{
+			//
+			// Aggregate.
+			//
+			if( array_key_exists( $handle[ 0 ], $handles ) )
+				$handles[ $handle[ 0 ] ] = $handle[ 1 ];
+			else
+				$handles[ $handle[ 0 ] ] = [ $handle[ 1 ] ];
+		}
+
+		//
+		// Iterate handles.
+		//
+		$count = 0;
+		foreach( $handles as $collection => $keys )
+		{
+			//
+			// Delete documents.
+			//
+			$result = ( count( $keys ) > 1 )
+					? $this->Connection()->deleteMany(
+						[ $this->KeyOffset() => [ '$in' => $keys ] ] )
+					: $this->Connection()->deleteOne(
+						[ $this->KeyOffset() => $keys[ 0 ] ] );
+
+			//
+			// Increment.
+			//
+			$count += $result->getDeletedCount();
+		}
+
+		return $count;																// ==>
+
+	} // DeleteByHandle.
+
+
+	/*===================================================================================
+	 *	DeleteByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by example.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::deleteOne()} method
+	 * to delete a single document and {@link \MongoDB\Collection::deleteMany()} method to
+	 * delete all selected records.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses \MongoDB\Collection::deleteOne()
+	 * @uses \MongoDB\Collection::deleteMany()
+	 * @uses \MongoDB\Cursor::getDeletedCount()
+	 */
+	public function DeleteByExample(
+		array $theDocument,
+		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
+	{
+		//
+		// Delete documents.
+		//
+		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
+				? $this->Connection()->deleteMany( $theDocument )
+				: $this->Connection()->deleteOne( $theDocument );
+
+		return $result->getDeletedCount();											// ==>
+
+	} // DeleteByExample.
 
 
 
@@ -561,7 +1119,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses collectionName()
 	 */
-	public function documentHandleCreate( $theKey )
+	protected function documentHandleCreate( $theKey )
 	{
 		return [ $this->collectionName(), (string)$theKey ];						// ==>
 

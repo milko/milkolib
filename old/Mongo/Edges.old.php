@@ -117,7 +117,7 @@ class Edges extends Collection
 		// Normalise options.
 		//
 		$this->normaliseOptions(
-			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_STANDARD, $theOptions );
+			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_DOCUMENT, $theOptions );
 		$this->normaliseOptions(
 			kTOKEN_OPT_DIRECTION, kTOKEN_OPT_DIRECTION_ANY, $theOptions );
 

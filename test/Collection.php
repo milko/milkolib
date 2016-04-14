@@ -78,8 +78,8 @@ echo( "\n" );
 // Convert to native document from array.
 //
 echo( "Convert to native document from array:\n" );
-echo( '$document = $test->NewNativeDocument( $data );' . "\n" );
-$document = $test->NewNativeDocument( $data );
+echo( '$document = $test->NewDocumentNative( $data );' . "\n" );
+$document = $test->NewDocumentNative( $data );
 print_r( $document );
 
 echo( "\n" );
@@ -88,8 +88,8 @@ echo( "\n" );
 // Convert to native document from array object.
 //
 echo( "Convert to native document from array object:\n" );
-echo( '$document = $test->NewNativeDocument( new ArrayObject( $data ) );' . "\n" );
-$document = $test->NewNativeDocument( new ArrayObject( $data ) );
+echo( '$document = $test->NewDocumentNative( new ArrayObject( $data ) );' . "\n" );
+$document = $test->NewDocumentNative( new ArrayObject( $data ) );
 print_r( $document );
 
 echo( "\n" );
@@ -98,8 +98,8 @@ echo( "\n" );
 // Convert to native document from Container.
 //
 echo( "Convert to native document from Container:\n" );
-echo( '$document = $test->NewNativeDocument( new Milko\PHPLib\Container( $data ) );' . "\n" );
-$document = $test->NewNativeDocument( new Milko\PHPLib\Container( $data ) );
+echo( '$document = $test->NewDocumentNative( new Milko\PHPLib\Container( $data ) );' . "\n" );
+$document = $test->NewDocumentNative( new Milko\PHPLib\Container( $data ) );
 print_r( $document );
 
 echo( "\n" );
@@ -108,8 +108,8 @@ echo( "\n" );
 // Convert to native document from Document.
 //
 echo( "Convert to native document from Document:\n" );
-echo( '$document = $test->NewNativeDocument( new Milko\PHPLib\Document( $test, $data ) );' . "\n" );
-$document = $test->NewNativeDocument( new Milko\PHPLib\Document( $test, $data ) );
+echo( '$document = $test->NewDocumentNative( new Milko\PHPLib\Document( $test, $data ) );' . "\n" );
+$document = $test->NewDocumentNative( new Milko\PHPLib\Document( $test, $data ) );
 print_r( $document );
 
 echo( "\n====================================================================================\n\n" );
@@ -118,8 +118,8 @@ echo( "\n=======================================================================
 // Convert to document from native data.
 //
 echo( "Convert to document from native data:\n" );
-echo( '$document = $test->NewDocument( $test->NewNativeDocument( $data ) );' . "\n" );
-$document = $test->NewDocument( $test->NewNativeDocument( $data ) );
+echo( '$document = $test->NewDocument( $test->NewDocumentNative( $data ) );' . "\n" );
+$document = $test->NewDocument( $test->NewDocumentNative( $data ) );
 echo( "Class: " . get_class( $document ) . "\n" );
 print_r( $document->getArrayCopy() );
 
@@ -324,8 +324,8 @@ echo( "\n=======================================================================
 // Insert native document.
 //
 echo( "Insert native document:\n" );
-echo( '$document = $test->NewNativeDocument( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );' . "\n" );
-$document = $test->NewNativeDocument( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );
+echo( '$document = $test->NewDocumentNative( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );' . "\n" );
+$document = $test->NewDocumentNative( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -375,7 +375,7 @@ echo( "\n=======================================================================
 echo( "Insert many documents:\n" );
 $documents = [];
 $documents[0] = [ $test->KeyOffset() => "ID2", "data" => "XXX", "color" => "yellow" ];
-$documents[1] = $test->NewNativeDocument( [ "name" => "Nati" ] );
+$documents[1] = $test->NewDocumentNative( [ "name" => "Nati" ] );
 $documents[2] = new Milko\PHPLib\Document( $test, [ $test->KeyOffset() => 7, "name" => "Cangalovic" ] );
 $documents[3] = new \DerivedFromDocument( $test, [ "name" => "no" ] );
 $documents[4] = new Milko\PHPLib\Container( [ "name" => "yes" ] );
@@ -582,7 +582,7 @@ echo( "\n" );
 //
 echo( "Find by ID standard:\n" );
 echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
-$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
 print_r( $result );
 echo( "\n" );
 
@@ -626,7 +626,7 @@ echo( "\n" );
 //
 echo( "Find many by ID standard:\n" );
 echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
-$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
 print_r( $result );
 echo( "\n" );
 
@@ -680,7 +680,7 @@ echo( "\n" );
 //
 echo( "Find first record standard by example:\n" );
 echo( '$result = $test->FindByExample( [ "color" => "yellow" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-$result = $test->FindByExample( [ "color" => "yellow" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+$result = $test->FindByExample( [ "color" => "yellow" ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 foreach( $result as $key => $document )
 {
 	echo( "»»»[$key] " );
@@ -739,7 +739,7 @@ echo( "\n" );
 //
 echo( "Find all records standard by example:\n" );
 echo( '$result = $test->FindByExample( [ "color" => "yellow" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-$result = $test->FindByExample( [ "color" => "yellow" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+$result = $test->FindByExample( [ "color" => "yellow" ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 foreach( $result as $key => $document )
 {
 	echo( "»»»[$key] " );
@@ -808,12 +808,12 @@ echo( "Find first record standard by query:\n" );
 if( kENGINE == "ARANGO" )
 {
 	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 }
 elseif( kENGINE == "MONGO" )
 {
 	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 }
 foreach( $result as $key => $document )
 {
@@ -899,12 +899,12 @@ echo( "Find all records standard by query:\n" );
 if( kENGINE == "ARANGO" )
 {
 	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 }
 elseif( kENGINE == "MONGO" )
 {
 	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );
+	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 }
 foreach( $result as $key => $document )
 {

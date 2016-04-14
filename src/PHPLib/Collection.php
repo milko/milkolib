@@ -78,6 +78,27 @@ use Milko\PHPLib\Container;
  * 	 <ul>
  * 		<li><b>{@link Replace()}</b>: Replace a document.
  * 		<li><b>{@link Update()}</b>: Update collection documents.
+ * 		<li><b>{@link UpdateByExample()}</b>: Update collection documents by example.
+ * 	 </ul>
+ * 	<li>Selection:
+ * 	 <ul>
+ * 		<li><b>{@link Find()}</b>: Find by query.
+ * 		<li><b>{@link FindByKey()}</b>: Find documents by key.
+ * 		<li><b>{@link FindByHandle()}</b>: Find documents by handle.
+ * 		<li><b>{@link FindByExample()}</b>: Find documents by example.
+ * 	 </ul>
+ * 	<li>Counting:
+ * 	 <ul>
+ * 		<li><b>{@link Count()}</b>: Return the total record count.
+ * 		<li><b>{@link CountByQuery()}</b>: Count by query.
+ * 		<li><b>{@link CountByExample()}</b>: Count documents by example.
+ * 	 </ul>
+ * 	<li>Deletion:
+ * 	 <ul>
+ * 		<li><b>{@link Delete()}</b>: Delete by query.
+ * 		<li><b>{@link DeleteByKey()}</b>: Delete documents by key.
+ * 		<li><b>{@link DeleteByHandle()}</b>: Delete documents by handle.
+ * 		<li><b>{@link DeleteByExample()}</b>: Delete documents by example.
  * 	 </ul>
  * </ul>
  *
@@ -104,7 +125,7 @@ use Milko\PHPLib\Container;
  *	@version	1.00
  *	@since		17/02/2016
  */
-abstract class Collection extends Container
+abstract class Collection
 {
 	/**
 	 * <h4>Database object.</h4>
@@ -170,11 +191,6 @@ abstract class Collection extends Container
 	 */
 	public function __construct( Database $theDatabase, $theCollection, $theOptions = NULL )
 	{
-		//
-		// Call parent constructor.
-		//
-		parent::__construct();
-
 		//
 		// Store server instance.
 		//
@@ -398,7 +414,7 @@ abstract class Collection extends Container
 	 * </ul>
 	 *
 	 * In derived concrete classes you should overload this method by intercepting native
-	 * documents, converting them to an array and passing it to the parent method.
+	 * documents, converting them to an array and passing them to the parent method.
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @param string				$theClass			Expected class name.
@@ -448,7 +464,32 @@ abstract class Collection extends Container
 
 
 	/*===================================================================================
-	 *	NewNativeDocument																*
+	 *	NewDocumentContainer															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a {@link Container} instance.</h4>
+	 *
+	 * This method should instantiate a {@link Container} instance from the provided data
+	 * that can be either a database native document, an array or an object that can be
+	 * cast to an array.
+	 *
+	 * @param mixed					$theData			Document data.
+	 * @param string				$theClass			Expected class name.
+	 * @return Document				Standard document object.
+	 *
+	 * @used NewDocumentArray()
+	 * @used documentCreate()
+	 */
+	public function NewDocumentContainer( $theData )
+	{
+		return new Container( $this->NewDocumentArray( $theData ) );				// ==>
+
+	} // NewDocumentContainer.
+
+
+	/*===================================================================================
+	 *	NewDocumentNative																*
 	 *==================================================================================*/
 
 	/**
@@ -471,7 +512,7 @@ abstract class Collection extends Container
 	 * @uses NewDocumentArray()
 	 * @uses documentNativeCreate()
 	 */
-	public function NewNativeDocument( $theData )
+	public function NewDocumentNative( $theData )
 	{
 		return
 			$this->documentNativeCreate(
@@ -486,9 +527,9 @@ abstract class Collection extends Container
 //		if( $theData instanceof <native document> )
 //			return $theData;														// ==>
 //
-//		return parent::NewNativeDocument( $theData );								// ==>
+//		return parent::NewDocumentNative( $theData );								// ==>
 
-	} // NewNativeDocument.
+	} // NewDocumentNative.
 
 
 	/*===================================================================================
@@ -781,9 +822,11 @@ abstract class Collection extends Container
 	 * @param array					$theOptions			Update options.
 	 * @return int					The number of modified records.
 	 */
-	abstract public function Update( array $theCriteria,
-									 $theFilter = NULL,
-									 array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] );
+	abstract public function Update(
+		array $theCriteria,
+		$theFilter = NULL,
+		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ]
+	);
 
 
 	/*===================================================================================
@@ -806,11 +849,10 @@ abstract class Collection extends Container
 	 * 	 </ul>
 	 * </ul>
 	 *
-	 * The example document parameter must be provided as an array and if empty, it should
-	 * select all documents. The method should select all documents in the collection whose
-	 * properties match all the properties of the provided example document, this means that
-	 * the method will generate a query that puts in <tt>AND</tt> all the provided document
-	 * offsets.
+	 * The example document parameter must be provided as an array, the method should select
+	 * all documents in the collection whose properties match all the properties of the
+	 * provided example document, this means that the method will generate a query that puts
+	 * in <tt>AND</tt> all the provided document offsets.
 	 *
 	 * The criteria parameter must be provided as an array in which properties with a
 	 * <tt>NULL</tt> values are expected to be deleted.
@@ -826,7 +868,466 @@ abstract class Collection extends Container
 	 */
 	abstract public function UpdateByExample(
 		array $theCriteria,
-		array $theDocument = [],
+		array $theDocument,
+		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ]
+	);
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC SELECTION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Find																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by query.</h4>
+	 *
+	 * This method can be used to select documents based on the provided query and return
+	 * them in the requested format. The method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theFilter</b>: The query in the driver native format.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_SKIP}</b>: This option determines how many records to
+	 * 			skip in the results selection, it is equivalent to the SQL <tt>START</tt>
+	 * 			directive, it is zero based and expressed as an integer.
+	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
+	 * 			return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
+	 * 			as an integer.
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
+	 * 		 <ul>
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return an iterable set of
+	 * 				{@link Container} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return an iterable set of
+	 * 				{@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return an array of document
+	 * 				handles.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return an array of document
+	 * 				keys.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The result will always be an iterable object, by default the method will use the
+	 * {@link kTOKEN_OPT_FORMAT_DOCUMENT} option and return the full selection.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 */
+	abstract public function Find(
+		$theFilter,
+		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
+	);
+
+
+	/*===================================================================================
+	 *	FindByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by key.</h4>
+	 *
+	 * This method will return the documents that match the provided key or keys in the
+	 * current collection, the method features two parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theKey</b>: The document key(s) to match.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
+	 * 			parameter is a set of keys or a single key:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Provided a set of keys, will return an array of results.
+	 * 			<li><tt>FALSE</tt>: Provided a single key, will return the selected document
+	 * 				or <tt>NULL</tt>.
+	 * 		 </ul>
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
+	 * 		 <ul>
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a single or set of
+	 * 				{@link Container} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a single or set of
+	 * 				{@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return a single or set of
+	 * 				document handles.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return a single or set of
+	 * 				document handles.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * If the provided {@link kTOKEN_OPT_MANY} option is <tt>FALSE</tt>, the method will
+	 * return a scalar result, if not, it will return an array of results; if the
+	 * {@link kTOKEN_OPT_FORMAT} is set to {@link kTOKEN_OPT_FORMAT_NATIVE}, the result will
+	 * depend on the specific native driver.
+	 *
+	 * By default the method assumes you provided a single key and the requested format is
+	 * {@link kTOKEN_OPT_FORMAT_DOCUMENT}.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theKey				Single or set of document keys.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 */
+	abstract public function FindByKey(
+		$theKey,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
+			kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
+	);
+
+
+	/*===================================================================================
+	 *	FindByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by handle.</h4>
+	 *
+	 * This method will return the documents that match the provided handle or handles in
+	 * the collections indicated in the handles, the method features two parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theHandle</b>: The document handle(s) to match.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
+	 * 			parameter is a set of handles or a single handle:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Provided a set of handles, will return an array of
+	 * 				results.
+	 * 			<li><tt>FALSE</tt>: Provided a single handle, will return the selected
+	 * 				document or <tt>NULL</tt>.
+	 * 		 </ul>
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
+	 * 		 <ul>
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a single or set of
+	 * 				{@link Container} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a single or set of
+	 * 				{@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return a single or set of
+	 * 				document handles.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return a single or set of
+	 * 				document handles.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * If the provided {@link kTOKEN_OPT_MANY} option is <tt>FALSE</tt>, the method will
+	 * return a scalar result, if not, it will return an array of results; if the
+	 * {@link kTOKEN_OPT_FORMAT} is set to {@link kTOKEN_OPT_FORMAT_NATIVE}, the result will
+	 * depend on the specific native driver.
+	 *
+	 * By default the method assumes you provided a single handle and the requested format
+	 * is {@link kTOKEN_OPT_FORMAT_DOCUMENT}.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theHandle			Single or set of document handles.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 */
+	abstract public function FindByHandle(
+		$theHandle,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
+			kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
+	);
+
+
+	/*===================================================================================
+	 *	FindByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by example.</h4>
+	 *
+	 * This method can be used to select all documents matching the provided example
+	 * document. The method will select all documents in the collection whose properties
+	 * match all the properties of the provided example document, this means that the method
+	 * will generate a query that puts in <tt>AND</tt> all the provided document offsets.
+	 *
+	 * The method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The example document as an array.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_SKIP}</b>: This option determines how many records to
+	 * 			skip in the results selection, it is equivalent to the SQL <tt>START</tt>
+	 * 			directive, it is zero based and expressed as an integer.
+	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
+	 * 			return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
+	 * 			as an integer.
+	 * 		<li><b>{@link kTOKEN_OPT_FORMAT}</b>: This option determines the result format:
+	 * 		 <ul>
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
+	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return an iterable set of
+	 * 				{@link Container} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return an iterable set of
+	 * 				{@link Document} instances.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return an array of document
+	 * 				handles.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return an array of document
+	 * 				keys.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The result will always be an iterable object, by default the method will use the
+	 * {@link kTOKEN_OPT_FORMAT_DOCUMENT} option and return the full selection.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 */
+	abstract public function FindByExample(
+		array $theDocument,
+		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
+	);
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC COUNTING INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Count																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the documents count.</h4>
+	 *
+	 * This method can be used to return the current collection's documents count, the
+	 * method will return an integer.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @return int					The total number of documents in the collection.
+	 */
+	abstract public function Count();
+
+
+	/*===================================================================================
+	 *	CountByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the number of documents by query.</h4>
+	 *
+	 * This method can be used to return the number of documents selected by the provided
+	 * query, the method expects the provided query to be in the driver native format and
+	 * will return an integer.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @return int					The number of selected documents.
+	 */
+	abstract public function CountByQuery( $theFilter );
+
+
+	/*===================================================================================
+	 *	CountByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by example.</h4>
+	 *
+	 * This method can be used to return the number of documents matching the provided
+	 * example document. The method will select all documents in the collection whose
+	 * properties match all the properties of the provided example document, this means that
+	 * the method will generate a query that puts in <tt>AND</tt> all the provided document
+	 * offsets.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @return int					The number of selected documents.
+	 */
+	abstract public function CountByExample( array $theDocument );
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC DELETION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Delete																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by query.</h4>
+	 *
+	 * This method can be used to delete documents based on the provided query, the method
+	 * expects the the query in the driver native format and will return the number of
+	 * deleted documents.
+	 *
+	 * The options parameter can be used to determine whether to delete the first selected
+	 * document, or all documents; by default, the method will delete all documents:
+	 *
+	 * <ul>
+	 * 	<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete the
+	 * 		first document or all documents:
+	 * 	 <ul>
+	 * 		<li><tt>TRUE</tt>: Delete all selected documents.
+	 * 		<li><tt>FALSE</tt>: Delete the first selected document.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theFilter			The deletion criteria.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 */
+	abstract public function Delete(
+		$theFilter,
+		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ]
+	);
+
+
+	/*===================================================================================
+	 *	DeleteByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by key.</h4>
+	 *
+	 * This method will delete the documents that match the provided key or keys and return
+	 * the number of deleted documents. The method features two parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theKey</b>: The document key(s) to match.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
+	 * 			parameter is a set of keys or a single key:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Provided a set of keys.
+	 * 			<li><tt>FALSE</tt>: Provided a single ke.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * By default the method assumes you provided a single key.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theKey				Single or set of document keys.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 */
+	abstract public function DeleteByKey(
+		$theKey,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE ]
+	);
+
+
+	/*===================================================================================
+	 *	DeleteByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by handle.</h4>
+	 *
+	 * This method will delete the documents that match the provided handle or handles from
+	 * the collections indicated in the handles and return the number of deleted documents.
+	 * The method features two parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theHandle</b>: The document handle(s) to match.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether the first
+	 * 			parameter is a set of handles or a single handle:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Provided a set of handles.
+	 * 			<li><tt>FALSE</tt>: Provided a single handle.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * By default the method assumes you provided a single handle.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theHandle			Single or set of document handles.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 */
+	abstract public function DeleteByHandle(
+		$theHandle,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE ]
+	);
+
+
+	/*===================================================================================
+	 *	DeleteByExample																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete documents by example.</h4>
+	 *
+	 * This method can be used to delete the first or all documents matching the provided
+	 * example document. The method will select all documents in the collection whose
+	 * properties match all the properties of the provided example document, this means that
+	 * the method will generate a query that puts in <tt>AND</tt> all the provided document
+	 * offsets.
+	 *
+	 * The method expects the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The example document as an array.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_MANY}</b>: This option determines whether to delete
+	 * 			the first or all documents:
+	 * 		 <ul>
+	 * 			<li><tt>TRUE</tt>: Delete all documents.
+	 * 			<li><tt>FALSE</tt>: Delete the first document.
+	 * 		 </ul>
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * By default the method will delete all the selected documents.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param array					$theDocument		Example document as an array.
+	 * @param array					$theOptions			Query options.
+	 * @return int					The number of deleted documents.
+	 */
+	abstract public function DeleteByExample(
+		array $theDocument,
 		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ]
 	);
 
@@ -914,7 +1415,7 @@ abstract class Collection extends Container
 	 * overload this method to return a different kind of standard document.
 	 *
 	 * @param array					$theData			Document as an array.
-	 * @return mixed				Native database document object.
+	 * @return mixed				Standard document object.
 	 */
 	protected function documentCreate( array $theData )
 	{
@@ -955,7 +1456,125 @@ abstract class Collection extends Container
 	 * @param mixed					$theKey				Document key.
 	 * @return mixed				Document handle.
 	 */
-	abstract public function documentHandleCreate( $theKey );
+	abstract protected function documentHandleCreate( $theKey );
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED FORMATTING UTILITIES							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	formatDocument																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert document according to provided format.</h4>
+	 *
+	 * This method will return the provided document in the provided format:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return a native driver document.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a {@link Container}
+	 * 		instance.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a {@link Document}
+	 * 		instance.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return a document handle.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return a document key.
+	 * </ul>
+	 *
+	 * The method expects a document expressed as a database native document, an array or an
+	 * object that can be cast to an array.
+	 *
+	 * If the provided format is not supported, the method will raise an exception.
+	 *
+	 * @param mixed					$theData			Document data.
+	 * @param string				$theFormat			Format type.
+	 * @return mixed				Formatted document object.
+	 * @throws \InvalidArgumentException
+	 *
+	 * @uses NewDocument()
+	 * @uses NewDocumentKey()
+	 * @uses NewDocumentHandle()
+	 * @uses NewDocumentContainer()
+	 */
+	protected function formatDocument( $theData, $theFormat )
+	{
+		//
+		// Parse format.
+		//
+		switch( $theFormat )
+		{
+			case kTOKEN_OPT_FORMAT_DOCUMENT:
+				return $this->NewDocument( $theData );								// ==>
+
+			case kTOKEN_OPT_FORMAT_KEY:
+				return $this->NewDocumentKey( $theData );							// ==>
+
+			case kTOKEN_OPT_FORMAT_HANDLE:
+				return $this->NewDocumentHandle( $theData );						// ==>
+
+			case kTOKEN_OPT_FORMAT_NATIVE:
+				return $this->NewDocumentNative( $theData );						// ==>
+
+			case kTOKEN_OPT_FORMAT_CONTAINER:
+				return $this->NewDocumentContainer( $theData );						// ==>
+		}
+
+		throw new \InvalidArgumentException(
+			"Unsupported format type [$theFormat]." );							// !@! ==>
+
+	} // formatDocument.
+
+
+	/*===================================================================================
+	 *	formatCursor																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert a set of documents according to provided format.</h4>
+	 *
+	 * This method will return an array of documents in the provided format:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return a native driver document.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a {@link Container}
+	 * 		instance.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a {@link Document}
+	 * 		instance.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return a document handle.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return a document key.
+	 * </ul>
+	 *
+	 * The method expects an iterable set of documents and will return an array of elements
+	 * corresponding to the provided format.
+	 *
+	 * @param mixed					$theCursor			Iterable set of documents.
+	 * @param string				$theFormat			Format type.
+	 * @return mixed				Array of formatted documents.
+	 *
+	 * @uses formatDocument()
+	 */
+	protected function formatCursor( $theCursor, $theFormat )
+	{
+		//
+		// Init local storage.
+		//
+		$list = [];
+
+		//
+		// Iterate documents set.
+		//
+		foreach( $theCursor as $document )
+			$list[] = $this->formatDocument( $document, $theFormat );
+
+		return $list;																// ==>
+
+	} // formatCursor.
 
 
 
