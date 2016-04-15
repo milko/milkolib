@@ -66,9 +66,18 @@ const kTOKEN_OPT_MANY = '$doAll';
  * 		{@link Milko\PHPLib\Document} instances.
  * 	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return the result as a set of document
  * 		handles.
+ * 	<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return the result as a set of document keys.
  * </ul>
  */
 const kTOKEN_OPT_FORMAT = '$doFormat';
+
+/**
+ * <h4>Array result format.</h4><p />
+ *
+ * This token represents a controlled vocabulary element of {@link kTOKEN_OPT_FORMAT} which
+ * indicates that a query result should be returned as an array.
+ */
+const kTOKEN_OPT_FORMAT_ARRAY = 'A';
 
 /**
  * <h4>Native result format.</h4><p />

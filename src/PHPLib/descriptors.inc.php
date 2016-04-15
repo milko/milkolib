@@ -26,6 +26,30 @@
  */
 
 /*=======================================================================================
+ *	GLOBAL PROPERTIES																	*
+ *======================================================================================*/
+
+/**
+ * <h4>Creation stamp.</h4><p />
+ *
+ * The property holds the object's <em>creation time stamp</em>.
+ *
+ * Type: <tt>{@link kTYPE_TIMESTAMP}</tt>.
+ * Kind: <tt>{@link kKIND_DISCRETE}</tt>
+ */
+const kTAG_CREATION			= '@8';
+
+/**
+ * <h4>Modification stamp.</h4><p />
+ *
+ * The property holds the object's <em>modification time stamp</em>.
+ *
+ * Type: <tt>{@link kTYPE_TIMESTAMP}</tt>.
+ * Kind: <tt>{@link kKIND_DISCRETE}</tt>
+ */
+const kTAG_MODIFICATION		= '@9';
+
+/*=======================================================================================
  *	TERM PROPERTIES																		*
  *======================================================================================*/
 
@@ -115,26 +139,6 @@ const kTAG_NAME				= '@6';
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
 const kTAG_DESCRIPTION		= '@7';
-
-/**
- * <h4>Creation stamp.</h4><p />
- *
- * The property holds the object's <em>creation time stamp</em>.
- *
- * Type: <tt>{@link kTYPE_TIMESTAMP}</tt>.
- * Kind: <tt>{@link kKIND_DISCRETE}</tt>
- */
-const kTAG_CREATION			= '@8';
-
-/**
- * <h4>Modification stamp.</h4><p />
- *
- * The property holds the object's <em>modification time stamp</em>.
- *
- * Type: <tt>{@link kTYPE_TIMESTAMP}</tt>.
- * Kind: <tt>{@link kKIND_DISCRETE}</tt>
- */
-const kTAG_MODIFICATION		= '@9';
 
 /*=======================================================================================
  *	DESCRIPTOR PROPERTIES																*

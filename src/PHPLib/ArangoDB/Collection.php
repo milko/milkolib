@@ -102,6 +102,20 @@ class Collection extends \Milko\PHPLib\Collection
 	public function RevisionOffset()					{	return kTAG_ARANGO_REVISION;	}
 
 
+	/*===================================================================================
+	 *	PropertiesOffset																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document properties offset.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_ARANGO_OFFSETS} constant.
+	 *
+	 * @return string				Document properties offset.
+	 */
+	public function PropertiesOffset()						{	return kTAG_ARANGO_OFFSETS;	}
+
+
 
 /*=======================================================================================
  *																						*
@@ -387,7 +401,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We implement this method by converting the provided array into a native document and
 	 * using the {@link triagens\ArangoDb\DocumentHandler::save()} method to insert it.
 	 *
-	 * @param array					$theDocument		The document as an array.
+	 * @param array					$theDocument		The document data as an array.
 	 * @return mixed				The document's unique identifier.
 	 *
 	 * @uses documentNativeCreate()
@@ -400,12 +414,10 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
 
-		//
-		// Convert to native document.
-		//
-		$document = $this->documentNativeCreate( $theDocument );
-
-		return $handler->save( $this->mConnection, $document );						// ==>
+		return
+			$handler->save(
+				$this->mConnection,
+				$this->documentNativeCreate( $theDocument ) );						// ==>
 
 	} // Insert.
 
@@ -747,7 +759,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses formatCursor()
+	 * @uses NewDocumentSet()
 	 * @uses triagens\ArangoDb\Statement::execute()
 	 */
 	public function Find(
@@ -778,7 +790,7 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
 			return $result;															// ==>
 
-		return $this->formatCursor( $result, $theOptions[ kTOKEN_OPT_FORMAT ] );	// ==>
+		return $this->NewDocumentSet( $result, $theOptions[ kTOKEN_OPT_FORMAT ] );	// ==>
 
 	} // Find.
 
@@ -799,7 +811,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses formatCursor()
+	 * @uses NewDocumentSet()
 	 * @uses formatDocument()
 	 * @uses collectionName()
 	 * @uses triagens\ArangoDb\CollectionHandler::lookupByKeys()
@@ -834,7 +846,7 @@ class Collection extends \Milko\PHPLib\Collection
 				return $result;														// ==>
 
 			return
-				$this->formatCursor(
+				$this->NewDocumentSet(
 					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
 
 		} // Set of keys.
@@ -1023,7 +1035,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses formatCursor()
+	 * @uses NewDocumentSet()
 	 * @uses NewDocumentNative()
 	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
 	 */
@@ -1068,7 +1080,7 @@ class Collection extends \Milko\PHPLib\Collection
 			return $result;															// ==>
 
 		return
-			$this->formatCursor(
+			$this->NewDocumentSet(
 				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
 
 	} // FindByExample.

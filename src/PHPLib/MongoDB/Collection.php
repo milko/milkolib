@@ -93,6 +93,20 @@ class Collection extends \Milko\PHPLib\Collection
 	public function RevisionOffset()						{	return kTAG_MONGO_REVISION;	}
 
 
+	/*===================================================================================
+	 *	PropertiesOffset																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document properties offset.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_MONGO_OFFSETS} constant.
+	 *
+	 * @return string				Document properties offset.
+	 */
+	public function PropertiesOffset()						{	return kTAG_MONGO_OFFSETS;	}
+
+
 
 /*=======================================================================================
  *																						*
@@ -310,7 +324,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We implement this method by using the {@link \MongoDB\Collection::insertOne()} method
 	 * to save the document.
 	 *
-	 * @param array					$theDocument		The document as an array.
+	 * @param array					$theDocument		The document data as an array.
 	 * @return mixed				The document's unique identifier.
 	 *
 	 * @uses \MongoDB\Collection::insertOne()
@@ -507,7 +521,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses formatCursor()
+	 * @uses NewDocumentSet()
 	 * @uses \MongoDB\Collection::find()
 	 */
 	public function Find(
@@ -539,7 +553,7 @@ class Collection extends \Milko\PHPLib\Collection
 			return $result;															// ==>
 
 		return
-			$this->formatCursor(
+			$this->NewDocumentSet(
 				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
 
 	} // Find.
@@ -560,7 +574,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The found records.
 	 *
 	 * @uses KeyOffset()
-	 * @uses formatCursor()
+	 * @uses NewDocumentSet()
 	 * @uses formatDocument()
 	 * @uses \MongoDB\Collection::find()
 	 * @uses \MongoDB\Collection::findOne()
@@ -598,7 +612,7 @@ class Collection extends \Milko\PHPLib\Collection
 				$this->formatDocument(
 					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
 
-		return $this->formatCursor( $result, $theOptions[ kTOKEN_OPT_FORMAT ] );	// ==>
+		return $this->NewDocumentSet( $result, $theOptions[ kTOKEN_OPT_FORMAT ] );	// ==>
 
 	} // FindByKey.
 
@@ -711,7 +725,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses formatCursor()
+	 * @uses NewDocumentSet()
 	 * @uses \MongoDB\Collection::find()
 	 */
 	public function FindByExample(
@@ -743,7 +757,7 @@ class Collection extends \Milko\PHPLib\Collection
 			return $result;															// ==>
 
 		return
-			$this->formatCursor(
+			$this->NewDocumentSet(
 				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
 
 	} // FindByExample.

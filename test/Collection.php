@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -31,12 +31,13 @@ require_once( "functions.php" );
 //
 // Test classes.
 //
+class AClass extends \Milko\PHPLib\Document {}
 class DerivedFromDocument extends \Milko\PHPLib\Document {}
 
 //
 // Enable exception logging.
 //
-triagens\ArangoDb\Exception::enableLogging();
+//triagens\ArangoDb\Exception::enableLogging();
 
 //
 // Instantiate object.
@@ -45,15 +46,15 @@ if( kENGINE == "MONGO" )
 {
 	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
 	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
-	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\Server( $url );
 }
 elseif( kENGINE == "ARANGO" )
 {
 	echo('$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n");
 	$url = "tcp://localhost:8529/test_milkolib/test_collection";
-	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\Server( $url );
 }
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
 $database = $server->GetDatabase( "test_milkolib" );
@@ -65,63 +66,56 @@ $test->Truncate();
 echo( "\n====================================================================================\n\n" );
 
 //
-// Test document conversion.
+// Test default offsets.
 //
-echo( "Test document conversion:\n" );
-echo( '$data = [$test->KeyOffset() => "KEY", $test->RevisionOffset() => "REVISION", "data" => "some data"];' . "\n" );
-$data = [$test->KeyOffset() => "KEY", $test->RevisionOffset() => "REVISION", "data" => "some data"];
-print_r( $data );
-
-echo( "\n" );
-
-//
-// Convert to native document from array.
-//
-echo( "Convert to native document from array:\n" );
-echo( '$document = $test->NewDocumentNative( $data );' . "\n" );
-$document = $test->NewDocumentNative( $data );
-print_r( $document );
-
-echo( "\n" );
-
-//
-// Convert to native document from array object.
-//
-echo( "Convert to native document from array object:\n" );
-echo( '$document = $test->NewDocumentNative( new ArrayObject( $data ) );' . "\n" );
-$document = $test->NewDocumentNative( new ArrayObject( $data ) );
-print_r( $document );
-
-echo( "\n" );
-
-//
-// Convert to native document from Container.
-//
-echo( "Convert to native document from Container:\n" );
-echo( '$document = $test->NewDocumentNative( new Milko\PHPLib\Container( $data ) );' . "\n" );
-$document = $test->NewDocumentNative( new Milko\PHPLib\Container( $data ) );
-print_r( $document );
-
-echo( "\n" );
-
-//
-// Convert to native document from Document.
-//
-echo( "Convert to native document from Document:\n" );
-echo( '$document = $test->NewDocumentNative( new Milko\PHPLib\Document( $test, $data ) );' . "\n" );
-$document = $test->NewDocumentNative( new Milko\PHPLib\Document( $test, $data ) );
-print_r( $document );
+echo( "Test default offsets:\n" );
+echo( "Key:        " . $test->KeyOffset() . "\n" );
+echo( "Class:      " . $test->ClassOffset() . "\n" );
+echo( "Revision:   " . $test->RevisionOffset() . "\n" );
+echo( "Properties: " . $test->PropertiesOffset() . "\n" );
 
 echo( "\n====================================================================================\n\n" );
 
 //
-// Convert to document from native data.
+// Test new document with no class.
 //
-echo( "Convert to document from native data:\n" );
-echo( '$document = $test->NewDocument( $test->NewDocumentNative( $data ) );' . "\n" );
-$document = $test->NewDocument( $test->NewDocumentNative( $data ) );
+echo( "Test new document with no class:\n" );
+echo( '$document = $test->NewDocument( ["data" => "some data"] );' . "\n" );
+$document = $test->NewDocument( ["data" => "some data"] );
 echo( "Class: " . get_class( $document ) . "\n" );
 print_r( $document->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Test new document with existing class.
+//
+echo( "Test new document with existing class:\n" );
+echo( '$document = $test->NewDocument( ["data" => "document data", $test->ClassOffset() => "DerivedFromDocument"] );' . "\n" );
+$document = $test->NewDocument( ["data" => "document data", $test->ClassOffset() => "DerivedFromDocument"] );
+echo( "Class: " . get_class( $document ) . "\n" );
+print_r( $document->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Test new document with provided class.
+//
+echo( "Test new document with provided class:\n" );
+echo( '$document = $test->NewDocument( $document, "AClass" );' . "\n" );
+$document = $test->NewDocument( $document, "AClass" );
+echo( "Class: " . get_class( $document ) . "\n" );
+print_r( $document->getArrayCopy() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Test document conversion.
+//
+echo( "Test document conversion:\n" );
+echo( '$data = [$test->KeyOffset() => "KEY", $test->ClassOffset() => "AClass", $test->RevisionOffset() => "REVISION", "data" => "some data"];' . "\n" );
+$data = [$test->KeyOffset() => "KEY", $test->ClassOffset() => "AClass", $test->RevisionOffset() => "REVISION", "data" => "some data"];
+print_r( $data );
 
 echo( "\n" );
 
@@ -132,45 +126,6 @@ echo( "Convert to document from array:\n" );
 echo( '$document = $test->NewDocument( $data );' . "\n" );
 $document = $test->NewDocument( $data );
 echo( "Class: " . get_class( $document ) . "\n" );
-print_r( $document->getArrayCopy() );
-
-echo( "\n" );
-
-//
-// Convert to document from array object.
-//
-echo( "Convert to document from array object:\n" );
-echo( '$document = $test->NewDocument( new ArrayObject( $data ) );' . "\n" );
-$document = $test->NewDocument( new ArrayObject( $data ) );
-echo( "Class: " . get_class( $document ) . "\n" );
-print_r( $document->getArrayCopy() );
-
-echo( "\n" );
-
-//
-// Convert to document from Container.
-//
-echo( "Convert to document from Container:\n" );
-echo( '$document = $test->NewDocument( new Milko\PHPLib\Container( $data ) );' . "\n" );
-$document = $test->NewDocument( new Milko\PHPLib\Container( $data ) );
-echo( "Class: " . get_class( $document ) . "\n" );
-print_r( $document->getArrayCopy() );
-
-echo( "\n" );
-
-//
-// Convert to document from Document.
-//
-echo( "Convert to document from Document:\n" );
-echo( '$document = $test->NewDocument( new Milko\PHPLib\Document( $test, $data ) );' . "\n" );
-$document = $test->NewDocument( new Milko\PHPLib\Document( $test, $data ) );
-echo( "Class: " . get_class( $document ) . "\n" );
-$tmp = $document[ $test->CLassOffset() ];
-echo( "Document class: [$tmp]\n" );
-$tmp = $document[ $test->KeyOffset() ];
-echo( "Document key: [$tmp]\n" );
-$tmp = $document[ $test->RevisionOffset() ];
-echo( "Document revision: [$tmp]\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
@@ -179,38 +134,22 @@ print_r( $document->getArrayCopy() );
 echo( "\n" );
 
 //
-// Convert to document with class.
+// Convert to native document.
 //
-echo( "Convert to document with class:\n" );
-echo( '$document = $test->NewDocument( array_merge( $data, [$test->ClassOffset() => "DerivedFromDocument"] ) );' . "\n" );
-$document = $test->NewDocument( array_merge( $data, [$test->ClassOffset() => "DerivedFromDocument"] ) );
-echo( "Class: " . get_class( $document ) . "\n" );
-$tmp = $document[ $test->CLassOffset() ];
-echo( "Document class: [$tmp]\n" );
-$tmp = $document[ $test->KeyOffset() ];
-echo( "Document key: [$tmp]\n" );
-$tmp = $document[ $test->RevisionOffset() ];
-echo( "Document revision: [$tmp]\n" );
-echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
-echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
-echo( "Data: " );
-print_r( $document->getArrayCopy() );
+echo( "Convert to native document:\n" );
+echo( '$native = $test->NewDocumentNative( $document );' . "\n" );
+$native = $test->NewDocumentNative( $document );
+print_r( $native );
 
 echo( "\n" );
 
 //
-// Convert to document from derived class.
+// Convert back to document.
 //
-echo( "Convert to document from derived class:\n" );
-echo( '$document = $test->NewDocument( new DerivedFromDocument( $test, $data ) );' . "\n" );
-$document = $test->NewDocument( new DerivedFromDocument( $test, $data ) );
+echo( "Convert back to document:\n" );
+echo( '$document = $test->NewDocument( $document );' . "\n" );
+$document = $test->NewDocument( $document );
 echo( "Class: " . get_class( $document ) . "\n" );
-$tmp = $document[ $test->CLassOffset() ];
-echo( "Document class: [$tmp]\n" );
-$tmp = $document[ $test->KeyOffset() ];
-echo( "Document key: [$tmp]\n" );
-$tmp = $document[ $test->RevisionOffset() ];
-echo( "Document revision: [$tmp]\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
@@ -219,13 +158,23 @@ print_r( $document->getArrayCopy() );
 echo( "\n====================================================================================\n\n" );
 
 //
-// Convert to document handle from array.
+// Convert to handle from array.
 //
-echo( "Convert to document handle from array:\n" );
+echo( "Convert to handle from array:\n" );
+echo( '$handle = $test->NewDocumentHandle( $data );' . "\n" );
+$handle = $test->NewDocumentHandle( $data );
+var_dump( $handle );
+
+echo( "\n" );
+
+//
+// Convert to handle from native document.
+//
+echo( "Convert to handle from native document:\n" );
+echo( '$handle = $test->NewDocumentHandle( $native );' . "\n" );
 try
 {
-	echo( '$document = $test->NewDocumentHandle( ["data" => "some data"] );' . "\n" );
-	$document = $test->NewDocumentHandle( ["data" => "some data"] );
+	$handle = $test->NewDocumentHandle( $native );
 	echo( "FALIED! - Should have raised an exception.\n" );
 }
 catch( InvalidArgumentException $error )
@@ -233,90 +182,84 @@ catch( InvalidArgumentException $error )
 	echo( "SUCCEEDED! - Has raised an exception.\n" );
 	echo( $error->getMessage() . "\n" );
 }
-echo( '$document = $test->NewDocumentHandle( ["data" => "some data", $test->KeyOffset() => "KEY"] );' . "\n" );
-$document = $test->NewDocumentHandle( ["data" => "some data", $test->KeyOffset() => "KEY"] );
-var_dump( $document );
 
 echo( "\n" );
 
 //
-// Convert to document handle from array object.
+// Convert to handle from document.
 //
-echo( "Convert to document handle from array object:\n" );
-echo( '$document = $test->NewDocumentHandle( new ArrayObject( ["data" => "some data", $test->KeyOffset() => "KEY"] ) );' . "\n" );
-$document = $test->NewDocumentHandle( new ArrayObject( ["data" => "some data", $test->KeyOffset() => "KEY"] ) );
-var_dump( $document );
-
-echo( "\n" );
-
-//
-// Convert to document handle from Container.
-//
-echo( "Convert to document handle from Container:\n" );
-echo( '$document = $test->NewDocumentHandle( new Milko\PHPLib\Container( ["data" => "some data", $test->KeyOffset() => "KEY"] ) );' . "\n" );
-$document = $test->NewDocumentHandle( new Milko\PHPLib\Container( ["data" => "some data", $test->KeyOffset() => "KEY"] ) );
-var_dump( $document );
-
-echo( "\n" );
-
-//
-// Convert to document handle from Document.
-//
-echo( "Convert to document handle from Document:\n" );
-echo( '$document = $test->NewDocumentHandle( new Milko\PHPLib\Document( $test, ["data" => "some data", $test->KeyOffset() => "KEY"] ) );' . "\n" );
-$document = $test->NewDocumentHandle( new Milko\PHPLib\Document( $test, ["data" => "some data", $test->KeyOffset() => "KEY"] ) );
-var_dump( $document );
+echo( "Convert to handle from document:\n" );
+echo( '$handle = $test->NewDocumentHandle( $document );' . "\n" );
+$handle = $test->NewDocumentHandle( $document );
+var_dump( $handle );
 
 echo( "\n====================================================================================\n\n" );
 
 //
-// Convert to document key from array.
+// Convert to key from array.
 //
-echo( "Convert to document key from array:\n" );
+echo( "Convert to key from array:\n" );
+echo( '$key = $test->NewDocumentKey( $data );' . "\n" );
+$key = $test->NewDocumentKey( $data );
+var_dump( $key );
+
+echo( "\n" );
+
+//
+// Convert to key from native document.
+//
+echo( "Convert to key from native document:\n" );
+echo( '$key = $test->NewDocumentKey( $native );' . "\n" );
 try
 {
-	echo( '$document = $test->NewDocumentKey( ["data" => "some data"] );' . "\n" );
-	$document = $test->NewDocumentKey( ["data" => "some data"] );
-	echo( "FALIED! - Should have raised an exception.\n" );
+	$key = $test->NewDocumentKey( $native );
+	var_dump( $key );
 }
 catch( InvalidArgumentException $error )
 {
-	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( "FALIED! - Has raised an exception.\n" );
 	echo( $error->getMessage() . "\n" );
 }
-echo( '$document = $test->NewDocumentKey( ["data" => "some data", $test->KeyOffset() => "KEY"] );' . "\n" );
-$document = $test->NewDocumentKey( ["data" => "some data", $test->KeyOffset() => "KEY"] );
-var_dump( $document );
 
 echo( "\n" );
 
 //
-// Convert to document key from array object.
+// Convert to key from document.
 //
-echo( "Convert to document key from array object:\n" );
-echo( '$document = $test->NewDocumentKey( new ArrayObject( ["data" => "some data", $test->KeyOffset() => "KEY"] ) );' . "\n" );
-$document = $test->NewDocumentKey( new ArrayObject( ["data" => "some data", $test->KeyOffset() => "KEY"] ) );
-var_dump( $document );
+echo( "Convert to key from document:\n" );
+echo( '$key = $test->NewDocumentKey( $document );' . "\n" );
+$key = $test->NewDocumentKey( $document );
+var_dump( $key );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Convert to container from array.
+//
+echo( "Convert to container from array:\n" );
+echo( '$container = $test->NewDocumentContainer( $data );' . "\n" );
+$container = $test->NewDocumentContainer( $data );
+print_r( $container );
 
 echo( "\n" );
 
 //
-// Convert to document key from Container.
+// Convert to container from native document.
 //
-echo( "Convert to document key from Container:\n" );
-echo( '$document = $test->NewDocumentKey( new Milko\PHPLib\Container( ["data" => "some data", $test->KeyOffset() => "KEY"] ) );' . "\n" );
-$document = $test->NewDocumentKey( new Milko\PHPLib\Container( ["data" => "some data", $test->KeyOffset() => "KEY"] ) );
-var_dump( $document );
+echo( "Convert to container from native document:\n" );
+echo( '$container = $test->NewDocumentContainer( $native );' . "\n" );
+$container = $test->NewDocumentContainer( $native );
+print_r( $container );
 
 echo( "\n" );
 
 //
-// Convert to document key from Document.
+// Convert to container from document.
 //
-echo( "Convert to document key from Document:\n" );
-echo( '$document = $test->NewDocumentKey( new Milko\PHPLib\Document( $test, ["data" => "some data", $test->KeyOffset() => "KEY"] ) );' . "\n" );
-$document = $test->NewDocumentKey( new Milko\PHPLib\Document( $test, ["data" => "some data", $test->KeyOffset() => "KEY"] ) );
-var_dump( $document );
+echo( "Convert to container from document:\n" );
+echo( '$container = $test->NewDocumentContainer( $document );' . "\n" );
+$container = $test->NewDocumentContainer( $document );
+print_r( $container );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -324,8 +267,8 @@ echo( "\n=======================================================================
 // Insert native document.
 //
 echo( "Insert native document:\n" );
-echo( '$document = $test->NewDocumentNative( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );' . "\n" );
-$document = $test->NewDocumentNative( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "\DerivedFromDocument" ] );
+echo( '$document = $test->NewDocumentArray( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "DerivedFromDocument" ] );' . "\n" );
+$document = $test->NewDocumentArray( ["data" => "Value 1", "color" => "red", $test->ClassOffset() => "DerivedFromDocument" ] );
 echo( '$result = $test->Insert( $document );' . "\n" );
 $result = $test->Insert( $document );
 var_dump( $result );
@@ -339,8 +282,8 @@ echo( "\n" );
 echo( "Insert container:\n" );
 echo( '$document = new Milko\PHPLib\Container( [$test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );' . "\n" );
 $document = new Milko\PHPLib\Container( [$test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );
-echo( '$result = $test->Insert( $document );' . "\n" );
-$result = $test->Insert( $document );
+echo( '$result = $test->Insert( $test->NewDocumentArray( $document ) );' . "\n" );
+$result = $test->Insert( $test->NewDocumentArray( $document ) );
 var_dump( $result );
 print_r( $document );
 
@@ -352,8 +295,8 @@ echo( "\n" );
 echo( "Insert document:\n" );
 echo( '$document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );' . "\n" );
 $document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );
-echo( '$result = $test->Insert( $document );' . "\n" );
-$result = $test->Insert( $document );
+echo( '$result = $test->Insert( $test->NewDocumentArray( $document ) );' . "\n" );
+$result = $test->Insert( $test->NewDocumentArray( $document ) );
 var_dump( $result );
 echo( "Class: " . get_class( $document ) . "\n" );
 $tmp = $document[ $test->CLassOffset() ];
@@ -405,8 +348,10 @@ echo( "Data: " );
 print_r( $documents[3]->getArrayCopy() );
 echo( "»»»[4] " ); print_r( $documents[4] );
 echo( "»»»\n" );
-echo( '$result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );' . "\n" );
-$result = $test->Insert( $documents, [ kTOKEN_OPT_MANY => TRUE ] );
+echo( '$list = $test->ConvertDocumentSet( $documents );' . "\n" );
+$list = $test->ConvertDocumentSet( $documents );
+echo( '$result = $test->StoreDocumentSet( $list );' . "\n" );
+$result = $test->StoreDocumentSet( $list );
 print_r( $result );
 echo( "Document types:\n" );
 foreach( $documents as $key => $document )
@@ -439,6 +384,7 @@ foreach( $documents as $key => $document )
 	else
 		print_r( $document );
 }
+exit;
 
 echo( "\n====================================================================================\n\n" );
 

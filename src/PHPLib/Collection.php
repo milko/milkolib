@@ -55,6 +55,7 @@ use Milko\PHPLib\Container;
  * 		<li><b>{@link KeyOffset()}</b>: Return default document key offset.
  * 		<li><b>{@link ClassOffset()}</b>: Return default document class offset.
  * 		<li><b>{@link RevisionOffset()}</b>: Return default document revision offset.
+ * 		<li><b>{@link PropertiesOffset()}</b>: Return default document properties offset.
  * 	 </ul>
  * 	<li>Collection management:
  * 	 <ul>
@@ -99,6 +100,12 @@ use Milko\PHPLib\Container;
  * 		<li><b>{@link DeleteByKey()}</b>: Delete documents by key.
  * 		<li><b>{@link DeleteByHandle()}</b>: Delete documents by handle.
  * 		<li><b>{@link DeleteByExample()}</b>: Delete documents by example.
+ * 	 </ul>
+ * 	<li>Document sets:
+ * 	 <ul>
+ * 		<li><b>{@link StoreDocumentSet()}</b>: Insert or replace a set of documents.
+ * 		<li><b>{@link DeleteDocumentSet()}</b>: Delete a set of documents.
+ * 		<li><b>{@link ConvertDocumentSet()}</b>: Convert a document set.
  * 	 </ul>
  * </ul>
  *
@@ -332,6 +339,22 @@ abstract class Collection
 	abstract public function RevisionOffset();
 
 
+	/*===================================================================================
+	 *	PropertiesOffset																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the document properties offset.</h4>
+	 *
+	 * This represents the default offset of the document properties list, this property
+	 * collects all leaf offsets contained in the document, it can be used to filter
+	 * documents by their properties.
+	 *
+	 * @return string				Document properties offset.
+	 */
+	abstract public function PropertiesOffset();
+
+
 
 /*=======================================================================================
  *																						*
@@ -414,7 +437,7 @@ abstract class Collection
 	 * </ul>
 	 *
 	 * In derived concrete classes you should overload this method by intercepting native
-	 * documents, converting them to an array and passing them to the parent method.
+	 * documents, extract any internal properties and pass them to the parent method.
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @param string				$theClass			Expected class name.
@@ -457,6 +480,7 @@ abstract class Collection
 //		// Handle native document.
 //		//
 //		$document = <convert to array>( $theData );
+//		<extract internal properties>( $document );
 //
 //		return parent::NewDocument( $document, $theClass );							// ==>
 
@@ -703,13 +727,14 @@ abstract class Collection
 	 * <h4>Insert document.</h4>
 	 *
 	 * This method can be used to insert a single document into the current collection, the
-	 * method expects a single parameter that represents the document as an array.
+	 * method expects a single parameter that represents the document expressed as a value
+	 * compatible with the {@link NewDocumentNative()} method.
 	 *
 	 * The method will return the newly inserted document key.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theDocument		The document as an array.
+	 * @param array					$theDocument		The document data as an array.
 	 * @return mixed				The document's unique identifier.
 	 */
 	abstract public function Insert( array $theDocument );
@@ -750,7 +775,7 @@ abstract class Collection
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param mixed					$theDocuments		The native documents set.
-	 * @return array				The document unique identifiers.
+	 * @return array				The document keys.
 	 */
 	abstract public function InsertBulk( $theDocuments );
 
@@ -906,6 +931,8 @@ abstract class Collection
 	 * 		 <ul>
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_ARRAY}</tt>: Return an iterable set of
+	 * 				arrays.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return an iterable set of
 	 * 				{@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return an iterable set of
@@ -958,6 +985,8 @@ abstract class Collection
 	 * 		 <ul>
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_ARRAY}</tt>: Return an array or a set of
+	 * 				arrays.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a single or set of
 	 * 				{@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a single or set of
@@ -1017,6 +1046,8 @@ abstract class Collection
 	 * 		 <ul>
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_ARRAY}</tt>: Return an array or a set of
+	 * 				arrays.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a single or set of
 	 * 				{@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a single or set of
@@ -1078,6 +1109,8 @@ abstract class Collection
 	 * 		 <ul>
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return the unchanged driver
 	 * 				database result.
+	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_ARRAY}</tt>: Return an iterable set of
+	 * 				arrays.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return an iterable set of
 	 * 				{@link Container} instances.
 	 * 			<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return an iterable set of
@@ -1335,6 +1368,179 @@ abstract class Collection
 
 /*=======================================================================================
  *																						*
+ *								PUBLIC DOCUMENT SET INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	StoreDocumentSet																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Store a set of documents.</h4>
+	 *
+	 * This method can be used to store a set of documents, these documents may be of the
+	 * following types:
+	 *
+	 * <ul>
+	 * 	<li><tt>array</tt>: The method will assume that the document is to be inserted and
+	 * 		the array will be left unchanged.
+	 * 	<li><tt>{@link Container}</tt>: The method will assume that the document is to be
+	 * 		inserted and the object will receive the new document key.
+	 * 	<li><tt>{@link Document}</tt>: The method will call the document's
+	 * 		{@link Document::Store()} method that will either insert or replace the
+	 * 		document and update its state.
+	 * </ul>
+	 *
+	 * The method will return an array of document handles.
+	 *
+	 * @param mixed					$theDocuments		The documents set.
+	 * @return array				The document keys.
+	 */
+	public function StoreDocumentSet( $theDocuments )
+	{
+		//
+		// Init local storage.
+		//
+		$handles = [];
+
+		//
+		// Iterate set.
+		//
+		foreach( $theDocuments as $document )
+		{
+			//
+			// Handle array.
+			//
+			if( is_array( $document ) )
+				$handles[] =
+					$this->documentHandleCreate(
+						$this->Insert( $document ) );
+
+			//
+			// Handle document.
+			//
+			elseif( $document instanceof $document )
+				$handles[] = $document->Store();
+
+			//
+			// Handle containers.
+			//
+			elseif( $document instanceof Container )
+			{
+				//
+				// Insert document.
+				//
+				$handles[] =
+					$this->documentHandleCreate(
+						$this->Insert( $document ) );
+
+				//
+				// Normalise socument.
+				//
+				$this->normalise InsertedDucument( $document );
+			}
+
+			//
+			// Handle other types.
+			//
+			else
+				$handles[] =
+					$this->documentHandleCreate(
+						$this->Insert(
+							$this->NewDocumentArray( $document ) ) );
+
+		} // Iterating document set.
+
+		return $handles;															// ==>
+
+	} // StoreDocumentSet.
+
+
+	/*===================================================================================
+	 *	DeleteDocumentSet																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete a set of documents.</h4>
+	 *
+	 * This method can be used to delete a set of {@link Document} derived instances, the
+	 * method expects a single parameter which must be an iterable set of {@link Document}
+	 * instances, the method will return the number of deleted documents.
+	 *
+	 * @param mixed					$theDocuments		The documents set.
+	 * @return array				The document keys.
+	 */
+	public function DeleteDocumentSet( $theDocuments )
+	{
+		//
+		// Iterate document set.
+		//
+		$count = 0;
+		foreach( $theDocuments as $document )
+			$count += $document->Delete();
+
+		return $count;																// ==>
+
+	} // DeleteDocumentSet.
+
+
+	/*===================================================================================
+	 *	ConvertDocumentSet																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Convert a document set.</h4>
+	 *
+	 * This method will convert the elements of the provided document set into the format
+	 * indicated by the provided code:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return a native driver document.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_ARRAY}</tt>: Return an array.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a {@link Container}
+	 * 		instance.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a {@link Document}
+	 * 		instance.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return a document handle.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return a document key.
+	 * </ul>
+	 *
+	 * The method will return an array of converted elements, if the provided format is not
+	 * supported, the method will raise an exception.
+	 *
+	 * By default the method will return a set of {@link Document} instances.
+	 *
+	 * @param mixed					$theSet				Iterable set of documents.
+	 * @param string				$theFormat			Expected document format.
+	 * @return array				Converted set.
+	 *
+	 * @uses KeyOffset()
+	 * @uses NewDocumentArray()
+	 */
+	public function ConvertDocumentSet( $theSet, $theFormat = kTOKEN_OPT_FORMAT_DOCUMENT )
+	{
+		//
+		// Init local storage.
+		//
+		$set = [];
+
+		//
+		// Iterate documents set.
+		//
+		foreach( $theSet as $document )
+			$set[] = $this->formatDocument( $document, $theFormat );
+
+		return $set;																// ==>
+
+	} // ConvertDocumentSet.
+
+
+
+/*=======================================================================================
+ *																						*
  *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
  *																						*
  *======================================================================================*/
@@ -1479,6 +1685,7 @@ abstract class Collection
 	 *
 	 * <ul>
 	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return a native driver document.
+	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_ARRAY}</tt>: Return an array.
 	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a {@link Container}
 	 * 		instance.
 	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a {@link Document}
@@ -1515,6 +1722,9 @@ abstract class Collection
 			case kTOKEN_OPT_FORMAT_KEY:
 				return $this->NewDocumentKey( $theData );							// ==>
 
+			case kTOKEN_OPT_FORMAT_ARRAY:
+				return $this->NewDocumentArray( $theData );							// ==>
+
 			case kTOKEN_OPT_FORMAT_HANDLE:
 				return $this->NewDocumentHandle( $theData );						// ==>
 
@@ -1529,52 +1739,6 @@ abstract class Collection
 			"Unsupported format type [$theFormat]." );							// !@! ==>
 
 	} // formatDocument.
-
-
-	/*===================================================================================
-	 *	formatCursor																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Convert a set of documents according to provided format.</h4>
-	 *
-	 * This method will return an array of documents in the provided format:
-	 *
-	 * <ul>
-	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_NATIVE}</tt>: Return a native driver document.
-	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_CONTAINER}</tt>: Return a {@link Container}
-	 * 		instance.
-	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_DOCUMENT}</tt>: Return a {@link Document}
-	 * 		instance.
-	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_HANDLE}</tt>: Return a document handle.
-	 * 	<li><tt>{@link kTOKEN_OPT_FORMAT_KEY}</tt>: Return a document key.
-	 * </ul>
-	 *
-	 * The method expects an iterable set of documents and will return an array of elements
-	 * corresponding to the provided format.
-	 *
-	 * @param mixed					$theCursor			Iterable set of documents.
-	 * @param string				$theFormat			Format type.
-	 * @return mixed				Array of formatted documents.
-	 *
-	 * @uses formatDocument()
-	 */
-	protected function formatCursor( $theCursor, $theFormat )
-	{
-		//
-		// Init local storage.
-		//
-		$list = [];
-
-		//
-		// Iterate documents set.
-		//
-		foreach( $theCursor as $document )
-			$list[] = $this->formatDocument( $document, $theFormat );
-
-		return $list;																// ==>
-
-	} // formatCursor.
 
 
 

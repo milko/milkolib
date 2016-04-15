@@ -94,6 +94,13 @@ const kTAG_ARANGO_CLASS = '_class';
 const kTAG_ARANGO_REVISION = '_rev';
 
 /**
+ * <h4>Default offsets list.</h4><p />
+ *
+ * This defines the offset that lists all property names in the object.
+ */
+const kTAG_ARANGO_OFFSETS = '_tags';
+
+/**
  * <h4>Default source relationship offset.</h4><p />
  *
  * This defines the default offset for source nodes in a graph edge.
