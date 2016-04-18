@@ -364,59 +364,6 @@ class Document extends Container
 
 /*=======================================================================================
  *																						*
- *								PUBLIC VALIDATION INTERFACE								*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	Validate																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Validate object.</h4>
-	 *
-	 * This method should check whether the document is valid and ready to be stored in its
-	 * collection, if that is not the case, the method should raise an exception.
-	 *
-	 * In this class we check whether all required properties are there and we traverse the
-	 * object calling this method for each of them.
-	 *
-	 * @throws \RuntimeException
-	 *
-	 * @uses requiredOffsets()
-	 * @uses doValidateSubdocuments()
-	 */
-	public function Validate()
-	{
-		//
-		// Get required and provided properties.
-		//
-		$required = $this->requiredOffsets();
-		$provided = array_intersect( $required, $this->arrayKeys() );
-		$missing = array_diff( $required, $provided );
-
-		//
-		// Check if all required offsets are there.
-		//
-		if( count( $missing ) )
-			throw new \RuntimeException(
-				"Document is missing the following required properties: "
-				.implode( ', ', $missing ) );									// !@! ==>
-
-		//
-		// Traverse object.
-		//
-		$data = $this->getArrayCopy();
-		$this->doValidateSubdocuments( $data );
-
-	} // Validate.
-
-
-
-/*=======================================================================================
- *																						*
  *							PUBLIC DOCUMENT PERSISTENCE INTERFACE						*
  *																						*
  *======================================================================================*/
@@ -436,8 +383,28 @@ class Document extends Container
 	 *
 	 * The method will return the document handle.
 	 *
-	 * Note that this method will not validate the document, this will be done by the
-	 * document's {@link Collection}.
+	 * These are the actual steps followed when storing the dicument:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link Validate()</tt>: Ensure the current document and its eventual
+	 * 		embedded sub-documents are valid.
+	 * 	<li><tt>{@link StoreSubdocuments()</tt>: Store its eventual embedded subdocuments
+	 * 		replacing them with their references.
+	 * 	<li>When inserting:
+	 * 	 <ul>
+	 * 		<li><tt>{@link PrepareInsert()</tt>: Perform any necessary operations before the
+	 * 			document is inserted.
+	 * 		<li><tt>{@link Collection::normaliseInsertedDocument()</tt>: Prepare the
+	 * 			document after it was inserted.
+	 * 	 </ul>
+	 * 	<li>When replacing:
+	 * 	 <ul>
+	 * 		<li><tt>{@link Collection::normaliseReplacedDocument()</tt>: Prepare the
+	 * 			document after it was replaced.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * All the above operations are performed by the collection that holds the document.
 	 *
 	 * @return mixed				The document handle.
 	 *
@@ -459,13 +426,13 @@ class Document extends Container
 			// Replace.
 			//
 			if( $this->IsPersistent() )
-				$this->mCollection->Replace( $this->toArray() );
+				$this->mCollection->Replace( $this );
 
 			//
 			// Insert.
 			//
 			else
-				$this->mCollection->Insert( $this->toArray() );
+				$this->mCollection->Insert( $this );
 
 		} // Modified or not persistent.
 
@@ -475,46 +442,52 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	StoreSubdocuments																*
+	 *	Delete																			*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Store embedded objects.</h4>
+	 * <h4>Delete object.</h4>
 	 *
-	 * This method should be called prior to inserting the object, it will traverse all
-	 * object structures inserting sub-documents expressed as document objects that
-	 * are modified ({@link IsModified()}) and are not persistent ({@link IsPersistent()}),
-	 * replacing them with their document handles.
+	 * This method will delete the current document from the container provided when
+	 * instantiated, the method will update the document state by resetting its persistent
+	 * state, {@link IsPersistent()}, and setting its modification state,
+	 * {@link IsModified()}.
 	 *
-	 * This method <em>must</em> be called <em>after</em> calling {@link Validate()}, which
-	 * validates also the sub-documents.
+	 * The method will return the number of deleted documents, <tt>1</tt>, ot <tt>0</tt> if
+	 * the document was not deleted or if the document is not persistent.
 	 *
-	 * @uses doStoreRelated()
+	 * These are the actual steps followed when deleting the dicument:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link Collection::normaliseDeletedDocument()</tt>: Prepare the
+	 * 		document after it was deleted.
+	 * </ul>
+	 *
+	 * All the above operations are performed by the collection that holds the document.
+	 *
+	 * @return int					The number of deleted records.
+	 *
+	 * @uses mCollection
+	 * @uses IsPersistent()
+	 * @uses Collection::Delete()
 	 */
-	public function StoreSubdocuments()
+	public function Delete()
 	{
 		//
-		// Get a copy of the document data.
+		// Check if persistent.
 		//
-		$data = $this->getArrayCopy();
+		if( $this->IsPersistent() )
+			return $this->mCollection->Delete( $this );								// ==>
 
-		//
-		// Convert to array.
-		//
-		$this->doStoreSubdocuments( $data );
+		return 0;																	// ==>
 
-		//
-		// Update document data.
-		//
-		$this->exchangeArray( $data );
-
-	} // StoreSubdocuments.
+	} // Delete.
 
 
 
 /*=======================================================================================
  *																						*
- *						PUBLIC SUBDOCUMENT PERSISTENCE INTERFACE						*
+ *								PUBLIC REFERENCE INTERFACE								*
  *																						*
  *======================================================================================*/
 
@@ -656,40 +629,6 @@ class Document extends Container
 	} // ResolveReference.
 
 
-	/*===================================================================================
-	 *	Delete																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Delete object.</h4>
-	 *
-	 * This method will delete the current document from the container provided when
-	 * instantiated, the method will update the document state by resetting its persistent
-	 * state, {@link IsPersistent()}, and setting its modification state,
-	 * {@link IsModified()}.
-	 *
-	 * The method will return the number of deleted documents, <tt>1</tt>, ot <tt>0</tt> if
-	 * the document was not deleted or if the document is not persistent.
-	 *
-	 * @return int					The number of deleted records.
-	 *
-	 * @uses mCollection
-	 * @uses IsPersistent()
-	 * @uses Collection::Delete()
-	 */
-	public function Delete()
-	{
-		//
-		// Check if persistent.
-		//
-		if( $this->IsPersistent() )
-			return $this->mCollection->Delete( $this );								// ==>
-
-		return 0;																	// ==>
-
-	} // Delete.
-
-
 
 /*=======================================================================================
  *																						*
@@ -820,7 +759,138 @@ class Document extends Container
 
 /*=======================================================================================
  *																						*
- *							PROTECTED VALIDATION INTERFACE								*
+ *							PUBLIC VALIDATION INTERFACE									*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Validate																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Validate object.</h4>
+	 *
+	 * This method should check whether the document is valid and ready to be stored in its
+	 * collection, if that is not the case, the method should raise an exception.
+	 *
+	 * In this class we check whether all required properties are there and we traverse the
+	 * object calling this method for each of them.
+	 *
+	 * @throws \RuntimeException
+	 *
+	 * @uses requiredOffsets()
+	 * @uses doValidateSubdocuments()
+	 */
+	public function Validate()
+	{
+		//
+		// Get required and provided properties.
+		//
+		$required = $this->requiredOffsets();
+		$provided = array_intersect( $required, $this->arrayKeys() );
+		$missing = array_diff( $required, $provided );
+
+		//
+		// Check if all required offsets are there.
+		//
+		if( count( $missing ) )
+			throw new \RuntimeException(
+				"Document is missing the following required properties: "
+				.implode( ', ', $missing ) );									// !@! ==>
+
+		//
+		// Validate subdocuments.
+		//
+		$subs = $this->getArrayCopy();
+		$this->doValidateSubdocuments( $subs );
+
+	} // validateDocument.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC PREPARATION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	StoreSubdocuments																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Store embedded objects.</h4>
+	 *
+	 * This method should be called prior to inserting the object, it will traverse all
+	 * object structures inserting sub-documents expressed as document objects that
+	 * are modified ({@link IsModified()}) and are not persistent ({@link IsPersistent()}),
+	 * replacing them with their document handles.
+	 *
+	 * This method <em>must</em> be called <em>after</em> calling {@link Validate()}, which
+	 * validates also the sub-documents.
+	 *
+	 * @uses doStoreRelated()
+	 */
+	public function StoreSubdocuments()
+	{
+		//
+		// Get a copy of the document data.
+		//
+		$data = $this->getArrayCopy();
+
+		//
+		// Convert to array.
+		//
+		$this->doStoreSubdocuments( $data );
+
+		//
+		// Update document data.
+		//
+		$this->exchangeArray( $data );
+
+	} // StoreSubdocuments.
+
+
+	/*===================================================================================
+	 *	PrepareInsert																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Prepare document to be inserted.</h4>
+	 *
+	 * This method will prepare the document before it should be inserted, the method
+	 * expects the document to be valid and all references resolved.
+	 *
+	 * In this class we do nothing, in derived classes you may overload this method to
+	 * perform custom operations.
+	 */
+	public function PrepareInsert()													   {}
+
+
+	/*===================================================================================
+	 *	PrepareReplace																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Prepare document to be replaced.</h4>
+	 *
+	 * This method will prepare the document before it should be replaced, the method
+	 * expects the document to be valid and all references resolved.
+	 *
+	 * In this class we do nothing, in derived classes you may overload this method to
+	 * perform custom operations.
+	 */
+	public function PrepareReplace()												   {}
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED OFFSET INTERFACE								*
  *																						*
  *======================================================================================*/
 
@@ -909,6 +979,72 @@ class Document extends Container
 		//	return array_merge( parent::requiredOffsets(), [ ... ] );
 
 	} // requiredOffsets.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED REFERENCE INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	doCreateReference																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Reference embedded documents.</h4>
+	 *
+	 * The duty of this method is to convert the provided document into a reference which is
+	 * supposed to be stored at the provided offset.
+	 *
+	 * The method will return the correct type of offset <em>without storing it</em>, if the
+	 * provided document lacks the necessary data to generate the reference, the method
+	 * should raise an exception.
+	 *
+	 * In this class we return a handle by default, derived classes may overload this method
+	 * to handle other reference types.
+	 *
+	 * @param string				$theOffset			Sub-document offset.
+	 * @param Document				$theDocument		Subdocument.
+	 * @return mixed				The document key or handle.
+	 */
+	protected function doCreateReference( $theOffset, Document $theDocument )
+	{
+		return $theDocument->mCollection->NewDocumentHandle( $theDocument );		// ==>
+
+	} // doCreateReference.
+
+
+	/*===================================================================================
+	 *	doResolveReference																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Resolve embedded documents.</h4>
+	 *
+	 * The duty of this method is to resolve the provided document reference associated with
+	 * the provided offset into a document object.
+	 *
+	 * The method will return the {@link Document} instance referenced by the provided
+	 * reference, or raise an exception if the referenced document cannot be resolved.
+	 *
+	 * In this class we assume the provided reference is by default a handle, derived
+	 * classes should overload this method to handle other reference types.
+	 *
+	 * @param string				$theOffset			Sub-document offset.
+	 * @param mixed					$theReference		Subdocument reference.
+	 * @return mixed				The document key or handle.
+	 *
+	 * @uses Collection::NewDocumentHandle()
+	 */
+	protected function doResolveReference( $theOffset, $theReference )
+	{
+		return $this->mCollection->FindByHandle( $theReference );					// ==>
+
+	} // doResolveReference.
 
 
 
@@ -1040,72 +1176,6 @@ class Document extends Container
 		} // Traversing the document.
 
 	} // doStoreSubdocuments.
-
-
-
-/*=======================================================================================
- *																						*
- *						PROTECTED SUBDOCUMENT PERSISTENCE INTERFACE						*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	doCreateReference																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Reference embedded documents.</h4>
-	 *
-	 * The duty of this method is to convert the provided document into a reference which is
-	 * supposed to be stored at the provided offset.
-	 *
-	 * The method will return the correct type of offset <em>without storing it</em>, if the
-	 * provided document lacks the necessary data to generate the reference, the method
-	 * should raise an exception.
-	 *
-	 * In this class we return a handle by default, derived classes may overload this method
-	 * to handle other reference types.
-	 *
-	 * @param string				$theOffset			Sub-document offset.
-	 * @param Document				$theDocument		Subdocument.
-	 * @return mixed				The document key or handle.
-	 */
-	protected function doCreateReference( $theOffset, Document $theDocument )
-	{
-		return $theDocument->mCollection->NewDocumentHandle( $theDocument );		// ==>
-
-	} // doCreateReference.
-
-
-	/*===================================================================================
-	 *	doResolveReference																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Resolve embedded documents.</h4>
-	 *
-	 * The duty of this method is to resolve the provided document reference associated with
-	 * the provided offset into a document object.
-	 *
-	 * The method will return the {@link Document} instance referenced by the provided
-	 * reference, or raise an exception if the referenced document cannot be resolved.
-	 *
-	 * In this class we assume the provided reference is by default a handle, derived
-	 * classes should overload this method to handle other reference types.
-	 *
-	 * @param string				$theOffset			Sub-document offset.
-	 * @param mixed					$theReference		Subdocument reference.
-	 * @return mixed				The document key or handle.
-	 *
-	 * @uses Collection::NewDocumentHandle()
-	 */
-	protected function doResolveReference( $theOffset, $theReference )
-	{
-		return $this->mCollection->FindByHandle( $theReference );					// ==>
-
-	} // doResolveReference.
 
 
 

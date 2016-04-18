@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -50,7 +50,7 @@ class C extends \Milko\PHPLib\Document
 	protected function doResolveReference( $theOffset, $theReference )
 	{
 		if( $theOffset == "sub2" )
-			return $this->Collection()->FindKey( $theReference );
+			return $this->Collection()->FindByKey( $theReference );
 		return parent::doResolveReference( $theOffset, $theReference );
 	}
 }
@@ -62,15 +62,15 @@ if( kENGINE == "MONGO" )
 {
 	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
 	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
-	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\Server( $url );
 }
 elseif( kENGINE == "ARANGO" )
 {
 	echo('$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n");
 	$url = "tcp://localhost:8529/test_milkolib/test_collection";
-	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\Server( $url );
 }
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
 $database = $server->GetDatabase( "test_milkolib" );
@@ -356,8 +356,8 @@ echo( "\n" );
 // Retrieve embedded document 2.
 //
 echo( "Retrieve embedded document 2:\n" );
-echo( '$sub2 = $document->ResolveReference( $document[ "sub2" ] );' . "\n" );
-$sub2 = $document->ResolveReference( $document[ "sub2" ] );
+echo( '$sub2 = $document->ResolveReference( "sub2", $document[ "sub2" ] );' . "\n" );
+$sub2 = $document->ResolveReference( "sub2", $document[ "sub2" ] );
 var_dump( $document[ "sub2" ] );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );

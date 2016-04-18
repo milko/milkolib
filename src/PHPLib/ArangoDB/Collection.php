@@ -408,10 +408,35 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::PrepareInsert()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	public function Insert( $theDocument )
 	{
+		//
+		// Validate and prepare document.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Validate document.
+			//
+			$theDocument->Validate();
+
+			//
+			// Store sub-documents.
+			//
+			$theDocument->StoreSubdocuments();
+
+			//
+			// Prepare document.
+			//
+			$theDocument->PrepareInsert();
+
+		} // Document instance.
+
 		//
 		// Instantiate handler.
 		//
@@ -452,6 +477,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::PrepareInsert()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	public function InsertMany( array $theDocuments )
@@ -467,6 +495,28 @@ class Collection extends \Milko\PHPLib\Collection
 		$ids = [];
 		foreach( $theDocuments as $document )
 		{
+			//
+			// Validate and prepare document.
+			//
+			if( $document instanceof Document )
+			{
+				//
+				// Validate document.
+				//
+				$document->Validate();
+
+				//
+				// Store sub-documents.
+				//
+				$document->StoreSubdocuments();
+
+				//
+				// Prepare document.
+				//
+				$document->PrepareInsert();
+
+			} // Document instance.
+
 			//
 			// Convert document.
 			//
@@ -562,10 +612,35 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentKey()
 	 * @uses NewDocumentNative()
 	 * @uses normaliseReplacedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::PrepareReplace()
 	 * @uses triagens\ArangoDb\DocumentHandler::replaceById()
 	 */
 	public function Replace( $theDocument )
 	{
+		//
+		// Validate and prepare document.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Validate document.
+			//
+			$theDocument->Validate();
+
+			//
+			// Store sub-documents.
+			//
+			$theDocument->StoreSubdocuments();
+
+			//
+			// Prepare document.
+			//
+			$theDocument->PrepareReplace();
+
+		} // Document instance.
+
 		//
 		// Get document key.
 		// This will throw if key is missing.

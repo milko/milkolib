@@ -745,6 +745,8 @@ abstract class Collection
 	 * These operations will be performed by the {@link normaliseInsertedDocument()} which
 	 * can be overloaded in derived classes.
 	 *
+	 * The method expects a valid document: validation is the duty of the caller.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
 	 * @param array					$theDocument		The document data.
@@ -766,6 +768,8 @@ abstract class Collection
 	 * method.
 	 *
 	 * The method will return the list of newly inserted document keys.
+	 *
+	 * The method expects a set of valid documents: validation is the duty of the caller.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
@@ -828,6 +832,8 @@ abstract class Collection
 	 *
 	 * These operations will be performed by the {@link normaliseReplacedDocument()} which
 	 * can be overloaded in derived classes.
+	 *
+	 * The method expects a valid document: validation is the duty of the caller.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *

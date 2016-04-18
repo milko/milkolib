@@ -329,11 +329,36 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::PrepareInsert()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\InsertOneResult::getInsertedId()
 	 */
 	public function Insert( $theDocument )
 	{
+		//
+		// Validate and prepare document.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Validate document.
+			//
+			$theDocument->Validate();
+
+			//
+			// Store sub-documents.
+			//
+			$theDocument->StoreSubdocuments();
+
+			//
+			// Prepare document.
+			//
+			$theDocument->PrepareInsert();
+
+		} // Document instance.
+
 		//
 		// Convert document.
 		//
@@ -439,10 +464,35 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentKey()
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::PrepareReplace()
 	 * @uses \MongoDB\Collection::replaceOne()
 	 */
 	public function Replace( $theDocument )
 	{
+		//
+		// Validate and prepare document.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Validate document.
+			//
+			$theDocument->Validate();
+
+			//
+			// Store sub-documents.
+			//
+			$theDocument->StoreSubdocuments();
+
+			//
+			// Prepare document.
+			//
+			$theDocument->PrepareReplace();
+
+		} // Document instance.
+
 		//
 		// Get document key.
 		// This will throw if key is missing.
@@ -982,8 +1032,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Delete documents.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-				? $this->Connection()->deleteMany( $theFilter )
-				: $this->Connection()->deleteOne( $theFilter );
+				? $this->mConnection->deleteMany( $theFilter )
+				: $this->mConnection->deleteOne( $theFilter );
 
 		return $result->getDeletedCount();											// ==>
 
@@ -1025,8 +1075,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Delete documents.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-				? $this->Connection()->deleteMany( $filter )
-				: $this->Connection()->deleteOne( $filter );
+				? $this->mConnection->deleteMany( $filter )
+				: $this->mConnection->deleteOne( $filter );
 
 		return $result->getDeletedCount();											// ==>
 
@@ -1090,9 +1140,9 @@ class Collection extends \Milko\PHPLib\Collection
 			// Delete documents.
 			//
 			$result = ( count( $keys ) > 1 )
-					? $this->Connection()->deleteMany(
+					? $this->mConnection->deleteMany(
 						[ $this->KeyOffset() => [ '$in' => $keys ] ] )
-					: $this->Connection()->deleteOne(
+					: $this->mConnection->deleteOne(
 						[ $this->KeyOffset() => $keys[ 0 ] ] );
 
 			//
@@ -1133,8 +1183,8 @@ class Collection extends \Milko\PHPLib\Collection
 		// Delete documents.
 		//
 		$result = ( $theOptions[ kTOKEN_OPT_MANY ] )
-				? $this->Connection()->deleteMany( $theDocument )
-				: $this->Connection()->deleteOne( $theDocument );
+				? $this->mConnection->deleteMany( $theDocument )
+				: $this->mConnection->deleteOne( $theDocument );
 
 		return $result->getDeletedCount();											// ==>
 
