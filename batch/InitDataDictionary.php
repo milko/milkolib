@@ -164,11 +164,11 @@ echo( "*************************************************************************
 switch( $engine )
 {
 	case "MONGO":
-		$server = new \Milko\PHPLib\MongoDB\DataServer( $datasource_name );
+		$server = new \Milko\PHPLib\MongoDB\Server( $datasource_name );
 		break;
 
 	case "ARANGO":
-		$server = new \Milko\PHPLib\ArangoDB\DataServer( $datasource_name );
+		$server = new \Milko\PHPLib\ArangoDB\Server( $datasource_name );
 		break;
 }
 
