@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -43,13 +43,13 @@ class C extends \Milko\PHPLib\Document
 {
 	protected function doCreateReference( $theOffset, \Milko\PHPLib\Document $theDocument )
 	{
-		if( $theOffset == "sub2" )
+		if( $theOffset == "@9999" )
 			return $theDocument[ $theDocument->Collection()->KeyOffset() ];
 		return parent::doCreateReference( $theOffset, $theDocument );
 	}
 	protected function doResolveReference( $theOffset, $theReference )
 	{
-		if( $theOffset == "sub2" )
+		if( $theOffset == "@9999" )
 			return $this->Collection()->FindByKey( $theReference );
 		return parent::doResolveReference( $theOffset, $theReference );
 	}
@@ -85,8 +85,8 @@ echo( "\n=======================================================================
 // Instantiate container.
 //
 echo( "Instantiate container:\n" );
-echo( '$container = new Milko\PHPLib\Container( ["name" => "Jim", "age" => 21] );' . "\n" );
-$container = new Milko\PHPLib\Container( ["name" => "Jim", "age" => 21] );
+echo( '$container = new Milko\PHPLib\Container( [kTAG_NAME => ["en" => "Jim"], kTAG_MIN_VAL => 21] );' . "\n" );
+$container = new Milko\PHPLib\Container( [kTAG_NAME => ["en" => "Jim"], kTAG_MIN_VAL => 21] );
 print_r( $container );
 
 echo( "\n" );
@@ -260,8 +260,8 @@ echo( "\n=======================================================================
 // Create embedded document 1.
 //
 echo( "Create embedded document 1:\n" );
-echo( '$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );' . "\n" );
-$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", "name" => "Object 1"] );
+echo( '$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", kTAG_NAME => ["en" => "Object 1"]] );' . "\n" );
+$sub1 = new A( $collection, [$collection->KeyOffset() => "sub1", kTAG_NAME => ["en" => "Object 1"]] );
 echo( "Class: " . get_class( $sub1 ) . "\n" );
 echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -274,8 +274,8 @@ echo( "\n" );
 // Create embedded document 2.
 //
 echo( "Create embedded document 2:\n" );
-echo( '$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );' . "\n" );
-$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", "name" => "Object 2"] );
+echo( '$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", kTAG_NAME => ["en" => "Object 2"]] );' . "\n" );
+$sub2 = new B( $collection, [$collection->KeyOffset() => "sub2", kTAG_NAME => ["en" => "Object 2"]] );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -288,8 +288,8 @@ echo( "\n" );
 // Create container document.
 //
 echo( "Create container document:\n" );
-echo( '$document = new C( $collection, ["name" => "container"] );' . "\n" );
-$document = new C( $collection, ["name" => "container"] );
+echo( '$document = new C( $collection, [kTAG_NAME => ["en" => "container"]] );' . "\n" );
+$document = new C( $collection, [kTAG_NAME => ["en" => "container"]] );
 echo( "Class: " . get_class( $document ) . "\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -302,10 +302,10 @@ echo( "\n" );
 // Add embedded documents.
 //
 echo( "Add embedded documents:\n" );
-echo( '$document[ "sub1" ] = $sub1;' . "\n" );
-$document[ "sub1" ] = $sub1;
-echo( '$document[ "sub2" ] = $sub2;' . "\n" );
-$document[ "sub2" ] = $sub2;
+echo( '$document[ "@9998" ] = $sub1;' . "\n" );
+$document[ "@9998" ] = $sub1;
+echo( '$document[ "@9999" ] = $sub2;' . "\n" );
+$document[ "@9999" ] = $sub2;
 
 echo( "\n" );
 
@@ -328,8 +328,8 @@ echo( "\n=======================================================================
 // Retrieve embedded document 1.
 //
 echo( "Retrieve embedded document 1:\n" );
-echo( '$sub1 = $document->ResolveReference( "sub1" );' . "\n" );
-$sub1 = $document->ResolveReference( "sub1" );
+echo( '$sub1 = $document->ResolveReference( "@9998" );' . "\n" );
+$sub1 = $document->ResolveReference( "@9998" );
 echo( "Class: " . get_class( $sub1 ) . "\n" );
 echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -342,8 +342,8 @@ echo( "\n" );
 // Retrieve embedded document 2.
 //
 echo( "Retrieve embedded document 2:\n" );
-echo( '$sub2 = $document->ResolveReference( "sub2" );' . "\n" );
-$sub2 = $document->ResolveReference( "sub2" );
+echo( '$sub2 = $document->ResolveReference( "@9999" );' . "\n" );
+$sub2 = $document->ResolveReference( "@9999" );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -356,8 +356,8 @@ echo( "\n" );
 // Retrieve embedded document 2.
 //
 echo( "Retrieve embedded document 2:\n" );
-echo( '$sub2 = $document->ResolveReference( "sub2", $document[ "sub2" ] );' . "\n" );
-$sub2 = $document->ResolveReference( "sub2", $document[ "sub2" ] );
+echo( '$sub2 = $document->ResolveReference( "@9999", $document[ "@9999" ] );' . "\n" );
+$sub2 = $document->ResolveReference( "@9999", $document[ "@9999" ] );
 var_dump( $document[ "sub2" ] );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );

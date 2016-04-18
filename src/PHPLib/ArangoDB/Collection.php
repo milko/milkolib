@@ -426,9 +426,11 @@ class Collection extends \Milko\PHPLib\Collection
 			$theDocument->Validate();
 
 			//
-			// Store sub-documents.
+			// Store sub-documents and collect offsets.
 			//
-			$theDocument->StoreSubdocuments();
+			$offsets = $theDocument->TraverseDocument();
+			if( count( $offsets ) )
+				$theDocument[ $this->PropertiesOffset() ] = $offsets;
 
 			//
 			// Prepare document.
@@ -508,7 +510,9 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Store sub-documents.
 				//
-				$document->StoreSubdocuments();
+				$offsets = $document->TraverseDocument();
+				if( count( $offsets ) )
+					$document[ $this->PropertiesOffset() ] = $offsets;
 
 				//
 				// Prepare document.
@@ -632,7 +636,11 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents.
 			//
-			$theDocument->StoreSubdocuments();
+			$offsets = $theDocument->TraverseDocument();
+			if( count( $offsets ) )
+				$theDocument[ $this->PropertiesOffset() ] = $offsets;
+			else
+				$theDocument->offsetUnset( $this->PropertiesOffset() );
 
 			//
 			// Prepare document.

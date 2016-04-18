@@ -776,7 +776,8 @@ class Document extends Container
 	 * collection, if that is not the case, the method should raise an exception.
 	 *
 	 * In this class we check whether all required properties are there and we traverse the
-	 * object calling this method for each of them.
+	 * object calling this method for each of them, in derived classes you should first
+	 * check local properties, then call the parent method.
 	 *
 	 * @throws \RuntimeException
 	 *
@@ -812,45 +813,52 @@ class Document extends Container
 
 /*=======================================================================================
  *																						*
- *							PUBLIC PREPARATION INTERFACE								*
+ *								PUBLIC TRAVERSAL INTERFACE								*
  *																						*
  *======================================================================================*/
 
 
 
 	/*===================================================================================
-	 *	StoreSubdocuments																*
+	 *	TraverseDocument																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Store embedded objects.</h4>
+	 * <h4>Traverse document.</h4>
 	 *
 	 * This method should be called prior to inserting the object, it will traverse all
 	 * object structures inserting sub-documents expressed as document objects that
 	 * are modified ({@link IsModified()}) and are not persistent ({@link IsPersistent()}),
 	 * replacing them with their document handles.
 	 *
+	 * It will also collect and return the list of leaf offsets used in the document.
+	 *
 	 * This method <em>must</em> be called <em>after</em> calling {@link Validate()}, which
 	 * validates also the sub-documents.
 	 *
+	 * @return array				List of leaf offsets.
+	 *
 	 * @uses doStoreRelated()
 	 */
-	public function StoreSubdocuments()
+	public function TraverseDocument()
 	{
 		//
-		// Get a copy of the document data.
+		// Init local storage.
 		//
+		$offsets = [];
 		$data = $this->getArrayCopy();
 
 		//
 		// Convert to array.
 		//
-		$this->doStoreSubdocuments( $data );
+		$this->doTraverseDocument( $data, $offsets );
 
 		//
 		// Update document data.
 		//
 		$this->exchangeArray( $data );
+
+		return $offsets;															// ==>
 
 	} // StoreSubdocuments.
 
@@ -914,8 +922,7 @@ class Document extends Container
 	 */
 	protected function privateOffsets()
 	{
-		return [ $this->mCollection->ClassOffset(),
-				 $this->mCollection->PropertiesOffset() ];							// ==>
+		return [ $this->mCollection->ClassOffset() ];								// ==>
 
 		//
 		// In derived classes:
@@ -1057,6 +1064,100 @@ class Document extends Container
 
 
 	/*===================================================================================
+	 *	doTraverseDocument																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Traverse document.</h4>
+	 *
+	 * This method will traverse the current object and {@link Store()} any property that is
+	 * a document instance which is modified ({@link IsModified()}) or not persistent
+	 * ({@link IsPersistent()}); once the document is stored, the source property will be
+	 * replaced with the stored document's handle.
+	 *
+	 * The method will also collect and return the list of leaf offsets used in the
+	 * document.
+	 *
+	 * This method <em>must</em> be called <em>after</em> calling {@link Validate()} to
+	 * ensure the subdocuments are all valid.
+	 *
+	 * @param array				   &$theData			Document data.
+	 * @param array				   &$theOffsets			Document offsets.
+	 *
+	 * @uses Store()
+	 * @uses IsModified()
+	 * @uses IsPersistent()
+	 */
+	protected function doTraverseDocument( array &$theData, array &$theOffsets )
+	{
+		//
+		// Traverse data.
+		//
+		foreach( $theData as $key => $value )
+		{
+			//
+			// Validate documents.
+			//
+			if( $value instanceof Document )
+			{
+				//
+				// Collect offset.
+				//
+				if( (substr( $key, 1, 1 ) == kTOKEN_TAG_PREFIX)
+				 && (! in_array( $key, $theOffsets )) )
+					$theOffsets[] = $key;
+
+				//
+				// Insert new documents.
+				//
+				if( $value->IsModified()
+				 || (! $value->IsPersistent()) )
+					$value->Store();
+
+				//
+				// Replace with handle.
+				//
+				$theData[ $key ] = $this->doCreateReference( $key, $value );
+
+			} // Is a document.
+
+			//
+			// Handle arrays and array objects.
+			//
+			elseif( is_array( $value )
+				|| ($value instanceof \ArrayObject) )
+			{
+				//
+				// Convert to array.
+				//
+				if( $value instanceof \ArrayObject )
+					$value = $value->getArrayCopy();
+
+				//
+				// Recurse.
+				//
+				$this->doTraverseDocument( $value, $theOffsets );
+
+				//
+				// Replace in data.
+				//
+				$theData[ $key ] = $value;
+
+			} // Array or iterable.
+
+			//
+			// Handle scalars.
+			//
+			elseif( (substr( $key, 1, 1 ) == kTOKEN_TAG_PREFIX)
+				 && (! in_array( $key, $theOffsets )) )
+				$theOffsets[] = $key;
+
+		} // Traversing the document.
+
+	} // doStoreSubdocuments.
+
+
+	/*===================================================================================
 	 *	doValidateSubdocuments															*
 	 *==================================================================================*/
 
@@ -1095,87 +1196,6 @@ class Document extends Container
 		} // Traversing the document.
 
 	} // doValidateSubdocuments.
-
-
-	/*===================================================================================
-	 *	doStoreSubdocuments																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Store embedded documents.</h4>
-	 *
-	 * This method will traverse the current object and {@link Store()} any property that is
-	 * a document instance which is modified ({@link IsModified()}) or not persistent
-	 * ({@link IsPersistent()}); once the document is stored, the source property will be
-	 * replaced with the stored document's handle.
-	 *
-	 * This method <em>must</em> be called <em>after</em> calling {@link Validate()} to
-	 * ensure the subdocuments are all valid.
-	 *
-	 * @param array				   &$theData			Document data.
-	 *
-	 * @uses Store()
-	 * @uses IsModified()
-	 * @uses IsPersistent()
-	 */
-	protected function doStoreSubdocuments( &$theData )
-	{
-		//
-		// Traverse data.
-		//
-		foreach( $theData as $key => $value )
-		{
-			//
-			// Validate documents.
-			//
-			if( $value instanceof Document )
-			{
-				//
-				// Recurse.
-				//
-				$value->StoreSubdocuments();
-
-				//
-				// Insert new documents.
-				//
-				if( $value->IsModified()
-					|| (! $value->IsPersistent()) )
-					$value->Store();
-
-				//
-				// Replace with handle.
-				//
-				$theData[ $key ] = $this->doCreateReference( $key, $value );
-
-			} // Is a document.
-
-			//
-			// Handle arrays and array objects.
-			//
-			elseif( is_array( $value )
-				|| ($value instanceof \ArrayObject) )
-			{
-				//
-				// Convert to array.
-				//
-				if( $value instanceof \ArrayObject )
-					$value = $value->getArrayCopy();
-
-				//
-				// Recurse.
-				//
-				$this->doStoreSubdocuments( $value );
-
-				//
-				// Replace in data.
-				//
-				$theData[ $key ] = $value;
-
-			} // Array or iterable.
-
-		} // Traversing the document.
-
-	} // doStoreSubdocuments.
 
 
 
