@@ -324,17 +324,34 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We implement this method by using the {@link \MongoDB\Collection::insertOne()} method
 	 * to save the document.
 	 *
-	 * @param array					$theDocument		The document data as an array.
-	 * @return mixed				The document's unique identifier.
+	 * @param array					$theDocument		The document data.
+	 * @return mixed				The document's key.
 	 *
+	 * @uses NewDocumentNative()
+	 * @uses normaliseInsertedDocument()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\InsertOneResult::getInsertedId()
 	 */
-	public function Insert( array $theDocument )
+	public function Insert( $theDocument )
 	{
-		return
-			$this->mConnection->insertOne( $theDocument )
-				->getInsertedId();													// ==>
+		//
+		// Convert document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Insert document.
+		//
+		$key =
+			$this->mConnection->insertOne( $document )
+				->getInsertedId();
+
+		//
+		// Normalise document.
+		//
+		$this->normaliseInsertedDocument( $theDocument, $document, $key );
+
+		return $key;																// ==>
 
 	} // Insert.
 
@@ -346,20 +363,28 @@ class Collection extends \Milko\PHPLib\Collection
 	/**
 	 * <h4>Insert a set of documents.</h4>
 	 *
-	 * We implement this method by using the {@link \MongoDB\Collection::insertMany()}
-	 * method to save the documents set.
+	 * We implement this method by iterating the provided set and calling the
+	 * {@link Insert()} method on each document.
 	 *
 	 * @param array					$theDocuments		The documents set as an array.
 	 * @return array				The document unique identifiers.
 	 *
-	 * @uses \MongoDB\Collection::insertMany()
-	 * @uses \MongoDB\InsertManyResult::getInsertedIds()
+	 * @uses Insert()
 	 */
 	public function InsertMany( array $theDocuments )
 	{
-		return
-			$this->mConnection->insertMany( $theDocuments )
-				->getInsertedIds();													// ==>
+		//
+		// Init local storage.
+		//
+		$ids = [];
+
+		//
+		// Iterate set.
+		//
+		foreach( $theDocuments as $document )
+			$ids[] = $this->Insert( $document );
+
+		return $ids;																// ==>
 
 	} // InsertMany.
 
@@ -380,7 +405,9 @@ class Collection extends \Milko\PHPLib\Collection
 	 */
 	public function InsertBulk( $theDocuments )
 	{
-		return $this->InsertMany( $theDocuments );									// ==>
+		return
+			$this->mConnection->insertMany( $theDocuments )
+				->getInsertedIds();													// ==>
 
 	} // InsertBulk.
 
@@ -411,6 +438,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses NewDocumentKey()
 	 * @uses NewDocumentNative()
+	 * @uses normaliseInsertedDocument()
 	 * @uses \MongoDB\Collection::replaceOne()
 	 */
 	public function Replace( $theDocument )
@@ -421,11 +449,27 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$key = $this->NewDocumentKey( $theDocument );
 
-		return
-			$this->Connection()->replaceOne(
+		//
+		// Convert document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Replace document.
+		//
+		$count =
+			$this->mConnection->replaceOne(
 				[ $this->KeyOffset() => $key ],
-				$this->NewDocumentNative( $theDocument ) )
-					->getModifiedCount();											// ==>
+				$document )
+					->getModifiedCount();
+
+		//
+		// Normalise document.
+		//
+		if( $count )
+			$this->normaliseInsertedDocument( $theDocument, $document, $key );
+
+		return $count;																// ==>
 
 	} // Replace.
 
@@ -448,6 +492,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses \MongoDB\Collection::updateOne()
 	 * @uses \MongoDB\Collection::updateMany()
+	 * @uses \MongoDB\Cursor::getModifiedCount()
 	 */
 	public function Update( array $theCriteria,
 							$theFilter = NULL,
@@ -521,7 +566,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses NewDocumentSet()
+	 * @uses ConvertDocumentSet()
 	 * @uses \MongoDB\Collection::find()
 	 */
 	public function Find(
@@ -553,8 +598,8 @@ class Collection extends \Milko\PHPLib\Collection
 			return $result;															// ==>
 
 		return
-			$this->NewDocumentSet(
-				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
+			$this->ConvertDocumentSet(
+				$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );					// ==>
 
 	} // Find.
 
@@ -574,7 +619,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @return mixed				The found records.
 	 *
 	 * @uses KeyOffset()
-	 * @uses NewDocumentSet()
+	 * @uses ConvertDocumentSet()
 	 * @uses formatDocument()
 	 * @uses \MongoDB\Collection::find()
 	 * @uses \MongoDB\Collection::findOne()
@@ -610,9 +655,11 @@ class Collection extends \Milko\PHPLib\Collection
 		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
 			return
 				$this->formatDocument(
-					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );				// ==>
 
-		return $this->NewDocumentSet( $result, $theOptions[ kTOKEN_OPT_FORMAT ] );	// ==>
+		return
+			$this->ConvertDocumentSet(
+				$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );					// ==>
 
 	} // FindByKey.
 
@@ -670,7 +717,7 @@ class Collection extends \Milko\PHPLib\Collection
 					if( $found !== NULL )
 						$result[] =
 							$this->formatDocument(
-								$found, $theOptions[ kTOKEN_OPT_FORMAT ] );
+								$found, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );
 
 				} // Collection exists.
 
@@ -699,7 +746,7 @@ class Collection extends \Milko\PHPLib\Collection
 			if( $found !== NULL )
 				return
 					$this->formatDocument(
-						$found, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+						$found, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );			// ==>
 
 		} // Collection exists.
 
@@ -725,7 +772,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses NewDocumentSet()
+	 * @uses ConvertDocumentSet()
 	 * @uses \MongoDB\Collection::find()
 	 */
 	public function FindByExample(
@@ -757,18 +804,83 @@ class Collection extends \Milko\PHPLib\Collection
 			return $result;															// ==>
 
 		return
-			$this->NewDocumentSet(
-				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
+			$this->ConvertDocumentSet(
+				$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );					// ==>
 
 	} // FindByExample.
 
 
 
-	/*=======================================================================================
-	 *																						*
-	 *								PUBLIC COUNTING INTERFACE								*
-	 *																						*
-	 *======================================================================================*/
+/*=======================================================================================
+ *																						*
+ *							PUBLIC AGGREGATION FRAMEWORK INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	MapReduce																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Execute an aggregation query.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::aggregate()} method.
+	 *
+	 * @param mixed					$thePipeline		The aggregation pipeline.
+	 * @param array					$theOptions			Query options.
+	 * @return array				The result set.
+	 *
+	 * @uses NewDocumentArray()
+	 * @uses \MongoDB\Collection::aggregate()
+	 */
+	public function MapReduce( $thePipeline, array $theOptions = [] )
+	{
+		//
+		// Init local storage.
+		//
+		$options = [];
+
+		//
+		// Handle options.
+		//
+		if( count( $theOptions ) )
+		{
+			//
+			// Force skip if limit is there.
+			//
+			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions )
+			 && (! array_key_exists( kTOKEN_OPT_SKIP, $theOptions )) )
+				$theOptions[ kTOKEN_OPT_SKIP ] = 0;
+
+			//
+			// Convert to native options.
+			//
+			if( array_key_exists( kTOKEN_OPT_SKIP, $theOptions ) )
+				$options[ 'skip' ] = $theOptions[ kTOKEN_OPT_SKIP ];
+			if( array_key_exists( kTOKEN_OPT_LIMIT, $theOptions ) )
+				$options[ 'limit' ] = $theOptions[ kTOKEN_OPT_LIMIT ];
+		}
+
+		//
+		// Serialise result.
+		//
+		$result = [];
+		foreach( $this->mConnection->aggregate( $thePipeline, $options ) as $record )
+			$result[] = $this->NewDocumentArray( $record );
+
+		return $result;																// ==>
+
+	} // MapReduce.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC COUNTING INTERFACE								*
+ *																						*
+ *======================================================================================*/
 
 
 
@@ -1138,6 +1250,114 @@ class Collection extends \Milko\PHPLib\Collection
 		return [ $this->collectionName(), (string)$theKey ];						// ==>
 
 	} // documentHandleCreate.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED PERSISTENCE UTILITIES							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	normaliseInsertedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise inserted document.</h4>
+	 *
+	 * We overload this method to skip native documents.
+	 *
+	 * @param mixed					$theDocument		The inserted document.
+	 * @param mixed					$theData			The native inserted document.
+	 * @param mixed					$theKey				The document key.
+	 */
+	protected function normaliseInsertedDocument( $theDocument, $theData, $theKey )
+	{
+		//
+		// Skip native documents.
+		//
+		if( ! ($theDocument instanceof BSONDocument) )
+			parent::normaliseInsertedDocument( $theDocument, $theData, $theKey );
+
+	} // normaliseInsertedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseReplacedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise replaced document.</h4>
+	 *
+	 * We overload this method to skip native documents.
+	 *
+	 * @param mixed					$theDocument		The replaced document.
+	 * @param mixed						$theData		The native database document.
+	 *
+	 * @uses Document::IsModified()
+	 */
+	protected function normaliseReplacedDocument( $theDocument, $theData )
+	{
+		//
+		// Skip native documents.
+		//
+		if( ! ($theDocument instanceof BSONDocument) )
+			parent::normaliseReplacedDocument( $theDocument, $theData );
+
+	} // normaliseReplacedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseSelectedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise selected document.</h4>
+	 *
+	 * We overload this method to skip native documents.
+	 *
+	 * @param mixed					$theDocument		The selected document.
+	 * @param mixed					$theData			The native database document.
+	 *
+	 * @uses Document::IsPersistent()
+	 * @uses Document::IsModified()
+	 */
+	protected function normaliseSelectedDocument( $theDocument, $theData )
+	{
+		//
+		// Skip native documents.
+		//
+		if( ! ($theDocument instanceof BSONDocument) )
+			parent::normaliseSelectedDocument( $theDocument, $theData );
+
+	} // normaliseSelectedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseDeletedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise deleted document.</h4>
+	 *
+	 * We overload this method to skip native documents.
+	 *
+	 * @param mixed					$theDocument		The deleted document.
+	 *
+	 * @uses RevisionOffset()
+	 */
+	protected function normaliseDeletedDocument( $theDocument )
+	{
+		//
+		// Skip native documents.
+		//
+		if( ! ($theDocument instanceof BSONDocument) )
+			parent::normaliseDeletedDocument( $theDocument );
+
+	} // normaliseDeletedDocument.
 
 
 

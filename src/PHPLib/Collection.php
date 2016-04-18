@@ -732,12 +732,25 @@ abstract class Collection
 	 *
 	 * The method will return the newly inserted document key.
 	 *
+	 * After inserting the data into the collection, depending on the type of document
+	 * provided, this method will perform the following actions:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link \ArrayObject}</tt>: The method will set the newly inserted key.
+	 * 	<li><tt>{@link Document}</tt>: The method will set the document's
+	 * 		{@link Document::IsPersistent()} state and reset the
+	 * 		{@link Document::IsModified()} state.
+	 * </ul>
+	 *
+	 * These operations will be performed by the {@link normaliseInsertedDocument()} which
+	 * can be overloaded in derived classes.
+	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
-	 * @param array					$theDocument		The document data as an array.
-	 * @return mixed				The document's unique identifier.
+	 * @param array					$theDocument		The document data.
+	 * @return mixed				The document's key.
 	 */
-	abstract public function Insert( array $theDocument );
+	abstract public function Insert( $theDocument );
 
 
 	/*===================================================================================
@@ -749,7 +762,8 @@ abstract class Collection
 	 *
 	 * This method can be used to insert a set of documents into the current collection, the
 	 * method expects a single parameter that represents the set of documents as an array,
-	 * each array element must be a document represented as an array.
+	 * each array element must be a document compatible with the {@link NewDocumentNative()}
+	 * method.
 	 *
 	 * The method will return the list of newly inserted document keys.
 	 *
@@ -797,12 +811,23 @@ abstract class Collection
 	 * <h4>Replace document.</h4>
 	 *
 	 * This method can be used to replace the provided document in the collection, the
-	 * method expects the document to be provided as a native database document, an array or
-	 * an object that can be cast to array, the method will return the number of replaced
-	 * documents.
+	 * method expects a single parameter that represents the document expressed as a value
+	 * compatible with the {@link NewDocumentNative()} method.
 	 *
 	 * The method expects the replacement document to have its key, if that is missing, the
 	 * method should raise an exception.
+	 *
+	 * After replacing the document, depending on the type of document provided, this method
+	 * will perform the following actions:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link Document}</tt>: The method will set the document's
+	 * 		{@link Document::IsPersistent()} state and reset the
+	 * 		{@link Document::IsModified()} state.
+	 * </ul>
+	 *
+	 * These operations will be performed by the {@link normaliseReplacedDocument()} which
+	 * can be overloaded in derived classes.
 	 *
 	 * This method must be implemented by derived concrete classes.
 	 *
@@ -1141,6 +1166,51 @@ abstract class Collection
 
 /*=======================================================================================
  *																						*
+ *							PUBLIC AGGREGATION FRAMEWORK INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	MapReduce																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Execute an aggregation query.</h4>
+	 *
+	 * This method can be used to perform a map and reduce query, the method expects the
+	 * following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$thePipeline</b>: The aggregation pipeline in native format.
+	 *	<li><b>$theOptions</b>: An array of options:
+	 * 	 <ul>
+	 * 		<li><b>{@link kTOKEN_OPT_SKIP}</b>: This option determines how many records to
+	 * 			skip in the results selection, it is equivalent to the SQL <tt>START</tt>
+	 * 			directive, it is zero based and expressed as an integer. The corresponding
+	 *			value will be set in the native <tt>skip</tt> option.
+	 * 		<li><b>{@link kTOKEN_OPT_LIMIT}</b>: This option determines how many records to
+	 * 			return, it is equivalent to the SQL <tt>LIMIT</tt> directive and expressed
+	 * 			as an integer. The corresponding value will be set in the native
+	 *			<tt>limit</tt> option.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The method will return an array of arrays.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$thePipeline		The aggregation pipeline.
+	 * @param array					$theOptions			Query options.
+	 * @return array				The result set.
+	 */
+	abstract public function MapReduce( $thePipeline, array $theOptions = [] );
+
+
+
+/*=======================================================================================
+ *																						*
  *								PUBLIC COUNTING INTERFACE								*
  *																						*
  *======================================================================================*/
@@ -1422,7 +1492,7 @@ abstract class Collection
 			//
 			// Handle document.
 			//
-			elseif( $document instanceof $document )
+			elseif( $document instanceof Document )
 				$handles[] = $document->Store();
 
 			//
@@ -1440,7 +1510,7 @@ abstract class Collection
 				//
 				// Normalise socument.
 				//
-				$this->normalise InsertedDucument( $document );
+				$this->normaliseInsertedDucument( $document );
 			}
 
 			//
@@ -1511,16 +1581,23 @@ abstract class Collection
 	 * The method will return an array of converted elements, if the provided format is not
 	 * supported, the method will raise an exception.
 	 *
+	 * If the third parameter is <tt>TRUE</tt>, it means that the document set comes from a
+	 * query: in that case the documents will be normalised by the
+	 * {@link normaliseSelectedDocument()} method.
+	 *
 	 * By default the method will return a set of {@link Document} instances.
 	 *
 	 * @param mixed					$theSet				Iterable set of documents.
 	 * @param string				$theFormat			Expected document format.
+	 * @param bool					$isPersistent		Persistent flag.
 	 * @return array				Converted set.
 	 *
 	 * @uses KeyOffset()
 	 * @uses NewDocumentArray()
 	 */
-	public function ConvertDocumentSet( $theSet, $theFormat = kTOKEN_OPT_FORMAT_DOCUMENT )
+	public function ConvertDocumentSet( $theSet,
+										$theFormat = kTOKEN_OPT_FORMAT_DOCUMENT,
+										$isPersistent = FALSE )
 	{
 		//
 		// Init local storage.
@@ -1531,7 +1608,7 @@ abstract class Collection
 		// Iterate documents set.
 		//
 		foreach( $theSet as $document )
-			$set[] = $this->formatDocument( $document, $theFormat );
+			$set[] = $this->formatDocument( $document, $theFormat, $isPersistent );
 
 		return $set;																// ==>
 
@@ -1668,6 +1745,231 @@ abstract class Collection
 
 /*=======================================================================================
  *																						*
+ *								PROTECTED PERSISTENCE UTILITIES							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	normaliseInsertedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise inserted document.</h4>
+	 *
+	 * This method will be called when a document has been inserted, its duty is to pass
+	 * information back to the document, including eventual internal native database
+	 * properties.
+	 *
+	 * The method accepts the following parameters:
+	 *
+	 * <ul>
+	 *	<li><b>$theDocument</b>: The document instance provided for insertion.
+	 *	<li><b>$theData</b>: The native inserted object.
+	 *	<li><b>$theKey</b>: The document key ({@link KeyOffset()}).
+	 * </ul>
+	 *
+	 * The method will operate exclusively on {@link \ArrayObject} derived instances, in
+	 * this class it will set the document key ({@link KeyOffset()}); if the provided
+	 * document is an instance of {@link Document}, the method will also set the
+	 * {@link Document::IsPersistent()} state and reset its {@link Document::IsModified()}
+	 * state.
+	 *
+	 * In derived classes you should first handle native document types and database
+	 * specific internal properties, then call the parent method; you should also skip
+	 * native documents.
+	 *
+	 * @param mixed					$theDocument		The inserted document.
+	 * @param mixed					$theData			The native inserted document.
+	 * @param mixed					$theKey				The document key.
+	 *
+	 * @uses KeyOffset()
+	 * @uses Document::IsPersistent()
+	 * @uses Document::IsModified()
+	 */
+	protected function normaliseInsertedDocument( $theDocument, $theData, $theKey )
+	{
+		//
+		// Set document key.
+		//
+		if( $theDocument instanceof \ArrayObject )
+		{
+			//
+			// Set key.
+			//
+			$theDocument[ $this->KeyOffset() ] = $theKey;
+
+			//
+			// Handle documents.
+			//
+			if( $theDocument instanceof Document )
+			{
+				//
+				// Set persistent state.
+				//
+				$theDocument->IsPersistent( TRUE, $this );
+
+				//
+				// Reset modification state.
+				//
+				$theDocument->IsModified( FALSE, $this );
+
+			} // Document instance.
+
+		} // ArrayObject instance.
+
+	} // normaliseInsertedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseReplacedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise replaced document.</h4>
+	 *
+	 * This method will be called when a document has been replaced in the current
+	 * collection, its duty is to pass information back to the document, including eventual
+	 * internal native database properties.
+	 *
+	 * The method expects the replaced document, that is, the original document provided to
+	 * the {@link Replace()} method and the native document returned by the operation.
+	 *
+	 * In this class we handle {@link Document} instances by resetting their
+	 * {@link Document::IsModified()} state.
+	 *
+	 * In derived classes you should first handle native document types and database
+	 * specific internal properties, then call the parent method; you should also skip
+	 * native documents.
+	 *
+	 * @param mixed					$theDocument		The replaced document.
+	 * @param mixed						$theData		The native database document.
+	 *
+	 * @uses Document::IsPersistent()
+	 * @uses Document::IsModified()
+	 */
+	protected function normaliseReplacedDocument( $theDocument, $theData )
+	{
+		//
+		// Reset modification state.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Set persistent state.
+			//
+			$theDocument->IsPersistent( TRUE, $this );
+
+			//
+			// Reset modification state.
+			//
+			$theDocument->IsModified( FALSE, $this );
+
+		} // Document instance.
+
+	} // normaliseReplacedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseSelectedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise selected document.</h4>
+	 *
+	 * This method will be called when a document has been selected from the current
+	 * collection via a query, its duty is to pass information back to the document,
+	 * including eventual internal native database properties.
+	 *
+	 * The method expects the selected document, that is, the document in the desired format
+	 * and the native document returned by the query.
+	 *
+	 * In this class we handle {@link Document} instances by setting their
+	 * {@link Document::IsPersistent()} state and reset their {@link Document::IsModified()}
+	 * state.
+	 *
+	 * In derived classes you should first handle native document types and database
+	 * specific internal properties, then call the parent method; you should also skip
+	 * native documents.
+	 *
+	 * @param mixed					$theDocument		The selected document.
+	 * @param mixed					$theData			The native database document.
+	 *
+	 * @uses Document::IsPersistent()
+	 * @uses Document::IsModified()
+	 */
+	protected function normaliseSelectedDocument( $theDocument, $theData )
+	{
+		//
+		// Handle documents.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Set persistent state.
+			//
+			$theDocument->IsPersistent( TRUE, $this );
+
+			//
+			// Reset modification state.
+			//
+			$theDocument->IsModified( FALSE, $this );
+
+		} // Is a document.
+
+	} // normaliseSelectedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseDeletedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise deleted document.</h4>
+	 *
+	 * This method will be called when a document has been deleted, its duty is to update
+	 * the document state after the deletion.
+	 *
+	 * The method accepts the a single parameter that represents the original document
+	 * provided to the {@link Delete()} method.
+	 *
+	 * In this class wel reset the {@link Document} {@link Document::IsPersistent()} state
+	 * and set its {@link Document::IsModified()} state.
+	 *
+	 * In derived classes you should first handle native document types and database
+	 * specific internal properties, then call the parent method; you should also skip
+	 * native documents.
+	 *
+	 * @param mixed					$theDocument		The deleted document.
+	 *
+	 * @uses RevisionOffset()
+	 */
+	protected function normaliseDeletedDocument( $theDocument )
+	{
+		//
+		// Handle documents.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Reset persistent state.
+			//
+			$theDocument->IsPersistent( FALSE, $this );
+
+			//
+			// Set modification state.
+			//
+			$theDocument->IsModified( TRUE, $this );
+
+		} // Is a document.
+
+	} // normaliseDeletedDocument.
+
+
+
+/*=======================================================================================
+ *																						*
  *								PROTECTED FORMATTING UTILITIES							*
  *																						*
  *======================================================================================*/
@@ -1697,10 +1999,15 @@ abstract class Collection
 	 * The method expects a document expressed as a database native document, an array or an
 	 * object that can be cast to an array.
 	 *
+	 * If the third parameter is <tt>TRUE</tt>, it means that the document set comes from a
+	 * query: in that case the documents will be normalised by the
+	 * {@link normaliseSelectedDocument()} method.
+	 *
 	 * If the provided format is not supported, the method will raise an exception.
 	 *
 	 * @param mixed					$theData			Document data.
 	 * @param string				$theFormat			Format type.
+	 * @param bool					$isPersistent		Persistent flag.
 	 * @return mixed				Formatted document object.
 	 * @throws \InvalidArgumentException
 	 *
@@ -1708,8 +2015,9 @@ abstract class Collection
 	 * @uses NewDocumentKey()
 	 * @uses NewDocumentHandle()
 	 * @uses NewDocumentContainer()
+	 * @uses normaliseSelectedDocument()
 	 */
-	protected function formatDocument( $theData, $theFormat )
+	protected function formatDocument( $theData, $theFormat, bool $isPersistent )
 	{
 		//
 		// Parse format.
@@ -1717,7 +2025,8 @@ abstract class Collection
 		switch( $theFormat )
 		{
 			case kTOKEN_OPT_FORMAT_DOCUMENT:
-				return $this->NewDocument( $theData );								// ==>
+				$document = $this->NewDocument( $theData );
+				break;
 
 			case kTOKEN_OPT_FORMAT_KEY:
 				return $this->NewDocumentKey( $theData );							// ==>
@@ -1732,11 +2041,21 @@ abstract class Collection
 				return $this->NewDocumentNative( $theData );						// ==>
 
 			case kTOKEN_OPT_FORMAT_CONTAINER:
-				return $this->NewDocumentContainer( $theData );						// ==>
+				$document = $this->NewDocumentContainer( $theData );
+				break;
+
+			default:
+				throw new \InvalidArgumentException(
+					"Unsupported format type [$theFormat]." );					// !@! ==>
 		}
 
-		throw new \InvalidArgumentException(
-			"Unsupported format type [$theFormat]." );							// !@! ==>
+		//
+		// Normalise document.
+		//
+		if( $isPersistent )
+			$this->normaliseSelectedDocument( $document, $theData );
+
+		return $document;															// ==>
 
 	} // formatDocument.
 

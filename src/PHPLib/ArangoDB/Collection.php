@@ -399,25 +399,40 @@ class Collection extends \Milko\PHPLib\Collection
 	 * <h4>Insert document.</h4>
 	 *
 	 * We implement this method by converting the provided array into a native document and
-	 * using the {@link triagens\ArangoDb\DocumentHandler::save()} method to insert it.
+	 * using the {@link triagens\ArangoDb\DocumentHandler::save()} method to insert it, we
+	 * then call the {@link normaliseInsertedDocument()} method that will take care of
+	 * updating the document's properties if necessary.
 	 *
-	 * @param array					$theDocument		The document data as an array.
-	 * @return mixed				The document's unique identifier.
+	 * @param array					$theDocument		The document data.
+	 * @return mixed				The document's key.
 	 *
-	 * @uses documentNativeCreate()
+	 * @uses NewDocumentNative()
+	 * @uses normaliseInsertedDocument()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
-	public function Insert( array $theDocument )
+	public function Insert( $theDocument )
 	{
 		//
 		// Instantiate handler.
 		//
 		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
 
-		return
-			$handler->save(
-				$this->mConnection,
-				$this->documentNativeCreate( $theDocument ) );						// ==>
+		//
+		// Convert document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Insert document.
+		//
+		$key = $handler->save( $this->mConnection, $document );
+
+		//
+		// Normalise document.
+		//
+		$this->normaliseInsertedDocument( $theDocument, $document, $key );
+
+		return $key;																// ==>
 
 	} // Insert.
 
@@ -435,7 +450,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theDocuments		The documents set as an array.
 	 * @return array				The document unique identifiers.
 	 *
-	 * @uses documentNativeCreate()
+	 * @uses NewDocumentNative()
+	 * @uses normaliseInsertedDocument()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
 	public function InsertMany( array $theDocuments )
@@ -450,10 +466,28 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$ids = [];
 		foreach( $theDocuments as $document )
-			$ids[] =
-				$handler->save(
-					$this->mConnection,
-					$this->documentNativeCreate( $document ) );
+		{
+			//
+			// Convert document.
+			//
+			$native = $this->NewDocumentNative( $document );
+
+			//
+			// Insert document.
+			//
+			$key = $handler->save( $this->mConnection, $native );
+
+			//
+			// Normalise document.
+			//
+			$this->normaliseInsertedDocument( $document, $native, $key );
+
+			//
+			// Add key.
+			//
+			$ids[] = $key;
+
+		} // Iterating documents.
 
 		return $ids;																// ==>
 
@@ -527,6 +561,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @uses NewDocumentKey()
 	 * @uses NewDocumentNative()
+	 * @uses normaliseReplacedDocument()
 	 * @uses triagens\ArangoDb\DocumentHandler::replaceById()
 	 */
 	public function Replace( $theDocument )
@@ -556,6 +591,11 @@ class Collection extends \Milko\PHPLib\Collection
 			// Replace document.
 			//
 			$handler->replaceById( $this->collectionName(), $key, $document );
+
+			//
+			// Normalise document.
+			//
+			$this->normaliseReplacedDocument( $theDocument, $document );
 
 			return 1;																// ==>
 
@@ -757,9 +797,10 @@ class Collection extends \Milko\PHPLib\Collection
 	 *
 	 * @param mixed					$theFilter			The selection criteria.
 	 * @param array					$theOptions			Query options.
+	 * @param bool					$isPersistent		Persistent flag.
 	 * @return mixed				The found records.
 	 *
-	 * @uses NewDocumentSet()
+	 * @uses ConvertDocumentSet()
 	 * @uses triagens\ArangoDb\Statement::execute()
 	 */
 	public function Find(
@@ -790,7 +831,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
 			return $result;															// ==>
 
-		return $this->NewDocumentSet( $result, $theOptions[ kTOKEN_OPT_FORMAT ] );	// ==>
+		return
+			$this->ConvertDocumentSet(
+				$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );					// ==>
 
 	} // Find.
 
@@ -811,7 +854,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses NewDocumentSet()
+	 * @uses ConvertDocumentSet()
 	 * @uses formatDocument()
 	 * @uses collectionName()
 	 * @uses triagens\ArangoDb\CollectionHandler::lookupByKeys()
@@ -846,8 +889,8 @@ class Collection extends \Milko\PHPLib\Collection
 				return $result;														// ==>
 
 			return
-				$this->NewDocumentSet(
-					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+				$this->ConvertDocumentSet(
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );				// ==>
 
 		} // Set of keys.
 
@@ -874,7 +917,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 			return
 				$this->formatDocument(
-					$result, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );				// ==>
 
 		} // Document found.
 
@@ -956,7 +999,7 @@ class Collection extends \Milko\PHPLib\Collection
 					//
 					$result[] =
 						$this->formatDocument(
-							$document, $theOptions[ kTOKEN_OPT_FORMAT ] );
+							$document, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );
 
 				} // Document found.
 
@@ -996,7 +1039,7 @@ class Collection extends \Milko\PHPLib\Collection
 
 			return
 				$this->formatDocument(
-					$document, $theOptions[ kTOKEN_OPT_FORMAT ] );					// ==>
+					$document, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );			// ==>
 
 		} // Document found.
 
@@ -1035,7 +1078,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @param array					$theOptions			Query options.
 	 * @return mixed				The found records.
 	 *
-	 * @uses NewDocumentSet()
+	 * @uses ConvertDocumentSet()
 	 * @uses NewDocumentNative()
 	 * @uses triagens\ArangoDb\CollectionHandler::byExample()
 	 */
@@ -1080,10 +1123,48 @@ class Collection extends \Milko\PHPLib\Collection
 			return $result;															// ==>
 
 		return
-			$this->NewDocumentSet(
-				$result, $theOptions[ kTOKEN_OPT_FORMAT ] );						// ==>
+			$this->ConvertDocumentSet(
+				$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );					// ==>
 
 	} // FindByExample.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC AGGREGATION FRAMEWORK INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	MapReduce																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Execute an aggregation query.</h4>
+	 *
+	 * ArangoDB does not have an aggregation framework such as MongoDB, in this class we
+	 * simply call the {@link Find()} method replacing the pipeline parameter with the
+	 * query.
+	 *
+	 * @param mixed					$thePipeline		The aggregation pipeline.
+	 * @param array					$theOptions			Query options.
+	 * @return array				The result set.
+	 *
+	 * @uses Find()
+	 */
+	public function MapReduce( $thePipeline, array $theOptions = [] )
+	{
+		//
+		// Set format to array.
+		//
+		$theOptions[ kTOKEN_OPT_FORMAT ] = kTOKEN_OPT_FORMAT_ARRAY;
+
+		return $this->Find( $thePipeline, $theOptions );							// ==>
+
+	} // MapReduce.
 
 
 
@@ -1240,6 +1321,14 @@ class Collection extends \Milko\PHPLib\Collection
 		$theFilter,
 		array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
 	{
+		//
+		// Init query.
+		//
+		if( ! count( $theFilter ) )
+			$theFilter = [
+				'query' => 'FOR r IN @@collection RETURN r',
+				'bindVars' => [ '@collection' => $this->collectionName() ] ];
+
 		//
 		// Perform query.
 		//
@@ -1600,6 +1689,171 @@ class Collection extends \Milko\PHPLib\Collection
 		return $this->collectionName() . '/' . (string)$theKey;						// ==>
 
 	} // documentHandleCreate.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED PERSISTENCE UTILITIES							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	normaliseInsertedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise inserted document.</h4>
+	 *
+	 * We overload this method to retrieve and set the revision ({@link RevisionOffset()})
+	 * back into the document.
+	 *
+	 * @param mixed					$theDocument		The inserted document.
+	 * @param mixed					$theData			The native inserted document.
+	 * @param mixed					$theKey				The document key.
+	 *
+	 * @uses RevisionOffset()
+	 * @uses triagens\ArangoDb\Document::getRevision()
+	 */
+	protected function normaliseInsertedDocument( $theDocument, $theData, $theKey )
+	{
+		//
+		// Skip native documents.
+		//
+		if( ! ($theDocument instanceof ArangoDocument) )
+		{
+			//
+			// Set document revision.
+			//
+			if( $theDocument instanceof \ArrayObject )
+				$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
+
+			//
+			// Call parent method.
+			//
+			parent::normaliseInsertedDocument( $theDocument, $theData, $theKey );
+
+		} // Not a native document.
+
+	} // normaliseInsertedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseReplacedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise replaced document.</h4>
+	 *
+	 * We overload this method to update the revision ({@link RevisionOffset()}) in the
+	 * replaced document.
+	 *
+	 * @param mixed					$theDocument		The replaced document.
+	 * @param mixed						$theData		The native database document.
+	 *
+	 * @uses RevisionOffset()
+	 * @uses triagens\ArangoDb\Document::getRevision()
+	 */
+	protected function normaliseReplacedDocument( $theDocument, $theData )
+	{
+		//
+		// Skip native documents.
+		//
+		if( ! ($theDocument instanceof ArangoDocument) )
+		{
+			//
+			// Set document revision.
+			//
+			if( $theDocument instanceof \ArrayObject )
+				$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
+
+			//
+			// Call parent method.
+			//
+			parent::normaliseReplacedDocument( $theDocument, $theData );
+
+		} // Not a native document.
+
+	} // normaliseReplacedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseSelectedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise selected document.</h4>
+	 *
+	 * We overload this method to retrieve and set the revision ({@link RevisionOffset()})
+	 * back into the document.
+	 *
+	 * @param mixed					$theDocument		The selected document.
+	 * @param mixed					$theData			The native database document.
+	 *
+	 * @uses RevisionOffset()
+	 * @uses triagens\ArangoDb\Document::getRevision()
+	 */
+	protected function normaliseSelectedDocument( $theDocument, $theData )
+	{
+		//
+		// Skip native documents.
+		//
+		if( ! ($theDocument instanceof ArangoDocument) )
+		{
+			//
+			// Set document revision.
+			//
+			if( $theDocument instanceof \ArrayObject )
+				$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
+
+			//
+			// Call parent method.
+			//
+			parent::normaliseSelectedDocument( $theDocument, $theData );
+
+		} // Not a native document.
+
+	} // normaliseSelectedDocument.
+
+
+	/*===================================================================================
+	 *	normaliseDeletedDocument														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Normalise deleted document.</h4>
+	 *
+	 * We overload this method to first call the parent method, which will reset the
+	 * document persistent state, allowing this method to remove the revision
+	 * ({@link RevisionOffset()}) from the document.
+	 *
+	 * @param mixed					$theDocument		The deleted document.
+	 *
+	 * @uses RevisionOffset()
+	 */
+	protected function normaliseDeletedDocument( $theDocument )
+	{
+		//
+		// Skip native documents.
+		//
+		if( ! ($theDocument instanceof ArangoDocument) )
+		{
+			//
+			// Call parent method.
+			//
+			parent::normaliseDeletedDocument( $theDocument );
+
+			//
+			// Remove revision.
+			//
+			if( $theDocument instanceof \ArrayObject )
+				$theDocument->offsetUnset( $this->RevisionOffset() );
+
+		} // Not a native document.
+
+	} // normaliseDeletedDocument.
 
 
 

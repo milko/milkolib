@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -282,8 +282,8 @@ echo( "\n" );
 echo( "Insert container:\n" );
 echo( '$document = new Milko\PHPLib\Container( [$test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );' . "\n" );
 $document = new Milko\PHPLib\Container( [$test->KeyOffset() => "ID1", "data" => 1, "color" => "green" ] );
-echo( '$result = $test->Insert( $test->NewDocumentArray( $document ) );' . "\n" );
-$result = $test->Insert( $test->NewDocumentArray( $document ) );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
 var_dump( $result );
 print_r( $document );
 
@@ -295,8 +295,8 @@ echo( "\n" );
 echo( "Insert document:\n" );
 echo( '$document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );' . "\n" );
 $document = new Milko\PHPLib\Document( $test, [ "data" => "XXX", "color" => "red" ] );
-echo( '$result = $test->Insert( $test->NewDocumentArray( $document ) );' . "\n" );
-$result = $test->Insert( $test->NewDocumentArray( $document ) );
+echo( '$result = $test->Insert( $document );' . "\n" );
+$result = $test->Insert( $document );
 var_dump( $result );
 echo( "Class: " . get_class( $document ) . "\n" );
 $tmp = $document[ $test->CLassOffset() ];
@@ -348,10 +348,8 @@ echo( "Data: " );
 print_r( $documents[3]->getArrayCopy() );
 echo( "»»»[4] " ); print_r( $documents[4] );
 echo( "»»»\n" );
-echo( '$list = $test->ConvertDocumentSet( $documents );' . "\n" );
-$list = $test->ConvertDocumentSet( $documents );
-echo( '$result = $test->StoreDocumentSet( $list );' . "\n" );
-$result = $test->StoreDocumentSet( $list );
+echo( '$result = $test->InsertMany( $documents );' . "\n" );
+$result = $test->InsertMany( $documents );
 print_r( $result );
 echo( "Document types:\n" );
 foreach( $documents as $key => $document )
@@ -384,7 +382,6 @@ foreach( $documents as $key => $document )
 	else
 		print_r( $document );
 }
-exit;
 
 echo( "\n====================================================================================\n\n" );
 
@@ -392,8 +389,8 @@ echo( "\n=======================================================================
 // Get record count.
 //
 echo( "Get record count:\n" );
-echo( '$result = $test->RecordCount();' . "\n" );
-$result = $test->RecordCount();
+echo( '$result = $test->Count();' . "\n" );
+$result = $test->Count();
 var_dump( $result );
 if( $result == 8 )
 	echo( "SUCCEEDED!\n" );
@@ -455,7 +452,26 @@ elseif( kENGINE == "MONGO" )
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "changed" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "changed" ] );
-print_r( $result );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
 
 echo( "\n" );
 
@@ -508,7 +524,26 @@ $result = $test->Replace( [ $test->KeyOffset() => "ID1", "color" => "pink", "sta
 var_dump( $result );
 echo( '$result = $test->FindByExample( [ "status" => "replaced" ] );' . "\n" );
 $result = $test->FindByExample( [ "status" => "replaced" ] );
-print_r( $result );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -516,21 +551,52 @@ echo( "\n=======================================================================
 // Find by ID native.
 //
 echo( "Find by ID native:\n" );
-echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );' . "\n" );
-$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE] );
 print_r( $result );
 echo( "\n" );
 
 echo( "\n" );
 
 //
-// Find by ID standard.
+// Find by ID array.
 //
-echo( "Find by ID standard:\n" );
-echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
-$result = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
+echo( "Find by ID array:\n" );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY] );
 print_r( $result );
 echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find by ID container.
+//
+echo( "Find by ID container:\n" );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_CONTAINER] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_CONTAINER] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find by ID document.
+//
+echo( "Find by ID document:\n" );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
+echo( "Class: " . get_class( $result ) . "\n" );
+$tmp = $result[ $test->CLassOffset() ];
+echo( "Document class: [$tmp]\n" );
+$tmp = $result[ $test->KeyOffset() ];
+echo( "Document key: [$tmp]\n" );
+$tmp = $result[ $test->RevisionOffset() ];
+echo( "Document revision: [$tmp]\n" );
+echo( "Modified:   " . (( $result->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $result->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $result->getArrayCopy() );
 
 echo( "\n" );
 
@@ -538,19 +604,19 @@ echo( "\n" );
 // Find by ID handle.
 //
 echo( "Find by ID handle:\n" );
-echo( '$handle = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
-$handle = $test->FindByKey( "ID1", [kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
-print_r( $handle );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
+print_r( $result );
 echo( "\n" );
 
 echo( "\n" );
 
 //
-// Find by handle.
+// Find by ID key.
 //
-echo( "Find by handle:\n" );
-echo( '$result = $test->FindByHandle( $handle );' . "\n" );
-$result = $test->FindByHandle( $handle );
+echo( "Find by ID key:\n" );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => FALSE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY] );
 print_r( $result );
 echo( "\n" );
 
@@ -568,11 +634,62 @@ echo( "\n" );
 echo( "\n" );
 
 //
-// Find many by ID standard.
+// Find many by ID array.
 //
-echo( "Find many by ID standard:\n" );
-echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD] );' . "\n" );
+echo( "Find many by ID array:\n" );
+echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY] );' . "\n" );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find many by ID container.
+//
+echo( "Find many by ID container:\n" );
+echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_CONTAINER] );' . "\n" );
+$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_CONTAINER] );
+print_r( $result );
+echo( "\n" );
+
+echo( "\n" );
+
+//
+// Find many by ID document.
+//
+echo( "Find many by ID document:\n" );
+echo( '$result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );' . "\n" );
 $result = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
+foreach( $result as $key => $document )
+{
+	echo( "»»»[$key] " );
+	if( $document instanceof Milko\PHPLib\Document )
+	{
+		echo( "Class: " . get_class( $document ) . "\n" );
+		$tmp = $document[ $test->CLassOffset() ];
+		echo( "Document class: [$tmp]\n" );
+		$tmp = $document[ $test->KeyOffset() ];
+		echo( "Document key: [$tmp]\n" );
+		$tmp = $document[ $test->RevisionOffset() ];
+		echo( "Document revision: [$tmp]\n" );
+		echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+		echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+		echo( "Data: " );
+		print_r( $document->getArrayCopy() );
+	}
+	else
+		print_r( $document );
+}
+
+echo( "\n" );
+
+//
+// Find many by ID handle.
+//
+echo( "Find many by ID handle:\n" );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
 print_r( $result );
 echo( "\n" );
 
@@ -582,30 +699,8 @@ echo( "\n" );
 // Find many by ID key.
 //
 echo( "Find many by ID key:\n" );
-echo( '$handle = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY] );' . "\n" );
-$handle = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY] );
-print_r( $handle );
-echo( "\n" );
-
-echo( "\n" );
-
-//
-// Find many by ID handle.
-//
-echo( "Find many by ID handle:\n" );
-echo( '$handle = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );' . "\n" );
-$handle = $test->FindByKey( ["ID1", "ID2"], [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE] );
-print_r( $handle );
-echo( "\n" );
-
-echo( "\n" );
-
-//
-// Find many by handle.
-//
-echo( "Find by many by handle:\n" );
-echo( '$result = $test->FindByHandle( $handle, [kTOKEN_OPT_MANY => TRUE] );' . "\n" );
-$result = $test->FindByHandle( $handle, [kTOKEN_OPT_MANY => TRUE] );
+echo( '$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY] );' . "\n" );
+$result = $test->FindByKey( "ID1", [kTOKEN_OPT_MANY => TRUE, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY] );
 print_r( $result );
 echo( "\n" );
 
@@ -735,13 +830,13 @@ echo( "\n=======================================================================
 echo( "Find first record native by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+	echo( '$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+	$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
 }
 elseif( kENGINE == "MONGO" )
 {
-	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+	echo( '$result = $test->Find( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+	$result = $test->Find( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
 }
 print_r( $result );
 
@@ -753,13 +848,13 @@ echo( "\n" );
 echo( "Find first record standard by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+	echo( '$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+	$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 }
 elseif( kENGINE == "MONGO" )
 {
-	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+	echo( '$result = $test->Find( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+	$result = $test->Find( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 }
 foreach( $result as $key => $document )
 {
@@ -790,13 +885,13 @@ echo( "\n" );
 echo( "Find first record key by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
+	echo( '$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
+	$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
 }
 elseif( kENGINE == "MONGO" )
 {
-	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+	echo( '$result = $test->Find( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+	$result = $test->Find( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
 }
 print_r( $result );
 
@@ -808,13 +903,13 @@ echo( "\n" );
 echo( "Find first record handle by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+	echo( '$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+	$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' LIMIT 1 RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
 }
 elseif( kENGINE == "MONGO" )
 {
-	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+	echo( '$result = $test->Find( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+	$result = $test->Find( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_LIMIT => 1, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
 }
 print_r( $result );
 
@@ -826,13 +921,13 @@ echo( "\n=======================================================================
 echo( "Find all records native by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+	echo( '$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+	$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
 }
 elseif( kENGINE == "MONGO" )
 {
-	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
+	echo( '$result = $test->Find( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );' . "\n" );
+	$result = $test->Find( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_NATIVE ] );
 }
 print_r( $result );
 
@@ -844,13 +939,13 @@ echo( "\n" );
 echo( "Find all records standard by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+	echo( '$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+	$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 }
 elseif( kENGINE == "MONGO" )
 {
-	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+	echo( '$result = $test->Find( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_STANDARD ] );' . "\n" );
+	$result = $test->Find( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 }
 foreach( $result as $key => $document )
 {
@@ -881,13 +976,13 @@ echo( "\n" );
 echo( "Find all records key by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
+	echo( '$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
+	$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
 }
 elseif( kENGINE == "MONGO" )
 {
-	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
+	echo( '$result = $test->Find( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );' . "\n" );
+	$result = $test->Find( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_KEY ] );
 }
 print_r( $result );
 
@@ -899,13 +994,13 @@ echo( "\n" );
 echo( "Find all records handle by query:\n" );
 if( kENGINE == "ARANGO" )
 {
-	echo( '$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
-	$result = $test->FindByQuery( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+	echo( '$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == \'yellow\' OR r.color == \'pink\' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+	$result = $test->Find( ["query" => "FOR r IN test_collection FILTER r.color == 'yellow' OR r.color == 'pink' RETURN r"], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
 }
 elseif( kENGINE == "MONGO" )
 {
-	echo( '$result = $test->FindByQuery( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
-	$result = $test->FindByQuery( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
+	echo( '$result = $test->Find( [ \'$or\' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );' . "\n" );
+	$result = $test->Find( [ '$or' => [ ["color" => "yellow"], ["color" => "pink"] ] ], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] );
 }
 print_r( $result );
 
@@ -915,8 +1010,8 @@ echo( "\n=======================================================================
 // Record count.
 //
 echo( "Record count:\n" );
-echo( '$result = $test->RecordCount();' . "\n" );
-$result = $test->RecordCount();
+echo( '$result = $test->Count();' . "\n" );
+$result = $test->Count();
 var_dump( $result );
 if( $result == 8 )
 	echo( "SUCCEEDED!\n" );
@@ -995,8 +1090,8 @@ echo( "Delete by ID:\n" );
 echo( '$result = $test->DeleteByKey( "ID1" );' . "\n" );
 $result = $test->DeleteByKey( "ID1" );
 var_dump( $result );
-echo( '$result = $test->FindByExample();' . "\n" );
-$result = $test->FindByExample();
+echo( '$result = $test->FindByExample( [] );' . "\n" );
+$result = $test->FindByExample( [] );
 var_dump( count( $result ) );
 foreach( $result as $key => $document )
 {
@@ -1028,8 +1123,8 @@ echo( "Delete by example:\n" );
 echo( '$result = $test->DeleteByExample( ["data" => "Value 1"] );' . "\n" );
 $result = $test->DeleteByExample( ["data" => "Value 1"] );
 var_dump( $result );
-echo( '$result = $test->FindByExample();' . "\n" );
-$result = $test->FindByExample();
+echo( '$result = $test->FindByExample( [] );' . "\n" );
+$result = $test->FindByExample( [] );
 var_dump( count( $result ) );
 foreach( $result as $key => $document )
 {
@@ -1058,11 +1153,11 @@ echo( "\n" );
 // Delete by query.
 //
 echo( "Delete by query:\n" );
-echo( '$result = $test->DeleteByQuery();' . "\n" );
-$result = $test->DeleteByExample();
+echo( '$result = $test->Delete( [] );' . "\n" );
+$result = $test->Delete( [] );
 var_dump( $result );
-echo( '$result = $test->FindByExample();' . "\n" );
-$result = $test->FindByExample();
+echo( '$result = $test->FindByExample( [] );' . "\n" );
+$result = $test->FindByExample( [] );
 var_dump( count( $result ) );
 foreach( $result as $key => $document )
 {
