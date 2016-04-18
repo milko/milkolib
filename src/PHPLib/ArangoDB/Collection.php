@@ -428,7 +428,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents and collect offsets.
 			//
-			$offsets = $theDocument->TraverseDocument();
+			$offsets = $theDocument->Traverse();
 			if( count( $offsets ) )
 				$theDocument[ $this->PropertiesOffset() ] = $offsets;
 
@@ -510,7 +510,7 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Store sub-documents.
 				//
-				$offsets = $document->TraverseDocument();
+				$offsets = $document->Traverse();
 				if( count( $offsets ) )
 					$document[ $this->PropertiesOffset() ] = $offsets;
 
@@ -636,7 +636,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents.
 			//
-			$offsets = $theDocument->TraverseDocument();
+			$offsets = $theDocument->Traverse();
 			if( count( $offsets ) )
 				$theDocument[ $this->PropertiesOffset() ] = $offsets;
 			else
