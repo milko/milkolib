@@ -1096,17 +1096,17 @@ class Document extends Container
 		foreach( $theData as $key => $value )
 		{
 			//
+			// Collect offset.
+			//
+			if( (substr( $key, 0, 1 ) == kTOKEN_TAG_PREFIX)
+				&& (! in_array( $key, $theOffsets )) )
+				$theOffsets[] = $key;
+
+			//
 			// Validate documents.
 			//
 			if( $value instanceof Document )
 			{
-				//
-				// Collect offset.
-				//
-				if( (substr( $key, 1, 1 ) == kTOKEN_TAG_PREFIX)
-				 && (! in_array( $key, $theOffsets )) )
-					$theOffsets[] = $key;
-
 				//
 				// Insert new documents.
 				//
@@ -1145,16 +1145,9 @@ class Document extends Container
 
 			} // Array or iterable.
 
-			//
-			// Handle scalars.
-			//
-			elseif( (substr( $key, 1, 1 ) == kTOKEN_TAG_PREFIX)
-				 && (! in_array( $key, $theOffsets )) )
-				$theOffsets[] = $key;
-
 		} // Traversing the document.
 
-	} // doStoreSubdocuments.
+	} // doTraverseDocument.
 
 
 	/*===================================================================================
