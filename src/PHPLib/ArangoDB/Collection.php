@@ -430,7 +430,7 @@ class Collection extends \Milko\PHPLib\Collection
 			// Store sub-documents and collect offsets.
 			//
 			$theDocument->SetPropertiesList(
-				$theDocument->TraverseDocument(), $this );
+				$theDocument->Traverse(), $this );
 
 			//
 			// Prepare document.
@@ -512,7 +512,7 @@ class Collection extends \Milko\PHPLib\Collection
 				// Store sub-documents.
 				//
 				$document->SetPropertiesList(
-					$document->TraverseDocument(), $this );
+					$document->Traverse(), $this );
 
 				//
 				// Prepare document.
@@ -638,7 +638,7 @@ class Collection extends \Milko\PHPLib\Collection
 			// Store sub-documents.
 			//
 			$theDocument->SetPropertiesList(
-				$theDocument->TraverseDocument(), $this );
+				$theDocument->Traverse(), $this );
 
 			//
 			// Prepare document.

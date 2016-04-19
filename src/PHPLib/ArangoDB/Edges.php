@@ -220,7 +220,7 @@ class Edges extends Collection
 			// Store sub-documents and collect offsets.
 			//
 			$theDocument->SetPropertiesList(
-				$theDocument->TraverseDocument(), $this );
+				$theDocument->Traverse(), $this );
 
 			//
 			// Prepare document.
@@ -318,7 +318,7 @@ class Edges extends Collection
 				// Store sub-documents.
 				//
 				$document->SetPropertiesList(
-					$document->TraverseDocument(), $this );
+					$document->Traverse(), $this );
 
 				//
 				// Prepare document.
@@ -466,7 +466,7 @@ class Edges extends Collection
 			// Store sub-documents.
 			//
 			$theDocument->SetPropertiesList(
-				$theDocument->TraverseDocument(), $this );
+				$theDocument->Traverse(), $this );
 
 			//
 			// Prepare document.
