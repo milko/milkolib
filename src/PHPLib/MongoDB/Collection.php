@@ -330,7 +330,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareInsert()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\InsertOneResult::getInsertedId()
@@ -350,9 +351,8 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents and collect offsets.
 			//
-			$offsets = $theDocument->TraverseDocument();
-			if( count( $offsets ) )
-				$theDocument[ $this->PropertiesOffset() ] = $offsets;
+			$theDocument->SetPropertiesList(
+				$theDocument->TraverseDocument(), $this );
 
 			//
 			// Prepare document.
@@ -467,7 +467,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareReplace()
 	 * @uses \MongoDB\Collection::replaceOne()
 	 */
@@ -486,11 +487,8 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents.
 			//
-			$offsets = $theDocument->TraverseDocument();
-			if( count( $offsets ) )
-				$theDocument[ $this->PropertiesOffset() ] = $offsets;
-			else
-				$theDocument->offsetUnset( $this->PropertiesOffset() );
+			$theDocument->SetPropertiesList(
+				$theDocument->TraverseDocument(), $this );
 
 			//
 			// Prepare document.

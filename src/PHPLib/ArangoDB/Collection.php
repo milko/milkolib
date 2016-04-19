@@ -409,7 +409,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareInsert()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
@@ -428,9 +429,8 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents and collect offsets.
 			//
-			$offsets = $theDocument->TraverseDocument();
-			if( count( $offsets ) )
-				$theDocument[ $this->PropertiesOffset() ] = $offsets;
+			$theDocument->SetPropertiesList(
+				$theDocument->TraverseDocument(), $this );
 
 			//
 			// Prepare document.
@@ -480,7 +480,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareInsert()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
@@ -510,9 +511,8 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Store sub-documents.
 				//
-				$offsets = $document->TraverseDocument();
-				if( count( $offsets ) )
-					$document[ $this->PropertiesOffset() ] = $offsets;
+				$document->SetPropertiesList(
+					$document->TraverseDocument(), $this );
 
 				//
 				// Prepare document.
@@ -617,7 +617,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseReplacedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareReplace()
 	 * @uses triagens\ArangoDb\DocumentHandler::replaceById()
 	 */
@@ -636,11 +637,8 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents.
 			//
-			$offsets = $theDocument->TraverseDocument();
-			if( count( $offsets ) )
-				$theDocument[ $this->PropertiesOffset() ] = $offsets;
-			else
-				$theDocument->offsetUnset( $this->PropertiesOffset() );
+			$theDocument->SetPropertiesList(
+				$theDocument->TraverseDocument(), $this );
 
 			//
 			// Prepare document.
@@ -1545,16 +1543,16 @@ class Collection extends \Milko\PHPLib\Collection
 		}
 
 		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		//
 		// Iterate handles.
 		//
 		$count = 0;
 		foreach( $handles as $collection => $keys )
 		{
-			//
-			// Get collection handler.
-			//
-			$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
 			//
 			// Remove by keys.
 			//
@@ -1665,12 +1663,7 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $handler->has( $theCollection ) )
 			return $handler->get( $theCollection );									// ==>
 
-		//
-		// Create collection.
-		//
-		$collection = $handler->create( $theCollection, $theOptions );
-
-		return $handler->get( $collection );										// ==>
+		return $handler->get( $handler->create( $theCollection, $theOptions ) );	// ==>
 
 	} // collectionCreate.
 

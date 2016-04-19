@@ -8,16 +8,17 @@
 
 namespace Milko\PHPLib\MongoDB;
 
-use Milko\PHPLib\Container;
-use Milko\PHPLib\iEdges;
-use Milko\PHPLib\MongoDB\Collection;
-use Milko\PHPLib\Edge;
-
 /*=======================================================================================
  *																						*
  *										Edges.php										*
  *																						*
  *======================================================================================*/
+
+use Milko\PHPLib\Container;
+use Milko\PHPLib\Document;
+use Milko\PHPLib\MongoDB\Collection;
+use Milko\PHPLib\iEdges;
+use Milko\PHPLib\Edge;
 
 /**
  * <h4>Relationships collection object.</h4>
@@ -79,9 +80,202 @@ class Edges extends Collection
 
 
 
+	/*=======================================================================================
+	 *																						*
+	 *								PUBLIC INSERTION INTERFACE								*
+	 *																						*
+	 *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Insert																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert document.</h4>
+	 *
+	 * We override this method to check whether the edge has its vertices, if that is not
+	 * the case, we raise an exception.
+	 *
+	 * @param array					$theDocument		The document data.
+	 * @return mixed				The document's key.
+	 * @throws \RuntimeException
+	 *
+	 * @uses NewDocumentNative()
+	 * @uses normaliseInsertedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
+	 * @uses Document::PrepareInsert()
+	 * @uses \MongoDB\Collection::insertOne()
+	 * @uses \MongoDB\InsertOneResult::getInsertedId()
+	 */
+	public function Insert( $theDocument )
+	{
+		//
+		// Validate and prepare document.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Validate document.
+			//
+			$theDocument->Validate();
+
+			//
+			// Store sub-documents and collect offsets.
+			//
+			$theDocument->SetPropertiesList(
+				$theDocument->TraverseDocument(), $this );
+
+			//
+			// Prepare document.
+			//
+			$theDocument->PrepareInsert();
+
+		} // Document instance.
+
+		//
+		// Convert document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Check vertices.
+		//
+		if( ! ($theDocument instanceof Document) )
+		{
+			if( ! $document->offsetExists( $this->VertexSource() ) )
+				throw new \RuntimeException (
+					"Missing source vertex." );									// !@! ==>
+			if( ! $document->offsetExists( $this->VertexDestination() ) )
+				throw new \RuntimeException (
+					"Missing destination vertex." );							// !@! ==>
+
+		} // Not already checked.
+
+		//
+		// Insert document.
+		//
+		$key =
+			$this->mConnection->insertOne( $document )
+				->getInsertedId();
+
+		//
+		// Normalise document.
+		//
+		$this->normaliseInsertedDocument( $theDocument, $document, $key );
+
+		return $key;																// ==>
+
+	} // Insert.
+
+
+
 /*=======================================================================================
  *																						*
- *							PROTECTED SELECTION MANAGEMENT INTERFACE					*
+ *								PUBLIC UPDATE INTERFACE									*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Replace																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Replace document.</h4>
+	 *
+	 * We override this method to check whether the edge has its vertices, if that is not
+	 * the case, we raise an exception.
+	 *
+	 * @param mixed					$theDocument		The replacement document.
+	 * @return int					The number of replaced documents.
+	 * @throws \RuntimeException
+	 *
+	 * @uses NewDocumentKey()
+	 * @uses NewDocumentNative()
+	 * @uses normaliseInsertedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
+	 * @uses Document::PrepareReplace()
+	 * @uses \MongoDB\Collection::replaceOne()
+	 */
+	public function Replace( $theDocument )
+	{
+		//
+		// Validate and prepare document.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Validate document.
+			//
+			$theDocument->Validate();
+
+			//
+			// Store sub-documents.
+			//
+			$theDocument->SetPropertiesList(
+				$theDocument->TraverseDocument(), $this );
+
+			//
+			// Prepare document.
+			//
+			$theDocument->PrepareReplace();
+
+		} // Document instance.
+
+		//
+		// Get document key.
+		// This will throw if key is missing.
+		//
+		$key = $this->NewDocumentKey( $theDocument );
+
+		//
+		// Convert document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Check vertices.
+		//
+		if( ! ($theDocument instanceof Document) )
+		{
+			if( ! $document->offsetExists( $this->VertexSource() ) )
+				throw new \RuntimeException (
+					"Missing source vertex." );									// !@! ==>
+			if( ! $document->offsetExists( $this->VertexDestination() ) )
+				throw new \RuntimeException (
+					"Missing destination vertex." );							// !@! ==>
+
+		} // Not already checked.
+
+		//
+		// Replace document.
+		//
+		$count =
+			$this->mConnection->replaceOne( [ $this->KeyOffset() => $key ], $document )
+				->getModifiedCount();
+
+		//
+		// Normalise document.
+		//
+		if( $count )
+			$this->normaliseInsertedDocument( $theDocument, $document, $key );
+
+		return $count;																// ==>
+
+	} // Replace.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC GRAPH MANAGEMENT INTERFACE							*
  *																						*
  *======================================================================================*/
 
@@ -111,16 +305,11 @@ class Edges extends Collection
 	 * @see kTOKEN_OPT_FORMAT
 	 * @see kTOKEN_OPT_DIRECTION
 	 */
-	public function FindByVertex( $theVertex, $theOptions = NULL )
+	public function FindByVertex(
+		$theVertex,
+		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT,
+							  kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY ] )
 	{
-		//
-		// Normalise options.
-		//
-		$this->normaliseOptions(
-			kTOKEN_OPT_FORMAT, kTOKEN_OPT_FORMAT_DOCUMENT, $theOptions );
-		$this->normaliseOptions(
-			kTOKEN_OPT_DIRECTION, kTOKEN_OPT_DIRECTION_ANY, $theOptions );
-
 		//
 		// Get vertex handle.
 		//
@@ -151,94 +340,12 @@ class Edges extends Collection
 		}
 
 		return
-			$this->normaliseCursor(
-				$this->Connection()->find( $query ), $theOptions );					// ==>
+			$this->ConvertDocumentSet(
+				$this->mConnection->find( $query ),
+				$theOptions[ kTOKEN_OPT_FORMAT ],
+				TRUE );																// ==>
 
 	} // FindByVertex.
-
-
-
-/*=======================================================================================
- *																						*
- *						PROTECTED RECORD MANAGEMENT INTERFACE							*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	doInsert																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a document.</h4>
-	 *
-	 * We overload this method to assert that both source and destination vertices are
-	 * present.
-	 *
-	 * @param mixed					$theDocument		Database native format document.
-	 * @return mixed				The inserted document's key.
-	 *
-	 * @uses Database()
-	 * @uses collectionName()
-	 * @uses triagens\ArangoDb\DocumentHandler::saveEdge()
-	 */
-	protected function doInsert( $theDocument )
-	{
-		//
-		// Check vertices.
-		//
-		if( ! $theDocument->offsetExists( $this->VertexSource() ) )
-			throw new \InvalidArgumentException (
-				"Missing source vertex." );										// !@! ==>
-		if( ! $theDocument->offsetExists( $this->VertexDestination() ) )
-			throw new \InvalidArgumentException (
-				"Missing destination vertex." );								// !@! ==>
-
-		return parent::doInsert( $theDocument );
-
-	} // doInsert.
-
-
-	/*===================================================================================
-	 *	doInsertBulk																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a list of documents.</h4>
-	 *
-	 * We overload this method to iterate the provided list and call the
-	 * {@link doInsertOne()} method on each document.
-	 *
-	 * @param array					$theList			Native format documents list.
-	 * @return array				The document keys.
-	 *
-	 * @uses Database()
-	 * @uses collectionName()
-	 * @uses triagens\ArangoDb\DocumentHandler::saveEdge()
-	 */
-	protected function doInsertBulk( array $theList )
-	{
-		//
-		// Iterate documents.
-		//
-		foreach( $theList as $document )
-		{
-			//
-			// Check vertices.
-			//
-			if( ! $document->offsetExists( $this->VertexSource() ) )
-				throw new \InvalidArgumentException (
-					"Missing source vertex." );									// !@! ==>
-			if( ! $document->offsetExists( $this->VertexDestination() ) )
-				throw new \InvalidArgumentException (
-					"Missing destination vertex." );							// !@! ==>
-		}
-
-		return parent::doInsertBulk( $theList );									// ==>
-
-	} // doInsertBulk.
-
 
 
 
@@ -251,23 +358,23 @@ class Edges extends Collection
 
 
 	/*===================================================================================
-	 *	toDocument																		*
+	 *	documentCreate																	*
 	 *==================================================================================*/
 
 	/**
 	 * <h4>Return a standard database document.</h4>
 	 *
-	 * We overload this method to return {@link \Milko\PHPLib\Relations} instances by
-	 * default.
+	 * In this class we return an {@link Edge} instance, in derived classes you can
+	 * overload this method to return a different kind of standard document.
 	 *
 	 * @param array					$theData			Document as an array.
-	 * @return mixed				Native database document object.
+	 * @return mixed				Standard document object.
 	 */
 	protected function documentCreate( array $theData )
 	{
-		return new Edge( $this, $theData );										// ==>
+		return new Edge( $this, $theData );											// ==>
 
-	} // toDocument.
+	} // documentCreate.
 
 
 
