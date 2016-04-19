@@ -820,7 +820,7 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	TraverseDocument																*
+	 *	Traverse																		*
 	 *==================================================================================*/
 
 	/**
@@ -840,7 +840,7 @@ class Document extends Container
 	 *
 	 * @uses doStoreRelated()
 	 */
-	public function TraverseDocument()
+	public function Traverse()
 	{
 		//
 		// Init local storage.
@@ -860,7 +860,7 @@ class Document extends Container
 
 		return $offsets;															// ==>
 
-	} // StoreSubdocuments.
+	} // Traverse.
 
 
 	/*===================================================================================
