@@ -1618,6 +1618,45 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *							PUBLIC HANDLE PARSING INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ParseDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return handle components.</h4>
+	 *
+	 * We implement this method by assuming the handle is string with the collectionname
+	 * concatenated to the document key separated by a slash.
+	 *
+	 * @param mixed					$theHandle			The object handle.
+	 * @param string			   &$theCollection		Receives collection name.
+	 * @param mixed				   &$theIdentifier		Receives object key.
+	 */
+	public function ParseDocumentHandle( $theHandle, &$theCollection, &$theIdentifier )
+	{
+		//
+		// Parse handle.
+		//
+		$handle = explode( '/', $theHandle );
+
+		//
+		// Extract components.
+		//
+		$theCollection = $handle[ 0 ];
+		$theIdentifier = $handle[ 1 ];
+
+	} // ParseDocumentHandle.
+
+
+
+/*=======================================================================================
+ *																						*
  *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
  *																						*
  *======================================================================================*/

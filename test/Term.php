@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -41,20 +41,28 @@ if( kENGINE == "MONGO" )
 {
 	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
 	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
-	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\Server( $url );
 }
 elseif( kENGINE == "ARANGO" )
 {
 	echo('$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n");
 	$url = "tcp://localhost:8529/test_milkolib/test_collection";
-	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\Server( $url );
 }
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
 $database = $server->GetDatabase( "test_milkolib" );
-echo( '$collection = $database->RetrieveTerms( \Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
-$collection = $database->RetrieveTerms( \Milko\PHPLib\Server::kFLAG_CREATE );
+if( kENGINE == "MONGO" )
+{
+	echo( '$collection = $database->NewCollection( kTAG_MONGO_TERMS );' . "\n" );
+	$collection = $database->NewCollection( kTAG_MONGO_TERMS );
+}
+elseif( kENGINE == "ARANGO" )
+{
+	echo( '$collection = $database->NewCollection( kTAG_ARANGO_TERMS );' . "\n" );
+	$collection = $database->NewCollection( kTAG_ARANGO_TERMS );
+}
 echo( '(string)$collection' . "\n" );
 var_dump( (string)$collection );
 echo( '$collection->Truncate();' . "\n" );
@@ -185,16 +193,8 @@ echo( "\n=======================================================================
 // Generate a global identifier by namespace key.
 //
 echo( "Generate a global identifier by namespace key:\n" );
-if( kENGINE == "MONGO" )
-{
-	echo( '\Milko\PHPLib\MongoDB\Collection::GetHandleComponents( $handle, $col, $key );' . "\n" );
-	\Milko\PHPLib\MongoDB\Collection::GetHandleComponents( $handle, $col, $key );
-}
-elseif( kENGINE == "ARANGO" )
-{
-	echo( '\Milko\PHPLib\ArangoDB\Collection::GetHandleComponents( $handle, $col, $key );' . "\n" );
-	\Milko\PHPLib\ArangoDB\Collection::GetHandleComponents( $handle, $col, $key );
-}
+echo( '$collection->ParseDocumentHandle( $handle, $col, $key );' . "\n" );
+$collection->ParseDocumentHandle( $handle, $col, $key );
 var_dump( $col );
 var_dump( $key );
 echo( '$result = Term::MakeGID( "ID", $key, $collection );' . "\n" );
@@ -220,8 +220,8 @@ echo( "\n" );
 // Get a term by global identifier.
 //
 echo( "Get a term by global identifier:\n" );
-echo( '$result = Term::GetByGID( $database, ":namespace:code" );' . "\n" );
-$result = Term::GetByGID( $database, ":namespace:code" );
+echo( '$result = Term::GetByGID( $collection, ":namespace:code" );' . "\n" );
+$result = Term::GetByGID( $collection, ":namespace:code" );
 echo( "Class: " . get_class( $result ) . "\n" );
 echo( "Modified:   " . (( $result->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $result->IsPersistent() ) ? "Yes\n" : "No\n") );

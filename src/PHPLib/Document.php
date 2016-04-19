@@ -172,7 +172,7 @@ class Document extends Container
 	 * @param Collection			$theCollection		Collection name.
 	 * @param array					$theData			Document data.
 	 */
-	public function __construct( Collection $theCollection, $theData = [] )
+	public function __construct( Collection $theCollection, array $theData = [] )
 	{
 		//
 		// Call parent constructor.
@@ -807,7 +807,7 @@ class Document extends Container
 		$subs = $this->getArrayCopy();
 		$this->doValidateSubdocuments( $subs );
 
-	} // validateDocument.
+	} // Validate.
 
 
 

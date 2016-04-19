@@ -1056,7 +1056,7 @@ abstract class Collection
 	abstract public function FindByKey(
 		$theKey,
 		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
-			kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
 	);
 
 
@@ -1117,7 +1117,7 @@ abstract class Collection
 	abstract public function FindByHandle(
 		$theHandle,
 		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
-			kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
 	);
 
 
@@ -1674,6 +1674,37 @@ abstract class Collection
 		return $set;																// ==>
 
 	} // ConvertDocumentSet.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC HANDLE PARSING INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ParseDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return handle components.</h4>
+	 *
+	 * This method can be used to parse and retrieve the provided handle components, it will
+	 * return the collection name and object key in the provided reference parameters.
+	 *
+	 * The method must be implemented in derived concrete classes to handle database
+	 * specific handles.
+	 *
+	 * @param mixed					$theHandle			The object handle.
+	 * @param string			   &$theCollection		Receives collection name.
+	 * @param mixed				   &$theIdentifier		Receives object key.
+	 */
+	abstract public function ParseDocumentHandle( $theHandle,
+												 &$theCollection,
+												 &$theIdentifier );
 
 
 
