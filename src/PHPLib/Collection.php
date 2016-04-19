@@ -640,6 +640,15 @@ abstract class Collection
 	public function NewDocumentHandle( $theData )
 	{
 		//
+		// Handle documents.
+		//
+		if( $theData instanceof Document )
+			return
+				$theData->Collection()->NewDocumentHandle(
+					$theData->Collection()->NewDocumentArray(
+						$theData ) );												// ==>
+
+		//
 		// Convert to array.
 		//
 		$document = $this->NewDocumentArray( $theData );
@@ -1047,7 +1056,7 @@ abstract class Collection
 	abstract public function FindByKey(
 		$theKey,
 		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
-			kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
 	);
 
 
@@ -1108,7 +1117,7 @@ abstract class Collection
 	abstract public function FindByHandle(
 		$theHandle,
 		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
-			kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
 	);
 
 
@@ -1441,6 +1450,52 @@ abstract class Collection
 	);
 
 
+	/*===================================================================================
+	 *	DeleteDocument																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Delete a document.</h4>
+	 *
+	 * This method can be used to delete the provided {@link Document} instance, the method
+	 * will reset the document's persistent state and set the document's modification state.
+	 *
+	 * If the provided document does not have a key, the method will return <tt>0</tt>.
+	 *
+	 * @param Document				$theDocument		Document to delete.
+	 * @return int					The number of deleted documents.
+	 *
+	 * @uses KeyOffset()
+	 * @uses DeleteByKey()
+	 * @uses normaliseDeletedDocument()
+	 */
+	public function DeleteDocument( Document $theDocument )
+	{
+		//
+		// Get document key.
+		//
+		$key = $theDocument[ $this->KeyOffset() ];
+		if( $key !== NULL )
+		{
+			//
+			// Delete document.
+			//
+			$count = $this->DeleteByKey( $key );
+
+			//
+			// Normalise deleted document.
+			//
+			$this->normaliseDeletedDocument( $theDocument );
+
+			return $count;															// ==>
+
+		} // Has key.
+
+		return 0;																	// ==>
+
+	} // DeleteDocument.
+
+
 
 /*=======================================================================================
  *																						*
@@ -1619,6 +1674,37 @@ abstract class Collection
 		return $set;																// ==>
 
 	} // ConvertDocumentSet.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC HANDLE PARSING INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ParseDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return handle components.</h4>
+	 *
+	 * This method can be used to parse and retrieve the provided handle components, it will
+	 * return the collection name and object key in the provided reference parameters.
+	 *
+	 * The method must be implemented in derived concrete classes to handle database
+	 * specific handles.
+	 *
+	 * @param mixed					$theHandle			The object handle.
+	 * @param string			   &$theCollection		Receives collection name.
+	 * @param mixed				   &$theIdentifier		Receives object key.
+	 */
+	abstract public function ParseDocumentHandle( $theHandle,
+												 &$theCollection,
+												 &$theIdentifier );
 
 
 

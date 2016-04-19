@@ -172,7 +172,7 @@ class Document extends Container
 	 * @param Collection			$theCollection		Collection name.
 	 * @param array					$theData			Document data.
 	 */
-	public function __construct( Collection $theCollection, $theData = [] )
+	public function __construct( Collection $theCollection, array $theData = [] )
 	{
 		//
 		// Call parent constructor.
@@ -477,7 +477,7 @@ class Document extends Container
 		// Check if persistent.
 		//
 		if( $this->IsPersistent() )
-			return $this->mCollection->Delete( $this );								// ==>
+			return $this->mCollection->DeleteDocument( $this );						// ==>
 
 		return 0;																	// ==>
 
@@ -807,7 +807,7 @@ class Document extends Container
 		$subs = $this->getArrayCopy();
 		$this->doValidateSubdocuments( $subs );
 
-	} // validateDocument.
+	} // Validate.
 
 
 
@@ -895,6 +895,48 @@ class Document extends Container
 	public function PrepareReplace()												   {}
 
 
+	/*===================================================================================
+	 *	SetPropertiesList																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set properties list.</h4>
+	 *
+	 * This method can be used to set the properties list
+	 * ({@link Collection::PropertiesOffset()}), only the document collection is allowed to
+	 * call this method, or an exception will be raised..
+	 *
+	 * @param mixed					$theValue			Properties list.
+	 * @param mixed					$theSetter			Setting object.
+	 * @return array|NULL			The provided value or <tt>NULL</tt> if empty.
+	 * @throws \RuntimeException
+	 */
+	public function SetPropertiesList( array $theValue, $theSetter )
+	{
+		//
+		// Assert setter.
+		//
+		if( $theSetter !== $this->Collection() )
+			throw new \RuntimeException (
+				"Only the current document collection " .
+				"is allowed to set the properties list." );						// !@! ==>
+
+		//
+		// Normalise list.
+		//
+		if( ! count( $theValue ) )
+			$theValue = NULL;
+
+		//
+		// Set property.
+		//
+		Container::offsetSet( $this->mCollection->PropertiesOffset(), $theValue );
+
+		return $theValue;															// ==>
+
+	} // SetPropertiesList.
+
+
 
 /*=======================================================================================
  *																						*
@@ -922,7 +964,8 @@ class Document extends Container
 	 */
 	protected function privateOffsets()
 	{
-		return [ $this->mCollection->ClassOffset() ];								// ==>
+		return [ $this->mCollection->ClassOffset(),
+				 $this->mCollection->PropertiesOffset() ];							// ==>
 
 		//
 		// In derived classes:
@@ -1147,7 +1190,7 @@ class Document extends Container
 
 		} // Traversing the document.
 
-	} // doStoreSubdocuments.
+	} // doTraverseDocument.
 
 
 	/*===================================================================================

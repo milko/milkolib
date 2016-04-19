@@ -409,7 +409,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareInsert()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
@@ -428,9 +429,8 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents and collect offsets.
 			//
-			$offsets = $theDocument->Traverse();
-			if( count( $offsets ) )
-				$theDocument[ $this->PropertiesOffset() ] = $offsets;
+			$theDocument->SetPropertiesList(
+				$theDocument->Traverse(), $this );
 
 			//
 			// Prepare document.
@@ -480,7 +480,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareInsert()
 	 * @uses triagens\ArangoDb\DocumentHandler::save()
 	 */
@@ -510,9 +511,8 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Store sub-documents.
 				//
-				$offsets = $document->Traverse();
-				if( count( $offsets ) )
-					$document[ $this->PropertiesOffset() ] = $offsets;
+				$document->SetPropertiesList(
+					$document->Traverse(), $this );
 
 				//
 				// Prepare document.
@@ -617,7 +617,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseReplacedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareReplace()
 	 * @uses triagens\ArangoDb\DocumentHandler::replaceById()
 	 */
@@ -636,11 +637,8 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents.
 			//
-			$offsets = $theDocument->Traverse();
-			if( count( $offsets ) )
-				$theDocument[ $this->PropertiesOffset() ] = $offsets;
-			else
-				$theDocument->offsetUnset( $this->PropertiesOffset() );
+			$theDocument->SetPropertiesList(
+				$theDocument->Traverse(), $this );
 
 			//
 			// Prepare document.
@@ -1545,16 +1543,16 @@ class Collection extends \Milko\PHPLib\Collection
 		}
 
 		//
+		// Get collection handler.
+		//
+		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
+
+		//
 		// Iterate handles.
 		//
 		$count = 0;
 		foreach( $handles as $collection => $keys )
 		{
-			//
-			// Get collection handler.
-			//
-			$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
 			//
 			// Remove by keys.
 			//
@@ -1620,6 +1618,45 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *							PUBLIC HANDLE PARSING INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ParseDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return handle components.</h4>
+	 *
+	 * We implement this method by assuming the handle is string with the collectionname
+	 * concatenated to the document key separated by a slash.
+	 *
+	 * @param mixed					$theHandle			The object handle.
+	 * @param string			   &$theCollection		Receives collection name.
+	 * @param mixed				   &$theIdentifier		Receives object key.
+	 */
+	public function ParseDocumentHandle( $theHandle, &$theCollection, &$theIdentifier )
+	{
+		//
+		// Parse handle.
+		//
+		$handle = explode( '/', $theHandle );
+
+		//
+		// Extract components.
+		//
+		$theCollection = $handle[ 0 ];
+		$theIdentifier = $handle[ 1 ];
+
+	} // ParseDocumentHandle.
+
+
+
+/*=======================================================================================
+ *																						*
  *						PROTECTED COLLECTION MANAGEMENT INTERFACE						*
  *																						*
  *======================================================================================*/
@@ -1665,12 +1702,7 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $handler->has( $theCollection ) )
 			return $handler->get( $theCollection );									// ==>
 
-		//
-		// Create collection.
-		//
-		$collection = $handler->create( $theCollection, $theOptions );
-
-		return $handler->get( $collection );										// ==>
+		return $handler->get( $handler->create( $theCollection, $theOptions ) );	// ==>
 
 	} // collectionCreate.
 

@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -35,6 +35,11 @@ class SRC extends \Milko\PHPLib\Document{}
 class DST extends \Milko\PHPLib\Document{}
 
 //
+// Enable exception logging.
+//
+triagens\ArangoDb\Exception::enableLogging();
+
+//
 // Instantiate connection.
 //
 echo( "Instantiate connection:\n" );
@@ -42,15 +47,15 @@ if( kENGINE == "MONGO" )
 {
 	echo( '$url = "mongodb://localhost:27017/test_milkolib";' . "\n" );
 	$url = "mongodb://localhost:27017/test_milkolib";
-	echo( '$server = new \Milko\PHPLib\MongoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\MongoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\Server( $url );
 }
 elseif( kENGINE == "ARANGO" )
 {
 	echo('$url = "tcp://localhost:8529/test_milkolib";' . "\n");
 	$url = "tcp://localhost:8529/test_milkolib";
-	echo( '$server = new \Milko\PHPLib\ArangoDB\DataServer( $url' . " );\n" );
-	$server = new \Milko\PHPLib\ArangoDB\DataServer( $url );
+	echo( '$server = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\Server( $url );
 }
 
 echo( "\n" );
@@ -68,8 +73,8 @@ echo( "\n" );
 // Instantiate nodes collection.
 //
 echo( "Instantiate nodes collection:\n" );
-echo( '$nodes = $database->RetrieveCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );' . "\n" );
-$nodes = $database->GetCollection( "nodes", Milko\PHPLib\Server::kFLAG_CREATE );
+echo( '$nodes = $database->NewCollection( "nodes" );' . "\n" );
+$nodes = $database->NewCollection( "nodes" );
 var_dump( get_class( $nodes ) );
 echo( '$nodes->Truncate();' . "\n" );
 $nodes->Truncate();
@@ -80,8 +85,8 @@ echo( "\n" );
 // Instantiate predicates collection.
 //
 echo( "Instantiate predicates collection:\n" );
-echo( '$predicates = $database->RetrieveCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );' . "\n" );
-$predicates = $database->GetCollection( "edges", Milko\PHPLib\Server::kFLAG_CREATE, [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );
+echo( '$predicates = $database->NewCollection( "edges", [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );' . "\n" );
+$predicates = $database->NewCollection( "edges", [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );
 var_dump( get_class( $predicates ) );
 echo( '$predicates->Truncate();' . "\n" );
 $predicates->Truncate();
@@ -92,26 +97,8 @@ echo( "\n=======================================================================
 // Instantiate edge.
 //
 echo( "Instantiate edge:\n" );
-try
-{
-	echo( '$edge = new Milko\PHPLib\Relation( $nodes, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );' . "\n" );
-	$edge = new Milko\PHPLib\Edge( $nodes, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );
-	echo( "FALIED! - Should have raised an exception.\n" );
-}
-catch( InvalidArgumentException $error )
-{
-	echo( "SUCCEEDED! - Has raised an exception.\n" );
-	echo( $error->getMessage() . "\n" );
-}
-
-echo( "\n" );
-
-//
-// Instantiate edge.
-//
-echo( "Instantiate edge:\n" );
-echo( '$edge = new Milko\PHPLib\Relation( $predicates, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );' . "\n" );
-$edge = new Milko\PHPLib\Edge( $predicates, [$predicates->KeyOffset() => "Predicate1", "Label" => "Predicate"] );
+echo( '$edge = new Milko\PHPLib\Edge( $predicates, [$predicates->KeyOffset() => "Predicate1", kTAG_NAME => ["en" => "Predicate"]] );' . "\n" );
+$edge = new Milko\PHPLib\Edge( $predicates, [$predicates->KeyOffset() => "Predicate1", kTAG_NAME => ["en" => "Predicate"]] );
 echo( "Class: " . get_class( $edge ) . "\n" );
 echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -229,7 +216,6 @@ echo( '$result = $edge[ $predicates->VertexSource() ] = $src;' . "\n" );
 $result = $edge[ $predicates->VertexSource() ] = $src;
 echo( '$result = $edge[ $predicates->VertexDestination() ] = $dst;' . "\n" );
 $result = $edge[ $predicates->VertexDestination() ] = $dst;
-print_r( $edge->getArrayCopy() );
 
 echo( "\n" );
 
@@ -293,8 +279,8 @@ echo( "\n=======================================================================
 // Get SRC incoming edges.
 //
 echo( "Get SRC incoming edges:\n" );
-echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN] );' . "\n" );
-$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN] );
+echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );' . "\n" );
+$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
 foreach( $result as $document )
 {
 	echo( "Class: " . get_class( $document ) . "\n" );
@@ -310,8 +296,8 @@ echo( "\n" );
 // Get SRC outgoing edges.
 //
 echo( "Get SRC outgoing edges:\n" );
-echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT] );' . "\n" );
-$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT] );
+echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );' . "\n" );
+$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
 foreach( $result as $document )
 {
 	echo( "Class: " . get_class( $document ) . "\n" );
@@ -327,8 +313,8 @@ echo( "\n" );
 // Get SRC edges.
 //
 echo( "Get SRC edges:\n" );
-echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );' . "\n" );
-$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );
+echo( '$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );' . "\n" );
+$result = $predicates->FindByVertex( $src, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
 foreach( $result as $document )
 {
 	echo( "Class: " . get_class( $document ) . "\n" );
@@ -344,8 +330,8 @@ echo( "\n=======================================================================
 // Get DST incoming edges.
 //
 echo( "Get DST incoming edges:\n" );
-echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN] );' . "\n" );
-$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN] );
+echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );' . "\n" );
+$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
 foreach( $result as $document )
 {
 	echo( "Class: " . get_class( $document ) . "\n" );
@@ -361,8 +347,8 @@ echo( "\n" );
 // Get DST outgoing edges.
 //
 echo( "Get DST outgoing edges:\n" );
-echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT] );' . "\n" );
-$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT] );
+echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );' . "\n" );
+$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_OUT, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
 foreach( $result as $document )
 {
 	echo( "Class: " . get_class( $document ) . "\n" );
@@ -378,8 +364,8 @@ echo( "\n" );
 // Get DST edges.
 //
 echo( "Get DST edges:\n" );
-echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );' . "\n" );
-$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY] );
+echo( '$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );' . "\n" );
+$result = $predicates->FindByVertex( $dst, [kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_ANY, kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT] );
 foreach( $result as $document )
 {
 	echo( "Class: " . get_class( $document ) . "\n" );

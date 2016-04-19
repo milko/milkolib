@@ -330,7 +330,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareInsert()
 	 * @uses \MongoDB\Collection::insertOne()
 	 * @uses \MongoDB\InsertOneResult::getInsertedId()
@@ -350,9 +351,8 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents and collect offsets.
 			//
-			$offsets = $theDocument->Traverse();
-			if( count( $offsets ) )
-				$theDocument[ $this->PropertiesOffset() ] = $offsets;
+			$theDocument->SetPropertiesList(
+				$theDocument->Traverse(), $this );
 
 			//
 			// Prepare document.
@@ -467,7 +467,8 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses NewDocumentNative()
 	 * @uses normaliseInsertedDocument()
 	 * @uses Document::Validate()
-	 * @uses Document::StoreSubdocuments()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
 	 * @uses Document::PrepareReplace()
 	 * @uses \MongoDB\Collection::replaceOne()
 	 */
@@ -486,11 +487,8 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Store sub-documents.
 			//
-			$offsets = $theDocument->Traverse();
-			if( count( $offsets ) )
-				$theDocument[ $this->PropertiesOffset() ] = $offsets;
-			else
-				$theDocument->offsetUnset( $this->PropertiesOffset() );
+			$theDocument->SetPropertiesList(
+				$theDocument->Traverse(), $this );
 
 			//
 			// Prepare document.
@@ -1193,6 +1191,41 @@ class Collection extends \Milko\PHPLib\Collection
 		return $result->getDeletedCount();											// ==>
 
 	} // DeleteByExample.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC HANDLE PARSING INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	ParseDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return handle components.</h4>
+	 *
+	 * We implement this method by assuming the handle is an array of two elements: the
+	 * first element contains the collection name, the second element contains the document
+	 * key.
+	 *
+	 * @param mixed					$theHandle			The object handle.
+	 * @param string			   &$theCollection		Receives collection name.
+	 * @param mixed				   &$theIdentifier		Receives object key.
+	 */
+	public function ParseDocumentHandle( $theHandle, &$theCollection, &$theIdentifier )
+	{
+		//
+		// Extract components.
+		//
+		$theCollection = $theHandle[ 0 ];
+		$theIdentifier = $theHandle[ 1 ];
+
+	} // ParseDocumentHandle.
 
 
 
