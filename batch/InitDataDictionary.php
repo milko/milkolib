@@ -18,7 +18,7 @@
 /**
  * Local environment definitions.
  */
-require_once ("defines.inc.php" );
+require_once( dirname(__DIR__) . "defines.inc.php" );
 
 //
 // Include global definitions.

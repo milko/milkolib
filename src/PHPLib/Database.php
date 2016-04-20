@@ -693,6 +693,27 @@ abstract class Database extends Container
 	} // ForgetWorkingCollection.
 
 
+	/*===================================================================================
+	 *	ForgetWorkingCollections														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Clear all working collections.</h4><p />
+	 *
+	 * This method can be used to unregister all working collections, this means removing
+	 * them from the list of working collections, not droppimg them.
+	 */
+	public function ForgetWorkingCollections()
+	{
+		//
+		// Reset internal array.
+		//
+		$empty = [];
+		$this->exchangeArray( $empty ),
+
+	} // ForgetWorkingCollections.
+
+
 
 /*=======================================================================================
  *																						*
