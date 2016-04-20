@@ -92,5 +92,19 @@ const kTAG_MONGO_REL_TO = '_to';
  */
 const kTAG_MONGO_TERMS = '_terms';
 
+/**
+ * <h4>Default descriptors collection.</h4><p />
+ *
+ * This defines the default descriptors collection name.
+ */
+const kTAG_MONGO_DESCRIPTORS = '_descriptors';
+
+/**
+ * <h4>Default resources collection.</h4><p />
+ *
+ * This defines the default resources collection name.
+ */
+const kTAG_MONGO_RESOURCES = '_resources';
+
 
 ?>

@@ -873,10 +873,14 @@ class Document extends Container
 	 * This method will prepare the document before it should be inserted, the method
 	 * expects the document to be valid and all references resolved.
 	 *
-	 * In this class we do nothing, in derived classes you may overload this method to
-	 * perform custom operations.
+	 * In this class we set the creation time stamp, in derived classes you may overload
+	 * this method to perform custom operations.
 	 */
-	public function PrepareInsert()													   {}
+	public function PrepareInsert()
+	{
+		$this->offsetSet( kTAG_CREATION, microtime( TRUE ) );
+
+	} // PrepareInsert.
 
 
 	/*===================================================================================
@@ -889,10 +893,14 @@ class Document extends Container
 	 * This method will prepare the document before it should be replaced, the method
 	 * expects the document to be valid and all references resolved.
 	 *
-	 * In this class we do nothing, in derived classes you may overload this method to
-	 * perform custom operations.
+	 * In this class we set the modification time stamp, in derived classes you may overload
+	 * this method to perform custom operations.
 	 */
-	public function PrepareReplace()												   {}
+	public function PrepareReplace()
+	{
+		$this->offsetSet( kTAG_MODIFICATION, microtime( TRUE ) );
+
+	} // PrepareReplace.
 
 
 	/*===================================================================================

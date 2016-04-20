@@ -24,6 +24,7 @@ require_once( 'tokens.inc.php' );
  *																						*
  *======================================================================================*/
 
+use Milko\PHPLib\MongoDB\Edges;
 use Milko\PHPLib\Server;
 use Milko\PHPLib\Collection;
 
@@ -112,6 +113,16 @@ abstract class Database extends Container
 	 * @var mixed
 	 */
 	protected $mConnection = NULL;
+
+	/**
+	 * <h4>Wrapper cache.</h4>
+	 *
+	 * This data member holds the <i>wrapper cache</i>, it is the memcached instance serving
+	 * as global cache.
+	 *
+	 * @var \Memcached
+	 */
+	protected $mCache = NULL;
 
 
 
@@ -329,20 +340,16 @@ abstract class Database extends Container
 	 * If the server is not connected, the connection will be opened automatically.
 	 *
 	 * @param string				$theCollection		Collection name.
-	 * @param array					$theOptions			Collection native options.
+	 * @param array					$theOptions			Collection options.
 	 * @return Collection			Collection object.
 	 *
 	 * @uses GetCollection()
 	 * @uses collectionCreate()
 	 */
-	public function NewCollection( $theCollection, $theOptions = NULL )
+	public function NewCollection(
+		$theCollection,
+		array $theOptions = [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_DOC] )
 	{
-		//
-		// Normalise options.
-		//
-		if( $theOptions === NULL )
-			$theOptions = [ kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_DOC ];
-
 		//
 		// Check existing collection.
 		//
@@ -359,6 +366,107 @@ abstract class Database extends Container
 		return $collection;															// ==>
 
 	} // NewCollection.
+
+
+	/*===================================================================================
+	 *	NewEdgesCollection																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create an edges collection object.</h4>
+	 *
+	 * This method can be used to create a collection object that stores edges, it features
+	 * a single parameter that contains the requested collection name.
+	 *
+	 * If the collection already exists, it will be returned, if not, it will be created and
+	 * added to the working collections of the database which are stored in the object's
+	 * inherited array object.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @param string				$theCollection		Collection name.
+	 * @param array					$theOptions			Collection options.
+	 * @return Edges				Collection object.
+	 *
+	 * @uses NewCollection()
+	 */
+	public function NewEdgesCollection( $theCollection )
+	{
+		//
+		// Set options.
+		//
+		$options = [ kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE ];
+
+		return $this->NewCollection( $theCollection, $options );					// ==>
+
+	} // NewEdgesCollection.
+
+
+	/*===================================================================================
+	 *	NewTermsCollection																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a terms collection object.</h4>
+	 *
+	 * This method can be used to create a collection object that stores terms, term
+	 * collections are of the {@link kTOKEN_OPT_COLLECTION_TYPE_DOC} type and feature a
+	 * default name which is dependent on the native database driver; for this reason the
+	 * method is virtual.
+	 *
+	 * If the collection already exists, it will be returned, if not, it will be created and
+	 * added to the working collections of the database which are stored in the object's
+	 * inherited array object.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	abstract public function NewTermsCollection();
+
+
+	/*===================================================================================
+	 *	NewDescriptorsCollection														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a descriptors collection object.</h4>
+	 *
+	 * This method can be used to create a collection object that stores descriptors,
+	 * descriptor collections are of the {@link kTOKEN_OPT_COLLECTION_TYPE_DOC} type and
+	 * feature a default name which is dependent on the native database driver; for this
+	 * reason the method is virtual.
+	 *
+	 * If the collection already exists, it will be returned, if not, it will be created and
+	 * added to the working collections of the database which are stored in the object's
+	 * inherited array object.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	abstract public function NewDescriptorsCollection();
+
+
+	/*===================================================================================
+	 *	NewResourcesCollection															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a resources collection object.</h4>
+	 *
+	 * This method can be used to create a collection object that stores resources, this
+	 * collection will store data such as the current collection serial numbers.
+	 *
+	 * If the collection already exists, it will be returned, if not, it will be created and
+	 * added to the working collections of the database which are stored in the object's
+	 * inherited array object.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	abstract public function NewResourcesCollection();
 
 
 	/*===================================================================================
@@ -486,9 +594,9 @@ abstract class Database extends Container
 	/**
 	 * <h4>Return the server list of databases.</h4><p />
 	 *
-	 * This method can be used to retrieve the list of database names present on the server,
-	 * the method features a parameter that represents driver native options: this parameter
-	 * should be used to retrieve by default only the user databases.
+	 * This method can be used to retrieve the list of collection names present on the
+	 * database, the method features a parameter that represents driver native options: this
+	 * parameter should be used to retrieve by default only the user databases.
 	 *
 	 * If the server is not connected, the connection will be opened automatically.
 	 *
@@ -583,6 +691,113 @@ abstract class Database extends Container
 		return NULL;																// ==>
 
 	} // ForgetWorkingCollection.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC INITIALISATION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	InitWrapper																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Initialise the wrapper.</h4><p />
+	 *
+	 * This method can be used to initialise the database and wrapper, it will load the
+	 * data dictionary and initialise all necessary resources.
+	 *
+	 * The provided parameter is a boolean flag which determines whether to erase all data
+	 * prior to finalising the initialisation: if you provide <tt>TRUE</tt>, all data in the
+	 * database <em>will be erased</em>, so use with care.
+	 *
+	 * @param bool					$doErase			Initialise data.
+	 */
+	public function InitWrapper( $doErase = FALSE )
+	{
+		//
+		// Check if inited.
+		//
+		if( $this->mCache === NULL )
+		{
+			//
+			// Init resource.
+			//
+			$this->mCache = new \Memcached( kSESSION_CACHE_ID );
+
+			//
+			// Init cache.
+			//
+			if( ! count( $this->mCache->getServerList() ) )
+			{
+				//
+				// Set default server.
+				//
+				$result = $this->mCache->addServer( kSESSION_CACHE_HOST, kSESSION_CACHE_PORT );
+				if( $result === FALSE )
+				{
+					$code = $this->mCache->getResultCode();
+					$message = $this->mCache->getResultMessage();
+					throw new \RuntimeException( $message, $code );				// !@! ==>
+
+				} // Failed.
+
+			} // Not initialised.
+
+			//
+			// Flush cache.
+			//
+			if( $doErase )
+			{
+				$result = $this->mCache->flush();
+				if( $result === FALSE )
+				{
+					$code = $this->mCache->getResultCode();
+					$message = $this->mCache->getResultMessage();
+					throw new \Exception( $message, $code );					// !@! ==>
+
+				} // Failed.
+			}
+
+			//
+			// Erase database.
+			//
+			if( $doErase )
+			{
+				$server = $this->Server();
+				$name = $this->databaseName();
+				$this->Drop();
+				$this->mConnection = $this->databaseCreate( $name );
+			}
+
+			//
+			// Create or get default collections.
+			//
+			$terms = $this->NewTermsCollection();
+			$resources = $this->NewResourcesCollection();
+			$descriptors = $this->NewDescriptorsCollection();
+
+			//
+			// Initialise serial counters.
+			//
+			if( $doErase )
+			{
+				$resources->Insert(
+					[ $resources->KeyOffset() => (string)$terms, 'serial' => 1 ]
+				);
+				$resources->Insert(
+					[ $resources->KeyOffset() => (string)$descriptors, 'serial' => 1 ]
+				);
+			}
+
+		} // Cache not yet initialised.
+
+	} // InitWrapper.
 
 
 

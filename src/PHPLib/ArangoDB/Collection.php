@@ -385,6 +385,110 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *						PUBLIC TIMESTAMP MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	NewTimestamp																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a native time stamp.</h4>
+	 *
+	 * We implement this method by making an AQL statement which calls the
+	 * <tt>DATE_NOW()</tt> function.
+	 *
+	 * @param int					$theTimeStamp		Milliseconds.
+	 * @return mixed				Time stamp in native format.
+	 */
+	public function NewTimestamp( $theTimeStamp = NULL )
+	{
+		//
+		// Handle provided time stamp.
+		//
+		if( $theTimeStamp !== NULL )
+		{
+			//
+			// Cast timestamp.
+			//
+			$theTimeStamp = (int)$theTimeStamp;
+
+			//
+			// Set filter.
+			//
+			$filter = [ 'query' => "RETURN DATE_TIMESTAMP($theTimeStamp)" ];
+		}
+
+		//
+		// Handle current time stamp.
+		//
+		else
+			$filter = [ 'query' => 'RETURN DATE_NOW()' ];
+
+		//
+		// Create statement.
+		//
+		$statement = new ArangoStatement( $this->mDatabase->Connection(), $filter );
+
+		//
+		// Execute statement.
+		//
+		$result = $statement->execute();
+
+		//
+		// Return first element.
+		//
+		foreach( $result as $element )
+			return $element;														// ==>
+
+	} // NewTimestamp.
+
+
+	/*===================================================================================
+	 *	GetTimestamp																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return an ISO date from a timestamp.</h4>
+	 *
+	 * We implement this method by converting the time stamp into a {@link \DateTime}
+	 * object and returning the following format: <tt>"Y-m-d\TH:i:s.uP"</tt>.
+	 *
+	 * @param mixed					$theTimeStamp		Native time stamp.
+	 * @return string				ISO 8601 date.
+	 */
+	public function GetTimestamp( $theTimeStamp )
+	{
+		//
+		// Init query.
+		//
+		$filter = [ 'query' => "RETURN DATE_ISO8601($theTimeStamp)" ];
+
+		//
+		// Create statement.
+		//
+		$statement = new ArangoStatement( $this->mDatabase->Connection(), $filter );
+
+		//
+		// Execute statement.
+		//
+		$result = $statement->execute();
+
+		//
+		// Return first element.
+		//
+		foreach( $result as $element )
+			return $element;														// ==>
+
+	} // GetTimestamp.
+
+
+
+/*=======================================================================================
+ *																						*
  *								PUBLIC INSERTION INTERFACE								*
  *																						*
  *======================================================================================*/
@@ -735,6 +839,11 @@ class Collection extends \Milko\PHPLib\Collection
 					'bindVars' => [ '@collection' => $this->collectionName() ] ];
 
 		//
+		// Normalise criteria.
+		//
+		$theCriteria[ kTAG_MODIFICATION ] = microtime( TRUE );
+
+		//
 		// Select documents.
 		//
 		$statement = new ArangoStatement( $this->mDatabase->Connection(), $theFilter );
@@ -808,6 +917,11 @@ class Collection extends \Milko\PHPLib\Collection
 									 array $theDocument,
 									 array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
 	{
+		//
+		// Normalise criteria.
+		//
+		$theCriteria[ kTAG_MODIFICATION ] = microtime( TRUE );
+
 		//
 		// Normalise document.
 		//

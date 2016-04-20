@@ -138,6 +138,14 @@ const kTYPE_REF_SELF = ':type:ref-self';
  */
 const kTYPE_REF_TERM = ':type:ref-term';
 
+/**
+ * <h4>Descriptor reference.</h4><p />
+ *
+ * This type indicates that the property references a descriptor object, the value will
+ * contain the key of the referenced descriptor.
+ */
+const kTYPE_REF_DESCRIPTOR = ':type:ref-descr';
+
 /*=======================================================================================
  *	LOCALISED TYPES																		*
  *======================================================================================*/

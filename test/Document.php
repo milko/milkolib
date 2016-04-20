@@ -95,8 +95,8 @@ echo( "\n" );
 // Instantiate document.
 //
 echo( "Instantiate document:\n" );
-echo( '$document = new Milko\PHPLib\Document( $collection, $container );' . "\n" );
-$document = new Milko\PHPLib\Document( $collection, $container );
+echo( '$document = new Milko\PHPLib\Document( $collection, $container->getArrayCopy() );' . "\n" );
+$document = new Milko\PHPLib\Document( $collection, $container->getArrayCopy() );
 echo( "Class: " . get_class( $document ) . "\n" );
 echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -109,8 +109,8 @@ echo( "\n" );
 // Instantiate A.
 //
 echo( "Instantiate A:\n" );
-echo( '$A = new A( $collection, $container );' . "\n" );
-$A = new A( $collection, $container );
+echo( '$A = new A( $collection, $container->getArrayCopy() );' . "\n" );
+$A = new A( $collection, $container->getArrayCopy() );
 echo( "Class: " . get_class( $A ) . "\n" );
 echo( "Modified:   " . (( $A->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $A->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -123,8 +123,8 @@ echo( "\n" );
 // Instantiate B.
 //
 echo( "Instantiate B:\n" );
-echo( '$B = new B( $collection, $A );' . "\n" );
-$B = new B( $collection, $A );
+echo( '$B = new B( $collection, $A->getArrayCopy() );' . "\n" );
+$B = new B( $collection, $A->getArrayCopy() );
 echo( "Class: " . get_class( $B ) . "\n" );
 echo( "Modified:   " . (( $B->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $B->IsPersistent() ) ? "Yes\n" : "No\n") );

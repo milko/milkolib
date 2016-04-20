@@ -32,22 +32,24 @@
 /**
  * <h4>Creation stamp.</h4><p />
  *
- * The property holds the object's <em>creation time stamp</em>.
+ * The property holds the object's <em>creation time stamp</em> expressed as the result of
+ * the {@link microtime()} function as float.
  *
- * Type: <tt>{@link kTYPE_TIMESTAMP}</tt>.
- * Kind: <tt>{@link kKIND_DISCRETE}</tt>
+ * Type: <tt>{@link kTYPE_FLOAT}</tt>.
+ * Kind: <tt>{@link kKIND_DISCRETE}}</tt>
  */
-const kTAG_CREATION			= '@8';
+const kTAG_CREATION			= 'created';
 
 /**
  * <h4>Modification stamp.</h4><p />
  *
- * The property holds the object's <em>modification time stamp</em>.
+ * The property holds the object's <em>modification time stamp</em> expressed as the result
+ * of the {@link microtime()} function as float.
  *
- * Type: <tt>{@link kTYPE_TIMESTAMP}</tt>.
+ * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_MODIFICATION		= '@9';
+const kTAG_MODIFICATION		= 'modified';
 
 /*=======================================================================================
  *	TERM PROPERTIES																		*
@@ -62,7 +64,7 @@ const kTAG_MODIFICATION		= '@9';
  * Type: <tt>{@link kTYPE_STRING}</tt>
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_NS				= '@1';
+const kTAG_NS				= 'ns';
 
 /**
  * <h4>Local identifier.</h4><p />
@@ -73,7 +75,7 @@ const kTAG_NS				= '@1';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE} {@link kKIND_REQUIRED}</tt>
  */
-const kTAG_LID				= '@2';
+const kTAG_LID				= 'lid';
 
 /**
  * <h4>Global identifier.</h4><p />
@@ -88,31 +90,7 @@ const kTAG_LID				= '@2';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE} {@link kKIND_REQUIRED}</tt>
  */
-const kTAG_GID				= '@3';
-
-/**
- * <h4>Type.</h4><p />
- *
- * The property holds an <em>enumerated set of values</em> belonging to a controlled
- * vocabulary which <em>defines the type of the object</em>, it should describe the
- * <em>nature</em> of the object.
- *
- * Type: <tt>{@link kTYPE_ENUM}</tt>.
- * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
- */
-const kTAG_TYPE				= '@4';
-
-/**
- * <h4>Kind.</h4><p />
- *
- * The property holds an <em>enumerated set of values</em> belonging to a controlled
- * vocabulary which <em>defines the function of the object</em>, it should describe the
- * <em>kind<em> of object.
- *
- * Type: <tt>{@link kTYPE_ENUM_SET}</tt>.
- * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
- */
-const kTAG_KIND				= '@5';
+const kTAG_GID				= 'gid';
 
 /**
  * <h4>Name.</h4><p />
@@ -127,7 +105,7 @@ const kTAG_KIND				= '@5';
  * Type: <tt>{@link kTYPE_LANG_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE} {@link kKIND_LOOKUP} {@link kKIND_REQUIRED}</tt>.
  */
-const kTAG_NAME				= '@6';
+const kTAG_NAME				= 'name';
 
 /**
  * <h4>Description.</h4><p />
@@ -138,7 +116,7 @@ const kTAG_NAME				= '@6';
  * Type: <tt>{@link kTYPE_LANG_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_DESCRIPTION		= '@7';
+const kTAG_DESCRIPTION		= 'descr';
 
 /*=======================================================================================
  *	DESCRIPTOR PROPERTIES																*
@@ -153,7 +131,7 @@ const kTAG_DESCRIPTION		= '@7';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_SYMBOL			= '@A';
+const kTAG_SYMBOL			= 'symbol';
 
 /**
  * <h4>Synonyms.</h4><p />
@@ -164,7 +142,31 @@ const kTAG_SYMBOL			= '@A';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_LIST}</tt>
  */
-const kTAG_SYNONYMS			= '@B';
+const kTAG_SYNONYMS			= 'synonyms';
+
+/**
+ * <h4>Type.</h4><p />
+ *
+ * The property holds an <em>enumerated set of values</em> belonging to a controlled
+ * vocabulary which <em>defines the type of the object</em>, it should describe the
+ * <em>nature</em> of the object.
+ *
+ * Type: <tt>{@link kTYPE_ENUM}</tt>.
+ * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
+ */
+const kTAG_TYPE				= 'type';
+
+/**
+ * <h4>Kind.</h4><p />
+ *
+ * The property holds an <em>enumerated set of values</em> belonging to a controlled
+ * vocabulary which <em>defines the function of the object</em>, it should describe the
+ * <em>kind<em> of object.
+ *
+ * Type: <tt>{@link kTYPE_ENUM_SET}</tt>.
+ * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
+ */
+const kTAG_KIND				= 'kind';
 
 /**
  * <h4>Reference count.</h4><p />
@@ -174,9 +176,9 @@ const kTAG_SYNONYMS			= '@B';
  * value is greater than <tt>0</tt>.
  *
  * Type: <tt>{@link kTYPE_INT}</tt>.
- * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
+ * Kind: <tt>{@link kKIND_QUANTITATIVE} {@link kKIND_PRIVATE_MODIFY}</tt>
  */
-const kTAG_REF_COUNT		= '@C';
+const kTAG_REF_COUNT		= 'ref-count';
 
 /**
  * <h4>Minimum value.</h4><p />
@@ -187,7 +189,7 @@ const kTAG_REF_COUNT		= '@C';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
-const kTAG_MIN_VAL			= '@D';
+const kTAG_MIN_VAL			= 'min';
 
 /**
  * <h4>Maximum value.</h4><p />
@@ -198,7 +200,7 @@ const kTAG_MIN_VAL			= '@D';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
-const kTAG_MAX_VAL			= '@E';
+const kTAG_MAX_VAL			= 'max';
 
 /**
  * <h4>Pattern.</h4><p />
@@ -209,7 +211,7 @@ const kTAG_MAX_VAL			= '@E';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_PATTERN			= '@F';
+const kTAG_PATTERN			= 'pattern';
 
 /**
  * <h4>Minimum expected value.</h4><p />
@@ -220,7 +222,7 @@ const kTAG_PATTERN			= '@F';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
-const kTAG_MIN_VAL_EXPECTED	= '@10';
+const kTAG_MIN_VAL_EXPECTED	= 'low';
 
 /**
  * <h4>Maximum expected value.</h4><p />
@@ -231,18 +233,7 @@ const kTAG_MIN_VAL_EXPECTED	= '@10';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
-const kTAG_MAX_VAL_EXPECTED	= '@11';
-
-/*=======================================================================================
- *	AVAILABLE PROPERTIES																*
- *======================================================================================*/
-
-/**
- * <h4>Available serial identifier.</h4><p />
- *
- * This value holds the next available serial identifier for client defined descriptors.
- */
-const kNEXT_TAG = 100;
+const kTAG_MAX_VAL_EXPECTED	= 'high';
 
 
 ?>

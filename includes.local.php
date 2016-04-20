@@ -30,7 +30,33 @@
  *
  * This defines the library root directory.
  */
-define( 'kPATH_LIBRARY_ROOT', __DIR__ . DIRECTORY_SEPARATOR);
+define( 'kPATH_LIBRARY_ROOT', __DIR__ . DIRECTORY_SEPARATOR );
+
+/*=======================================================================================
+ *	MEMCACHED DEFINITIONS																*
+ * Modify these definition if necessary.												*
+ *======================================================================================*/
+
+/**
+ * <h4>Memcached persistent ID.</h4><p />
+ *
+ * This defines the the memcached persistent ID.
+ */
+define( 'kSESSION_CACHE_ID', 'wrapper' );
+
+/**
+ * <h4>Memcached default host.</h4><p />
+ *
+ * This defines the the memcached default host.
+ */
+define( 'kSESSION_CACHE_HOST', 'localhost' );
+
+/**
+ * <h4>Memcached default port.</h4><p />
+ *
+ * This defines the the memcached default port.
+ */
+define( 'kSESSION_CACHE_PORT', 11211 );
 
 /*=======================================================================================
  *	AUTOLOAD																			*

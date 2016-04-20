@@ -1,14 +1,12 @@
 <?php
 
 /**
- * Data server object test suite.
+ * Document object test suite.
  *
- * This test suite will use a ficticious test class, to perform more in depth test use the
- * concrete classes derived from DataServer.
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
- *	@since		18/02/2016
+ *	@since		17/03/2016
  */
 
 //
@@ -31,145 +29,63 @@ elseif( kENGINE == "ARANGO" )
 require_once( "functions.php" );
 
 //
-// Enable exception logging.
+// Reference class.
 //
-//ArangoException::enableLogging();
+use Milko\PHPLib\MongoDB\Document;
+use Milko\PHPLib\MongoDB\Collection;
 
 //
 // Instantiate object.
 //
 if( kENGINE == "MONGO" )
 {
-	echo( '$test = new \Milko\PHPLib\MongoDB\Server();' . "\n" );
-	$test = new \Milko\PHPLib\MongoDB\Server();
-	echo( '$result = (string)$test;' . "\n" );
-	echo( (string)$test . ' ==> ' );
-	echo( ( "$test" == kMONGO_OPTS_CLIENT_DEFAULT ) ? "OK\n" : "FALIED\n" );
+	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
+	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
+	echo( '$server = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\MongoDB\Server( $url );
 }
 elseif( kENGINE == "ARANGO" )
 {
-	echo( '$test = new \Milko\PHPLib\ArangoDB\Server();' . "\n" );
-	$test = new \Milko\PHPLib\ArangoDB\Server();
-	echo( '$result = (string)$test;' . "\n" );
-	echo( (string)$test . ' ==> ' );
-	echo( ( "$test" == kARANGO_OPTS_CLIENT_DEFAULT ) ? "OK\n" : "FALIED\n" );
+	echo('$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n");
+	$url = "tcp://localhost:8529/test_milkolib/test_collection";
+	echo( '$server = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
+	$server = new \Milko\PHPLib\ArangoDB\Server( $url );
 }
-
-echo( "\n" );
-
-//
-// Instantiate object.
-//
-if( kENGINE == "MONGO" )
-{
-	echo( '$url = "mongodb://localhost:27017/test_milkolib";' . "\n" );
-	$url = "mongodb://localhost:27017/test_milkolib";
-	echo( '$test = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
-	$test = new \Milko\PHPLib\MongoDB\Server( $url );
-	echo( '$result = (string)$test;' . "\n" );
-	echo( (string)$test . " ==> " );
-	echo( ( "$test" == $url ) ? "OK\n" : "FALIED\n" );
-}
-elseif( kENGINE == "ARANGO" )
-{
-	echo( '$url = "tcp://localhost:8529/test_milkolib";' . "\n" );
-	$url = "tcp://localhost:8529/test_milkolib";
-	echo( '$test = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
-	$test = new \Milko\PHPLib\ArangoDB\Server( $url );
-	echo( '$result = (string)$test;' . "\n" );
-	echo( (string)$test . " ==> " );
-	echo( ( "$test" == $url ) ? "OK\n" : "FALIED\n" );
-}
-exit;
+echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
+$database = $server->GetDatabase( "test_milkolib" );
+echo( '$collection = $database->RetrieveCollection( "test_collection" );' . "\n" );
+$collection = $database->GetCollection( "test_collection" );
+echo( '$collection->Truncate();' . "\n" );
+$collection->Truncate();
 
 echo( "\n====================================================================================\n\n" );
 
 //
-// List server databases.
+// Set timestamp.
 //
-echo( "List databases:\n" );
-echo( '$list = $test->ListDatabases();' . "\n" );
-$list = $test->ListDatabases();
-print_r( $list );
+echo( "Set timestamp:\n" );
+echo( '$result = $collection->NewTimestamp();' . "\n" );
+$result = $collection->NewTimestamp();
+var_dump( $result );
 
 echo( "\n" );
 
 //
-// List working databases.
+// Get timestamp.
 //
-echo( "List databases:\n" );
-echo( '$list = $test->WorkingDatabases();' . "\n" );
-$list = $test->WorkingDatabases();
-print_r( $list );
+echo( "Get timestamp:\n" );
+echo( '$result = $collection->GetTimestamp( $result );' . "\n" );
+$result = $collection->GetTimestamp( $result );
+var_dump( $result );
 
 echo( "\n====================================================================================\n\n" );
 
 //
-// Retrieve database.
+// Init wrapper.
 //
-echo( "Retrieve database:\n" );
-echo( '$db = $test->RetrieveDatabase( "test_milkolib", \Milko\PHPLib\Server::kFLAG_DEFAULT );' . "\n" );
-$db = $test->RetrieveDatabase( "test_milkolib", \Milko\PHPLib\Server::kFLAG_DEFAULT );
-echo( get_class( $db ) . "\n" );
-echo( "$db ==> " );
-echo( ( "$db" == "test_milkolib" ) ? "OK\n" : "FALIED\n" );
-
-echo( "\n" );
-
-//
-// Retrieve non existing database.
-//
-echo( "Retrieve non existing database:\n" );
-echo( '$db = $test->RetrieveDatabase( "UNKNOWN", \Milko\PHPLib\Server::kFLAG_DEFAULT );' . "\n" );
-$db = $test->RetrieveDatabase( "UNKNOWN", \Milko\PHPLib\Server::kFLAG_DEFAULT );
-var_dump( $db );
-echo( "$db ==> " );
-echo( ( $db === NULL ) ? "OK\n" : "FALIED\n" );
-
-echo( "\n====================================================================================\n\n" );
-
-//
-// Create database.
-//
-echo( "Create database:\n" );
-echo( '$db = $test->RetrieveDatabase( "NewDB" );' . "\n" );
-$db = $test->RetrieveDatabase( "NewDB" );
-echo( '$list = $test->ListDatabases();' . "\n" );
-$list = $test->ListDatabases();
-print_r( $list );
-echo( '$list = $test->WorkingDatabases();' . "\n" );
-$list = $test->WorkingDatabases();
-print_r( $list );
-
-echo( "\n" );
-
-//
-// Forget database.
-//
-echo( "Forget database:\n" );
-echo( '$db = $test->ForgetDatabase( "NewDB" );' . "\n" );
-$db = $test->ForgetDatabase( "NewDB" );
-echo( '$list = $test->ListDatabases();' . "\n" );
-$list = $test->ListDatabases();
-print_r( $list );
-echo( '$list = $test->WorkingDatabases();' . "\n" );
-$list = $test->WorkingDatabases();
-print_r( $list );
-
-echo( "\n" );
-
-//
-// Drop database.
-//
-echo( "Drop database:\n" );
-echo( '$db = $test->DropDatabase( "test_milkolib" );' . "\n" );
-$db = $test->DropDatabase( "test_milkolib" );
-echo( '$list = $test->ListDatabases();' . "\n" );
-$list = $test->ListDatabases();
-print_r( $list );
-echo( '$list = $test->WorkingDatabases();' . "\n" );
-$list = $test->WorkingDatabases();
-print_r( $list );
+echo( "Init wrapper:\n" );
+echo( '$database->InitWrapper( TRUE );' . "\n" );
+$database->InitWrapper( TRUE );
 
 
 ?>

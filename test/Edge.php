@@ -85,8 +85,8 @@ echo( "\n" );
 // Instantiate predicates collection.
 //
 echo( "Instantiate predicates collection:\n" );
-echo( '$predicates = $database->NewCollection( "edges", [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );' . "\n" );
-$predicates = $database->NewCollection( "edges", [kTOKEN_OPT_COLLECTION_TYPE => kTOKEN_OPT_COLLECTION_TYPE_EDGE] );
+echo( '$predicates = $database->NewEdgesCollection( "edges" );' . "\n" );
+$predicates = $database->NewEdgesCollection( "edges" );
 var_dump( get_class( $predicates ) );
 echo( '$predicates->Truncate();' . "\n" );
 $predicates->Truncate();

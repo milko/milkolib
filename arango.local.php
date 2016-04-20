@@ -120,11 +120,25 @@ const kTAG_ARANGO_REL_TO = '_to';
  *======================================================================================*/
 
 /**
- * <h4>Default term collection.</h4><p />
+ * <h4>Default terms collection.</h4><p />
  *
  * This defines the default terms collection name.
  */
 const kTAG_ARANGO_TERMS = 'terms';
+
+/**
+ * <h4>Default descriptors collection.</h4><p />
+ *
+ * This defines the default descriptors collection name.
+ */
+const kTAG_ARANGO_DESCRIPTORS = 'descriptors';
+
+/**
+ * <h4>Default resources collection.</h4><p />
+ *
+ * This defines the default resources collection name.
+ */
+const kTAG_ARANGO_RESOURCES = 'resources';
 
 
 ?>

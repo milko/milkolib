@@ -17,6 +17,7 @@ namespace Milko\PHPLib\MongoDB;
 use Milko\PHPLib\Document;
 use Milko\PHPLib\MongoDB\Database;
 
+use MongoDB\BSON\UTCDatetime;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 
@@ -308,6 +309,74 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *						PUBLIC TIMESTAMP MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	NewTimestamp																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a native time stamp.</h4>
+	 *
+	 * We implement this method by instantiating a {@link UTCDatetime} object with the
+	 * current <em>milliseconds</em>.
+	 *
+	 * @param int					$theTimeStamp		Milliseconds.
+	 * @return mixed				Time stamp in native format.
+	 */
+	public function NewTimestamp( $theTimeStamp = NULL )
+	{
+		return ( $theTimeStamp === NULL )
+			 ? UTCDatetime( (int)(microtime( TRUE ) * 1000) )						// ==>
+			 : UTCDatetime( (int)$theTimeStamp );									// ==>
+
+	} // NewTimestamp.
+
+
+	/*===================================================================================
+	 *	GetTimestamp																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return an ISO date from a timestamp.</h4>
+	 *
+	 * We implement this method by converting the time stamp into a {@link \DateTime}
+	 * object and returning the following format: <tt>"Y-m-d\TH:i:s.u\\Z"</tt>.
+	 *
+	 * Note that we round the fractional seconds value to the nearest millisecond.
+	 *
+	 * @param mixed					$theTimeStamp		Native time stamp.
+	 * @return string				ISO 8601 date.
+	 */
+	public function GetTimestamp( $theTimeStamp )
+	{
+		//
+		// Convert to date time.
+		//
+		$date = $theTimeStamp->toDateTime();
+
+		//
+		// Round to milliseconds.
+		//
+		$milli = (int)(((double)$date->format( "u" )) / 1000000);
+
+		//
+		// Build date with seconds.
+		//
+		$string = $date->format( "Y-m-d\TH:i:s" );
+
+		return $string . '.' . $milli . "Z";										// ==>
+
+	} // GetTimestamp.
+
+
+
+/*=======================================================================================
+ *																						*
  *								PUBLIC INSERTION INTERFACE								*
  *																						*
  *======================================================================================*/
@@ -547,7 +616,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Cursor::getModifiedCount()
 	 */
 	public function Update( array $theCriteria,
-							$theFilter = NULL,
+								  $theFilter = NULL,
 							array $theOptions = [ kTOKEN_OPT_MANY => TRUE ] )
 	{
 		//
@@ -555,6 +624,11 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		if( $theFilter === NULL )
 			$theFilter = [];
+
+		//
+		// Normalise criteria.
+		//
+		$theCriteria[ '$set' ][ kTAG_MODIFICATION ] = microtime( TRUE );
 
 		//
 		// Update all documents.

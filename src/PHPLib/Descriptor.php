@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Term.php
+ * Descriptor.php
  *
  * This file contains the definition of the {@link Term} class.
  */
@@ -10,48 +10,139 @@ namespace Milko\PHPLib;
 
 /*=======================================================================================
  *																						*
- *										Term.php										*
+ *									Descriptor.php										*
  *																						*
  *======================================================================================*/
 
-use Milko\PHPLib\Document;
+use Milko\PHPLib\Term;
 
 /**
- * <h4>Term object.</h4>
+ * <h4>Descriptor object.</h4>
  *
- * This class implements an object that represents a concept or term, it is the ancestor of
- * all objects involved in the data dictionary and ontology.
+ * This class implements an object that represents a variable or descriptor, objects of this
+ * kind serve the purpose of defining and describing a data type or data variable.
  *
- * Objects of this class feature the following properties:
+ * The class derives from {@link Term}, descriptors are identified by a global identifier
+ * and feature a name and description; the specific functionality of descriptors is
+ * implemented with the following additional properties:
  *
  * <ul>
- * 	<li><tt>{@link kTAG_NS}</tt>: This represents the term <em>namespace</em>, it is the
- * 		document key of the term which is the current term's namespace. In this class if you
- * 		set a term object in this offset, its key will be extracted and set: the object will
- * 		not be committed when the current term is stored.
+ * 	<li><tt>{@link kTAG_SYMBOL}</tt>: This represents the descriptor <em>symbol</em>, it is
+ * 		the token by which values of that descriptor may be tagged in a dataset. This value
+ * 		should be unique at least within the datasets in which it is used; the value is used
+ * 		in place of the global identifier, because the latter may contain characters not
+ * 		allowed in field names, for that reason you should carefully choose a code which is:
+ *   <ul>
+ * 		<li>Mnemonic, so that humans may recognise the descriptor.
+ * 		<li>Short, so that it will not exceed variable name limits.
+ * 		<li>Unique, so that descriptors may be used in the same dataset.
+ *   </ul>
+ * 		<em>This property is required</em>.
+ * 	<li><tt>{@link kTAG_SYNONYMS}</tt>: This represents the <em>list of synonyms</em> of the
+ * 		descriptor, it is an array of strings holding the different symbols that represent
+ * 		the descriptor in different datasets. The synonyms in this list should not be used
+ * 		in active descriptors: in that case a synonym descriptor should point to its master
+ * 		descriptor with a graph relationship.
  * 		<em>This property is optional</em>.
- * 	<li><tt>{@link kTAG_LID}</tt>: This represents the term <em>local identifier</em>, it is
- * 		a string code that uniquely identifies the term among all terms belonging to its
- * 		namespace.
+ * 	 <li><tt>{@link kTAG_TYPE}</tt>: This represents the descriptor <em>data type</em>, it
+ * 		essentially defines the common format for all values of that descriptor, it is
+ * 		expressed as an enumerated value of the following:
+ *    <ul>
+ * 		<li>Primitives:
+ * 		 <ul>
+ * 			<li><tt>{@link kTYPE_MIXED}</tt>: Mixed data type.
+ * 			<li><tt>{@link kTYPE_STRING}</tt>: A string or text.
+ * 			<li><tt>{@link kTYPE_INT}</tt>: An integer number.
+ * 			<li><tt>{@link kTYPE_FLOAT}</tt>: A floating point number.
+ * 			<li><tt>{@link kTYPE_BOOLEAN}</tt>: A boolean switch.
+ * 		 </ul>
+ * 		<li>Native types:
+ * 		 <ul>
+ * 			<li><tt>{@link kTYPE_DATE}</tt>: A date in the database native type.
+ * 			<li><tt>{@link kTYPE_TIMESTAMP}</tt>: A time stamp in the database native type.
+ * 		 </ul>
+ * 		<li>Derived types:
+ * 		 <ul>
+ * 			<li><tt>{@link kTYPE_URL}</tt>: A string containing an URL.
+ * 			<li><tt>{@link kTYPE_STRING_DATE}</tt>: A date as <tt>YYYYMMDD</tt>.
+ * 			<li><tt>{@link kTYPE_STRING_LAT}</tt>: A latitude as <tt>HDDMMSS.SSSS</tt>.
+ * 			<li><tt>{@link kTYPE_STRING_LON}</tt>: A longitude as <tt>HDDDMMSS.SSSS</tt>.
+ * 		 </ul>
+ * 		<li>Reference types:
+ * 		 <ul>
+ * 			<li><tt>{@link kTYPE_REF}</tt>: A document handle.
+ * 			<li><tt>{@link kTYPE_REF_SELF}</tt>: A document key for the same collection.
+ * 			<li><tt>{@link kTYPE_REF_TERM}</tt>: A term document key.
+ * 			<li><tt>{@link kTYPE_REF_DESCRIPTOR}</tt>: A descriptor document key.
+ * 		 </ul>
+ * 		<li>Categorical types:
+ * 		 <ul>
+ * 			<li><tt>{@link kTYPE_ENUM}</tt>: A controlled vocabulary value.
+ * 			<li><tt>{@link kTYPE_ENUM_SET}</tt>: A controlled vocabulary value set.
+ * 		 </ul>
+ * 		<li>Structured types:
+ * 		 <ul>
+ * 			<li><tt>{@link kTYPE_ARRAY}</tt>: An array of values of indeterminate type.
+ * 			<li><tt>{@link kTYPE_STRUCT}</tt>: A structure or associative array.
+ * 			<li><tt>{@link kTYPE_SHAPE}</tt>: A geometric shape.
+ * 			<li><tt>{@link kTYPE_LANG_STRING}</tt>: A string in various languages.
+ * 			<li><tt>{@link kTYPE_LANG_STRINGS}</tt>: A list of strings in various languages.
+ * 		 </ul>
+ *   </ul>
  * 		<em>This property is required</em>.
- * 	<li><tt>{@link kTAG_GID}</tt>: This represents the term <em>global identifier</em>, it is
- * 		a string code that uniquely identifies the term among all terms in all namespaces.
- * 		This value is computed by default by concatenating the namespace's term
- * 		({@link kTAG_NS}) global identifier with the current term's local identifier
- * 		({@link kTAG_LID}), separated by the {@link kTOKEN_NAMESPACE_SEPARATOR} token.
- * 		<em>This property is required</em>.
- * 	<li><tt>{@link kTAG_NAME}</tt>: This represents the term <em>name</em> or
- * 		<em>label</em>, it is a short description or human readable identifier that can be
- * 		used to label or name the term.
- * 		<em>This property is required</em>.
- * 	<li><tt>{@link kTAG_DESCRIPTION}</tt>: This represents the term <em>description</em> or
- * 		<em>definition</em>, it is a text which describes in detail what the term represents
- * 		and, in the case of the term, may be considered its definition.
+ * 	<li><tt>{@link kTAG_KIND}</tt>: This represents the descriptor <em>kind</em>, it
+ * 		essentially defines the function of values of that descriptor, it is expressed as an
+ * 		enumerated set of values of the following:
+ *   <ul>
+ * 		<li>Domain:
+ * 		 <ul>
+ * 			<li><tt>{@link kKIND_CATEGORICAL}</tt>: Categorical value.
+ * 			<li><tt>{@link kKIND_QUANTITATIVE}</tt>: Quantitative value.
+ * 			<li><tt>{@link kKIND_DISCRETE}</tt>: Discrete value.
+ * 		 </ul>
+ * 		<li>Usage:
+ * 		 <ul>
+ * 			<li><tt>{@link kKIND_RECOMMENDED}</tt>: Recommended.
+ * 			<li><tt>{@link kKIND_REQUIRED}</tt>: Required.
+ * 		 </ul>
+ * 		<li>Access:
+ * 		 <ul>
+ * 			<li><tt>{@link kKIND_PRIVATE_DISPLAY}</tt>: Do not display.
+ * 			<li><tt>{@link kKIND_PRIVATE_SEARCH}</tt>: Do not search.
+ * 			<li><tt>{@link kKIND_PRIVATE_MODIFY}</tt>: Do not modify.
+ * 		 </ul>
+ * 		<li>Cardinality:
+ * 		 <ul>
+ * 			<li><tt>{@link kKIND_LIST}</tt>: List of elements of the defined type.
+ * 			<li><tt>{@link kKIND_SUMMARY}</tt>: Can be summarised.
+ * 			<li><tt>{@link kKIND_LOOKUP}</tt>: Can be looked up.
+ * 		 </ul>
+ *   </ul>
+ * 		<em>This property is optional</em>.
+ * 	<li><tt>{@link kTAG_REF_COUNT}</tt>: This represents the <em>number of values</em> of
+ * 		the current descriptor. It keeps trach of the usage of the descriptor in data.
+ * 		<em>This property is managed</em>.
+ * 	<li><tt>{@link kTAG_MIN_VAL}</tt>: This represents the <em>minimum value</em> found in
+ * 		the database for the current descriptor.
+ * 		<em>This property is managed</em>.
+ * 	<li><tt>{@link kTAG_MAX_VAL}</tt>: This represents the <em>maximum value</em> found in
+ * 		the database for the current descriptor.
+ * 		<em>This property is managed</em>.
+ * 	<li><tt>{@link kTAG_PATTERN}</tt>: This represents a <em>string patter</em> that can be
+ * 		used to validate the string value.
+ * 		<em>This property is optional</em>.
+ * 	<li><tt>{@link kTAG_MIN_VAL_EXPECTED}</tt>: This represents the <em>minimum value</em>
+ * 		that an instance of the current descriptor can take.
+ * 		<em>This property is optional</em>.
+ * 	<li><tt>{@link kTAG_MAX_VAL_EXPECTED}</tt>: This represents the <em>maximum value</em>
+ * 		that an instance of the current descriptor can take.
  * 		<em>This property is optional</em>.
  * </ul>
  *
- * The term's {@link Collection::OffsetKey()} property is set by extracting the <tt>MD5</tt>
- * checksum of its {@link kTAG_GID} global identifier
+ * The descriptor's {@link Collection::OffsetKey()} property is a string, for user defined
+ * descriptors it will be a string prefixed by the {@link kTOKEN_TAG_PREFIX} token followed
+ * by a hexadecimal number that represents a global counter: as new descriptors are added,
+ * this value is incremented, so the key is relevant only to the current database.
  *
  * Descriptor objects <em>should be stored in a default collection</em>.
  *
@@ -61,18 +152,8 @@ use Milko\PHPLib\Document;
  *	@version	1.00
  *	@since		14/03/2016
  */
-class Term extends Document
+class Descriptor extends Term
 {
-	/**
-	 * Namespace global identifier.
-	 *
-	 * This attribute stores the current term namespace global identifier.
-	 *
-	 * The attribute is used to cache the namespace.
-	 *
-	 * @var string
-	 */
-	protected $mNamespaceGID = '';
 
 
 
@@ -721,11 +802,11 @@ class Term extends Document
 
 
 
-/*=======================================================================================
- *																						*
- *						PROTECTED SUBDOCUMENT PERSISTENCE INTERFACE						*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *						PROTECTED SUBDOCUMENT PERSISTENCE INTERFACE						*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -791,11 +872,11 @@ class Term extends Document
 
 
 
-/*=======================================================================================
- *																						*
- *							PROTECTED IDENTIFIER INTERFACE								*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *							PROTECTED IDENTIFIER INTERFACE								*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -925,7 +1006,7 @@ class Term extends Document
 
 
 
-} // class Term.
+} // class Descriptor.
 
 
 ?>

@@ -722,6 +722,50 @@ abstract class Collection
 
 /*=======================================================================================
  *																						*
+ *						PUBLIC TIMESTAMP MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	NewTimestamp																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a native time stamp.</h4>
+	 *
+	 * This method can be used to return a time stamp in the native database format, it
+	 * expects a single optional parameter that represents the timestamp expressed in
+	 * milliseconds as an integer.
+	 * 
+	 * The method must be implemented by concrete derived classes.
+	 *
+	 * @param int					$theTimeStamp		Milliseconds.
+	 * @return mixed				Time stamp in native format.
+	 */
+	abstract public function NewTimestamp( $theTimeStamp = NULL );
+
+
+	/*===================================================================================
+	 *	GetTimestamp																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return an ISO date from a timestamp.</h4>
+	 *
+	 * This method can be used to return an ISO 8601 date from a time stamp in the native
+	 * database format, the method must be implemented by concrete derived classes.
+	 *
+	 * @param mixed					$theTimeStamp		Native time stamp.
+	 * @return string				ISO 8601 date.
+	 */
+	abstract public function GetTimestamp( $theTimeStamp );
+
+
+
+/*=======================================================================================
+ *																						*
  *								PUBLIC INSERTION INTERFACE								*
  *																						*
  *======================================================================================*/
@@ -2053,6 +2097,16 @@ abstract class Collection
 			// Set modification state.
 			//
 			$theDocument->IsModified( TRUE, $this );
+
+			//
+			// Remove creation time stamp.
+			//
+			$theDocument->offsetUnset( kTAG_CREATION );
+
+			//
+			// Remove modification time stamp.
+			//
+			$theDocument->offsetUnset( kTAG_MODIFICATION );
 
 		} // Is a document.
 

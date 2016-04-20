@@ -79,6 +79,69 @@ class Database extends \Milko\PHPLib\Database
 
 
 
+	/*=======================================================================================
+	 *																						*
+	 *							PUBLIC COLLECTION MANAGEMENT INTERFACE						*
+	 *																						*
+	 *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	NewTermsCollection																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a terms collection object.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_MONGO_TERMS} collection name.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	public function NewTermsCollection()
+	{
+		return $this->NewCollection( kTAG_MONGO_TERMS );							// ==>
+
+	} // NewTermsCollection.
+
+
+	/*===================================================================================
+	 *	NewDescriptorsCollection														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a descriptors collection object.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_MONGO_DESCRIPTORS} collection name.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	public function NewDescriptorsCollection()
+	{
+		return $this->NewCollection( kTAG_MONGO_DESCRIPTORS );						// ==>
+
+	} // NewDescriptorsCollection.
+
+
+	/*===================================================================================
+	 *	NewResourcesCollection															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a resources collection object.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_MONGO_RESOURCES} collection name.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	public function NewResourcesCollection()
+	{
+		return $this->NewCollection( kTAG_MONGO_RESOURCES );						// ==>
+
+	} // NewResourcesCollection.
+
+
+
 /*=======================================================================================
  *																						*
  *						PROTECTED DATABASE MANAGEMENT INTERFACE							*

@@ -53,16 +53,8 @@ elseif( kENGINE == "ARANGO" )
 }
 echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
 $database = $server->GetDatabase( "test_milkolib" );
-if( kENGINE == "MONGO" )
-{
-	echo( '$collection = $database->NewCollection( kTAG_MONGO_TERMS );' . "\n" );
-	$collection = $database->NewCollection( kTAG_MONGO_TERMS );
-}
-elseif( kENGINE == "ARANGO" )
-{
-	echo( '$collection = $database->NewCollection( kTAG_ARANGO_TERMS );' . "\n" );
-	$collection = $database->NewCollection( kTAG_ARANGO_TERMS );
-}
+echo( '$collection = $database->NewTermsCollection();' . "\n" );
+$collection = $database->NewTermsCollection();
 echo( '(string)$collection' . "\n" );
 var_dump( (string)$collection );
 echo( '$collection->Truncate();' . "\n" );
