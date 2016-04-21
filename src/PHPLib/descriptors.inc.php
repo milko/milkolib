@@ -38,7 +38,7 @@
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}}</tt>
  */
-const kTAG_CREATION			= 'created';
+const kTAG_CREATION			= ':cre';
 
 /**
  * <h4>Modification stamp.</h4><p />
@@ -49,7 +49,7 @@ const kTAG_CREATION			= 'created';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_MODIFICATION		= 'modified';
+const kTAG_MODIFICATION		= ':mod';
 
 /*=======================================================================================
  *	TERM PROPERTIES																		*
@@ -64,7 +64,7 @@ const kTAG_MODIFICATION		= 'modified';
  * Type: <tt>{@link kTYPE_STRING}</tt>
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_NS				= 'ns';
+const kTAG_NS				= ':ns';
 
 /**
  * <h4>Local identifier.</h4><p />
@@ -75,7 +75,7 @@ const kTAG_NS				= 'ns';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE} {@link kKIND_REQUIRED}</tt>
  */
-const kTAG_LID				= 'lid';
+const kTAG_LID				= ':lid';
 
 /**
  * <h4>Global identifier.</h4><p />
@@ -90,7 +90,7 @@ const kTAG_LID				= 'lid';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE} {@link kKIND_REQUIRED}</tt>
  */
-const kTAG_GID				= 'gid';
+const kTAG_GID				= ':gid';
 
 /**
  * <h4>Name.</h4><p />
@@ -105,7 +105,7 @@ const kTAG_GID				= 'gid';
  * Type: <tt>{@link kTYPE_LANG_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE} {@link kKIND_LOOKUP} {@link kKIND_REQUIRED}</tt>.
  */
-const kTAG_NAME				= 'name';
+const kTAG_NAME				= ':name';
 
 /**
  * <h4>Description.</h4><p />
@@ -116,7 +116,7 @@ const kTAG_NAME				= 'name';
  * Type: <tt>{@link kTYPE_LANG_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_DESCRIPTION		= 'descr';
+const kTAG_DESCRIPTION		= ':descr';
 
 /*=======================================================================================
  *	DESCRIPTOR PROPERTIES																*
@@ -131,7 +131,7 @@ const kTAG_DESCRIPTION		= 'descr';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_SYMBOL			= 'symbol';
+const kTAG_SYMBOL			= ':sym';
 
 /**
  * <h4>Synonyms.</h4><p />
@@ -142,7 +142,7 @@ const kTAG_SYMBOL			= 'symbol';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_LIST}</tt>
  */
-const kTAG_SYNONYMS			= 'synonyms';
+const kTAG_SYNONYMS			= ':syn';
 
 /**
  * <h4>Type.</h4><p />
@@ -154,7 +154,7 @@ const kTAG_SYNONYMS			= 'synonyms';
  * Type: <tt>{@link kTYPE_ENUM}</tt>.
  * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
  */
-const kTAG_TYPE				= 'type';
+const kTAG_TYPE				= ':type';
 
 /**
  * <h4>Kind.</h4><p />
@@ -166,7 +166,7 @@ const kTAG_TYPE				= 'type';
  * Type: <tt>{@link kTYPE_ENUM_SET}</tt>.
  * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
  */
-const kTAG_KIND				= 'kind';
+const kTAG_KIND				= ':kind';
 
 /**
  * <h4>Reference count.</h4><p />
@@ -178,7 +178,7 @@ const kTAG_KIND				= 'kind';
  * Type: <tt>{@link kTYPE_INT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE} {@link kKIND_PRIVATE_MODIFY}</tt>
  */
-const kTAG_REF_COUNT		= 'ref-count';
+const kTAG_REF_COUNT		= ':refs';
 
 /**
  * <h4>Minimum value.</h4><p />
@@ -189,7 +189,7 @@ const kTAG_REF_COUNT		= 'ref-count';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
-const kTAG_MIN_VAL			= 'min';
+const kTAG_MIN_VAL			= ':min';
 
 /**
  * <h4>Maximum value.</h4><p />
@@ -200,7 +200,7 @@ const kTAG_MIN_VAL			= 'min';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
-const kTAG_MAX_VAL			= 'max';
+const kTAG_MAX_VAL			= ':max';
 
 /**
  * <h4>Pattern.</h4><p />
@@ -211,7 +211,7 @@ const kTAG_MAX_VAL			= 'max';
  * Type: <tt>{@link kTYPE_STRING}</tt>.
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
-const kTAG_PATTERN			= 'pattern';
+const kTAG_PATTERN			= ':grep';
 
 /**
  * <h4>Minimum expected value.</h4><p />
@@ -222,7 +222,7 @@ const kTAG_PATTERN			= 'pattern';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
-const kTAG_MIN_VAL_EXPECTED	= 'low';
+const kTAG_MIN_VAL_EXPECTED	= ':low';
 
 /**
  * <h4>Maximum expected value.</h4><p />
@@ -233,7 +233,7 @@ const kTAG_MIN_VAL_EXPECTED	= 'low';
  * Type: <tt>{@link kTYPE_FLOAT}</tt>.
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
-const kTAG_MAX_VAL_EXPECTED	= 'high';
+const kTAG_MAX_VAL_EXPECTED	= ':high';
 
 
 ?>

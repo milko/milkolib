@@ -237,7 +237,6 @@ trait tWrapper
 		//
 		// Erase database.
 		//
-		$server = $this->Server();
 		$name = $this->databaseName();
 		$this->Drop();
 		$this->mConnection = $this->databaseCreate( $name );
@@ -275,39 +274,21 @@ trait tWrapper
 		$descriptors = $this->NewDescriptorsCollection();
 
 		//
+		// Initialise terms.
+		//
+		$this->initTerms( $terms );
+
+		//
 		// Initialise resources.
 		//
 		$this->initResources( $resources );
 
 		//
-		// Initialise terms.
+		// Initialise descriptors.
 		//
-		$this->initTerms( $terms );
+		$this->initDescriptors( $terms, $descriptors );
 
 	} // buildDataDictionary.
-
-
-	/*===================================================================================
-	 *	initResources																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Initialise resources.</h4>
-	 *
-	 * This method will load the default resources data.
-	 *
-	 * @param Collection			$theResources		Resources collection.
-	 */
-	protected function initResources( Collection $theResources )
-	{
-		//
-		// Initialise descriptors serial counter.
-		//
-		$theResources->Insert(
-			[ $theResources->KeyOffset() => kTOKEN_SERIAL_DESCRIPTOR,
-			  kTOKEN_SERIAL_OFFSET => 1 ] );
-
-	} // initResources.
 
 
 	/*===================================================================================
@@ -315,23 +296,23 @@ trait tWrapper
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Initialise resources.</h4>
+	 * <h4>Initialise terms.</h4>
 	 *
-	 * This method will load the default resources data.
+	 * This method will load the default terms.
 	 *
-	 * @param Collection			$theTerms			Terms collection.
+	 * @param Collection			$theCollection		Terms collection.
 	 */
-	protected function initTerms( Collection $theTerms )
+	protected function initTerms( Collection $theCollection )
 	{
 		//
 		// Init local storage.
 		//
-		$key = $theTerms->KeyOffset();
+		$key = $theCollection->KeyOffset();
 
 		//
 		// Create default namespace.
 		//
-		$term = new Term( $theTerms, [
+		$term = new Term( $theCollection, [
 			kTAG_LID => '', kTAG_GID => '',
 			kTAG_NAME => [ 'en' => 'Default namespace' ],
 			kTAG_DESCRIPTION => [ 'en' =>
@@ -345,7 +326,7 @@ trait tWrapper
 		// Create type namespaces.
 		//
 		$nsp = $ns;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'type',
 				kTAG_NAME => [ 'en' => 'Data type' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -354,7 +335,7 @@ trait tWrapper
 		$term->Store();
 		$ns_type = $term[ $key ];
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'kind',
 				kTAG_NAME => [ 'en' => 'Data kind' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -363,7 +344,7 @@ trait tWrapper
 		$term->Store();
 		$ns_kind = $term[ $key ];
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'predicate',
 				kTAG_NAME => [ 'en' => 'Predicate' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -372,7 +353,7 @@ trait tWrapper
 		$term->Store();
 		$ns_predicate = $term[ $key ];
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'private',
 				kTAG_NAME => [ 'en' => 'Private' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -385,7 +366,7 @@ trait tWrapper
 		// Load primitive types.
 		//
 		$nsp = $ns_type;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'mixed', kTAG_SYMBOL => 'kTYPE_MIXED',
 				kTAG_NAME => [ 'en' => 'Mixed' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -394,7 +375,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'string', kTAG_SYMBOL => 'kTYPE_STRING',
 				kTAG_NAME => [ 'en' => 'String' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -404,7 +385,7 @@ trait tWrapper
 		$term->Store();
 		$ns_string = $term[ $key ];
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'int', kTAG_SYMBOL => 'kTYPE_INT',
 				kTAG_NAME => [ 'en' => 'Integer' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -413,7 +394,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'float', kTAG_SYMBOL => 'kTYPE_FLOAT',
 				kTAG_NAME => [ 'en' => 'Float' ],
 				kTAG_DESCRIPTION => [ 'en' => 'A float data type indicates that the ' .
@@ -423,7 +404,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'bool', kTAG_SYMBOL => 'kTYPE_BOOLEAN',
 				kTAG_NAME => [ 'en' => 'Boolean' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -436,7 +417,7 @@ trait tWrapper
 		// Load derived types.
 		//
 		$nsp = $ns_string;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'url', kTAG_SYMBOL => 'kTYPE_URL',
 				kTAG_NAME => [ 'en' => 'Link' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -445,7 +426,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'date', kTAG_SYMBOL => 'kTYPE_STRING_DATE',
 				kTAG_NAME => [ 'en' => 'String date' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -456,7 +437,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'lat', kTAG_SYMBOL => 'kTYPE_STRING_LAT',
 				kTAG_NAME => [ 'en' => 'String latitude' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -472,7 +453,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'lon', kTAG_SYMBOL => 'kTYPE_STRING_LON',
 				kTAG_NAME => [ 'en' => 'String longitude' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -492,7 +473,7 @@ trait tWrapper
 		// Load referential types.
 		//
 		$nsp = $ns_type;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ref', kTAG_SYMBOL => 'kTYPE_REF',
 				kTAG_NAME => [ 'en' => 'Reference' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -503,7 +484,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ref-self', kTAG_SYMBOL => 'kTYPE_REF_SELF',
 				kTAG_NAME => [ 'en' => 'Collection reference' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -513,7 +494,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ref-term', kTAG_SYMBOL => 'kTYPE_REF_TERM',
 				kTAG_NAME => [ 'en' => 'Term reference' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -526,14 +507,14 @@ trait tWrapper
 		// Load localised types.
 		//
 		$nsp = $ns_type;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'date', kTAG_SYMBOL => 'kTYPE_DATE',
 				kTAG_NAME => [ 'en' => 'Date' ],
 				kTAG_DESCRIPTION => [ 'en' => 'Date in the native database format.' ] ]
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'time-stamp', kTAG_SYMBOL => 'kTYPE_TIMESTAMP',
 				kTAG_NAME => [ 'en' => 'Timestamp' ],
 				kTAG_DESCRIPTION => [ 'en' => 'Time stamp in the native database format.' ] ]
@@ -544,7 +525,7 @@ trait tWrapper
 		// Load categorical types.
 		//
 		$nsp = $ns_type;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'enum', kTAG_SYMBOL => 'kTYPE_ENUM',
 				kTAG_NAME => [ 'en' => 'Enumeration' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -555,7 +536,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'enum-set', kTAG_SYMBOL => 'kTYPE_ENUM_SET',
 				kTAG_NAME => [ 'en' => 'Enumerated set' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -570,7 +551,7 @@ trait tWrapper
 		// Load structured types.
 		//
 		$nsp = $ns_type;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'array', kTAG_SYMBOL => 'kTYPE_ARRAY',
 				kTAG_NAME => [ 'en' => 'List' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -579,7 +560,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'struct', kTAG_SYMBOL => 'kTYPE_STRUCT',
 				kTAG_NAME => [ 'en' => 'Structure' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -588,7 +569,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'shape', kTAG_SYMBOL => 'kTYPE_SHAPE',
 				kTAG_NAME => [ 'en' => 'Shape' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -614,7 +595,7 @@ trait tWrapper
 		$term->Store();
 
 		$nsp = $ns_string;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'lang', kTAG_SYMBOL => 'kTYPE_LANG_STRING',
 				kTAG_NAME => [ 'en' => 'Language string' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -625,7 +606,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'langs', kTAG_SYMBOL => 'kTYPE_LANG_STRINGS',
 				kTAG_NAME => [ 'en' => 'Language strings' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -640,7 +621,7 @@ trait tWrapper
 		// Load functional types.
 		//
 		$nsp = $ns_type;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'attribute', kTAG_SYMBOL => 'kTYPE_ATTRIBUTE',
 				kTAG_NAME => [ 'en' => 'Attribute' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -648,7 +629,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'property', kTAG_SYMBOL => 'kTYPE_PROPERTY',
 				kTAG_NAME => [ 'en' => 'Property' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -660,7 +641,7 @@ trait tWrapper
 		// Load domain kinds.
 		//
 		$nsp = $ns_kind;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'categorical', kTAG_SYMBOL => 'kKIND_CATEGORICAL',
 				kTAG_NAME => [ 'en' => 'Categorical' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -671,7 +652,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'quantitative', kTAG_SYMBOL => 'kKIND_QUANTITATIVE',
 				kTAG_NAME => [ 'en' => 'Quantitative' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -682,7 +663,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'discrete', kTAG_SYMBOL => 'kKIND_DISCRETE',
 				kTAG_NAME => [ 'en' => 'Discrete' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -697,7 +678,7 @@ trait tWrapper
 		// Load usage kinds.
 		//
 		$nsp = $ns_kind;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'recommended', kTAG_SYMBOL => 'kKIND_RECOMMENDED',
 				kTAG_NAME => [ 'en' => 'Recommended' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -706,7 +687,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'required', kTAG_SYMBOL => 'kKIND_REQUIRED',
 				kTAG_NAME => [ 'en' => 'Required' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -715,7 +696,7 @@ trait tWrapper
 		$term->Store();
 
 		$nsp = $ns_private;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'display', kTAG_SYMBOL => 'kKIND_PRIVATE_DISPLAY',
 				kTAG_NAME => [ 'en' => 'Private display' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -724,7 +705,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'search', kTAG_SYMBOL => 'kKIND_PRIVATE_SEARCH',
 				kTAG_NAME => [ 'en' => 'Private search' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -733,7 +714,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'modify', kTAG_SYMBOL => 'kKIND_PRIVATE_MODIFY',
 				kTAG_NAME => [ 'en' => 'Private modify' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -747,7 +728,7 @@ trait tWrapper
 		// Load cardinality kinds.
 		//
 		$nsp = $ns_kind;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'list', kTAG_SYMBOL => 'kKIND_LIST',
 				kTAG_NAME => [ 'en' => 'List' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -756,7 +737,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'summary', kTAG_SYMBOL => 'kKIND_SUMMARY',
 				kTAG_NAME => [ 'en' => 'Summary' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -765,7 +746,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'lookup', kTAG_SYMBOL => 'kKIND_LOOKUP',
 				kTAG_NAME => [ 'en' => 'Lookup' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -778,7 +759,7 @@ trait tWrapper
 		// Load vertex kinds.
 		//
 		$nsp = $ns_kind;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'root', kTAG_SYMBOL => 'kKIND_ROOT',
 				kTAG_NAME => [ 'en' => 'Root' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -789,7 +770,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'type', kTAG_SYMBOL => 'kKIND_TYPE',
 				kTAG_NAME => [ 'en' => 'Type' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -805,7 +786,7 @@ trait tWrapper
 		// Load aggregation predicates.
 		//
 		$nsp = $ns_predicate;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'SUBCLASS-OF', kTAG_SYMBOL => 'kPREDICATE_SUBCLASS_OF',
 				kTAG_NAME => [ 'en' => 'Subclass of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -815,7 +796,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'SUBRANK-OF', kTAG_SYMBOL => 'kPREDICATE_SUBRANK_OF',
 				kTAG_NAME => [ 'en' => 'Subrank of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -825,7 +806,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'SUBSET-OF', kTAG_SYMBOL => 'kPREDICATE_SUBSET_OF',
 				kTAG_NAME => [ 'en' => 'Subset of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -835,7 +816,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'PART-OF', kTAG_SYMBOL => 'kPREDICATE_PART_OF',
 				kTAG_NAME => [ 'en' => 'Part of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -844,7 +825,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'TYPE-OF', kTAG_SYMBOL => 'kPREDICATE_TYPE_OF',
 				kTAG_NAME => [ 'en' => 'Type of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -858,7 +839,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'FUNCTION-OF', kTAG_SYMBOL => 'kPREDICATE_FUNCTION_OF',
 				kTAG_NAME => [ 'en' => 'Function of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -869,7 +850,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'COLLECTION-OF', kTAG_SYMBOL => 'kPREDICATE_COLLECTION_OF',
 				kTAG_NAME => [ 'en' => 'Collection of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -882,7 +863,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'PROPERTY-OF', kTAG_SYMBOL => 'kPREDICATE_PROPERTY_OF',
 				kTAG_NAME => [ 'en' => 'Property of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -892,7 +873,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ATTRIBUTE-OF', kTAG_SYMBOL => 'kPREDICATE_ATTRIBUTE_OF',
 				kTAG_NAME => [ 'en' => 'Attribute of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -903,7 +884,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ENUM-OF', kTAG_SYMBOL => 'kPREDICATE_ENUM_OF',
 				kTAG_NAME => [ 'en' => 'Enumeration of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -915,7 +896,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'INSTANCE-OF', kTAG_SYMBOL => 'kPREDICATE_INSTANCE_OF',
 				kTAG_NAME => [ 'en' => 'Instance of' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -929,7 +910,7 @@ trait tWrapper
 		// Load preference predicates.
 		//
 		$nsp = $ns_predicate;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'PREFERRED', kTAG_SYMBOL => 'kPREDICATE_PREFERRED',
 				kTAG_NAME => [ 'en' => 'Preferred' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -944,7 +925,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'VALID', kTAG_SYMBOL => 'kPREDICATE_VALID',
 				kTAG_NAME => [ 'en' => 'Valid' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -960,7 +941,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'LEGACY', kTAG_SYMBOL => 'kPREDICATE_LEGACY',
 				kTAG_NAME => [ 'en' => 'Legacy' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -980,7 +961,7 @@ trait tWrapper
 		// Load reference predicates.
 		//
 		$nsp = $ns_predicate;
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'XREF', kTAG_SYMBOL => 'kPREDICATE_XREF',
 				kTAG_NAME => [ 'en' => 'Cross-reference' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -995,7 +976,7 @@ trait tWrapper
 		);
 		$term->Store();
 
-		$term = new Term( $theTerms, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'XREF-EXACT', kTAG_SYMBOL => 'kPREDICATE_XREF_EXACT',
 				kTAG_NAME => [ 'en' => 'Exact cross-reference' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -1011,6 +992,291 @@ trait tWrapper
 		$term->Store();
 
 	} // initTerms.
+
+
+	/*===================================================================================
+	 *	initResources																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Initialise resources.</h4>
+	 *
+	 * This method will load the default resources data.
+	 *
+	 * @param Collection			$theResources		Resources collection.
+	 */
+	protected function initResources( Collection $theResources )
+	{
+		//
+		// Initialise descriptors serial counter.
+		//
+		$theResources->Insert(
+			[ $theResources->KeyOffset() => kTOKEN_SERIAL_DESCRIPTOR,
+				kTOKEN_SERIAL_OFFSET => 1 ] );
+
+	} // initResources.
+
+
+	/*===================================================================================
+	 *	initDescriptors																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Initialise descriptors.</h4>
+	 *
+	 * This method will load the default descriptors.
+	 *
+	 * @param Collection			$theTerms			Terms collection.
+	 * @param Collection			$theCollection		Descriptors collection.
+	 */
+	protected function initDescriptors( Collection $theTerms, Collection $theCollection )
+	{
+		//
+		// Init local storage.
+		//
+		$key = $theCollection->KeyOffset();
+
+		//
+		// Get default namespace.
+		//
+		$ns = Term::GetByGID( $theTerms, '' );
+		$ns = $ns[ $theTerms->KeyOffset() ];
+
+		//
+		// Create global properties.
+		//
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'cre', kTAG_SYMBOL => 'kTAG_CREATION',
+				kTAG_TYPE => kTYPE_FLOAT,
+				kTAG_KIND => [ kKIND_DISCRETE ],
+				kTAG_NAME => [ 'en' => 'Creation stamp' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the object\'s <em>creation time stamp</em> ' .
+					'expressed as the result of the <tt>microtime()</tt> function as ' .
+					'float.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'mod', kTAG_SYMBOL => 'kTAG_MODIFICATION',
+				kTAG_TYPE => kTYPE_FLOAT,
+				kTAG_KIND => [ kKIND_DISCRETE ],
+				kTAG_NAME => [ 'en' => 'Modification stamp' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the object\'s <em>modification time stamp</em> ' .
+					'expressed as the result of the  <tt>microtime()</tt> function as ' .
+					'float.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		//
+		// Create term properties.
+		//
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'ns', kTAG_SYMBOL => 'kTAG_NS',
+				kTAG_TYPE => kTYPE_STRING,
+				kTAG_KIND => [ kKIND_DISCRETE ],
+				kTAG_NAME => [ 'en' => 'Namespace reference' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the <em>reference to the object</em> that ' .
+					'represents the current object\'s <em>namespace</em>, expressed as ' .
+					'a <em>document identifier</em>.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'lid', kTAG_SYMBOL => 'kTAG_LID',
+				kTAG_TYPE => kTYPE_STRING,
+				kTAG_KIND => [ kKIND_DISCRETE, kKIND_REQUIRED ],
+				kTAG_NAME => [ 'en' => 'Local identifier' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the object <em>local</em> identifier, that is, ' .
+					'the code that uniquely identifies the object ' .
+					'<em>within its namespace</em>.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'gid', kTAG_SYMBOL => 'kTAG_GID',
+				kTAG_TYPE => kTYPE_STRING,
+				kTAG_KIND => [ kKIND_DISCRETE, kKIND_REQUIRED ],
+				kTAG_NAME => [ 'en' => 'Global identifier' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the object <em>global</em> identifier, that is, ' .
+					'the code that uniquely identifies the term <em>among all ' .
+					'namespaces</em>.<p/> In general, this code is computed by ' .
+					'concatenating the global identifier of the object representing the ' .
+					'namespace with the local identifier of the current object, ' .
+					'separated by the <tt>kTOKEN_NAMESPACE_SEPARATOR</tt> token.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'name', kTAG_SYMBOL => 'kTAG_NAME',
+				kTAG_TYPE => kTYPE_LANG_STRING,
+				kTAG_KIND => [ kKIND_DISCRETE, kKIND_REQUIRED, kKIND_LOOKUP ],
+				kTAG_NAME => [ 'en' => 'Name' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the object\'s <em>name</em> or <em>label</em>, ' .
+					'it represents a short description that can be used as a label and ' .
+					'that should give a rough idea of what the object represents.<p/>' .
+					'This property is an associative array with the <em>language code ' .
+					'as key</em> and the <em>name as value</em>.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'descr', kTAG_SYMBOL => 'kTAG_DESCRIPTION',
+				kTAG_TYPE => kTYPE_LANG_STRING,
+				kTAG_KIND => [ kKIND_DISCRETE ],
+				kTAG_NAME => [ 'en' => 'Description' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the object\'s <em>description</em> or ' .
+					'<em>definition</em>, it represents a text that <em>describes in ' .
+					'detail</em> the current object.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		//
+		// Create descriptor properties.
+		//
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'sym', kTAG_SYMBOL => 'kTAG_SYMBOL',
+				kTAG_TYPE => kTYPE_STRING,
+				kTAG_KIND => [ kKIND_DISCRETE ],
+				kTAG_NAME => [ 'en' => 'Symbol' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the object <em>symbol</em> or <em>constant<em>, ' .
+					'which is a string that serves as a variable name for the object; ' .
+					'the symbol should be unique within a context.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'syn', kTAG_SYMBOL => 'kTAG_SYNONYMS',
+				kTAG_TYPE => kTYPE_STRING,
+				kTAG_KIND => [ kKIND_LIST ],
+				kTAG_NAME => [ 'en' => 'Synonyms' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds a list of symbols which refer to <em>synonyms of ' .
+					'the current descriptor</em>, the property is structured as a list ' .
+					'of strings.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'type', kTAG_SYMBOL => 'kTAG_TYPE',
+				kTAG_TYPE => kTYPE_ENUM,
+				kTAG_KIND => [ kKIND_CATEGORICAL ],
+				kTAG_NAME => [ 'en' => 'Type' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds an <em>enumerated set of values</em> belonging ' .
+					'to a controlled vocabulary which <em>defines the type of the ' .
+					'object</em>, it should describe the object <em>nature</em> or ' .
+					'what it <em>is</em>.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'kind', kTAG_SYMBOL => 'kTAG_KIND',
+				kTAG_TYPE => kTYPE_ENUM_SET,
+				kTAG_KIND => [ kKIND_CATEGORICAL ],
+				kTAG_NAME => [ 'en' => 'Kind' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds an <em>enumerated set of values</em> belonging ' .
+					'to a controlled vocabulary which <em>defines the function of the ' .
+					'object</em>, it should describe the object <em>kind<em> or its ' .
+					'<em>context</em>.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'refs', kTAG_SYMBOL => 'kTAG_REF_COUNT',
+				kTAG_TYPE => kTYPE_INT,
+				kTAG_KIND => [ kKIND_QUANTITATIVE, kKIND_PRIVATE_MODIFY ],
+				kTAG_NAME => [ 'en' => 'Reference count' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the <em>number of objects that reference the ' .
+					'current object</em>, when inserted for the first time the value is ' .
+					'<tt>0</tt>, the object cannot be deleted if this value is greater ' .
+					'than <tt>0</tt>.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'min', kTAG_SYMBOL => 'kTAG_MIN_VAL',
+				kTAG_TYPE => kTYPE_FLOAT,
+				kTAG_KIND => [ kKIND_QUANTITATIVE, kKIND_PRIVATE_MODIFY ],
+				kTAG_NAME => [ 'en' => 'Minimum value' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds a number representing the <em>minimum value</em> ' .
+					'for instances of the current descriptor.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'max', kTAG_SYMBOL => 'kTAG_MAX_VAL',
+				kTAG_TYPE => kTYPE_FLOAT,
+				kTAG_KIND => [ kKIND_QUANTITATIVE, kKIND_PRIVATE_MODIFY ],
+				kTAG_NAME => [ 'en' => 'Maximum value' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds a number representing the <em>maximum value</em> ' .
+					'for instances of the current descriptor.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'grep', kTAG_SYMBOL => 'kTAG_PATTERN',
+				kTAG_TYPE => kTYPE_STRING,
+				kTAG_KIND => [ kKIND_DISCRETE ],
+				kTAG_NAME => [ 'en' => 'Pattern' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds a string representing the <em>expected pattern ' .
+					'of the string</em> descriptor value, this is used to validate ' .
+					'strings.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'low', kTAG_SYMBOL => 'kTAG_MIN_VAL_EXPECTED',
+				kTAG_TYPE => kTYPE_FLOAT,
+				kTAG_KIND => [ kKIND_QUANTITATIVE ],
+				kTAG_NAME => [ 'en' => 'Minimum expected value' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds a number representing the <em>lowest valid ' .
+					'value</em> for this descriptor.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'high', kTAG_SYMBOL => 'kTAG_MAX_VAL_EXPECTED',
+				kTAG_TYPE => kTYPE_FLOAT,
+				kTAG_KIND => [ kKIND_QUANTITATIVE ],
+				kTAG_NAME => [ 'en' => 'Maximum expected value' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds a number representing the <em>highest valid ' .
+					'value</em> for this descriptor.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+	} // initDescriptors.
 
 
 

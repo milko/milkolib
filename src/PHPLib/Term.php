@@ -322,17 +322,24 @@ class Term extends Document
 	/**
 	 * <h4>Prepare document to be inserted.</h4>
 	 *
-	 * We overload this method to set the document key by hashing the global identifier
-	 * with <tt>MD5</tt>.
+	 * We overload this method to ensure the key doesn't contain invalid characters: by
+	 * default we set the document key to the global identifier value, if that value
+	 * contains invalid characters, we convert it to an <tt>MD5</tt> hash.
 	 */
 	public function PrepareInsert()
 	{
 		//
-		// Set key.
+		// Try global identifier.
 		//
-		$this->offsetSet(
-			$this->mCollection->KeyOffset(),
-			md5( $this->offsetGet( kTAG_GID ) ) );
+		$gid = $this->offsetGet( kTAG_GID );
+		if( preg_match("/^[0-9a-zA-Z_\-:\.@\(\)+,=;$!*'%]+$/", $gid ) )
+			$this->offsetSet( $this->mCollection->KeyOffset(), $gid );
+
+		//
+		// Hash global identifier.
+		//
+		else
+			$this->offsetSet( $this->mCollection->KeyOffset(), md5( $gid ) );
 
 	} // PrepareInsert.
 
