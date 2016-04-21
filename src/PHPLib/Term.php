@@ -72,7 +72,7 @@ class Term extends Document
 	 *
 	 * @var string
 	 */
-	protected $mNamespaceGID = '';
+	protected $mNamespaceGID = NULL;
 
 
 
@@ -640,8 +640,8 @@ class Term extends Document
 	 * This method will return a term object given a global identifier, or <tt>NULL</tt> if
 	 * not found.
 	 *
-	 * The method expects as first parameter either the terms collection, and as second
-	 * parameter the global identifier of the term.
+	 * The method expects as first parameter the terms collection, and as second parameter
+	 * the global identifier of the term.
 	 *
 	 * @param Collection			$theCollection		Collection.
 	 * @param string				$theIdentifier		Global identifier.
@@ -840,7 +840,7 @@ class Term extends Document
 			// Reset namespace.
 			//
 			if( $theNamespace === NULL )
-				$this->mNamespaceGID = '';
+				$this->mNamespaceGID = NULL;
 
 			//
 			// Cache namespace global identifier.
@@ -901,7 +901,7 @@ class Term extends Document
 		//
 		// Check if namespace changed.
 		//
-		if( $this->offsetGet( kTAG_LID ) != (string)$theIdentifier )
+		if( $this->offsetGet( kTAG_LID ) !== (string)$theIdentifier )
 		{
 			//
 			// Check identifier.

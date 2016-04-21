@@ -63,6 +63,35 @@ $collection->Truncate();
 echo( "\n====================================================================================\n\n" );
 
 //
+// Instantiate empty namespace.
+//
+echo( "Instantiate empty namespace:\n" );
+echo( '$namespace = new Milko\PHPLib\Term( $collection, [kTAG_LID => "", kTAG_NAME => ["en" => "Namespace"] );' . "\n" );
+$namespace = new Milko\PHPLib\Term( $collection, [kTAG_LID => "", kTAG_NAME => ["en" => "Namespace"]] );
+echo( "Class: " . get_class( $namespace ) . "\n" );
+echo( "Modified:   " . (( $namespace->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $namespace->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $namespace->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Insert namespace.
+//
+echo( "Insert namespace:\n" );
+echo( '$handle = $namespace->Store();' . "\n" );
+$handle = $namespace->Store();
+var_dump( $handle );
+echo( "Class: " . get_class( $namespace ) . "\n" );
+echo( "Modified:   " . (( $namespace->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $namespace->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $namespace->getArrayCopy() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
 // Instantiate namespace.
 //
 echo( "Instantiate namespace:\n" );
@@ -196,9 +225,12 @@ var_dump( $result );
 echo( "\n" );
 
 //
-// Generate a global identifier by namespace global identifier.
+// Generate a global identifier.
 //
-echo( "Generate a global identifier by namespace global identifier:\n" );
+echo( "Generate a global identifier:\n" );
+echo( '$result = Term::MakeGID( "ID" );' . "\n" );
+$result = Term::MakeGID( "ID" );
+var_dump( $result );
 echo( '$result = Term::MakeGID( "ID", "" );' . "\n" );
 $result = Term::MakeGID( "ID", "" );
 var_dump( $result );

@@ -937,6 +937,110 @@ abstract class Server extends Container
 
 
 	/*===================================================================================
+	 *	NewWrapper																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a wrapper object.</h4><p />
+	 *
+	 * This method can be used to create a wrapper object, it features a parameter that
+	 * contains the requested wrapper name and a parameter containing the database driver
+	 * native options that can be used when creating the wrapper database.
+	 *
+	 * If the wrapper already exists, it will be returned, if not, it will be created and
+	 * added to the working databases of the server which are stored in the object's
+	 * inherited array object.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param mixed					$theOptions			Database creation native options.
+	 * @return Database				Database object.
+	 *
+	 * @uses GetDatabase()
+	 * @uses databaseCreate()
+	 */
+	public function NewWrapper( $theDatabase, $theOptions = NULL )
+	{
+		//
+		// Check existing database.
+		//
+		$database = $this->GetWrapper( $theDatabase );
+		if( $database instanceof Wrapper )
+			return $database;														// ==>
+
+		//
+		// Create and register database.
+		//
+		$database = $this->wrapperCreate( (string)$theDatabase, $theOptions );
+		$this->offsetSet( $theDatabase, $database );
+
+		return $database;															// ==>
+
+	} // NewWrapper.
+
+
+	/*===================================================================================
+	 *	GetWrapper																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a wrapper object.</h4><p />
+	 *
+	 * This method can be used to retrieve a wrapper object, it features a parameter
+	 * that contains the requested wrapper name and a parameter containing database driver
+	 * native options that can be used to filter the current set of databases; by default
+	 * only user databases should be selected.
+	 *
+	 * If the wrapper exists, a wrapper object will be returned and added to the
+	 * working databases of the server which are stored in the object's inherited array
+	 * object.
+	 *
+	 * If the wrapper doesn't exist, the method will return <tt>NULL</tt>.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param mixed					$theOptions			Database selection native options.
+	 * @return Database				Database object or <tt>NULL</tt>.
+	 *
+	 * @uses isConnected()
+	 * @uses databaseRetrieve()
+	 */
+	public function GetWrapper( $theDatabase, $theOptions = NULL )
+	{
+		//
+		// Assert connection.
+		//
+		$this->isConnected( self::kFLAG_CONNECT );
+
+		//
+		// Match working databases.
+		//
+		if( $this->offsetExists( $theDatabase ) )
+			return $this->offsetGet( $theDatabase );								// ==>
+
+		//
+		// Check if database exists.
+		//
+		$database = $this->wrapperRetrieve( (string)$theDatabase );
+		if( $database instanceof Database )
+		{
+			//
+			// Save database in working set.
+			//
+			$this->offsetSet( $theDatabase, $database );
+
+			return $database;														// ==>
+
+		} // Database exists.
+
+		return NULL;																// ==>
+
+	} // GetWrapper.
+
+
+	/*===================================================================================
 	 *	DelDatabase																		*
 	 *==================================================================================*/
 
@@ -1216,6 +1320,72 @@ abstract class Server extends Container
 		return NULL;																// ==>
 
 	} // databaseRetrieve.
+
+
+	/*===================================================================================
+	 *	wrapperCreate																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create wrapper.</h4><p />
+	 *
+	 * This method should create and return a wrapper object corresponding to the
+	 * provided name, if the operation fails, the method should raise an exception.
+	 *
+	 * This method assumes that the server is connected, it is the responsibility of the
+	 * caller to ensure this.
+	 *
+	 * The method should not be concerned if the wrapper already exists, it is the
+	 * responsibility of the caller to check it.
+	 *
+	 * The first parameter represents the database name, the second parameter represents a
+	 * set of native options provided to the driver when creating the database.
+	 *
+	 * The main duty of this method is to instantiate the correct wrapper derived instance
+	 * according to the current server native type, for this reason this method must be
+	 * implemented by derived concrete classes.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param array					$theOptions			Database native options.
+	 * @return Database				Database object.
+	 */
+	abstract protected function wrapperCreate( $theDatabase, $theOptions = NULL );
+
+
+	/*===================================================================================
+	 *	wrapperRetrieve																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a wrapper object.</h4><p />
+	 *
+	 * This method will return a wrapper object corresponding to the provided name, or
+	 * <tt>NULL</tt> if the provided name does not correspond to any database in the server.
+	 *
+	 * The first parameter represents the database name, the second parameter represents a
+	 * set of native options provided to the driver when creating the database.
+	 *
+	 * The method assumes that the server is connected, it is the responsibility of the
+	 * caller to ensure this.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param array					$theOptions			Database native options.
+	 * @return Database				Database object or <tt>NULL</tt> if not found.
+	 *
+	 * @uses databaseList()
+	 * @uses databaseCreate()
+	 */
+	protected function wrapperRetrieve( $theDatabase, $theOptions = NULL )
+	{
+		//
+		// Check if database exists.
+		//
+		if( in_array( $theDatabase, $this->databaseList() ) )
+			return $this->wrapperCreate( $theDatabase );							// ==>
+
+		return NULL;																// ==>
+
+	} // wrapperRetrieve.
 
 
 	/*===================================================================================

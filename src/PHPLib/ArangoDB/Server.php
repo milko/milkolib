@@ -272,6 +272,28 @@ class Server extends \Milko\PHPLib\Server
 
 
 	/*===================================================================================
+	 *	wrapperCreate																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create wrapper.</h4><p />
+	 *
+	 * We overload this method to return a wrapper of the correct type.
+	 *
+	 * @param string				$theDatabase		Database name.
+	 * @param array					$theOptions			Database native options.
+	 * @return Database				Database object.
+	 */
+	protected function wrapperCreate( $theDatabase, $theOptions = NULL )
+	{
+		return
+			new \Milko\PHPLib\ArangoDB\Wrapper(
+				$this, $theDatabase, $theOptions );									// ==>
+
+	} // wrapperCreate.
+
+
+	/*===================================================================================
 	 *	databaseList																	*
 	 *==================================================================================*/
 

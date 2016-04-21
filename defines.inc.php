@@ -31,7 +31,8 @@
  * This defines the database type: <tt>ARANGO</tt> for <b>ArangoDB</b> or <tt>MONGO</tt>
  * for <b>MongoDB</b>.
  */
-define( 'kENGINE', "ARANGO" );
+if( ! defined( 'kENGINE' ) )
+	define( 'kENGINE', "ARANGO" );
 
 /*=======================================================================================
  *	DATA SERVER ENVIRONMENT																*

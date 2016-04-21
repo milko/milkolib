@@ -207,5 +207,25 @@ const kTOKEN_OPT_COLLECTION_TYPE_DOC = 'docu';
  */
 const kTOKEN_OPT_COLLECTION_TYPE_EDGE = 'edge';
 
+/*=======================================================================================
+ *	INCREMENTAL SERIAL TOKENS															*
+ *======================================================================================*/
+
+/**
+ * <h4>Serials offset.</h4><p />
+ *
+ * This token represents the key of the {@link Descriptor} serial number record in the
+ * resources collection.
+ */
+const kTOKEN_SERIAL_OFFSET = 'serial';
+
+/**
+ * <h4>Descriptors serial key.</h4><p />
+ *
+ * This token represents the key of the {@link Descriptor} serial number record in the
+ * resources collection.
+ */
+const kTOKEN_SERIAL_DESCRIPTOR = 'descriptor';
+
 
 ?>
