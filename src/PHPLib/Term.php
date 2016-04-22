@@ -666,6 +666,12 @@ class Term extends Document
 	static function GetByGID( Collection $theCollection, $theIdentifier )
 	{
 		//
+		// Handle default namespace.
+		//
+		if( ! strlen( $theIdentifier ) )
+			$theIdentifier = md5( (string)$theIdentifier );
+
+		//
 		// Try with GID.
 		//
 		$object = $theCollection->FindByKey( (string)$theIdentifier );
