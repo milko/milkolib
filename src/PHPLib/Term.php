@@ -291,15 +291,30 @@ class Term extends Document
 	public function Delete()
 	{
 		//
-		// Get usage count.
+		// Get affected collections.
 		//
-		$count =
-			$this->mCollection->CountByExample(
+		$terms = $this->mCollection;
+		$descriptors = $this->mCollection->Database()->NewDescriptorsCollection();
+
+		//
+		// Get terms usage count.
+		//
+		$count = $terms->CountByExample(
 				[ kTAG_NS => $this->offsetGet( $this->mCollection->KeyOffset() ) ] );
 		if( $count )
 			throw new \RuntimeException (
 				"Cannot delete the term: " .
-				"it is the namespace of $count other terms." );					// !@! ==>
+				"it is the namespace of $count terms." );						// !@! ==>
+
+		//
+		// Get descriptors usage count.
+		//
+		$count = $descriptors->CountByExample(
+			[ kTAG_NS => $this->offsetGet( $this->mCollection->KeyOffset() ) ] );
+		if( $count )
+			throw new \RuntimeException (
+				"Cannot delete the term: " .
+				"it is the namespace of $count descriptors." );					// !@! ==>
 
 		return parent::Delete();													// ==>
 

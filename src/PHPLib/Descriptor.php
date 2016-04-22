@@ -166,6 +166,48 @@ class Descriptor extends Term
 
 
 	/*===================================================================================
+	 *	Store																			*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Store object.</h4>
+	 *
+	 * We overload this method to store the descriptor into the wrapper cache.
+	 *
+	 * @return mixed				The document handle.
+	 *
+	 * @uses IsModified()
+	 * @uses IsPersistent()
+	 * @uses Collection::NewDocumentHandle()
+	 */
+	public function Store()
+	{
+		//
+		// Set in cache.
+		//
+		if( $this->IsModified()
+		 || (! $this->IsPersistent()) )
+		{
+			//
+			// Store.
+			//
+			$handle = parent::Store();
+
+			//
+			// Set in cache.
+			//
+			$this->mCollection->Database()->SetDescriptor( $this );
+
+			return $handle;															// ==>
+
+		} // Modified or not persistent.
+
+		return $this->mCollection->NewDocumentHandle( $this );						// ==>
+
+	} // Store.
+
+
+	/*===================================================================================
 	 *	Delete																			*
 	 *==================================================================================*/
 
@@ -190,7 +232,17 @@ class Descriptor extends Term
 			// Check if in use.
 			//
 			if( ! ($count = $this->offsetGet( kTAG_REF_COUNT )) )
-				return parent::Delete();											// ==>
+			{
+				//
+				// Delete.
+				//
+				$count = parent::Delete();
+				if( $count )
+					$this->Collection()->Database()->DelDescriptor(
+						$this->offsetGet( $this->mCollection->KeyOffset() ) );
+
+				return $count;														// ==>
+			}
 
 			throw new \RuntimeException (
 				"Cannot delete the descriptor: " .

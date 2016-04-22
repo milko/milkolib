@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include global definitions.
@@ -77,6 +77,27 @@ echo( "Instantiate wrapper:\n" );
 echo( '$wrapper = $server->NewWrapper( "test_milkolib" );' . "\n" );
 $wrapper = $server->NewWrapper( "test_milkolib" );
 echo( "Class: " . get_class( $wrapper ) . "\n" );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Get descriptor by key.
+//
+echo( "Get descriptor by key:\n" );
+echo( '$result = $wrapper->GetDescriptor( kTAG_NAME );' . "\n" );
+$result = $wrapper->GetDescriptor( kTAG_NAME );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Get descriptors by key.
+//
+echo( "Get descriptors by key:\n" );
+echo( '$result = $wrapper->GetDescriptor( [ kTAG_NAME, kTAG_DESCRIPTION, "/////", kTAG_GID ] );' . "\n" );
+$result = $wrapper->GetDescriptor( [ kTAG_NAME, kTAG_DESCRIPTION, "PIPPO", kTAG_GID ] );
+print_r( $result );
+
 exit;
 
 echo( "\n====================================================================================\n\n" );

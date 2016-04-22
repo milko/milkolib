@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -233,8 +233,8 @@ echo( "\n" );
 // Set namespace by term.
 //
 echo( "Set namespace by term:\n" );
-echo( '$result = $descriptor->offsetSet( kTAG_NS, $namespace );' . "\n" );
-$result = $descriptor->offsetSet( kTAG_NS, $namespace );
+echo( '$descriptor->offsetSet( kTAG_NS, $namespace );' . "\n" );
+$descriptor->offsetSet( kTAG_NS, $namespace );
 print_r( $descriptor->getArrayCopy() );
 
 echo( "\n" );
@@ -276,6 +276,16 @@ echo( "Modified:   " . (( $result->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $result->IsPersistent() ) ? "Yes\n" : "No\n") );
 echo( "Data: " );
 print_r( $result->getArrayCopy() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Get descriptors from cache.
+//
+echo( "Get descriptors from cache:\n" );
+echo( '$result = $wrapper->GetDescriptor( "builtin" );' . "\n" );
+$result = $wrapper->GetDescriptor( "builtin" );
+print_r( $result );
 
 
 ?>

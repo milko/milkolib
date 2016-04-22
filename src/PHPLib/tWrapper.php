@@ -116,6 +116,220 @@ trait tWrapper
 	abstract public function NewDescriptorKey();
 
 
+	/*===================================================================================
+	 *	SetDescriptor																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set a descriptor in the cache.</h4>
+	 *
+	 * This method will set the provided descriptor(s) in the cache, the method expects a
+	 * {@link Descriptor} instance or an array of descriptors; on any error the method will
+	 * raise an exception.
+	 *
+	 * @param Descriptor|array		$theDescriptor		Descriptor(s).
+	 */
+	public function SetDescriptor( $theDescriptor )
+	{
+		//
+		// Convert to array.
+		//
+		if( ! is_array( $theDescriptor ) )
+			$theDescriptor = [ $theDescriptor ];
+
+		//
+		// Iterate descriptors.
+		//
+		foreach( $theDescriptor as $descriptor )
+		{
+			//
+			// Convert document.
+			//
+			$data = $descriptor->toArray();
+
+			//
+			// Get key.
+			//
+			$key = $data[ $descriptor->Collection()->KeyOffset() ];
+			unset( $data[ $descriptor->Collection()->KeyOffset() ] );
+
+			//
+			// cache descriptor.
+			//
+			$result = $this->mCache->set( $key, $data );
+			if( $result === FALSE )
+				throw new \RuntimeException(
+					$this->mCache->getResultMessage(),
+					$this->mCache->getResultCode() );							// !@! ==>
+
+		} // Iterating descriptors.
+
+	} // SetDescriptor.
+
+
+	/*===================================================================================
+	 *	GetDescriptor																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a descriptor from the cache.</h4>
+	 *
+	 * This method will return the descriptor matching the provided key from the cache, the
+	 * method expects the key to be either a string, in which case the method will return a
+	 * scalar, or an array, in which case the method will return the list of descriptors.
+	 *
+	 * If the descriptor cannot be found, the method will return <tt>NULL</tt>; when
+	 * providing a list of keys, the methos will omit missing descriptors.
+	 *
+	 * @param string|array			$theKey				Key(s).
+	 * @return Descriptor|array		Found descriptor(s).
+	 */
+	public function GetDescriptor( $theKey )
+	{
+		//
+		// Handle list of keys.
+		//
+		if( is_array( $theKey ) )
+		{
+			//
+			// Get set.
+			//
+			$list = $this->mCache->getMulti( $theKey );
+			if( $list !== FALSE )
+				return $list;														// ==>
+
+			throw new \RuntimeException(
+				$this->mCache->getResultMessage(),
+				$this->mCache->getResultCode() );								// !@! ==>
+		}
+
+		//
+		// Get descriptor.
+		//
+		$descriptor = $this->mCache->get( $theKey );
+		if( $descriptor !== FALSE )
+			return $descriptor;														// ==>
+
+		//
+		// Handle not found.
+		//
+		if( $this->mCache->getResultMessage() == \Memcached::RES_NOTFOUND )
+			return NULL;															// ==>
+
+		throw new \RuntimeException(
+			$this->mCache->getResultMessage(),
+			$this->mCache->getResultCode() );									// !@! ==>
+
+	} // GetDescriptor.
+
+
+	/*===================================================================================
+	 *	DelDescriptor																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Remove a descriptor from the cache.</h4>
+	 *
+	 * This method will remove the descriptor matching the provided key from the cache, the
+	 * method expects the key to be either a string or an array of descriptor keys.
+	 *
+	 * @param string|array			$theKey				Key(s).
+	 */
+	public function DelDescriptor( $theKey )
+	{
+		//
+		// Handle list of keys.
+		//
+		if( is_array( $theKey ) )
+		{
+			//
+			// Delete set.
+			//
+			$result = $this->mCache->deleteMulti( $theKey );
+			if( $result === FALSE )
+				throw new \RuntimeException(
+					$this->mCache->getResultMessage(),
+					$this->mCache->getResultCode() );							// !@! ==>
+		}
+
+		//
+		// Handle single key.
+		//
+		else
+		{
+			//
+			// Delete key.
+			//
+			$result = $this->mCache->delete( $theKey );
+			if( $result === FALSE )
+				throw new \RuntimeException(
+					$this->mCache->getResultMessage(),
+					$this->mCache->getResultCode() );							// !@! ==>
+		}
+
+	} // DelDescriptor.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC CACHING INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	CacheDataDictionary																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Cache data dictionary.</h4>
+	 *
+	 * This method will load the data dictionary into the cache.
+	 *
+	 * @uses NewTermsCollection()
+	 * @uses NewResourcesCollection()
+	 * @uses NewDescriptorsCollection()
+	 * @uses initResources()
+	 * @uses initTerms()
+	 */
+	public function CacheDataDictionary()
+	{
+		//
+		// Get default collections.
+		//
+		$terms = $this->NewTermsCollection();
+		$resources = $this->NewResourcesCollection();
+		$descriptors = $this->NewDescriptorsCollection();
+
+		//
+		// Get descriptors.
+		//
+		$list = $descriptors->Find();
+		foreach( $list as $descriptor )
+		{
+			//
+			// Convert document.
+			//
+			$data = $descriptor->toArray();
+
+			//
+			// Get key.
+			//
+			$key = $data[ $descriptors->KeyOffset() ];
+			unset( $data[ $descriptors->KeyOffset() ] );
+
+			//
+			// cache descriptor.
+			//
+			$this->mCache->add( $key, $data );
+
+		} // Iterating descriptors.
+
+	} // CacheDataDictionary.
+
+
 
 /*=======================================================================================
  *																						*
@@ -204,11 +418,6 @@ trait tWrapper
 			//
 			$this->buildDataDictionary();
 
-			//
-			// Cache data dictionary.
-			//
-			$this->cacheDataDictionary();
-
 		} // Empty resources collection.
 
 	} // initDataDictionary.
@@ -294,57 +503,6 @@ trait tWrapper
 		$this->initDescriptors( $terms, $descriptors );
 
 	} // buildDataDictionary.
-
-
-	/*===================================================================================
-	 *	cacheDataDictionary																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Cache data dictionary.</h4>
-	 *
-	 * This method will load the data dictionary into the cache.
-	 *
-	 * @uses NewTermsCollection()
-	 * @uses NewResourcesCollection()
-	 * @uses NewDescriptorsCollection()
-	 * @uses initResources()
-	 * @uses initTerms()
-	 */
-	protected function cacheDataDictionary()
-	{
-		//
-		// Get default collections.
-		//
-		$terms = $this->NewTermsCollection();
-		$resources = $this->NewResourcesCollection();
-		$descriptors = $this->NewDescriptorsCollection();
-
-		//
-		// Get descriptors.
-		//
-		$list = $descriptors->Find();
-		foreach( $list as $descriptor )
-		{
-			//
-			// Convert document.
-			//
-			$data = $descriptor->toArray();
-
-			//
-			// Get key.
-			//
-			$key = $data[ $descriptors->KeyOffset() ];
-			unset( $data[ $descriptors->KeyOffset() ] );
-
-			//
-			// cache descriptor.
-			//
-			$this->mCache->add( $key, $data );
-
-		} // Iterating descriptors.
-
-	} // cacheDataDictionary.
 
 
 	/*===================================================================================
