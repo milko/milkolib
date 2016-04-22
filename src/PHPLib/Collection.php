@@ -783,29 +783,88 @@ abstract class Collection
 	 * method expects a single parameter that represents the document expressed as a value
 	 * compatible with the {@link NewDocumentNative()} method.
 	 *
-	 * The method will return the newly inserted document key.
-	 *
-	 * After inserting the data into the collection, depending on the type of document
-	 * provided, this method will perform the following actions:
+	 * When providing {@link Document} derived instances, the method will perform the
+	 * following steps prior to inserting the data:
 	 *
 	 * <ul>
-	 * 	<li><tt>{@link \ArrayObject}</tt>: The method will set the newly inserted key.
-	 * 	<li><tt>{@link Document}</tt>: The method will set the document's
-	 * 		{@link Document::IsPersistent()} state and reset the
-	 * 		{@link Document::IsModified()} state.
+	 * 	<li><tt>{@link Document::Validate()}</tt>: The method will validate the document.
+	 * 	<li><tt>{@link Document::TraverseDocument()}</tt>: The method will traverse the
+	 * 		document structure validating and collecting its properties with
+	 * 		<tt>{@link Document::SetPropertiesList()}</tt>.
+	 * 	<li><tt>{@link Document::PrepareInsert()}</tt>: The method will prepare the document
+	 * 		for insertion.
 	 * </ul>
 	 *
-	 * These operations will be performed by the {@link normaliseInsertedDocument()} which
-	 * can be overloaded in derived classes.
+	 * Once these steps have bben performed the method will:
 	 *
-	 * The method expects a valid document: validation is the duty of the caller.
+	 * <ul>
+	 * 	<li><tt>{@link NewDocumentNative()}</tt>: Convert data into a native document.
+	 * 	<li><tt>{@link documentInsert()}</tt>: Insert the document into the collection.
+	 * 	<li><tt>{@link normaliseInsertedDocument()}</tt>: Normalise the inserted document:
+	 * 	 <ul>
+	 * 		<li><tt>{@link \ArrayObject}</tt>: The method will set the newly inserted key.
+	 * 		<li><tt>{@link Document}</tt>: The method will set the document's
+	 * 			{@link Document::IsPersistent()} state and reset the
+	 * 			{@link Document::IsModified()} state.
+	 * 	 </ul>
+	 * </ul>
 	 *
-	 * This method must be implemented by derived concrete classes.
+	 * The method will return the newly inserted document key.
 	 *
-	 * @param array					$theDocument		The document data.
+	 * @param mixed					$theDocument		The document data.
 	 * @return mixed				The document's key.
+	 *
+	 * @uses NewDocumentNative()
+	 * @uses documentInsert()
+	 * @uses normaliseInsertedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
+	 * @uses Document::PrepareInsert()
 	 */
-	abstract public function Insert( $theDocument );
+	public function Insert( $theDocument )
+	{
+		//
+		// Validate and prepare document.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Validate document.
+			//
+			$theDocument->Validate();
+
+			//
+			// Store sub-documents and collect offsets.
+			//
+			$theDocument->SetPropertiesList(
+				$theDocument->Traverse(), $this );
+
+			//
+			// Prepare document.
+			//
+			$theDocument->PrepareInsert();
+
+		} // Document instance.
+
+		//
+		// Convert document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Insert document.
+		//
+		$key = $this->documentInsert( $document );
+
+		//
+		// Normalise document.
+		//
+		$this->normaliseInsertedDocument( $theDocument, $document, $key );
+
+		return $key;																// ==>
+
+	} // Insert.
 
 
 	/*===================================================================================
@@ -822,14 +881,27 @@ abstract class Collection
 	 *
 	 * The method will return the list of newly inserted document keys.
 	 *
-	 * The method expects a set of valid documents: validation is the duty of the caller.
-	 *
-	 * This method must be implemented by derived concrete classes.
-	 *
 	 * @param array					$theDocuments		The documents set as an array.
 	 * @return array				The document unique identifiers.
+	 *
+	 * @uses Insert()
 	 */
-	abstract public function InsertMany( array $theDocuments );
+	public function InsertMany( array $theDocuments )
+	{
+		//
+		// Init local storage.
+		//
+		$ids = [];
+
+		//
+		// Iterate set.
+		//
+		foreach( $theDocuments as $document )
+			$ids[] = $this->Insert( $document );
+
+		return $ids;																// ==>
+
+	} // InsertMany.
 
 
 	/*===================================================================================
@@ -874,26 +946,95 @@ abstract class Collection
 	 * The method expects the replacement document to have its key, if that is missing, the
 	 * method should raise an exception.
 	 *
-	 * After replacing the document, depending on the type of document provided, this method
-	 * will perform the following actions:
+	 * When providing {@link Document} derived instances, the method will perform the
+	 * following steps prior to replacing:
 	 *
 	 * <ul>
-	 * 	<li><tt>{@link Document}</tt>: The method will set the document's
-	 * 		{@link Document::IsPersistent()} state and reset the
-	 * 		{@link Document::IsModified()} state.
+	 * 	<li><tt>{@link Document::Validate()}</tt>: The method will validate the document.
+	 * 	<li><tt>{@link Document::TraverseDocument()}</tt>: The method will traverse the
+	 * 		document structure validating and collecting its properties with
+	 * 		<tt>{@link Document::SetPropertiesList()}</tt>.
+	 * 	<li><tt>{@link Document::PrepareInsert()}</tt>: The method will prepare the document
+	 * 		for insertion.
 	 * </ul>
 	 *
-	 * These operations will be performed by the {@link normaliseReplacedDocument()} which
-	 * can be overloaded in derived classes.
+	 * Once these steps have bben performed the method will:
 	 *
-	 * The method expects a valid document: validation is the duty of the caller.
+	 * <ul>
+	 * 	<li><tt>{@link NewDocumentNative()}</tt>: Convert data into a native document.
+	 * 	<li><tt>{@link documentReplace()}</tt>: Replace the document in the collection.
+	 * 	<li><tt>{@link normaliseReplacedDocument()}</tt>: Normalise the replaced document:
+	 * 	 <ul>
+	 * 		<li><tt>{@link Document}</tt>: The method will reset the document's
+	 * 			{@link Document::IsPersistent()} state and set the
+	 * 			{@link Document::IsModified()} state.
+	 * 	 </ul>
+	 * </ul>
 	 *
-	 * This method must be implemented by derived concrete classes.
+	 * The method will return the number of replaced documents.
 	 *
 	 * @param mixed					$theDocument		The replacement document.
 	 * @return int					The number of replaced documents.
+	 *
+	 * @uses NewDocumentKey()
+	 * @uses NewDocumentNative()
+	 * @uses documentReplace()
+	 * @uses normaliseReplacedDocument()
+	 * @uses Document::Validate()
+	 * @uses Document::TraverseDocument()
+	 * @uses Document::SetPropertiesList()
+	 * @uses Document::PrepareReplace()
 	 */
-	abstract public function Replace( $theDocument );
+	public function Replace( $theDocument )
+	{
+		//
+		// Validate and prepare document.
+		//
+		if( $theDocument instanceof Document )
+		{
+			//
+			// Validate document.
+			//
+			$theDocument->Validate();
+
+			//
+			// Store sub-documents.
+			//
+			$theDocument->SetPropertiesList(
+				$theDocument->Traverse(), $this );
+
+			//
+			// Prepare document.
+			//
+			$theDocument->PrepareReplace();
+
+		} // Document instance.
+
+		//
+		// Get document key.
+		// This will throw if key is missing.
+		//
+		$key = $this->NewDocumentKey( $theDocument );
+
+		//
+		// Convert document.
+		//
+		$document = $this->NewDocumentNative( $theDocument );
+
+		//
+		// Replace document.
+		//
+		$count = $this->documentReplace( $key, $document );
+
+		//
+		// Normalise document.
+		//
+		if( $count )
+			$this->normaliseReplacedDocument( $theDocument, $document );
+
+		return $count;																// ==>
+
+	} // Replace.
 
 
 	/*===================================================================================
@@ -1876,6 +2017,58 @@ abstract class Collection
 	 * @return mixed				Document handle.
 	 */
 	abstract protected function documentHandleCreate( $theKey );
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED PERSISTENCE INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	documentInsert																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a document.</h4>
+	 *
+	 * This method should insert the provided document into the current collection and
+	 * return the newly created record key.
+	 *
+	 * The method expects a single parameter representing the document in the database
+	 * native format.
+	 *
+	 * The method must be implemented in concrete derived classes.
+	 *
+	 * @param mixed					$theDocument		The native document to insert.
+	 * @return mixed				The inserted document key.
+	 */
+	abstract protected function documentInsert( $theDocument );
+
+
+	/*===================================================================================
+	 *	documentReplace																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Replace a document.</h4>
+	 *
+	 * This method should replace the provided document in the current collection and
+	 * return <tt>1</tt> if the document was repaled, or <tt>0</tt>.
+	 *
+	 * The method expects the document key and the replacement document in the database
+	 * native format.
+	 *
+	 * The method must be implemented in concrete derived classes.
+	 *
+	 * @param mixed					$theKey				The document key.
+	 * @param mixed					$theDocument		The replacement native document.
+	 * @return mixed				The number of replaced documents.
+	 */
+	abstract protected function documentReplace( $theKey, $theDocument );
 
 
 

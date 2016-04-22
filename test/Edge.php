@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -37,7 +37,7 @@ class DST extends \Milko\PHPLib\Document{}
 //
 // Enable exception logging.
 //
-triagens\ArangoDb\Exception::enableLogging();
+//triagens\ArangoDb\Exception::enableLogging();
 
 //
 // Instantiate connection.
@@ -97,8 +97,8 @@ echo( "\n=======================================================================
 // Instantiate edge.
 //
 echo( "Instantiate edge:\n" );
-echo( '$edge = new Milko\PHPLib\Edge( $predicates, [$predicates->KeyOffset() => "Predicate1", kTAG_NAME => ["en" => "Predicate"]] );' . "\n" );
-$edge = new Milko\PHPLib\Edge( $predicates, [$predicates->KeyOffset() => "Predicate1", kTAG_NAME => ["en" => "Predicate"]] );
+echo( '$edge = new Milko\PHPLib\Edge( $predicates, [$predicates->KeyOffset() => "Predicate1", kTAG_NAME => ["en" => "Predicate"], "data" => "DATA"] );' . "\n" );
+$edge = new Milko\PHPLib\Edge( $predicates, [$predicates->KeyOffset() => "Predicate1", kTAG_NAME => ["en" => "Predicate"], "data" => "DATA"] );
 echo( "Class: " . get_class( $edge ) . "\n" );
 echo( "Modified:   " . (( $edge->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $edge->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -276,6 +276,34 @@ print_r( $edge->getArrayCopy() );
 echo( "\n====================================================================================\n\n" );
 
 //
+// Get source vertex.
+//
+echo( "Get source vertex:\n" );
+echo( '$result = $edge->GetSource();' . "\n" );
+$result = $edge->GetSource();
+echo( "Class: " . get_class( $result ) . "\n" );
+echo( "Modified:   " . (( $result->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $result->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $result->getArrayCopy() );
+
+echo( "\n" );
+
+//
+// Get destination vertex.
+//
+echo( "Get destination vertex:\n" );
+echo( '$result = $edge->GetDestination();' . "\n" );
+$result = $edge->GetDestination();
+echo( "Class: " . get_class( $result ) . "\n" );
+echo( "Modified:   " . (( $result->IsModified() ) ? "Yes\n" : "No\n") );
+echo( "Persistent: " . (( $result->IsPersistent() ) ? "Yes\n" : "No\n") );
+echo( "Data: " );
+print_r( $result->getArrayCopy() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
 // Get SRC incoming edges.
 //
 echo( "Get SRC incoming edges:\n" );
@@ -409,6 +437,23 @@ catch( RuntimeException $error )
 {
 	echo( "SUCCEEDED! - Has raised an exception.\n" );
 	echo( $error->getMessage() . "\n" );
+}
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Get edge by example.
+//
+echo( "Get edge by example:\n" );
+echo( '$result = $predicates->FindByExample( ["data" => "DATA"] );' . "\n" );
+$result = $predicates->FindByExample( ["data" => "DATA"] );
+foreach( $result as $document )
+{
+	echo( "Class: " . get_class( $document ) . "\n" );
+	echo( "Modified:   " . (( $document->IsModified() ) ? "Yes\n" : "No\n") );
+	echo( "Persistent: " . (( $document->IsPersistent() ) ? "Yes\n" : "No\n") );
+	echo( "Data: " );
+	print_r( $document->getArrayCopy() );
 }
 
 

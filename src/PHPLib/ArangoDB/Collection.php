@@ -49,6 +49,70 @@ use triagens\ArangoDb\UpdatePolicy as ArangoUpdatePolicy;
  */
 class Collection extends \Milko\PHPLib\Collection
 {
+	/**
+	 * <h4>Document handler.</h4>
+	 *
+	 * This data member holds the document handler.
+	 *
+	 * @var ArangoDocumentHandler
+	 */
+	protected $mDocumentHandler = NULL;
+
+	/**
+	 * <h4>Collection handler.</h4>
+	 *
+	 * This data member holds the collection handler.
+	 *
+	 * @var ArangoCollectionHandler
+	 */
+	protected $mCollectionHandler = NULL;
+
+
+
+
+/*=======================================================================================
+ *																						*
+ *										MAGIC											*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	__construct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Instantiate class.</h4>
+	 *
+	 * We overload this method to instantiate the collection and document handlers used for
+	 * database operations, we store them in the object attributes to prevent having to
+	 * instantiate them each time an operation requires them.
+	 *
+	 * @param Database				$theDatabase		Database.
+	 * @param string				$theCollection		Collection name.
+	 * @param array					$theOptions			Native driver options.
+	 */
+	public function __construct( Database $theDatabase, $theCollection, $theOptions = NULL )
+	{
+		//
+		// Store document handler.
+		//
+		$this->mDocumentHandler
+			= new ArangoDocumentHandler( $theDatabase->Connection() );
+
+		//
+		// Store collection handler.
+		//
+		$this->mCollectionHandler
+			= new ArangoCollectionHandler( $theDatabase->Connection() );
+
+		//
+		// Call parent constructor.
+		//
+		parent::__construct( $theDatabase, $theCollection, $theOptions );
+
+	} // Constructor.
 
 
 
@@ -150,14 +214,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $this->mConnection->getId() !== NULL )
 		{
 			//
-			// Instantiate collection handler.
-			//
-			$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-			//
 			// Drop collection.
 			//
-			$handler->drop( $this->mConnection->getName() );
+			$this->mCollectionHandler->drop( $this->mConnection->getName() );
 
 			return TRUE;															// ==>
 
@@ -191,14 +250,9 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $this->mConnection->getId() !== NULL )
 		{
 			//
-			// Instantiate collection handler.
-			//
-			$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-			//
 			// Truncate collection.
 			//
-			$handler->truncate( $this->mConnection );
+			$this->mCollectionHandler->truncate( $this->mConnection );
 
 			return TRUE;															// ==>
 
@@ -496,163 +550,6 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	Insert																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert document.</h4>
-	 *
-	 * We implement this method by converting the provided array into a native document and
-	 * using the {@link triagens\ArangoDb\DocumentHandler::save()} method to insert it, we
-	 * then call the {@link normaliseInsertedDocument()} method that will take care of
-	 * updating the document's properties if necessary.
-	 *
-	 * @param array					$theDocument		The document data.
-	 * @return mixed				The document's key.
-	 *
-	 * @uses NewDocumentNative()
-	 * @uses normaliseInsertedDocument()
-	 * @uses Document::Validate()
-	 * @uses Document::TraverseDocument()
-	 * @uses Document::SetPropertiesList()
-	 * @uses Document::PrepareInsert()
-	 * @uses triagens\ArangoDb\DocumentHandler::save()
-	 */
-	public function Insert( $theDocument )
-	{
-		//
-		// Validate and prepare document.
-		//
-		if( $theDocument instanceof Document )
-		{
-			//
-			// Validate document.
-			//
-			$theDocument->Validate();
-
-			//
-			// Store sub-documents and collect offsets.
-			//
-			$theDocument->SetPropertiesList(
-				$theDocument->Traverse(), $this );
-
-			//
-			// Prepare document.
-			//
-			$theDocument->PrepareInsert();
-
-		} // Document instance.
-
-		//
-		// Instantiate handler.
-		//
-		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
-
-		//
-		// Convert document.
-		//
-		$document = $this->NewDocumentNative( $theDocument );
-
-		//
-		// Insert document.
-		//
-		$key = $handler->save( $this->mConnection, $document );
-
-		//
-		// Normalise document.
-		//
-		$this->normaliseInsertedDocument( $theDocument, $document, $key );
-
-		return $key;																// ==>
-
-	} // Insert.
-
-
-	/*===================================================================================
-	 *	InsertMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a set of documents.</h4>
-	 *
-	 * We implement this method by iterating the provided array, converting the elements to
-	 * the database native format ({@link documentNativeCreate()}) and saving them.
-	 *
-	 * @param array					$theDocuments		The documents set as an array.
-	 * @return array				The document unique identifiers.
-	 *
-	 * @uses NewDocumentNative()
-	 * @uses normaliseInsertedDocument()
-	 * @uses Document::Validate()
-	 * @uses Document::TraverseDocument()
-	 * @uses Document::SetPropertiesList()
-	 * @uses Document::PrepareInsert()
-	 * @uses triagens\ArangoDb\DocumentHandler::save()
-	 */
-	public function InsertMany( array $theDocuments )
-	{
-		//
-		// Instantiate handler.
-		//
-		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
-
-		//
-		// Iterate documents.
-		//
-		$ids = [];
-		foreach( $theDocuments as $document )
-		{
-			//
-			// Validate and prepare document.
-			//
-			if( $document instanceof Document )
-			{
-				//
-				// Validate document.
-				//
-				$document->Validate();
-
-				//
-				// Store sub-documents.
-				//
-				$document->SetPropertiesList(
-					$document->Traverse(), $this );
-
-				//
-				// Prepare document.
-				//
-				$document->PrepareInsert();
-
-			} // Document instance.
-
-			//
-			// Convert document.
-			//
-			$native = $this->NewDocumentNative( $document );
-
-			//
-			// Insert document.
-			//
-			$key = $handler->save( $this->mConnection, $native );
-
-			//
-			// Normalise document.
-			//
-			$this->normaliseInsertedDocument( $document, $native, $key );
-
-			//
-			// Add key.
-			//
-			$ids[] = $key;
-
-		} // Iterating documents.
-
-		return $ids;																// ==>
-
-	} // InsertMany.
-
-
-	/*===================================================================================
 	 *	InsertBulk																		*
 	 *==================================================================================*/
 
@@ -671,16 +568,11 @@ class Collection extends \Milko\PHPLib\Collection
 	public function InsertBulk( $theDocuments )
 	{
 		//
-		// Instantiate handler.
-		//
-		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
-
-		//
 		// Iterate documents.
 		//
 		$ids = [];
 		foreach( $theDocuments as $document )
-			$ids[] = $handler->save( $this->mConnection, $document );
+			$ids[] = $this->mDocumentHandler->save( $this->mConnection, $document );
 
 		return $ids;																// ==>
 
@@ -694,114 +586,6 @@ class Collection extends \Milko\PHPLib\Collection
  *																						*
  *======================================================================================*/
 
-
-
-	/*===================================================================================
-	 *	Replace																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Replace document.</h4>
-	 *
-	 * We implement this method by converting the provided document to native format,
-	 * checking whether the key exists and calling the
-	 * {@link triagens\ArangoDb\DocumentHandler::replaceById()} method.
-	 *
-	 * If the document was replaced, the method will return <tt>1</tt>, if the document was
-	 * not found, the method will return <tt>0</tt>; any other error will trigger an
-	 * exception.
-	 *
-	 * If the provided document doesn't have its key ({@link KeyOffset()}), the method will
-	 * raise an exception.
-	 *
-	 * @param mixed					$theDocument		The replacement document.
-	 * @return int					The number of replaced documents.
-	 *
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentNative()
-	 * @uses normaliseReplacedDocument()
-	 * @uses Document::Validate()
-	 * @uses Document::TraverseDocument()
-	 * @uses Document::SetPropertiesList()
-	 * @uses Document::PrepareReplace()
-	 * @uses triagens\ArangoDb\DocumentHandler::replaceById()
-	 */
-	public function Replace( $theDocument )
-	{
-		//
-		// Validate and prepare document.
-		//
-		if( $theDocument instanceof Document )
-		{
-			//
-			// Validate document.
-			//
-			$theDocument->Validate();
-
-			//
-			// Store sub-documents.
-			//
-			$theDocument->SetPropertiesList(
-				$theDocument->Traverse(), $this );
-
-			//
-			// Prepare document.
-			//
-			$theDocument->PrepareReplace();
-
-		} // Document instance.
-
-		//
-		// Get document key.
-		// This will throw if key is missing.
-		//
-		$key = $this->NewDocumentKey( $theDocument );
-
-		//
-		// Convert replacement document.
-		//
-		$document = $this->NewDocumentNative( $theDocument );
-
-		//
-		// Instantiate document handler.
-		//
-		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
-
-		//
-		// Assert document exists.
-		//
-		try
-		{
-			//
-			// Replace document.
-			//
-			$handler->replaceById( $this->collectionName(), $key, $document );
-
-			//
-			// Normalise document.
-			//
-			$this->normaliseReplacedDocument( $theDocument, $document );
-
-			return 1;																// ==>
-
-		} // Found document.
-
-		//
-		// Handle missing document.
-		//
-		catch( ArangoServerException $error )
-		{
-			//
-			// Skip not found.
-			//
-			if( $error->getCode() != 404 )
-				throw $error;													// !@! ==>
-
-		} // Document not found.
-
-		return 0;																	// ==>
-
-	} // Replace.
 
 
 	/*===================================================================================
@@ -856,11 +640,6 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $count )
 		{
 			//
-			// Instantiate document handler.
-			//
-			$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
-
-			//
 			// Process selection.
 			//
 			foreach( $cursor as $document )
@@ -874,7 +653,7 @@ class Collection extends \Milko\PHPLib\Collection
 				//
 				// Update document.
 				//
-				$handler->update( $document, [ 'keepNull' => FALSE ] );
+				$this->mDocumentHandler->update( $document, [ 'keepNull' => FALSE ] );
 
 				//
 				// Handle only first.
@@ -928,16 +707,10 @@ class Collection extends \Milko\PHPLib\Collection
 		$document = $this->documentNativeCreate( $theDocument );
 
 		//
-		// Get collection and document handlers.
-		//
-		$documentHandler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
-		$collectionHandler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Select documents.
 		//
 		$cursor =
-			$collectionHandler->byExample(
+			$this->mCollectionHandler->byExample(
 				$this->collectionName(), $document );
 
 		//
@@ -955,7 +728,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Update document.
 			//
-			$documentHandler->update( $document, [ 'keepNull' => FALSE ] );
+			$this->mDocumentHandler->update( $document, [ 'keepNull' => FALSE ] );
 
 			//
 			// Handle only first.
@@ -1066,15 +839,10 @@ class Collection extends \Milko\PHPLib\Collection
 		if( $theOptions[ kTOKEN_OPT_MANY ] )
 		{
 			//
-			// Instantiate collection handler.
-			//
-			$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-			//
 			// Get documents.
 			//
 			$result =
-				$handler->lookupByKeys(
+				$this->mCollectionHandler->lookupByKeys(
 					$this->mConnection->getID(), (array)$theKey );
 
 			//
@@ -1095,14 +863,9 @@ class Collection extends \Milko\PHPLib\Collection
 		try
 		{
 			//
-			// Instantiate document handler.
-			//
-			$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
-
-			//
 			// Find document.
 			//
-			$result = $handler->getById( $this->collectionName(), $theKey );
+			$result = $this->mDocumentHandler->getById( $this->collectionName(), $theKey );
 
 			//
 			// Handle native result.
@@ -1159,11 +922,6 @@ class Collection extends \Milko\PHPLib\Collection
 							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
 	{
 		//
-		// Instantiate document handler.
-		//
-		$handler = new ArangoDocumentHandler( $this->mDatabase->Connection() );
-
-		//
 		// Handle list.
 		//
 		if( $theOptions[ kTOKEN_OPT_MANY ] )
@@ -1187,7 +945,9 @@ class Collection extends \Milko\PHPLib\Collection
 					//
 					// Find document.
 					//
-					$document = $handler->getById( $handle[ 0 ], $handle[ 1 ] );
+					$document =
+						$this->mDocumentHandler
+							->getById( $handle[ 0 ], $handle[ 1 ] );
 
 					//
 					// Format document.
@@ -1230,7 +990,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Find document.
 			//
-			$document = $handler->getById( $handle[ 0 ], $handle[ 1 ] );
+			$document = $this->mDocumentHandler->getById( $handle[ 0 ], $handle[ 1 ] );
 
 			return
 				$this->formatDocument(
@@ -1300,15 +1060,10 @@ class Collection extends \Milko\PHPLib\Collection
 		$document = $this->NewDocumentNative( $theDocument );
 
 		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Select documents.
 		//
 		$result =
-			$handler->byExample(
+			$this->mCollectionHandler->byExample(
 				$this->collectionName(), $document, $options );
 
 		//
@@ -1388,12 +1143,7 @@ class Collection extends \Milko\PHPLib\Collection
 	 */
 	public function Count()
 	{
-		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		return $handler->count( $this->collectionName() );							// ==>
+		return $this->mCollectionHandler->count( $this->collectionName() );			// ==>
 
 	} // Count.
 
@@ -1468,15 +1218,10 @@ class Collection extends \Milko\PHPLib\Collection
 		$document = $this->NewDocumentNative( $theDocument );
 
 		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Select documents.
 		//
 		$result =
-			$handler->byExample(
+			$this->mCollectionHandler->byExample(
 				$this->collectionName(), $document );
 
 		return $result->getCount();													// ==>
@@ -1548,14 +1293,11 @@ class Collection extends \Milko\PHPLib\Collection
 		}
 
 		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Remove by keys.
 		//
-		$result = $handler->removeByKeys( $this->collectionName(), $keys );
+		$result =
+			$this->mCollectionHandler->removeByKeys(
+				$this->collectionName(), $keys );
 
 		return $result[ 'removed' ];												// ==>
 
@@ -1592,15 +1334,10 @@ class Collection extends \Milko\PHPLib\Collection
 			$theKey = (array)$theKey;
 
 		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Remove by keys.
 		//
 		$result =
-			$handler->removeByKeys(
+			$this->mCollectionHandler->removeByKeys(
 				$this->collectionName(), $theKey );
 
 		return $result[ 'removed' ];												// ==>
@@ -1657,11 +1394,6 @@ class Collection extends \Milko\PHPLib\Collection
 		}
 
 		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Iterate handles.
 		//
 		$count = 0;
@@ -1670,7 +1402,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			// Remove by keys.
 			//
-			$result = $handler->removeByKeys( $collection, $keys );
+			$result = $this->mCollectionHandler->removeByKeys( $collection, $keys );
 
 			//
 			// Increment.
@@ -1717,13 +1449,8 @@ class Collection extends \Milko\PHPLib\Collection
 		//
 		$document = $this->NewDocumentNative( $theDocument );
 
-		//
-		// Get collection handler.
-		//
-		$collectionHandler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
 		return
-			$collectionHandler->removeByExample(
+			$this->mCollectionHandler->removeByExample(
 				$this->collectionName(), $document, $options );						// ==>
 
 	} // DeleteByExample.
@@ -1806,17 +1533,14 @@ class Collection extends \Milko\PHPLib\Collection
 			$theOptions = [];
 
 		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Return existing collection.
 		//
-		if( $handler->has( $theCollection ) )
-			return $handler->get( $theCollection );									// ==>
+		if( $this->mCollectionHandler->has( $theCollection ) )
+			return $this->mCollectionHandler->get( $theCollection );				// ==>
 
-		return $handler->get( $handler->create( $theCollection, $theOptions ) );	// ==>
+		return
+			$this->mCollectionHandler->get(
+				$this->mCollectionHandler->create( $theCollection, $theOptions ) );	// ==>
 
 	} // collectionCreate.
 
@@ -1923,6 +1647,89 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *							PROTECTED PERSISTENCE INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	documentInsert																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a document.</h4>
+	 *
+	 * We implement this method by using the
+	 * {@link triagens\ArangoDb\DocumentHandler::save()} method to insert the document.
+	 *
+	 * @param mixed					$theDocument		The native document to insert.
+	 * @return mixed				The inserted document key.
+	 *
+	 * @uses triagens\ArangoDb\DocumentHandler::save()
+	 */
+	protected function documentInsert( $theDocument )
+	{
+		return $this->mDocumentHandler->save( $this->mConnection, $theDocument );	// ==>
+
+	} // documentInsert.
+
+
+	/*===================================================================================
+	 *	documentReplace																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Replace a document.</h4>
+	 *
+	 * This method should replace the provided document in the current collection and
+	 * return <tt>1</tt> if the document was repaled, or <tt>0</tt>.
+	 *
+	 * The method expects the document key and the replacement document in the database
+	 * native format.
+	 *
+	 * @param mixed					$theKey				The document key.
+	 * @param mixed					$theDocument		The replacement native document.
+	 * @return mixed				The number of replaced documents.
+	 */
+	protected function documentReplace( $theKey, $theDocument )
+	{
+		//
+		// Assert document exists.
+		//
+		try
+		{
+			//
+			// Replace document.
+			//
+			$this->mDocumentHandler
+				->replaceById( $this->collectionName(), $theKey, $theDocument );
+
+			return 1;																// ==>
+
+		} // Found document.
+
+		//
+		// Handle missing document.
+		//
+		catch( ArangoServerException $error )
+		{
+			//
+			// Skip not found.
+			//
+			if( $error->getCode() != 404 )
+				throw $error;													// !@! ==>
+
+		} // Document not found.
+
+		return 0;																	// ==>
+
+	} // documentReplace.
+
+
+
+/*=======================================================================================
+ *																						*
  *								PROTECTED PERSISTENCE UTILITIES							*
  *																						*
  *======================================================================================*/
@@ -1949,22 +1756,15 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function normaliseInsertedDocument( $theDocument, $theData, $theKey )
 	{
 		//
-		// Skip native documents.
+		// Set document revision.
 		//
-		if( ! ($theDocument instanceof ArangoDocument) )
-		{
-			//
-			// Set document revision.
-			//
-			if( $theDocument instanceof \ArrayObject )
-				$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
+		if( $theDocument instanceof \ArrayObject )
+			$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
 
-			//
-			// Call parent method.
-			//
-			parent::normaliseInsertedDocument( $theDocument, $theData, $theKey );
-
-		} // Not a native document.
+		//
+		// Call parent method.
+		//
+		parent::normaliseInsertedDocument( $theDocument, $theData, $theKey );
 
 	} // normaliseInsertedDocument.
 
@@ -1988,22 +1788,15 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function normaliseReplacedDocument( $theDocument, $theData )
 	{
 		//
-		// Skip native documents.
+		// Set document revision.
 		//
-		if( ! ($theDocument instanceof ArangoDocument) )
-		{
-			//
-			// Set document revision.
-			//
-			if( $theDocument instanceof \ArrayObject )
-				$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
+		if( $theDocument instanceof \ArrayObject )
+			$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
 
-			//
-			// Call parent method.
-			//
-			parent::normaliseReplacedDocument( $theDocument, $theData );
-
-		} // Not a native document.
+		//
+		// Call parent method.
+		//
+		parent::normaliseReplacedDocument( $theDocument, $theData );
 
 	} // normaliseReplacedDocument.
 
@@ -2027,22 +1820,15 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function normaliseSelectedDocument( $theDocument, $theData )
 	{
 		//
-		// Skip native documents.
+		// Set document revision.
 		//
-		if( ! ($theDocument instanceof ArangoDocument) )
-		{
-			//
-			// Set document revision.
-			//
-			if( $theDocument instanceof \ArrayObject )
-				$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
+		if( $theDocument instanceof \ArrayObject )
+			$theDocument->offsetSet( $this->RevisionOffset(), $theData->getRevision() );
 
-			//
-			// Call parent method.
-			//
-			parent::normaliseSelectedDocument( $theDocument, $theData );
-
-		} // Not a native document.
+		//
+		// Call parent method.
+		//
+		parent::normaliseSelectedDocument( $theDocument, $theData );
 
 	} // normaliseSelectedDocument.
 
@@ -2065,22 +1851,15 @@ class Collection extends \Milko\PHPLib\Collection
 	protected function normaliseDeletedDocument( $theDocument )
 	{
 		//
-		// Skip native documents.
+		// Call parent method.
 		//
-		if( ! ($theDocument instanceof ArangoDocument) )
-		{
-			//
-			// Call parent method.
-			//
-			parent::normaliseDeletedDocument( $theDocument );
+		parent::normaliseDeletedDocument( $theDocument );
 
-			//
-			// Remove revision.
-			//
-			if( $theDocument instanceof \ArrayObject )
-				$theDocument->offsetUnset( $this->RevisionOffset() );
-
-		} // Not a native document.
+		//
+		// Remove document revision.
+		//
+		if( $theDocument instanceof \ArrayObject )
+			$theDocument->offsetUnset( $this->RevisionOffset() );
 
 	} // normaliseDeletedDocument.
 

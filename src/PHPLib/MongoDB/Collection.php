@@ -20,6 +20,7 @@ use Milko\PHPLib\MongoDB\Database;
 use MongoDB\BSON\UTCDatetime;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
+use MongoDB\Operation\ReplaceOne;
 
 /**
  * <h4>Collection ancestor object.</h4>
@@ -384,108 +385,6 @@ class Collection extends \Milko\PHPLib\Collection
 
 
 	/*===================================================================================
-	 *	Insert																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert document.</h4>
-	 *
-	 * We implement this method by using the {@link \MongoDB\Collection::insertOne()} method
-	 * to save the document.
-	 *
-	 * @param array					$theDocument		The document data.
-	 * @return mixed				The document's key.
-	 *
-	 * @uses NewDocumentNative()
-	 * @uses normaliseInsertedDocument()
-	 * @uses Document::Validate()
-	 * @uses Document::TraverseDocument()
-	 * @uses Document::SetPropertiesList()
-	 * @uses Document::PrepareInsert()
-	 * @uses \MongoDB\Collection::insertOne()
-	 * @uses \MongoDB\InsertOneResult::getInsertedId()
-	 */
-	public function Insert( $theDocument )
-	{
-		//
-		// Validate and prepare document.
-		//
-		if( $theDocument instanceof Document )
-		{
-			//
-			// Validate document.
-			//
-			$theDocument->Validate();
-
-			//
-			// Store sub-documents and collect offsets.
-			//
-			$theDocument->SetPropertiesList(
-				$theDocument->Traverse(), $this );
-
-			//
-			// Prepare document.
-			//
-			$theDocument->PrepareInsert();
-
-		} // Document instance.
-
-		//
-		// Convert document.
-		//
-		$document = $this->NewDocumentNative( $theDocument );
-
-		//
-		// Insert document.
-		//
-		$key =
-			$this->mConnection->insertOne( $document )
-				->getInsertedId();
-
-		//
-		// Normalise document.
-		//
-		$this->normaliseInsertedDocument( $theDocument, $document, $key );
-
-		return $key;																// ==>
-
-	} // Insert.
-
-
-	/*===================================================================================
-	 *	InsertMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a set of documents.</h4>
-	 *
-	 * We implement this method by iterating the provided set and calling the
-	 * {@link Insert()} method on each document.
-	 *
-	 * @param array					$theDocuments		The documents set as an array.
-	 * @return array				The document unique identifiers.
-	 *
-	 * @uses Insert()
-	 */
-	public function InsertMany( array $theDocuments )
-	{
-		//
-		// Init local storage.
-		//
-		$ids = [];
-
-		//
-		// Iterate set.
-		//
-		foreach( $theDocuments as $document )
-			$ids[] = $this->Insert( $document );
-
-		return $ids;																// ==>
-
-	} // InsertMany.
-
-
-	/*===================================================================================
 	 *	InsertBulk																		*
 	 *==================================================================================*/
 
@@ -515,84 +414,6 @@ class Collection extends \Milko\PHPLib\Collection
  *																						*
  *======================================================================================*/
 
-
-
-	/*===================================================================================
-	 *	Replace																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Replace document.</h4>
-	 *
-	 * We overload this method to use the {@link \MongoDB\Collection::replaceOne()} method.
-	 *
-	 * If the provided document doesn't have its key ({@link KeyOffset()}), the method will
-	 * raise an exception.
-	 *
-	 * @param mixed					$theDocument		The replacement document.
-	 * @return int					The number of replaced documents.
-	 *
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentNative()
-	 * @uses normaliseInsertedDocument()
-	 * @uses Document::Validate()
-	 * @uses Document::TraverseDocument()
-	 * @uses Document::SetPropertiesList()
-	 * @uses Document::PrepareReplace()
-	 * @uses \MongoDB\Collection::replaceOne()
-	 */
-	public function Replace( $theDocument )
-	{
-		//
-		// Validate and prepare document.
-		//
-		if( $theDocument instanceof Document )
-		{
-			//
-			// Validate document.
-			//
-			$theDocument->Validate();
-
-			//
-			// Store sub-documents.
-			//
-			$theDocument->SetPropertiesList(
-				$theDocument->Traverse(), $this );
-
-			//
-			// Prepare document.
-			//
-			$theDocument->PrepareReplace();
-
-		} // Document instance.
-
-		//
-		// Get document key.
-		// This will throw if key is missing.
-		//
-		$key = $this->NewDocumentKey( $theDocument );
-
-		//
-		// Convert document.
-		//
-		$document = $this->NewDocumentNative( $theDocument );
-
-		//
-		// Replace document.
-		//
-		$count =
-			$this->mConnection->replaceOne( [ $this->KeyOffset() => $key ], $document )
-				->getModifiedCount();
-
-		//
-		// Normalise document.
-		//
-		if( $count )
-			$this->normaliseInsertedDocument( $theDocument, $document, $key );
-
-		return $count;																// ==>
-
-	} // Replace.
 
 
 	/*===================================================================================
@@ -1411,6 +1232,67 @@ class Collection extends \Milko\PHPLib\Collection
 		return [ $this->collectionName(), (string)$theKey ];						// ==>
 
 	} // documentHandleCreate.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED PERSISTENCE INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	documentInsert																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a document.</h4>
+	 *
+	 * We implement this method by using the {@link \MongoDB\Collection::insertOne()} method
+	 * to save the document.
+	 *
+	 * @param mixed					$theDocument		The native document to insert.
+	 * @return mixed				The inserted document key.
+	 *
+	 * @uses \MongoDB\Collection::insertOne()
+	 * @uses \MongoDB\InsertOneResult::getInsertedId()
+	 */
+	protected function documentInsert( $theDocument )
+	{
+		return
+			$this->mConnection->insertOne( $theDocument )
+				->getInsertedId();													// ==>
+
+	} // documentInsert.
+
+
+	/*===================================================================================
+	 *	documentReplace																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Replace a document.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::replaceOne()} method.
+	 *
+	 * @param mixed					$theKey				The document key.
+	 * @param mixed					$theDocument		The replacement native document.
+	 * @return mixed				The number of replaced documents.
+	 *
+	 * @uses KeyOffset()
+	 * @uses \MongoDB\Collection::replaceOne()
+	 * @uses \MongoDB\Operation\ReplaceOne::getModifiedCount()
+	 */
+	protected function documentReplace( $theKey, $theDocument )
+	{
+		return
+			$this->mConnection->replaceOne(
+				[ $this->KeyOffset() => $theKey ], $theDocument )
+					->getModifiedCount();											// ==>
+
+	} // documentReplace.
 
 
 

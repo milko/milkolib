@@ -43,6 +43,57 @@ class Edge extends Document
 
 /*=======================================================================================
  *																						*
+ *							PUBLIC VERTEX MANAGEMENT INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	GetSource																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the source vertex object.</h4>
+	 *
+	 * This method can be used to retrieve the source vertex object, if the property is not
+	 * set, the method will return <tt>NULL</tt>.
+	 *
+	 * @return Document|NULL		Source vertex or <tt>NULL</tt>.
+	 *
+	 * @uses ResolveReference()
+	 */
+	public function GetSource()
+	{
+		return $this->ResolveReference( $this->mCollection->VertexSource() );		// ==>
+
+	} // GetSource.
+
+
+	/*===================================================================================
+	 *	GetDestination																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the destination vertex object.</h4>
+	 *
+	 * This method can be used to retrieve the destination vertex object, if the property is
+	 * not set, the method will return <tt>NULL</tt>.
+	 *
+	 * @return Document|NULL		Destination vertex or <tt>NULL</tt>.
+	 *
+	 * @uses ResolveReference()
+	 */
+	public function GetDestination()
+	{
+		return $this->ResolveReference( $this->mCollection->VertexDestination() );	// ==>
+
+	} // GetDestination.
+
+
+
+/*=======================================================================================
+ *																						*
  *							PROTECTED VALIDATION INTERFACE								*
  *																						*
  *======================================================================================*/

@@ -42,6 +42,55 @@ use triagens\ArangoDb\Statement as ArangoStatement;
 class Edges extends Collection
 			implements iEdges
 {
+	/**
+	 * <h4>Edge handler.</h4>
+	 *
+	 * This data member holds the edge handler.
+	 *
+	 * @var ArangoEdgeHandler
+	 */
+	protected $mEdgeHandler = NULL;
+
+
+
+
+/*=======================================================================================
+ *																						*
+ *										MAGIC											*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	__construct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Instantiate class.</h4>
+	 *
+	 * We overload this method to instantiate the edge handler used for database operations,
+	 * we store it in an object attribute to prevent having to instantiate it each time an
+	 * operation requires it.
+	 *
+	 * @param Database				$theDatabase		Database.
+	 * @param string				$theCollection		Collection name.
+	 * @param array					$theOptions			Native driver options.
+	 */
+	public function __construct( Database $theDatabase, $theCollection, $theOptions = NULL )
+	{
+		//
+		// Store edge handler.
+		//
+		$this->mEdgeHandler
+			= new ArangoEdgeHandler( $theDatabase->Connection() );
+
+		//
+		// Call parent constructor.
+		//
+		parent::__construct( $theDatabase, $theCollection, $theOptions );
+
+	} // Constructor.
 
 
 
@@ -180,193 +229,6 @@ class Edges extends Collection
 
 
 	/*===================================================================================
-	 *	Insert																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert document.</h4>
-	 *
-	 * We implement this method by converting the provided array into a native document,
-	 * extract the source and destination vertices and call the
-	 * {@link triagens\ArangoDb\EdgeHandler::save()} method to insert it.
-	 *
-	 * @param array					$theDocument		The document data.
-	 * @return mixed				The document's key.
-	 * @throws \RuntimeException
-	 *
-	 * @uses collectionName()
-	 * @uses normaliseInsertedDocument()
-	 * @uses Document::Validate()
-	 * @uses Document::TraverseDocument()
-	 * @uses Document::SetPropertiesList()
-	 * @uses Document::PrepareInsert()
-	 * @uses triagens\ArangoDb\Edge::getTo()
-	 * @uses triagens\ArangoDb\Edge::getFrom()
-	 * @uses triagens\ArangoDb\EdgetHandler::saveEdge()
-	 */
-	public function Insert( $theDocument )
-	{
-		//
-		// Validate and prepare document.
-		//
-		if( $theDocument instanceof Document )
-		{
-			//
-			// Validate document.
-			//
-			$theDocument->Validate();
-
-			//
-			// Store sub-documents and collect offsets.
-			//
-			$theDocument->SetPropertiesList(
-				$theDocument->Traverse(), $this );
-
-			//
-			// Prepare document.
-			//
-			$theDocument->PrepareInsert();
-
-		} // Document instance.
-
-		//
-		// Instantiate edge handler.
-		//
-		$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
-		//
-		// Convert document.
-		//
-		$document = $this->NewDocumentNative( $theDocument );
-
-		//
-		// Get vertices.
-		//
-		if( ($srcVertex = $document->getFrom()) === NULL )
-			throw new \RuntimeException (
-				"Missing source vertex." );										// !@! ==>
-		if( ($dstVertex = $document->getTo()) === NULL )
-			throw new \RuntimeException (
-				"Missing destination vertex." );								// !@! ==>
-
-		//
-		// Insert edge.
-		//
-		$key =
-			$handler->saveEdge(
-				$this->collectionName(), $srcVertex, $dstVertex, $document );
-
-		//
-		// Normalise document.
-		//
-		$this->normaliseInsertedDocument( $theDocument, $document, $key );
-
-		return $key;																// ==>
-
-	} // Insert.
-
-
-	/*===================================================================================
-	 *	InsertMany																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Insert a set of documents.</h4>
-	 *
-	 * We implement this method by iterating the provided array, converting the elements to
-	 * the database native format ({@link documentNativeCreate()}) and saving them.
-	 *
-	 * @param array					$theDocuments		The documents set as an array.
-	 * @return array				The document unique identifiers.
-	 * @throws \RuntimeException
-	 *
-	 * @uses collectionName()
-	 * @uses NewDocumentNative()
-	 * @uses normaliseInsertedDocument()
-	 * @uses Document::Validate()
-	 * @uses Document::TraverseDocument()
-	 * @uses Document::SetPropertiesList()
-	 * @uses Document::PrepareInsert()
-	 * @uses triagens\ArangoDb\Edge::getTo()
-	 * @uses triagens\ArangoDb\Edge::getFrom()
-	 * @uses triagens\ArangoDb\EdgetHandler::saveEdge()
-	 */
-	public function InsertMany( array $theDocuments )
-	{
-		//
-		// Instantiate edge handler.
-		//
-		$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
-		//
-		// Iterate documents.
-		//
-		$ids = [];
-		foreach( $theDocuments as $document )
-		{
-			//
-			// Validate and prepare document.
-			//
-			if( $document instanceof Document )
-			{
-				//
-				// Validate document.
-				//
-				$document->Validate();
-
-				//
-				// Store sub-documents.
-				//
-				$document->SetPropertiesList(
-					$document->Traverse(), $this );
-
-				//
-				// Prepare document.
-				//
-				$document->PrepareInsert();
-
-			} // Document instance.
-
-			//
-			// Convert document.
-			//
-			$native = $this->NewDocumentNative( $document );
-
-			//
-			// Get vertices.
-			//
-			if( ($srcVertex = $native->getFrom()) === NULL )
-				throw new \RuntimeException (
-					"Missing source vertex." );									// !@! ==>
-			if( ($dstVertex = $native->getTo()) === NULL )
-				throw new \RuntimeException (
-					"Missing destination vertex." );							// !@! ==>
-
-			//
-			// Insert edge.
-			//
-			$key =
-				$handler->saveEdge(
-					$this->collectionName(), $srcVertex, $dstVertex, $native );
-
-			//
-			// Normalise document.
-			//
-			$this->normaliseInsertedDocument( $document, $native, $key );
-
-			//
-			// Add key.
-			//
-			$ids[] = $key;
-
-		} // Iterating documents.
-
-		return $ids;																// ==>
-
-	} // InsertMany.
-
-
-	/*===================================================================================
 	 *	InsertBulk																		*
 	 *==================================================================================*/
 
@@ -390,17 +252,16 @@ class Edges extends Collection
 	public function InsertBulk( $theDocuments )
 	{
 		//
-		// Instantiate edge handler.
+		// Init list.
 		//
-		$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
+		$ids = [];
 
 		//
 		// Iterate documents.
 		//
-		$ids = [];
 		foreach( $theDocuments as $document )
 			$ids[] =
-				$handler->saveEdge(
+				$this->mEdgeHandler->saveEdge(
 					$this->collectionName(),
 					$document->getFrom(),
 					$document->getTo(),
@@ -418,114 +279,6 @@ class Edges extends Collection
  *																						*
  *======================================================================================*/
 
-
-
-	/*===================================================================================
-	 *	Replace																			*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Replace document.</h4>
-	 *
-	 * We implement this method by converting the provided document to native format,
-	 * checking whether the key exists and calling the
-	 * {@link triagens\ArangoDb\EdgeHandler::replaceById()} method.
-	 *
-	 * If the document was replaced, the method will return <tt>1</tt>, if the document was
-	 * not found, the method will return <tt>0</tt>; any other error will trigger an
-	 * exception.
-	 *
-	 * If the provided document doesn't have its key ({@link KeyOffset()}), the method will
-	 * raise an exception.
-	 *
-	 * @param mixed					$theDocument		The replacement document.
-	 * @return int					The number of replaced documents.
-	 *
-	 * @uses NewDocumentKey()
-	 * @uses NewDocumentNative()
-	 * @uses normaliseReplacedDocument()
-	 * @uses Document::Validate()
-	 * @uses Document::TraverseDocument()
-	 * @uses Document::SetPropertiesList()
-	 * @uses Document::PrepareReplace()
-	 * @uses triagens\ArangoDb\EdgeHandler::replaceById()
-	 */
-	public function Replace( $theDocument )
-	{
-		//
-		// Validate and prepare document.
-		//
-		if( $theDocument instanceof Document )
-		{
-			//
-			// Validate document.
-			//
-			$theDocument->Validate();
-
-			//
-			// Store sub-documents.
-			//
-			$theDocument->SetPropertiesList(
-				$theDocument->Traverse(), $this );
-
-			//
-			// Prepare document.
-			//
-			$theDocument->PrepareReplace();
-
-		} // Document instance.
-
-		//
-		// Get document key.
-		// This will throw if key is missing.
-		//
-		$key = $this->NewDocumentKey( $theDocument );
-
-		//
-		// Convert replacement document.
-		//
-		$document = $this->NewDocumentNative( $theDocument );
-
-		//
-		// Instantiate edge handler.
-		//
-		$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
-		//
-		// Assert document exists.
-		//
-		try
-		{
-			//
-			// Replace edge.
-			//
-			$handler->replaceById( $this->collectionName(), $key, $document );
-
-			//
-			// Normalise document.
-			//
-			$this->normaliseReplacedDocument( $theDocument, $document );
-
-			return 1;																// ==>
-
-		} // Found document.
-
-		//
-		// Handle missing document.
-		//
-		catch( ArangoServerException $error )
-		{
-			//
-			// Skip not found.
-			//
-			if( $error->getCode() != 404 )
-				throw $error;													// !@! ==>
-
-		} // Document not found.
-
-		return 0;																	// ==>
-
-	} // Replace.
 
 
 	/*===================================================================================
@@ -575,11 +328,6 @@ class Edges extends Collection
 		if( $count )
 		{
 			//
-			// Instantiate edge handler.
-			//
-			$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
-			//
 			// Process selection.
 			//
 			foreach( $cursor as $document )
@@ -598,7 +346,7 @@ class Edges extends Collection
 				//
 				// Update document.
 				//
-				$handler->updateById(
+				$this->mEdgeHandler->updateById(
 					$this->collectionName(),
 					$edgeKey,
 					$document,
@@ -651,14 +399,11 @@ class Edges extends Collection
 		$document = $this->documentNativeCreate( $theDocument );
 
 		//
-		// Get collection and document handlers.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Select documents.
 		//
-		$cursor = $handler->byExample( $this->collectionName(), $document );
+		$cursor =
+			$this->mCollectionHandler->byExample(
+				$this->collectionName(), $document );
 		$count = $cursor->getCount();
 
 		//
@@ -666,11 +411,6 @@ class Edges extends Collection
 		//
 		if( $count )
 		{
-			//
-			// Instantiate edge handler.
-			//
-			$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
 			//
 			// Process selection.
 			//
@@ -690,7 +430,7 @@ class Edges extends Collection
 				//
 				// Update document.
 				//
-				$handler->updateById(
+				$this->mEdgeHandler->updateById(
 					$this->collectionName(),
 					$edgeKey,
 					$document,
@@ -709,6 +449,257 @@ class Edges extends Collection
 		return $count;																// ==>
 
 	} // UpdateByExample.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC SELECTION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	FindByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by key.</h4>
+	 *
+	 * We overload this method to use the {@link triagens\ArangoDb\EdgeHandler::getById()}.
+	 *
+	 * @param mixed					$theKey				Single or set of document keys.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses ConvertDocumentSet()
+	 * @uses formatDocument()
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\EdgeHandler::getById()
+	 */
+	public function FindByKey(
+		$theKey,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
+							  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Handle list.
+		//
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			//
+			// Init list.
+			//
+			$result = [];
+
+			//
+			// Iterate keys.
+			//
+			foreach( $theKey as $key )
+			{
+				//
+				// Try finding edge.
+				//
+				try
+				{
+					//
+					// Find edge.
+					//
+					$result[] =
+						$this->mEdgeHandler->getById(
+							$this->collectionName(), $key );
+
+				} // Document found.
+
+				//
+				// Handle missing document.
+				//
+				catch( ArangoServerException $error )
+				{
+					//
+					// Handle exceptions.
+					//
+					if( $error->getCode() != 404 )
+						throw $error;											// !@! ==>
+
+				} // Document not found.
+
+			} // Iterating edges.
+
+			//
+			// Handle native result.
+			//
+			if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+				return $result;														// ==>
+
+			return
+				$this->ConvertDocumentSet(
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );				// ==>
+
+		} // Set of keys.
+
+		//
+		// Try finding document.
+		//
+		try
+		{
+			//
+			// Find edge.
+			//
+			$result =
+				$this->mEdgeHandler->getById(
+					$this->collectionName(), $theKey );
+
+			//
+			// Handle native result.
+			//
+			if( $theOptions[ kTOKEN_OPT_FORMAT ] == kTOKEN_OPT_FORMAT_NATIVE )
+				return $result;														// ==>
+
+			return
+				$this->formatDocument(
+					$result, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );				// ==>
+
+		} // Document found.
+
+		//
+		// Handle missing document.
+		//
+		catch( ArangoServerException $error )
+		{
+			//
+			// Handle exceptions.
+			//
+			if( $error->getCode() != 404 )
+				throw $error;													// !@! ==>
+
+		} // Document not found.
+
+		return NULL;																// ==>
+
+	} // FindByKey.
+
+
+	/*===================================================================================
+	 *	FindByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Find documents by handle.</h4>
+	 *
+	 * We implement the method by using the
+	 * {@link triagens\ArangoDb\CollectionHandler::lookupByKeys()} method if the
+	 * {@link kTOKEN_OPT_MANY} option is set; the
+	 * {@link triagens\ArangoDb\CollectionHandler::getById()} method if not.
+	 *
+	 * @param mixed					$theHandle			Single or set of document handles.
+	 * @param array					$theOptions			Query options.
+	 * @return mixed				The found records.
+	 *
+	 * @uses formatDocument()
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
+	 */
+	public function FindByHandle(
+		$theHandle,
+		array $theOptions = [ kTOKEN_OPT_MANY => FALSE,
+			kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
+	{
+		//
+		// Handle list.
+		//
+		if( $theOptions[ kTOKEN_OPT_MANY ] )
+		{
+			//
+			// Iterate handles.
+			//
+			$result = [];
+			foreach( $theHandle as $handle )
+			{
+				//
+				// Decompose handle.
+				//
+				$handle = explode( '/', $handle );
+
+				//
+				// Try finding edge.
+				//
+				try
+				{
+					//
+					// Find document.
+					//
+					$document =
+						$this->mEdgeHandler->getById(
+							$handle[ 0 ], $handle[ 1 ] );
+
+					//
+					// Format document.
+					//
+					$result[] =
+						$this->formatDocument(
+							$document, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );
+
+				} // Document found.
+
+				//
+				// Handle missing document.
+				//
+				catch( ArangoServerException $error )
+				{
+					//
+					// Handle exceptions.
+					//
+					if( $error->getCode() != 404 )
+						throw $error;											// !@! ==>
+
+				} // Document not found.
+
+			} // Iterating handles.
+
+			return $result;															// ==>
+
+		} // List of handles.
+
+		//
+		// Decompose handle.
+		//
+		$handle = explode( '/', $theHandle );
+
+		//
+		// Try finding document.
+		//
+		try
+		{
+			//
+			// Find document.
+			//
+			$document =
+				$this->mEdgeHandler->getById(
+					$handle[ 0 ], $handle[ 1 ] );
+
+			return
+				$this->formatDocument(
+					$document, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );			// ==>
+
+		} // Document found.
+
+		//
+		// Handle missing document.
+		//
+		catch( ArangoServerException $error )
+		{
+			//
+			// Handle exceptions.
+			//
+			if( $error->getCode() != 404 )
+				throw $error;													// !@! ==>
+
+		} // Document not found.
+
+		return NULL;																// ==>
+
+	} // FindByHandle.
 
 
 
@@ -764,11 +755,6 @@ class Edges extends Collection
 		if( $count )
 		{
 			//
-			// Instantiate edge handler.
-			//
-			$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
-			//
 			// Iterate edges.
 			//
 			foreach( $cursor as $document )
@@ -778,7 +764,7 @@ class Edges extends Collection
 				// Note that an exception will be triggered if the edge was not found,
 				// we want this since we are iterating a selection.
 				//
-				$handler->removeById(
+				$this->mEdgeHandler->removeById(
 					$this->collectionName(),
 					$document->getKey(),
 					$document->getRevision() );
@@ -823,55 +809,13 @@ class Edges extends Collection
 		// Init local storage.
 		//
 		$count = 0;
+		if( ! $theOptions[ kTOKEN_OPT_MANY ] )
+			$theKey = [ $theKey ];
 
 		//
-		// Instantiate edge handler.
+		// Iterate keys.
 		//
-		$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
-		//
-		// Handle many keys.
-		//
-		if( $theOptions[ kTOKEN_OPT_MANY ] )
-		{
-			//
-			// Iterate keys.
-			//
-			foreach( $theKey as $key )
-			{
-				//
-				// Remove by keys.
-				//
-				try
-				{
-					//
-					// Delete edge.
-					//
-					$handler->removeById( $this->collectionName(), $theKey );
-
-					$count++;
-				}
-
-				//
-				// Handle not found.
-				//
-				catch( ArangoServerException $error )
-				{
-					//
-					// Handle not found.
-					//
-					if( $error->getCode() != 404 )
-						throw $error;											// !@! ==>
-				}
-
-			} // Iterating key set.
-
-		} // Keys set.
-
-		//
-		// Handle single key.
-		//
-		else
+		foreach( $theKey as $key )
 		{
 			//
 			// Remove by keys.
@@ -881,7 +825,7 @@ class Edges extends Collection
 				//
 				// Delete edge.
 				//
-				$handler->removeById( $this->collectionName(), $theKey );
+				$this->mEdgeHandler->removeById( $this->collectionName(), $key );
 
 				$count++;
 			}
@@ -898,7 +842,7 @@ class Edges extends Collection
 					throw $error;												// !@! ==>
 			}
 
-		} // Single key.
+		} // Iterating key set.
 
 		return $count;																// ==>
 
@@ -953,11 +897,6 @@ class Edges extends Collection
 		}
 
 		//
-		// Instantiate edge handler.
-		//
-		$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
-		//
 		// Iterate collections.
 		//
 		$count = 0;
@@ -976,7 +915,7 @@ class Edges extends Collection
 					//
 					// Delete edge.
 					//
-					$handler->removeById( $collection, $key() );
+					$this->mEdgeHandler->removeById( $collection, $key() );
 
 					$count++;
 				}
@@ -1040,15 +979,10 @@ class Edges extends Collection
 		$document = $this->NewDocumentNative( $theDocument );
 
 		//
-		// Get collection handler.
-		//
-		$handler = new ArangoCollectionHandler( $this->mDatabase->Connection() );
-
-		//
 		// Select documents.
 		//
 		$result =
-			$handler->byExample(
+			$this->mCollectionHandler->byExample(
 				$this->collectionName(), $document, $options );
 
 		//
@@ -1056,11 +990,6 @@ class Edges extends Collection
 		//
 		if( $result->getCount() )
 		{
-			//
-			// Instantiate edge handler.
-			//
-			$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
 			//
 			// Iterate result.
 			//
@@ -1071,7 +1000,7 @@ class Edges extends Collection
 				// Note that an exception will be triggered if the edge was not found,
 				// we want this since we are iterating a selection.
 				//
-				$handler->removeById(
+				$this->mEdgeHandler->removeById(
 					$this->collectionName(), $edge->getKey(), $edge->getRevision() );
 
 			} // Iterating edges.
@@ -1124,15 +1053,10 @@ class Edges extends Collection
 				: $theVertex->getHandle();
 
 		//
-		// Get edge handler.
-		//
-		$handler = new ArangoEdgeHandler( $this->mDatabase->Connection() );
-
-		//
 		// Select connected edges.
 		//
 		$result =
-			$handler->edges(
+			$this->mEdgeHandler->edges(
 				$this->collectionName(), $handle, $theOptions[ kTOKEN_OPT_DIRECTION ] );
 
 		return
@@ -1291,6 +1215,107 @@ class Edges extends Collection
 
 /*=======================================================================================
  *																						*
+ *							PROTECTED PERSISTENCE INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	documentInsert																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Insert a document.</h4>
+	 *
+	 * We implement this method by extracting the vertices from the native document and
+	 * calling the {@link triagens\ArangoDb\EdgeHandler::saveEdge()} method to insert the
+	 * document.
+	 *
+	 * @param mixed					$theDocument		The native document to insert.
+	 * @return mixed				The inserted document key.
+	 *
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\Edge::getTo()
+	 * @uses triagens\ArangoDb\Edge::getFrom()
+	 * @uses triagens\ArangoDb\EdgeHandler::saveEdge()
+	 */
+	protected function documentInsert( $theDocument )
+	{
+		//
+		// Get vertices.
+		//
+		if( ($srcVertex = $theDocument->getFrom()) === NULL )
+			throw new \RuntimeException (
+				"Missing source vertex." );										// !@! ==>
+
+		if( ($dstVertex = $theDocument->getTo()) === NULL )
+			throw new \RuntimeException (
+				"Missing destination vertex." );								// !@! ==>
+
+		return
+			$this->mEdgeHandler->saveEdge(
+				$this->collectionName(), $srcVertex, $dstVertex, $theDocument );	// ==>
+
+	} // documentInsert.
+
+
+	/*===================================================================================
+	 *	documentReplace																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Replace a document.</h4>
+	 *
+	 * This method should replace the provided document in the current collection and
+	 * return <tt>1</tt> if the document was repaled, or <tt>0</tt>.
+	 *
+	 * The method expects the document key and the replacement document in the database
+	 * native format.
+	 *
+	 * @param mixed					$theKey				The document key.
+	 * @param mixed					$theDocument		The replacement native document.
+	 * @return mixed				The number of replaced documents.
+	 */
+	protected function documentReplace( $theKey, $theDocument )
+	{
+		//
+		// Assert document exists.
+		//
+		try
+		{
+			//
+			// Replace edge.
+			//
+			$this->mEdgeHandler
+				->replaceById(
+					$this->collectionName(), $theKey, $theDocument );
+
+			return 1;																// ==>
+
+		} // Found document.
+
+		//
+		// Handle missing document.
+		//
+		catch( ArangoServerException $error )
+		{
+			//
+			// Skip not found.
+			//
+			if( $error->getCode() != 404 )
+				throw $error;													// !@! ==>
+
+		} // Document not found.
+
+		return 0;																	// ==>
+
+	} // documentReplace.
+
+
+
+/*=======================================================================================
+ *																						*
  *								PROTECTED GENERIC UTILITIES								*
  *																						*
  *======================================================================================*/
@@ -1321,8 +1346,25 @@ class Edges extends Collection
 		//
 		if( $theDocument instanceof \ArrayObject )
 		{
-			$theDocument->offsetSet( $this->VertexSource(), $theData->getFrom() );
-			$theDocument->offsetSet( $this->VertexDestination(), $theData->getTo() );
+			//
+			// Get vertices.
+			//
+			if( $theData instanceof ArangoEdge )
+			{
+				$dst = $theData->getTo();
+				$src = $theData->getFrom();
+			}
+			else
+			{
+				$src = $theData->get( $this->VertexSource() );
+				$dst = $theData->get( $this->VertexDestination() );
+			}
+
+			//
+			// Set vertices.
+			//
+			$theDocument->offsetSet( $this->VertexSource(), $src );
+			$theDocument->offsetSet( $this->VertexDestination(), $dst );
 		}
 
 		//
@@ -1356,8 +1398,25 @@ class Edges extends Collection
 		//
 		if( $theDocument instanceof \ArrayObject )
 		{
-			$theDocument->offsetSet( $this->VertexSource(), $theData->getFrom() );
-			$theDocument->offsetSet( $this->VertexDestination(), $theData->getTo() );
+			//
+			// Get vertices.
+			//
+			if( $theData instanceof ArangoEdge )
+			{
+				$dst = $theData->getTo();
+				$src = $theData->getFrom();
+			}
+			else
+			{
+				$src = $theData->get( $this->VertexSource() );
+				$dst = $theData->get( $this->VertexDestination() );
+			}
+
+			//
+			// Set vertices.
+			//
+			$theDocument->offsetSet( $this->VertexSource(), $src );
+			$theDocument->offsetSet( $this->VertexDestination(), $dst );
 		}
 
 		//
