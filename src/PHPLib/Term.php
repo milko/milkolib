@@ -507,14 +507,16 @@ class Term extends Document
 	 * @return mixed				Namespace reference.
 	 * @throws \InvalidArgumentException
 	 *
+	 * @uses GetByGID()
 	 * @uses manageProperty()
+	 * @uses getNamespaceCollection()
 	 */
 	public function SetNamespaceByGID( $theIdentifier )
 	{
 		//
-		// Select term.
+		// Get namespace term.
 		//
-		$term = $this->mCollection->FindByKey( md5( (string)$theIdentifier ) );
+		$term = self::GetByGID( $this->getNamespaceCollection(), $theIdentifier );
 		if( $term !== NULL )
 			return
 				$this->manageProperty(
@@ -522,7 +524,7 @@ class Term extends Document
 					$term->offsetGet( $this->mCollection->KeyOffset() ) );			// ==>
 
 		throw new \InvalidArgumentException(
-			"Unknown global identifier [$theIdentifier]." );					// !@! ==>
+			"Unknown namespace [$theIdentifier]." );							// !@! ==>
 
 	} // SetNamespaceByGID.
 
@@ -577,15 +579,15 @@ class Term extends Document
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Return a term global identifier.</h4>
+	 * <h4>Return an object global identifier.</h4>
 	 *
 	 * This method will return a global identifier given a term namespace and local
 	 * identifier, the method expects the following parameters:
 	 *
 	 * <ul>
-	 * 	<li><b>$theIdentifier</b>: The term local identifier.
-	 * 	<li><b>$theNamespace</b>: The term namespace: if the next parameter is provided, it
-	 * 		means that the namespace is expressed as the namespace term key; if the next
+	 * 	<li><b>$theIdentifier</b>: The object local identifier.
+	 * 	<li><b>$theNamespace</b>: The object namespace: if the next parameter is provided,
+	 * 		it means that the namespace is expressed as the namespace term key; if the next
 	 * 		parameter is omitted, it means that the namespace was provided as the namespace
 	 * 		term global identifier. The namespace is optional, so if missing the local
 	 * 		identifier will be returned.
@@ -626,7 +628,8 @@ class Term extends Document
 				// Set namespace global identifier.
 				//
 				$theNamespace = $term->offsetGet( kTAG_GID );
-			}
+
+			} // Provided namespace key.
 
 			return $theNamespace . kTOKEN_NAMESPACE_SEPARATOR . $theIdentifier;		// ==>
 
@@ -650,6 +653,9 @@ class Term extends Document
 	 * The method expects as first parameter the terms collection, and as second parameter
 	 * the global identifier of the term.
 	 *
+	 * We first match the key with the global identifier, if that doesn't work we try with
+	 * its <tt>md5</tt> hash.
+	 *
 	 * @param Collection			$theCollection		Collection.
 	 * @param string				$theIdentifier		Global identifier.
 	 * @return Term					Term object or <tt>NULL</tt>.
@@ -659,7 +665,14 @@ class Term extends Document
 	 */
 	static function GetByGID( Collection $theCollection, $theIdentifier )
 	{
-		return $theCollection->FindByKey( md5( $theIdentifier ) );					// ==>
+		//
+		// Try with GID.
+		//
+		$object = $theCollection->FindByKey( (string)$theIdentifier );
+		if( $object === NULL )
+			return $theCollection->FindByKey( md5( (string)$theIdentifier ) );		// ==>
+
+		return $object;																// ==>
 
 	} // GetByGID.
 
@@ -783,6 +796,8 @@ class Term extends Document
 	 * @param string				$theOffset			Sub-document offset.
 	 * @param mixed					$theReference		Subdocument reference.
 	 * @return mixed				The document key or handle.
+	 *
+	 * @uses getNamespaceCollection()
 	 */
 	protected function doResolveReference( $theOffset, $theReference )
 	{
@@ -790,7 +805,9 @@ class Term extends Document
 		// Handle namespace.
 		//
 		if( $theOffset == kTAG_NS )
-			return $this->mCollection->FindByKey( $theReference );
+			return
+				$this->getNamespaceCollection()
+					->FindByKey( $theReference );									// ==>
 
 		return parent::doResolveReference( $theOffset, $theReference );				// ==>
 
@@ -857,7 +874,9 @@ class Term extends Document
 				//
 				// Get namespace global identifier.
 				//
-				$term = $this->mCollection->FindByKey( $theNamespace );
+				$term =
+					$this->getNamespaceCollection()
+						->FindByKey( $theNamespace );
 				if( $term !== NULL )
 					$this->mNamespaceGID = $term->offsetGet( kTAG_GID );
 				else
@@ -929,6 +948,36 @@ class Term extends Document
 		} // Identifier changed.
 
 	} // setTermIdentifier.
+
+
+
+/*=======================================================================================
+ *																						*
+ *						PROTECTED NAMESPACE COLLECTION INTERFACE						*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	getNamespaceCollection															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get namespace collection.</h4>
+	 *
+	 * This method can be used to retrieve the namespace collection as opposed to the object
+	 * collection, in this class both the object and the namespace collections are the
+	 * same, but this class is used as an ancestor to other classes which reside in
+	 * different collections, so this method should be overloaded in those classes.
+	 *
+	 * @return Collection					Namespace collection.
+	 */
+	protected function getNamespaceCollection()
+	{
+		return $this->mCollection;													// ==>
+
+	} // getNamespaceCollection.
 
 
 

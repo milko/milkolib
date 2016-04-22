@@ -243,92 +243,6 @@ class Descriptor extends Term
 
 /*=======================================================================================
  *																						*
- *							PUBLIC REFERENCE MANAGEMENT INTERFACE						*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	SetNamespaceByGID																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Set the namespace given a global identifier.</h4>
-	 *
-	 * We overload this method to use the terms collection when searching.
-	 *
-	 * @param string				$theIdentifier		Namespace global identifier.
-	 * @return mixed				Namespace reference.
-	 * @throws \InvalidArgumentException
-	 *
-	 * @uses manageProperty()
-	 */
-	public function SetNamespaceByGID( $theIdentifier )
-	{
-		//
-		// Get terms collection.
-		//
-		$terms = $this->mCollection->Database()->NewTermsCollection();
-
-		//
-		// Select term.
-		//
-		$term = $terms->FindByKey( md5( (string)$theIdentifier ) );
-		if( $term !== NULL )
-			return
-				$this->manageProperty(
-					kTAG_NS,
-					$term->offsetGet( $terms->KeyOffset() ) );						// ==>
-
-		throw new \InvalidArgumentException(
-			"Unknown global identifier [$theIdentifier]." );					// !@! ==>
-
-	} // SetNamespaceByGID.
-
-
-
-/*=======================================================================================
- *																						*
- *							STATIC IDENTIFICATION INTERFACE								*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	GetByGID																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Return a descriptor by global identifier.</h4>
-	 *
-	 * We overload this method to perform the search on the {@link kTAG_GID} property of
-	 * the descriptor.
-	 *
-	 * @param Collection			$theCollection		Collection.
-	 * @param string				$theIdentifier		Global identifier.
-	 * @return Term					Term object or <tt>NULL</tt>.
-	 * @throws \RuntimeException
-	 *
-	 * @uses Collection::FindByExample()
-	 */
-	static function GetByGID( Collection $theCollection, $theIdentifier )
-	{
-		//
-		// Find by global identifier.
-		//
-		foreach( $theCollection->FindByExample( [kTAG_GID => $theIdentifier] ) as $item )
-			return $item;															// ==>
-
-		return NULL;																// ==>
-
-	} // GetByGID.
-
-
-
-/*=======================================================================================
- *																						*
  *							PROTECTED VALIDATION INTERFACE								*
  *																						*
  *======================================================================================*/
@@ -390,111 +304,28 @@ class Descriptor extends Term
 
 /*=======================================================================================
  *																						*
- *						PROTECTED SUBDOCUMENT PERSISTENCE INTERFACE						*
+ *						PROTECTED NAMESPACE COLLECTION INTERFACE						*
  *																						*
  *======================================================================================*/
 
 
 
 	/*===================================================================================
-	 *	doResolveReference																*
+	 *	getNamespaceCollection															*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Resolve embedded documents.</h4>
+	 * <h4>Get namespace collection.</h4>
 	 *
-	 * We overload this method to search namespaces in the default terms collection.
+	 * We overload this method to return the wrapper default terms collection..
 	 *
-	 * @param string				$theOffset			Sub-document offset.
-	 * @param mixed					$theReference		Subdocument reference.
-	 * @return mixed				The document key or handle.
+	 * @return Collection					Namespace collection.
 	 */
-	protected function doResolveReference( $theOffset, $theReference )
+	protected function getNamespaceCollection()
 	{
-		//
-		// Handle namespace.
-		//
-		if( $theOffset == kTAG_NS )
-			return
-				$this->mCollection
-					->Database()->NewTermsCollection()
-						->FindByKey( $theReference );								// ==>
+		return $this->mCollection->Database()->NewTermsCollection();				// ==>
 
-		return parent::doResolveReference( $theOffset, $theReference );				// ==>
-
-	} // doResolveReference.
-
-
-
-/*=======================================================================================
- *																						*
- *							PROTECTED IDENTIFIER INTERFACE								*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	setTermNamespace																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Set term namespace.</h4>
-	 *
-	 * We overload this method to use the default terms collection when searching for
-	 * namespaces.
-	 *
-	 * @param mixed					$theNamespace		Term namespace key.
-	 * @throws \RuntimeException
-	 *
-	 * @uses MakeGID()
-	 * @uses Collection::FindByKey()
-	 */
-	protected function setTermNamespace( $theNamespace )
-	{
-		//
-		// Check if namespace changed.
-		//
-		if( $this->offsetGet( kTAG_NS ) !== $theNamespace )
-		{
-			//
-			// Reset namespace.
-			//
-			if( $theNamespace === NULL )
-				$this->mNamespaceGID = '';
-
-			//
-			// Cache namespace global identifier.
-			//
-			else
-			{
-				//
-				// Get namespace global identifier.
-				//
-				$term =
-					$this->mCollection
-						->Database()->NewTermsCollection()
-							->FindByKey( $theNamespace );
-				if( $term !== NULL )
-					$this->mNamespaceGID = $term->offsetGet( kTAG_GID );
-				else
-					throw new \RuntimeException(
-						"Unknown term [$theNamespace]." );						// !@! ==>
-
-			} // Provided new namespace.
-
-			//
-			// Set current term global identifier.
-			//
-			$this->offsetSet(
-				kTAG_GID,
-				self::MakeGID(
-					$this->offsetGet( kTAG_LID ),
-					$this->mNamespaceGID ) );
-
-		} // Namespace changed.
-
-	} // setTermNamespace.
+	} // getNamespaceCollection.
 
 
 

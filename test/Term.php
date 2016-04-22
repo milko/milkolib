@@ -159,8 +159,8 @@ echo( "\n" );
 // Set namespace by term.
 //
 echo( "Set namespace by term:\n" );
-echo( '$result = $document->offsetSet( kTAG_NS, $namespace );' . "\n" );
-$result = $document->offsetSet( kTAG_NS, $namespace );
+echo( '$document->offsetSet( kTAG_NS, $namespace );' . "\n" );
+$document->offsetSet( kTAG_NS, $namespace );
 print_r( $document->getArrayCopy() );
 
 echo( "\n" );
@@ -244,8 +244,8 @@ echo( "\n" );
 // Get a term by global identifier.
 //
 echo( "Get a term by global identifier:\n" );
-echo( '$result = Term::GetByGID( $collection, ":namespace:code" );' . "\n" );
-$result = Term::GetByGID( $collection, ":namespace:code" );
+echo( '$result = Term::GetByGID( $collection, "namespace:code" );' . "\n" );
+$result = Term::GetByGID( $collection, "namespace:code" );
 echo( "Class: " . get_class( $result ) . "\n" );
 echo( "Modified:   " . (( $result->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $result->IsPersistent() ) ? "Yes\n" : "No\n") );

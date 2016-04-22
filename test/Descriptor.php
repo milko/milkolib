@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -66,7 +66,6 @@ echo( "Instantiate wrapper:\n" );
 echo( '$wrapper = $server->NewWrapper( "test_milkolib" );' . "\n" );
 $wrapper = $server->NewWrapper( "test_milkolib" );
 echo( "Class: " . get_class( $wrapper ) . "\n" );
-exit;
 
 echo( "\n" );
 
