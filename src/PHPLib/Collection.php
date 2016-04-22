@@ -1180,7 +1180,7 @@ abstract class Collection
 	 * @return mixed				The found records.
 	 */
 	abstract public function Find(
-		$theFilter,
+		$theFilter = NULL,
 		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ]
 	);
 

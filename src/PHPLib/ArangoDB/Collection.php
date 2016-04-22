@@ -772,13 +772,13 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses triagens\ArangoDb\Statement::execute()
 	 */
 	public function Find(
-		$theFilter,
+		$theFilter = NULL,
 		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
 	{
 		//
 		// Init query.
 		//
-		if( ! count( $theFilter ) )
+		if( $theFilter === NULL )
 			$theFilter = [
 				'query' => 'FOR r IN @@collection RETURN r',
 				'bindVars' => [ '@collection' => $this->collectionName() ] ];

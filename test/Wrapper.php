@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include global definitions.
@@ -60,12 +60,24 @@ elseif( kENGINE == "ARANGO" )
 echo( "\n" );
 
 //
+// Drop database.
+//
+echo( "Drop database:\n" );
+echo( '$tmp = $server->NewDatabase( "test_milkolib" );' . "\n" );
+$tmp = $server->NewDatabase( "test_milkolib" );
+echo( '$tmp->Drop();' . "\n" );
+$tmp->Drop();
+
+echo( "\n" );
+
+//
 // Instantiate wrapper.
 //
 echo( "Instantiate wrapper:\n" );
 echo( '$wrapper = $server->NewWrapper( "test_milkolib" );' . "\n" );
 $wrapper = $server->NewWrapper( "test_milkolib" );
 echo( "Class: " . get_class( $wrapper ) . "\n" );
+exit;
 
 echo( "\n====================================================================================\n\n" );
 

@@ -204,6 +204,11 @@ trait tWrapper
 			//
 			$this->buildDataDictionary();
 
+			//
+			// Cache data dictionary.
+			//
+			$this->cacheDataDictionary();
+
 		} // Empty resources collection.
 
 	} // initDataDictionary.
@@ -289,6 +294,57 @@ trait tWrapper
 		$this->initDescriptors( $terms, $descriptors );
 
 	} // buildDataDictionary.
+
+
+	/*===================================================================================
+	 *	cacheDataDictionary																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Cache data dictionary.</h4>
+	 *
+	 * This method will load the data dictionary into the cache.
+	 *
+	 * @uses NewTermsCollection()
+	 * @uses NewResourcesCollection()
+	 * @uses NewDescriptorsCollection()
+	 * @uses initResources()
+	 * @uses initTerms()
+	 */
+	protected function cacheDataDictionary()
+	{
+		//
+		// Get default collections.
+		//
+		$terms = $this->NewTermsCollection();
+		$resources = $this->NewResourcesCollection();
+		$descriptors = $this->NewDescriptorsCollection();
+
+		//
+		// Get descriptors.
+		//
+		$list = $descriptors->Find();
+		foreach( $list as $descriptor )
+		{
+			//
+			// Convert document.
+			//
+			$data = $descriptor->toArray();
+
+			//
+			// Get key.
+			//
+			$key = $data[ $descriptors->KeyOffset() ];
+			unset( $data[ $descriptors->KeyOffset() ] );
+
+			//
+			// cache descriptor.
+			//
+			$this->mCache->add( $key, $data );
+
+		} // Iterating descriptors.
+
+	} // cacheDataDictionary.
 
 
 	/*===================================================================================

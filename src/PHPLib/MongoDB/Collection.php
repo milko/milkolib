@@ -517,9 +517,15 @@ class Collection extends \Milko\PHPLib\Collection
 	 * @uses \MongoDB\Collection::find()
 	 */
 	public function Find(
-		$theFilter,
+		$theFilter = NULL,
 		array $theOptions = [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] )
 	{
+		//
+		// Init query.
+		//
+		if( $theFilter === NULL )
+			$theFilter = [];
+
 		//
 		// Convert to native options.
 		//
