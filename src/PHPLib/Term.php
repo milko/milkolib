@@ -782,8 +782,6 @@ class Term extends Document
 	 * @param string				$theOffset			Sub-document offset.
 	 * @param Document				$theDocument		Subdocument.
 	 * @return mixed				The document key or handle.
-	 *
-	 * @see kTAG_NS
 	 */
 	protected function doCreateReference( $theOffset, Document $theDocument )
 	{
@@ -805,14 +803,8 @@ class Term extends Document
 	/**
 	 * <h4>Resolve embedded documents.</h4>
 	 *
-	 * The duty of this method is to resolve the provided document reference associated with
-	 * the provided offset into a document object.
-	 *
-	 * The method will return the {@link Document} instance referenced by the provided
-	 * reference, or raise an exception if the referenced document cannot be resolved.
-	 *
-	 * In this class we assume the provided reference is by default a handle, derived
-	 * classes should overload this method to handle other reference types.
+	 * We overload this method by finding the namespaces collection and retrieving the
+	 * term by key.
 	 *
 	 * @param string				$theOffset			Sub-document offset.
 	 * @param mixed					$theReference		Subdocument reference.

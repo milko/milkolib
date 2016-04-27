@@ -136,7 +136,7 @@ class Edge extends Document
 	 * This method should return the list of offsets which are required prior to saving the
 	 * document in its collection.
 	 *
-	 * This class doesn't feature any required offsets.
+	 * This class requires source an destination vertices.
 	 *
 	 * @return array				List of required offsets.
 	 *

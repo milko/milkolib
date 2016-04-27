@@ -67,6 +67,15 @@ const kPREDICATE_PART_OF = ':predicate:PART-OF';
 const kPREDICATE_TYPE_OF = ':predicate:TYPE-OF';
 
 /**
+ * <h4>Kind of.</h4><p />
+ *
+ * This predicate indicates that the subject of the relationship represents the kind of the
+ * object of the relationship. While the type of an object defines what the object
+ * <em>is</em>, the kind indicates the <em>function</em> of the object.
+ */
+const kPREDICATE_KIND_OF = ':predicate:KIND-OF';
+
+/**
  * <h4>Function of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship represents a function or

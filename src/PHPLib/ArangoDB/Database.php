@@ -112,6 +112,24 @@ class Database extends \Milko\PHPLib\Database
 
 
 	/*===================================================================================
+	 *	NewTypesCollection																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a types collection object.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_ARANGO_TYPES} collection name.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	public function NewTypesCollection()
+	{
+		return $this->NewEdgesCollection( kTAG_ARANGO_TYPES );						// ==>
+
+	} // NewTypesCollection.
+
+
+	/*===================================================================================
 	 *	NewDescriptorsCollection														*
 	 *==================================================================================*/
 

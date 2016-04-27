@@ -145,28 +145,28 @@ const kTAG_SYMBOL			= ':sym';
 const kTAG_SYNONYMS			= ':syn';
 
 /**
- * <h4>Type.</h4><p />
+ * <h4>Data type.</h4><p />
  *
  * The property holds an <em>enumerated set of values</em> belonging to a controlled
- * vocabulary which <em>defines the type of the object</em>, it should describe the
- * <em>nature</em> of the object.
+ * vocabulary which defines the <em>type</em> or <em>nature</em> of data. It is generally
+ * used to indicate the primitive data type of a descriptor.
  *
  * Type: <tt>{@link kTYPE_ENUM}</tt>.
  * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
  */
-const kTAG_TYPE				= ':type';
+const kTAG_DATA_TYPE		= ':type:data';
 
 /**
- * <h4>Kind.</h4><p />
+ * <h4>Data kind.</h4><p />
  *
  * The property holds an <em>enumerated set of values</em> belonging to a controlled
- * vocabulary which <em>defines the function of the object</em>, it should describe the
- * <em>kind<em> of object.
+ * vocabulary which defines the <em>kind</em> or <em>function</em> of the data, it should
+ * describe the <em>kind<em> of object.
  *
  * Type: <tt>{@link kTYPE_ENUM_SET}</tt>.
  * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
  */
-const kTAG_KIND				= ':kind';
+const kTAG_DATA_KIND		= ':kind:data';
 
 /**
  * <h4>Reference count.</h4><p />
@@ -234,6 +234,21 @@ const kTAG_MIN_VAL_EXPECTED	= ':low';
  * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
  */
 const kTAG_MAX_VAL_EXPECTED	= ':high';
+
+/*=======================================================================================
+ *	PREDICATE PROPERTIES																*
+ *======================================================================================*/
+
+/**
+ * <h4>Predicate term.</h4><p />
+ *
+ * The property holds the edge predicate term reference in the form of the term document
+ * key.
+ *
+ * Type: <tt>{@link kTYPE_REF_TERM}</tt>.
+ * Kind: <tt>{@link kKIND_DISCRETE}</tt>
+ */
+const kTAG_PREDICATE_TERM	= ':pred';
 
 
 ?>

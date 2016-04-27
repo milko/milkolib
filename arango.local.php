@@ -127,6 +127,13 @@ const kTAG_ARANGO_REL_TO = '_to';
 const kTAG_ARANGO_TERMS = 'terms';
 
 /**
+ * <h4>Default types collection.</h4><p />
+ *
+ * This defines the default types collection name.
+ */
+const kTAG_ARANGO_TYPES = 'types';
+
+/**
  * <h4>Default descriptors collection.</h4><p />
  *
  * This defines the default descriptors collection name.

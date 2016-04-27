@@ -259,6 +259,20 @@ const kTYPE_LANG_STRINGS = ':type:string:langs';
  *======================================================================================*/
 
 /**
+ * <h4>Type.</h4><p />
+ *
+ * The <em>nature</em> of an object.
+ */
+const kTYPE_TYPE = ':type';
+
+/**
+ * <h4>Kind.</h4><p />
+ *
+ * The <em>function</em> or <em>context</em> of an object.
+ */
+const kTYPE_KIND = ':kind';
+
+/**
  * <h4>Attribute.</h4><p />
  *
  * This data type defines an object that functionas as an attribute.

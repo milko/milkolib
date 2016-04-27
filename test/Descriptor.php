@@ -129,8 +129,8 @@ echo( "\n=======================================================================
 echo( "Insert descriptor:\n" );
 echo( '$descriptor[ kTAG_SYMBOL ] = "DESCRIPTOR";' . "\n" );
 $descriptor[ kTAG_SYMBOL ] = "DESCRIPTOR";
-echo( '$descriptor[ kTAG_TYPE ] = kTYPE_STRING;' . "\n" );
-$descriptor[ kTAG_TYPE ] = kTYPE_STRING;
+echo( '$descriptor[ kTAG_DATA_TYPE ] = kTYPE_STRING;' . "\n" );
+$descriptor[ kTAG_DATA_TYPE ] = kTYPE_STRING;
 echo( '$handle = $descriptor->Store();' . "\n" );
 $handle = $descriptor->Store();
 var_dump( $handle );
@@ -146,8 +146,8 @@ echo( "\n" );
 // Insert builtin descriptor.
 //
 echo( "Insert builtin descriptor:\n" );
-echo( '$data = [ kTAG_LID => "builtin", kTAG_NAME => ["en" => "Built-in"], kTAG_SYMBOL => "BUILTIN", kTAG_TYPE => kTYPE_INT ];' . "\n" );
-$data = [ kTAG_LID => "builtin", kTAG_NAME => ["en" => "Built-in"], kTAG_SYMBOL => "BUILTIN", kTAG_TYPE => kTYPE_INT ];
+echo( '$data = [ kTAG_LID => "builtin", kTAG_NAME => ["en" => "Built-in"], kTAG_SYMBOL => "BUILTIN", kTAG_DATA_TYPE => kTYPE_INT ];' . "\n" );
+$data = [ kTAG_LID => "builtin", kTAG_NAME => ["en" => "Built-in"], kTAG_SYMBOL => "BUILTIN", kTAG_DATA_TYPE => kTYPE_INT ];
 echo( '$descriptor = new Milko\PHPLib\Descriptor( $descriptors, $data );' . "\n" );
 $descriptor = new Milko\PHPLib\Descriptor( $descriptors, $data );
 echo( '$descriptor->offsetSet( $descriptors->KeyOffset(), $descriptor->offsetGet( kTAG_GID ) );' . "\n" );

@@ -44,7 +44,7 @@ use Milko\PHPLib\Term;
  * 		in active descriptors: in that case a synonym descriptor should point to its master
  * 		descriptor with a graph relationship.
  * 		<em>This property is optional</em>.
- * 	 <li><tt>{@link kTAG_TYPE}</tt>: This represents the descriptor <em>data type</em>, it
+ * 	 <li><tt>{@link kTAG_DATA_TYPE}</tt>: This represents the descriptor <em>data type</em>, it
  * 		essentially defines the common format for all values of that descriptor, it is
  * 		expressed as an enumerated value of the following:
  *    <ul>
@@ -90,7 +90,7 @@ use Milko\PHPLib\Term;
  * 		 </ul>
  *   </ul>
  * 		<em>This property is required</em>.
- * 	<li><tt>{@link kTAG_KIND}</tt>: This represents the descriptor <em>kind</em>, it
+ * 	<li><tt>{@link kTAG_DATA_KIND}</tt>: This represents the descriptor <em>kind</em>, it
  * 		essentially defines the function of values of that descriptor, it is expressed as an
  * 		enumerated set of values of the following:
  *   <ul>
@@ -311,8 +311,8 @@ class Descriptor extends Term
 	 * We overload this method to add the following offsets:
 	 *
 	 * <ul>
-	 * 	<li><tt>kTAG_TYPE</tt>: Data type.
-	 * 	<li><tt>kTAG_KIND</tt>: Data kind.
+	 * 	<li><tt>kTAG_DATA_TYPE</tt>: Data type.
+	 * 	<li><tt>kTAG_DATA_KIND</tt>: Data kind.
 	 * </ul>
 	 *
 	 * @return array				List of locked offsets.
@@ -322,7 +322,7 @@ class Descriptor extends Term
 		return
 			array_merge(
 				parent::lockedOffsets(),
-				[ kTAG_TYPE, kTAG_KIND ] );											// ==>
+				[ kTAG_DATA_TYPE, kTAG_DATA_KIND ] );								// ==>
 
 	} // lockedOffsets.
 
@@ -338,7 +338,7 @@ class Descriptor extends Term
 	 *
 	 * <ul>
 	 * 	<li><tt>kTAG_SYMBOL</tt>: Symbol.
-	 * 	<li><tt>kTAG_TYPE</tt>: Data type.
+	 * 	<li><tt>kTAG_DATA_TYPE</tt>: Data type.
 	 * </ul>
 	 *
 	 * @return array				List of required offsets.
@@ -348,7 +348,7 @@ class Descriptor extends Term
 		return
 			array_merge(
 				parent::requiredOffsets(),
-				[ kTAG_SYMBOL, kTAG_TYPE ] );										// ==>
+				[ kTAG_SYMBOL, kTAG_DATA_TYPE ] );									// ==>
 
 	} // requiredOffsets.
 

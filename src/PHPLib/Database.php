@@ -426,6 +426,29 @@ abstract class Database extends Container
 
 
 	/*===================================================================================
+	 *	NewTypesCollection																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a types collection object.</h4>
+	 *
+	 * This method can be used to create a collection object that stores types, type
+	 * collections are of the {@link kTOKEN_OPT_COLLECTION_TYPE_EDGE} type and feature a
+	 * default name which is dependent on the native database driver; for this reason the
+	 * method is virtual.
+	 *
+	 * If the collection already exists, it will be returned, if not, it will be created and
+	 * added to the working collections of the database which are stored in the object's
+	 * inherited array object.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	abstract public function NewTypesCollection();
+
+
+	/*===================================================================================
 	 *	NewDescriptorsCollection														*
 	 *==================================================================================*/
 
