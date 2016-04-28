@@ -55,7 +55,7 @@ use Milko\PHPLib\Document;
  *
  * Descriptor objects <em>should be stored in a default collection</em>.
  *
- *	@package	Terms
+ *	@package	Code
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00

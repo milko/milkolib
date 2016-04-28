@@ -145,5 +145,15 @@ const kKIND_ROOT = ':kind:root';
  */
 const kKIND_TYPE = ':kind:type';
 
+/**
+ * <h4>Category.</h4><p />
+ *
+ * Items of this kind are used to group other items under a common category or division.
+ * In practice, when such elements are encountered in a graph path, they will be displayed
+ * and will in general feature a disclosure triangle, but will not be available for
+ * selection as the other elements of the path.
+ */
+const kKIND_CATEGORY = ':kind:category';
+
 
 ?>

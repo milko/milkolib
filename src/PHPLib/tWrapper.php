@@ -702,16 +702,6 @@ trait tWrapper
 		$term->Store();
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
-				kTAG_LID => 'ref-self', kTAG_SYMBOL => 'kTYPE_REF_SELF',
-				kTAG_NAME => [ 'en' => 'Collection reference' ],
-				kTAG_DESCRIPTION => [ 'en' =>
-					'This type indicates that the property references another object ' .
-					'belonging to the same collection, the value will contain the key of ' .
-					'the referenced object.' ] ]
-		);
-		$term->Store();
-
-		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ref-term', kTAG_SYMBOL => 'kTYPE_REF_TERM',
 				kTAG_NAME => [ 'en' => 'Term reference' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -996,6 +986,18 @@ trait tWrapper
 					'proxies to the structure they hold. When traversing an enumerated ' .
 					'set tree, elements of this kind will not be either displayed or ' .
 					'made available for setting.' ] ]
+		);
+		$term->Store();
+
+		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
+				kTAG_LID => 'category', kTAG_SYMBOL => 'kKIND_CATEGORY',
+				kTAG_NAME => [ 'en' => 'Category' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'Items of this kind are used to group other items under a common ' .
+					'category or division. In practice, when such elements are ' .
+					'encountered in a graph path, they will be displayed and will in ' .
+					'general feature a disclosure triangle, but will not be available ' .
+					'for selection as the other elements of the path.' ] ]
 		);
 		$term->Store();
 
@@ -1297,13 +1299,7 @@ trait tWrapper
 			$theTypes, kPREDICATE_ENUM_OF, kTYPE_REF, $term )
 			->Store();
 		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_REF_SELF, $term )
-			->Store();
-		Predicate::NewPredicate(
 			$theTypes, kPREDICATE_ENUM_OF, kTYPE_REF_TERM, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_REF_DESCRIPTOR, $term )
 			->Store();
 		// LOCALISED.
 		Predicate::NewPredicate(
@@ -1607,6 +1603,31 @@ trait tWrapper
 				kTAG_DESCRIPTION => [ 'en' =>
 					'The property holds the edge predicate term reference in the ' .
 					'form of the term document key.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'node-ref', kTAG_SYMBOL => 'kTAG_NODE_REF',
+				kTAG_DATA_TYPE => kTYPE_REF_TERM,
+				kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+				kTAG_NAME => [ 'en' => 'Node alias' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the document handle of the object for which ' .
+					'the node acts as an alias.' ] ]
+		);
+		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
+		$term->Store();
+
+		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'node-kind', kTAG_SYMBOL => 'kTAG_NODE_KIND',
+				kTAG_DATA_TYPE => kTYPE_ENUM_SET,
+				kTAG_DATA_KIND => [ kKIND_CATEGORICAL ],
+				kTAG_NAME => [ 'en' => 'Node kind' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds an <em>enumerated set of values</em> belonging ' .
+					'to a controlled vocabulary which defines the <em>kind</em> or ' .
+					'<em>function</em> of the node.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
 		$term->Store();

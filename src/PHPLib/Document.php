@@ -772,8 +772,16 @@ class Document extends Container
 	/**
 	 * <h4>Validate object.</h4>
 	 *
-	 * This method should check whether the document is valid and ready to be stored in its
-	 * collection, if that is not the case, the method should raise an exception.
+	 * This method will check whether the document is valid and ready to be stored in its
+	 * collection, if that is not the case, the method will raise an exception.
+	 * 
+	 * The validation procedure follows these steps:
+	 * 
+	 * <ul>
+	 * 	<li>Check whether the document contains all required properties.
+	 * 	<li>Traverse the document structure and validate each property based on its type,
+	 * 		casting the value to the declared data type.
+	 * </ul>
 	 *
 	 * In this class we check whether all required properties are there and we traverse the
 	 * object calling this method for each of them, in derived classes you should first
@@ -1150,7 +1158,7 @@ class Document extends Container
 			// Collect offset.
 			//
 			if( (substr( $key, 0, 1 ) == kTOKEN_TAG_PREFIX)
-				&& (! in_array( $key, $theOffsets )) )
+			 && (! in_array( $key, $theOffsets )) )
 				$theOffsets[] = $key;
 
 			//

@@ -250,5 +250,30 @@ const kTAG_MAX_VAL_EXPECTED	= ':high';
  */
 const kTAG_PREDICATE_TERM	= ':pred';
 
+/*=======================================================================================
+ *	NODE PROPERTIES																		*
+ *======================================================================================*/
+
+/**
+ * <h4>Node alias.</h4><p />
+ *
+ * The property holds the document handle of the object the node represents.
+ *
+ * Type: <tt>{@link kTYPE_REF}</tt>.
+ * Kind: <tt>{@link kKIND_DISCRETE}</tt>
+ */
+const kTAG_NODE_REF			= ':node-ref';
+
+/**
+ * <h4>Node kind.</h4><p />
+ *
+ * The property holds an <em>enumerated set of values</em> belonging to a controlled
+ * vocabulary which defines the <em>kind</em> or <em>function</em> of the node.
+ *
+ * Type: <tt>{@link kTYPE_ENUM}</tt>.
+ * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
+ */
+const kTAG_NODE_KIND		= ':node-kind';
+
 
 ?>

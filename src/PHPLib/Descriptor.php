@@ -146,7 +146,7 @@ use Milko\PHPLib\Term;
  *
  * Descriptor objects <em>should be stored in a default collection</em>.
  *
- *	@package	Terms
+ *	@package	Core
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
