@@ -780,7 +780,11 @@ class Document extends Container
 	 * <ul>
 	 * 	<li>Check whether the document contains all required properties.
 	 * 	<li>Traverse the document structure and validate each property based on its type,
-	 * 		casting the value to the declared data type.
+	 * 		casting the value to the declared data type. Also, collect all descriptors.
+	 * 	 <ul>
+	 * 		<li>If the value is a document instance, call this method on it.
+	 * 		<li>If the value is a structure or an array, traverse it.
+	 * 	 </ul>
 	 * </ul>
 	 *
 	 * In this class we check whether all required properties are there and we traverse the
@@ -808,6 +812,17 @@ class Document extends Container
 			throw new \RuntimeException(
 				"Document is missing the following required properties: "
 				.implode( ', ', $missing ) );									// !@! ==>
+		
+		//
+		// Init local storage.
+		//
+		$descriptors = [];
+		$data = $this->getArrayCopy();
+		
+		//
+		// Traverse structure.
+		//
+		$this->doValidate( $data, $descriptors );
 
 		//
 		// Validate subdocuments.
@@ -1123,6 +1138,177 @@ class Document extends Container
 
 
 	/*===================================================================================
+	 *	doValidate																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Validate structure.</h4>
+	 *
+	 * This method will traverse the current object and validate all encountered properties,
+	 * if a structure or array is encountered, the method will recurse the method; if a
+	 * document instance is encountered, the method will call the {@link Validate()} method
+	 * on it.
+	 *
+	 * Any error will raise an exception.
+	 *
+	 * @param array				   &$theData			Document data.
+	 * @param array				   &$theOffsets			Document offsets.
+	 * @throws \RuntimeException
+	 *
+	 * @uses Store()
+	 * @uses IsModified()
+	 * @uses IsPersistent()
+	 */
+	protected function doValidate( array &$theData, array &$theOffsets )
+	{
+		//
+		// Traverse data.
+		//
+		foreach( $theData as $key => $value )
+		{
+			//
+			// Parse descriptor.
+			//
+			if( (! in_array( $key, $this->mCollection->GetInternalOffsets() ))
+				&& (! array_key_exists( $key, $theOffsets )) )
+			{
+				//
+				// Collect descriptor.
+				//
+				$descriptor = $this->mCollection->Database()->GetDescriptor( $key );
+				if( $descriptor !== NULL )
+					$theOffsets[ $key ] = $descriptor;
+				else
+					throw new \RuntimeException (
+						"The descriptor $key is not registered." );				// !@! ==>
+
+			} // Not an internal offset and not yet collected.
+
+			//
+			// Validate property.
+			//
+			$this->doValidateProperty( $key, $theData, $theOffsets );
+
+		} // Traversing the document.
+
+	} // doValidate.
+
+
+	/*===================================================================================
+	 *	doValidate																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Validate structure.</h4>
+	 *
+	 * This method will traverse the current object and validate all encountered properties,
+	 * if a structure or array is encountered, the method will recurse the method; if a
+	 * document instance is encountered, the method will call the {@link Validate()} method
+	 * on it.
+	 *
+	 * Any error will raise an exception.
+	 *
+	 * @param string				$theKey				Property offset.
+	 * @param mixed				   &$theData			Property data.
+	 * @param array				   &$theOffsets			Document offsets.
+	 * @throws \RuntimeException
+	 *
+	 * @uses Store()
+	 * @uses IsModified()
+	 * @uses IsPersistent()
+	 */
+	protected function doValidateProperty( $theKey, &$theData, array &$theOffsets )
+	{
+		//
+		// Init local storage.
+		//
+		$stored = FALSE;
+		$value = & $theData[ $theKey ];
+
+		//
+		// Handle documents.
+		//
+		if( $value instanceof Document )
+		{
+			//
+			// Insert new documents.
+			//
+			if( $value->IsModified()
+			 || (! $value->IsPersistent()) )
+			{
+				//
+				// Store document.
+				//
+				$value->Store();
+
+				//
+				// Signal.
+				//
+				$stored = TRUE;
+			}
+
+			//
+			// Replace with reference.
+			//
+			$value = $this->doCreateReference( $theKey, $value );
+
+		} // Document instance.
+
+		//
+		// Validate by data type.
+		//
+		switch( $theOffsets[ $theKey ][ kTAG_DATA_TYPE ] )
+		{
+			//
+			// Primitives.
+			//
+			case kTYPE_MIXED:
+				break;
+
+			case kTYPE_STRING:
+				$value = (string)$value;
+				break;
+
+			case kTYPE_INT:
+				if( is_numeric( $value ) )
+					$value = (int)$value;
+				else
+					throw new \RuntimeException (
+						"The descriptor $theKey is not numeric." );				// !@! ==>
+				break;
+
+			case kTYPE_FLOAT:
+				if( is_numeric( $value ) )
+					$value = (double)$value;
+				else
+					throw new \RuntimeException (
+						"The descriptor $theKey is not numeric." );				// !@! ==>
+				break;
+
+			case kTYPE_BOOLEAN:
+				$value = (bool)$value;
+				break;
+
+			//
+			// Derived types.
+			//
+			case kTYPE_URL:
+				// We don't check URLs.
+				$value = (string)$value;
+				break;
+
+			case kTYPE_STRING_DATE:
+				// We don't check URLs.
+				$value = (string)$value;
+				if( strlen( $value ) != )
+				break;
+
+		} // Validating by data type.
+
+	} // doValidateProperty.
+
+
+	/*===================================================================================
 	 *	doTraverseDocument																*
 	 *==================================================================================*/
 
@@ -1158,7 +1344,7 @@ class Document extends Container
 			// Collect offset.
 			//
 			if( (substr( $key, 0, 1 ) == kTOKEN_TAG_PREFIX)
-			 && (! in_array( $key, $theOffsets )) )
+				&& (! in_array( $key, $theOffsets )) )
 				$theOffsets[] = $key;
 
 			//
@@ -1170,7 +1356,7 @@ class Document extends Container
 				// Insert new documents.
 				//
 				if( $value->IsModified()
-				 || (! $value->IsPersistent()) )
+					|| (! $value->IsPersistent()) )
 					$value->Store();
 
 				//

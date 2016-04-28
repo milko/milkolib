@@ -1888,8 +1888,39 @@ abstract class Collection
 	 * @param mixed				   &$theIdentifier		Receives object key.
 	 */
 	abstract public function ParseDocumentHandle( $theHandle,
-												 &$theCollection,
-												 &$theIdentifier );
+												  &$theCollection,
+												  &$theIdentifier );
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC INTERNAL OFFSETS INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	GetInternalOffsets																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return internal offsets.</h4>
+	 *
+	 * This method can be used to retrieve the list of internal offsets, these are not
+	 * registered among descriptors and are collection dependant.
+	 *
+	 * @return array				List of internal offsets.
+	 */
+	public function GetInternalOffsets()
+	{
+		return [
+			$this->KeyOffset(), $this->ClassOffset(),
+			$this->RevisionOffset(), $this->PropertiesOffset()
+		];																			// ==>
+
+	} // GetInternalOffsets.
 
 
 

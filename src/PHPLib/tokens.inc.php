@@ -227,5 +227,36 @@ const kTOKEN_SERIAL_OFFSET = 'serial';
  */
 const kTOKEN_SERIAL_DESCRIPTOR = 'descriptor';
 
+/*=======================================================================================
+ *	GEOMETRY TOKENS																		*
+ *======================================================================================*/
+
+/**
+ * Shape type
+ *
+ * This token is used as the offset for defining a shape type.
+ */
+define( "kTOKEN_TYPE",					'type' );
+
+/**
+ * Geometry
+ *
+ * This token represents the <em>geometry of a shape</em>, it is by default an array which
+ * can be nested at several levels, depending on the type of geometry. It is used in
+ * properties of type {@link kTYPE_SHAPE} to provide the shape geometry; incidentally, it
+ * is named <tt>coordinates</tt> so that when used with the {@link kTAG_TYPE} tag it forms
+ * a GeoJSON object.
+ */
+define( "kTOKEN_GEOMETRY",				'coordinates' );
+
+/**
+ * Radius
+ *
+ * This token represents the <em>radius of a circle shape</em> in meters, it is used in
+ * conjuction with {@link kTOKEN_TYPE} and {@link kTOKEN_GEOMETRY} to create a GeoJSON
+ * circle shape.
+ */
+define( "kTOKEN_RADIUS",				'radius' );
+
 
 ?>
