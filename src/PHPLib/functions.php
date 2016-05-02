@@ -1139,6 +1139,173 @@ function CheckShapeValue( &$theValue )
 
 
 /*===================================================================================
+ *	CheckLatitude																	*
+ *==================================================================================*/
+
+/**
+ * Validate latitude
+ *
+ * This function will validate a latitude using the output of the {@link ParseCoordinate()}
+ * method, it will ensure degrees, minutes and seconds are valid and that the hemisphere is
+ * either (N)orth or (S)outh.
+ *
+ * The provided parameter is an array indexed as follows:
+ *
+ * <ul>
+ * 	<li><tt>D</tt>: Degrees.
+ * 	<li><tt>M</tt>: Minutes.
+ * 	<li><tt>S</tt>: Seconds.
+ * 	<li><tt>H</tt>: Hemisphere.
+ * </ul>
+ *
+ * The method expects the degrees and hemisphere, the other elements are optional; the
+ * method will also check whether the provided array is empty.
+ *
+ * If the provided data is invalid, the method will return <tt>FALSE</tt>, if not it will
+ * return the reconstituted string coordinate.
+ *
+ * @param array					$theCoordinate		Coordinate data.
+ *
+ * @return mixed				<tt>string</tt> if the latitude is valid, or <tt>FALSE</tt>.
+ */
+function CheckLatitude( array $theCoordinate )
+{
+	//
+	// Check coordinate.
+	//
+	if( count( $theCoordinate ) )
+	{
+		//
+		// Validate degrees.
+		//
+		if( $theCoordinate[ 'D' ] > 90 )
+			return FALSE;															// ==>
+
+		//
+		// Validate minutes.
+		//
+		if( array_key_exists( 'M', $theCoordinate )
+		 && ($theCoordinate[ 'M' ] >= 60) )
+			return FALSE;															// ==>
+
+		//
+		// Validate seconds.
+		//
+		if( array_key_exists( 'S', $theCoordinate )
+		 && ($theCoordinate[ 'S' ] >= 60) )
+			return FALSE;															// ==>
+
+		//
+		// Validate hemisphere.
+		//
+		if( ($theCoordinate[ 'H' ] != 'N')
+		 && ($theCoordinate[ 'H' ] != 'S') )
+			return FALSE;															// ==>
+
+		//
+		// Build coordinate string.
+		//
+		$coordinate = $theCoordinate[ 'D' ] . '°';
+		if( array_key_exists( 'M', $theCoordinate ) )
+			$coordinate .= ($theCoordinate[ 'M' ] . '\'');
+		if( array_key_exists( 'S', $theCoordinate ) )
+			$coordinate .= ($theCoordinate[ 'S' ] . "\"");
+		$coordinate .= $theCoordinate[ 'H' ];
+
+		return $coordinate;															// ==>
+
+	} // Not an empty array.
+
+	return FALSE;																	// ==>
+
+} // CheckLatitude.
+
+
+/*===================================================================================
+ *	CheckLongitude																	*
+ *==================================================================================*/
+
+/**
+ * Validate longitude
+ *
+ * This function will validate a longitude using the output of the {@link ParseCoordinate()}
+ * method, it will ensure degrees, minutes and seconds are valid and that the hemisphere is
+ * either (E)ast or (W)est.
+ *
+ * The provided parameter is an array indexed as follows:
+ *
+ * <ul>
+ * 	<li><tt>D</tt>: Degrees.
+ * 	<li><tt>M</tt>: Minutes.
+ * 	<li><tt>S</tt>: Seconds.
+ * 	<li><tt>H</tt>: Hemisphere.
+ * </ul>
+ *
+ * The method expects the degrees and hemisphere, the other elements are optional; the
+ * method will also check whether the provided array is empty.
+ *
+ * If the provided data is invalid, the method will return <tt>FALSE</tt>, if not it will
+ * return the reconstituted string coordinate.
+ *
+ * @param array					$theCoordinate		Coordinate data.
+ *
+ * @return mixed				<tt>string</tt> if the longitude is valid, or
+ * 								<tt>FALSE</tt>.
+ */
+function CheckLongitude( array $theCoordinate )
+{
+	//
+	// Check coordinate.
+	//
+	if( count( $theCoordinate ) )
+	{
+		//
+		// Validate degrees.
+		//
+		if( $theCoordinate[ 'D' ] > 180 )
+			return FALSE;															// ==>
+
+		//
+		// Validate minutes.
+		//
+		if( array_key_exists( 'M', $theCoordinate )
+			&& ($theCoordinate[ 'M' ] >= 60) )
+			return FALSE;															// ==>
+
+		//
+		// Validate seconds.
+		//
+		if( array_key_exists( 'S', $theCoordinate )
+			&& ($theCoordinate[ 'S' ] >= 60) )
+			return FALSE;															// ==>
+
+		//
+		// Validate hemisphere.
+		//
+		if( ($theCoordinate[ 'H' ] != 'E')
+			&& ($theCoordinate[ 'H' ] != 'W') )
+			return FALSE;															// ==>
+
+		//
+		// Build coordinate string.
+		//
+		$coordinate = $theCoordinate[ 'D' ] . '°';
+		if( array_key_exists( 'M', $theCoordinate ) )
+			$coordinate .= ($theCoordinate[ 'M' ] . '\'');
+		if( array_key_exists( 'S', $theCoordinate ) )
+			$coordinate .= ($theCoordinate[ 'S' ] . "\"");
+		$coordinate .= $theCoordinate[ 'H' ];
+
+		return $coordinate;															// ==>
+
+	} // Not an empty array.
+
+	return FALSE;																	// ==>
+
+} // CheckLongitude.
+
+
+/*===================================================================================
  *	CheckLinkValue																	*
  *==================================================================================*/
 
@@ -1200,7 +1367,7 @@ function CheckDateValue( &$theValue )
 	//
 	// Cast date.
 	//
-	$date = $theValue = (string) $theValue;
+	$date = $theValue = trim( $theValue );
 
 	//
 	// Handle non-standard format.

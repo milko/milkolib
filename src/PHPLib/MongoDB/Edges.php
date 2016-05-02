@@ -82,6 +82,36 @@ class Edges extends Collection
 
 /*=======================================================================================
  *																						*
+ *							PUBLIC INTERNAL OFFSETS INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	GetInternalOffsets																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return internal offsets.</h4>
+	 *
+	 * We implement this method to add the vertex property offsets.
+	 *
+	 * @return array				List of internal offsets.
+	 */
+	public function GetInternalOffsets()
+	{
+		return
+			array_merge(
+				parent::GetInternalOffsets(),
+				[ $this->VertexSource(), $this->VertexDestination() ] );			// ==>
+
+	} // GetInternalOffsets.
+
+
+
+/*=======================================================================================
+ *																						*
  *							PUBLIC GRAPH MANAGEMENT INTERFACE							*
  *																						*
  *======================================================================================*/

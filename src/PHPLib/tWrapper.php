@@ -213,7 +213,7 @@ trait tWrapper
 		//
 		// Handle not found.
 		//
-		if( $this->mCache->getResultMessage() == \Memcached::RES_NOTFOUND )
+		if( $this->mCache->getResultCode() == \Memcached::RES_NOTFOUND )
 			return NULL;															// ==>
 
 		throw new \RuntimeException(
@@ -534,7 +534,8 @@ trait tWrapper
 				'This namespace groups all default or built-in terms of the ontology, ' .
 				'these are the elements that will be used to build the ontology itself.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 		$ns = $term[ $key ];
 
 		//
@@ -548,7 +549,8 @@ trait tWrapper
 					'The type describes the <em>nature</em> or <em>composition</em> ' .
 					'of an object.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 		$ns_type = $term[ $key ];
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
@@ -558,7 +560,8 @@ trait tWrapper
 					'The kind describes the <em>function</em> or <em>context</em>em> ' .
 					'of an object.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 		$ns_kind = $term[ $key ];
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
@@ -567,7 +570,8 @@ trait tWrapper
 				kTAG_DESCRIPTION => [ 'en' =>
 					'A predicate qualifies a directed graph relationship.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 		$ns_predicate = $term[ $key ];
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
@@ -576,7 +580,8 @@ trait tWrapper
 				kTAG_DESCRIPTION => [ 'en' =>
 					'This term qualifies a resource as not public or freely accessible.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 		$ns_private = $term[ $key ];
 
 		//
@@ -590,7 +595,8 @@ trait tWrapper
 					'A mixed data type indicates that the referred property may take any ' .
 					'data type.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'string', kTAG_SYMBOL => 'kTYPE_STRING',
@@ -599,7 +605,8 @@ trait tWrapper
 					'A string data type indicates that the referred property may hold ' .
 					'UNICODE characters, this type does not include binary data.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 		$ns_string = $term[ $key ];
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
@@ -609,7 +616,8 @@ trait tWrapper
 					'An integer data type indicates that the referred property may hold ' .
 					'a 32 or 64 bit integral numeric values.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'float', kTAG_SYMBOL => 'kTYPE_FLOAT',
@@ -619,7 +627,8 @@ trait tWrapper
 					'double or real. The precision of such value is not inferred, in ' .
 					'general it will be a 32 or 64 bit real.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'bool', kTAG_SYMBOL => 'kTYPE_BOOLEAN',
@@ -628,7 +637,8 @@ trait tWrapper
 					'Boolean values can take one of two states: on or true, or off or ' .
 					'false.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load derived types.
@@ -641,7 +651,8 @@ trait tWrapper
 					'A link data type indicates that the referred property is a string ' .
 					'representing an URL which is an internet link or network address.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'date', kTAG_SYMBOL => 'kTYPE_STRING_DATE',
@@ -652,7 +663,8 @@ trait tWrapper
 					'which the day, or the day and month can be omitted. All digits must ' .
 					'be provided. This type can be used as a range and sorted.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'lat', kTAG_SYMBOL => 'kTYPE_STRING_LAT',
@@ -668,7 +680,8 @@ trait tWrapper
 					'must range between  <tt>0</tt> to lower than <tt>60</tt>. This data ' .
 					'type is useful to calculate the maximum error of a coordinate.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'lon', kTAG_SYMBOL => 'kTYPE_STRING_LON',
@@ -684,7 +697,8 @@ trait tWrapper
 					'must range between  <tt>0</tt> to lower than <tt>60</tt>. This data ' .
 					'type is useful to calculate the maximum error of a coordinate.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load referential types.
@@ -699,7 +713,8 @@ trait tWrapper
 					'reference object resides and the object key, the format in which ' .
 					'this value is expressed depends on the specific database.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ref-term', kTAG_SYMBOL => 'kTYPE_REF_TERM',
@@ -708,7 +723,8 @@ trait tWrapper
 					'This type indicates that the property references a term object, the ' .
 					'value will contain the key of the referenced term.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load localised types.
@@ -719,14 +735,16 @@ trait tWrapper
 				kTAG_NAME => [ 'en' => 'Date' ],
 				kTAG_DESCRIPTION => [ 'en' => 'Date in the native database format.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'time-stamp', kTAG_SYMBOL => 'kTYPE_TIMESTAMP',
 				kTAG_NAME => [ 'en' => 'Timestamp' ],
 				kTAG_DESCRIPTION => [ 'en' => 'Time stamp in the native database format.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load categorical types.
@@ -741,7 +759,8 @@ trait tWrapper
 					'be a set of terms and the selected value will be the term\'s global ' .
 					'identifier.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'enum-set', kTAG_SYMBOL => 'kTYPE_ENUM_SET',
@@ -752,7 +771,8 @@ trait tWrapper
 					'vocabulary will be a set of terms and the selected values will be ' .
 					'the term\'s global identifiers.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load structured types.
@@ -765,7 +785,8 @@ trait tWrapper
 					'This data type defines a list of elements whose value type is not ' .
 					'inferred. This data type usually applies to arrays.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'struct', kTAG_SYMBOL => 'kTYPE_STRUCT',
@@ -774,7 +795,8 @@ trait tWrapper
 					'This data type defines a structure or an associative array in which ' .
 					'the element key is represented by an indicator identifier.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'shape', kTAG_SYMBOL => 'kTYPE_SHAPE',
@@ -799,7 +821,8 @@ trait tWrapper
 					'of the polygon, the other rings are optional and represent holes in ' .
 					'the polygon.</ul></ul>' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$nsp = $ns_string;
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
@@ -811,7 +834,8 @@ trait tWrapper
 					'key is expressed as the language code and the value is a single ' .
 					'string in that language.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'langs', kTAG_SYMBOL => 'kTYPE_LANG_STRINGS',
@@ -822,7 +846,8 @@ trait tWrapper
 					'key is expressed as the language code and the value is a list of ' .
 					'strings in that language.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load functional types.
@@ -834,7 +859,8 @@ trait tWrapper
 				kTAG_DESCRIPTION => [ 'en' =>
 					'This data type defines an object that functionas as an attribute.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'property', kTAG_SYMBOL => 'kTYPE_PROPERTY',
@@ -842,7 +868,8 @@ trait tWrapper
 				kTAG_DESCRIPTION => [ 'en' =>
 					'This data type defines an object that functionas as a property.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load domain kinds.
@@ -857,7 +884,8 @@ trait tWrapper
 					'properties which take their values from an enumerated set of ' .
 					'choices are of this kind.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'quantitative', kTAG_SYMBOL => 'kKIND_QUANTITATIVE',
@@ -868,7 +896,8 @@ trait tWrapper
 					'continuous. In general numerical values which can be aggregated in ' .
 					'ranges fall under this category.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'discrete', kTAG_SYMBOL => 'kKIND_DISCRETE',
@@ -879,7 +908,8 @@ trait tWrapper
 					'categorical property, and whose values are not continuous, which ' .
 					'differentiates it from a quantitative property.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load usage kinds.
@@ -892,7 +922,8 @@ trait tWrapper
 					'This kind indicates that the property is recommended, encouraged or ' .
 					'important, but not necessarily required or mandatory.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'required', kTAG_SYMBOL => 'kKIND_REQUIRED',
@@ -900,7 +931,8 @@ trait tWrapper
 				kTAG_DESCRIPTION => [ 'en' =>
 					'This kind indicates that the property is required or mandatory.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$nsp = $ns_private;
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
@@ -910,7 +942,8 @@ trait tWrapper
 					'This kind indicates that the data property should not be displayed ' .
 					'to clients.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'search', kTAG_SYMBOL => 'kKIND_PRIVATE_SEARCH',
@@ -919,7 +952,8 @@ trait tWrapper
 					'This kind indicates that the data property should not be available ' .
 					'to clients for searching.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'modify', kTAG_SYMBOL => 'kKIND_PRIVATE_MODIFY',
@@ -929,7 +963,8 @@ trait tWrapper
 					'object, which means that it is automatically managed by the class ' .
 					'and should not be explicitly set or modified by clients.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load cardinality kinds.
@@ -942,7 +977,8 @@ trait tWrapper
 					'This kind indicates that the property is a list of values, each of ' .
 					'the defined data type.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'summary', kTAG_SYMBOL => 'kKIND_SUMMARY',
@@ -951,7 +987,8 @@ trait tWrapper
 					'This kind indicates that the property can be used to group results ' .
 					'in a summary.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'lookup', kTAG_SYMBOL => 'kKIND_LOOKUP',
@@ -960,7 +997,8 @@ trait tWrapper
 					'This kind indicates that the property can be searched upon using ' .
 					'auto-complete.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load vertex kinds.
@@ -975,7 +1013,8 @@ trait tWrapper
 					'which the whole structure originates from, or an element that ' .
 					'represents a specific thematic entry point.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'type', kTAG_SYMBOL => 'kKIND_TYPE',
@@ -987,7 +1026,8 @@ trait tWrapper
 					'set tree, elements of this kind will not be either displayed or ' .
 					'made available for setting.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'category', kTAG_SYMBOL => 'kKIND_CATEGORY',
@@ -999,7 +1039,8 @@ trait tWrapper
 					'general feature a disclosure triangle, but will not be available ' .
 					'for selection as the other elements of the path.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load aggregation predicates.
@@ -1013,7 +1054,8 @@ trait tWrapper
 					'subclass of the object of the relationship, in other words, the ' .
 					'subject is derived from the object.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'SUBRANK-OF', kTAG_SYMBOL => 'kPREDICATE_SUBRANK_OF',
@@ -1023,7 +1065,8 @@ trait tWrapper
 					'belongs to the next lowest rank than the object of the ' .
 					'relationship.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'SUBSET-OF', kTAG_SYMBOL => 'kPREDICATE_SUBSET_OF',
@@ -1033,7 +1076,8 @@ trait tWrapper
 					'represents a subset of the object of the relationship, in other ' .
 					'words, the subject is contained by the object.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'PART-OF', kTAG_SYMBOL => 'kPREDICATE_PART_OF',
@@ -1042,7 +1086,8 @@ trait tWrapper
 					'This predicate indicates that the subject of the relationship is a ' .
 					'part or a component of the object of the relationship.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'TYPE-OF', kTAG_SYMBOL => 'kPREDICATE_TYPE_OF',
@@ -1056,7 +1101,8 @@ trait tWrapper
 					'the elements related to the group will relate directly to the ' .
 					'object of the current relationship.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'FUNCTION-OF', kTAG_SYMBOL => 'kPREDICATE_FUNCTION_OF',
@@ -1067,7 +1113,8 @@ trait tWrapper
 					'relationship, in other words, the subject is a group of functions ' .
 					'that can be applied to the object.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'COLLECTION-OF', kTAG_SYMBOL => 'kPREDICATE_COLLECTION_OF',
@@ -1080,7 +1127,8 @@ trait tWrapper
 					'in this case, the subject is a template for the collection of ' .
 					'elements that belong to the object.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'PROPERTY-OF', kTAG_SYMBOL => 'kPREDICATE_PROPERTY_OF',
@@ -1090,7 +1138,8 @@ trait tWrapper
 					'property of the object of the relationship, this means that the ' .
 					'subject of the relationship is a feature.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ATTRIBUTE-OF', kTAG_SYMBOL => 'kPREDICATE_ATTRIBUTE_OF',
@@ -1101,7 +1150,8 @@ trait tWrapper
 					'the subject of the relationship belongs to the set of attributes ' .
 					'of the object of the relationship.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'ENUM-OF', kTAG_SYMBOL => 'kPREDICATE_ENUM_OF',
@@ -1113,7 +1163,8 @@ trait tWrapper
 					'enumerated set item instance, this means that the subject is a ' .
 					'subset of the object.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'INSTANCE-OF', kTAG_SYMBOL => 'kPREDICATE_INSTANCE_OF',
@@ -1123,7 +1174,8 @@ trait tWrapper
 					'the object of the relationship is an instance of the subject of the ' .
 					'relationship.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load preference predicates.
@@ -1142,7 +1194,8 @@ trait tWrapper
 					'is only deprecated, while in the {@link kPREDICATE_VALID} predicate ' .
 					'it is not valid.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'VALID', kTAG_SYMBOL => 'kPREDICATE_VALID',
@@ -1158,7 +1211,8 @@ trait tWrapper
 					'is invalid, while in the {@link kPREDICATE_PREFERRED} predicate it ' .
 					'is only deprecated.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'LEGACY', kTAG_SYMBOL => 'kPREDICATE_LEGACY',
@@ -1174,7 +1228,8 @@ trait tWrapper
 					'relationship was used in the past and the subject of the ' .
 					'relationship is currently used in its place.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Load reference predicates.
@@ -1193,7 +1248,8 @@ trait tWrapper
 					'used in place of the subject, while in this predicate this is not ' .
 					'necessarily true.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
 				kTAG_LID => 'XREF-EXACT', kTAG_SYMBOL => 'kPREDICATE_XREF_EXACT',
@@ -1208,7 +1264,8 @@ trait tWrapper
 					'vertices are related, this predicate indicates that they are ' .
 					'interchangeable.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 	} // initTerms.
 
@@ -1264,73 +1321,94 @@ trait tWrapper
 				kTAG_DESCRIPTION => [ 'en' =>
 					'This defines the data type of a descriptor.' ] ]
 		);
-		$term->Store();
+		$term->PrepareInsert();
+		$theTerms->Insert( $term->toArray() );
 		// PRIMITIVES.
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_MIXED, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRING, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_INT, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_FLOAT, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_BOOLEAN, $term )
-			->Store();
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_MIXED, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRING, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_INT, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_FLOAT, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_BOOLEAN, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
 		// DERIVED.
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_URL, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRING_DATE, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRING_LAT, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRING_LON, $term )
-			->Store();
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_URL, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRING_DATE, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRING_LAT, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRING_LON, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
 		// REFERENTIAL.
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_REF, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_REF_TERM, $term )
-			->Store();
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_REF, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_REF_TERM, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
 		// LOCALISED.
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_DATE, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_TIMESTAMP, $term )
-			->Store();
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_DATE, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_TIMESTAMP, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
 		// CATEGORICAL.
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_ENUM, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_ENUM_SET, $term )
-			->Store();
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_ENUM, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_ENUM_SET, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
 		// STRUCTURED.
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_ARRAY, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRUCT, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_SHAPE, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_LANG_STRING, $term )
-			->Store();
-		Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, kTYPE_LANG_STRINGS, $term )
-			->Store();
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_ARRAY, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_STRUCT, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_SHAPE, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_LANG_STRING, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, kTYPE_LANG_STRINGS, $term );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
 
 	} // initTypes.
 
@@ -1375,7 +1453,8 @@ trait tWrapper
 					'float.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'mod', kTAG_SYMBOL => 'kTAG_MODIFICATION',
@@ -1388,7 +1467,8 @@ trait tWrapper
 					'float.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Create term properties.
@@ -1404,7 +1484,8 @@ trait tWrapper
 					'a <em>document identifier</em>.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'lid', kTAG_SYMBOL => 'kTAG_LID',
@@ -1417,7 +1498,8 @@ trait tWrapper
 					'<em>within its namespace</em>.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'gid', kTAG_SYMBOL => 'kTAG_GID',
@@ -1433,7 +1515,8 @@ trait tWrapper
 					'separated by the <tt>kTOKEN_NAMESPACE_SEPARATOR</tt> token.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'name', kTAG_SYMBOL => 'kTAG_NAME',
@@ -1448,7 +1531,8 @@ trait tWrapper
 					'as key</em> and the <em>name as value</em>.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'descr', kTAG_SYMBOL => 'kTAG_DESCRIPTION',
@@ -1461,7 +1545,8 @@ trait tWrapper
 					'detail</em> the current object.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		//
 		// Create descriptor properties.
@@ -1477,7 +1562,8 @@ trait tWrapper
 					'the symbol should be unique within a context.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'syn', kTAG_SYMBOL => 'kTAG_SYNONYMS',
@@ -1490,7 +1576,8 @@ trait tWrapper
 					'of strings.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => kTYPE_TYPE,
 				kTAG_LID => 'data', kTAG_SYMBOL => 'kTAG_DATA_TYPE',
@@ -1504,7 +1591,8 @@ trait tWrapper
 					'primitive data type of a descriptor.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => kTYPE_KIND,
 				kTAG_LID => 'data', kTAG_SYMBOL => 'kTAG_DATA_KIND',
@@ -1518,7 +1606,8 @@ trait tWrapper
 					'context in which a data type is used.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'refs', kTAG_SYMBOL => 'kTAG_REF_COUNT',
@@ -1532,7 +1621,8 @@ trait tWrapper
 					'than <tt>0</tt>.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'min', kTAG_SYMBOL => 'kTAG_MIN_VAL',
@@ -1544,7 +1634,8 @@ trait tWrapper
 					'for instances of the current descriptor.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'max', kTAG_SYMBOL => 'kTAG_MAX_VAL',
@@ -1556,7 +1647,8 @@ trait tWrapper
 					'for instances of the current descriptor.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'grep', kTAG_SYMBOL => 'kTAG_PATTERN',
@@ -1569,7 +1661,8 @@ trait tWrapper
 					'strings.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'low', kTAG_SYMBOL => 'kTAG_MIN_VAL_EXPECTED',
@@ -1581,7 +1674,8 @@ trait tWrapper
 					'value</em> for this descriptor.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'high', kTAG_SYMBOL => 'kTAG_MAX_VAL_EXPECTED',
@@ -1593,7 +1687,8 @@ trait tWrapper
 					'value</em> for this descriptor.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'pred', kTAG_SYMBOL => 'kTAG_PREDICATE_TERM',
@@ -1605,7 +1700,8 @@ trait tWrapper
 					'form of the term document key.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'node-ref', kTAG_SYMBOL => 'kTAG_NODE_REF',
@@ -1617,7 +1713,8 @@ trait tWrapper
 					'the node acts as an alias.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'node-kind', kTAG_SYMBOL => 'kTAG_NODE_KIND',
@@ -1630,7 +1727,8 @@ trait tWrapper
 					'<em>function</em> of the node.' ] ]
 		);
 		$term[ $theCollection->KeyOffset() ] = $term[ kTAG_GID ];
-		$term->Store();
+		$term->PrepareInsert();
+		$theCollection->Insert( $term->toArray() );
 
 	} // initDescriptors.
 

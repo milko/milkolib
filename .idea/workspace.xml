@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8bc12787-e3d0-41d0-b0bd-e8bf5e92355d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/PHPLib/functions.php" />
+    <list default="true" id="8bc12787-e3d0-41d0-b0bd-e8bf5e92355d" name="Default" comment="&#10;">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/Collection.php" afterPath="$PROJECT_DIR$/src/PHPLib/Collection.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/ArangoDB/Edges.php" afterPath="$PROJECT_DIR$/src/PHPLib/ArangoDB/Edges.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/Document.php" afterPath="$PROJECT_DIR$/src/PHPLib/Document.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/MongoDB/Edges.php" afterPath="$PROJECT_DIR$/src/PHPLib/MongoDB/Edges.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/functions.php" afterPath="$PROJECT_DIR$/src/PHPLib/functions.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/iEdges.php" afterPath="$PROJECT_DIR$/src/PHPLib/iEdges.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/tokens.inc.php" afterPath="$PROJECT_DIR$/src/PHPLib/tokens.inc.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PHPLib/tWrapper.php" afterPath="$PROJECT_DIR$/src/PHPLib/tWrapper.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/Document.php" afterPath="$PROJECT_DIR$/test/Document.php" />
     </list>
     <ignored path="milkolib.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,21 +31,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="descriptors.inc.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/PHPLib/descriptors.inc.php">
+      <file leaf-file-name="Document.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4065">
-              <caret line="275" column="41" selection-start-line="275" selection-start-column="41" selection-end-line="275" selection-end-column="41" />
+            <state relative-caret-position="156">
+              <caret line="1342" column="63" selection-start-line="1342" selection-start-column="63" selection-end-line="1342" selection-end-column="63" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="Document.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
+        <entry file="file://$PROJECT_DIR$/test/Document.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="305">
-              <caret line="1299" column="35" selection-start-line="1299" selection-start-column="35" selection-end-line="1299" selection-end-column="35" />
+            <state relative-caret-position="1023">
+              <caret line="488" column="0" selection-start-line="488" selection-start-column="0" selection-end-line="488" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Wrapper.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/Wrapper.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -52,10 +64,22 @@
       <file leaf-file-name="functions.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/functions.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="1916" column="0" selection-start-line="1916" selection-start-column="0" selection-end-line="1916" selection-end-column="0" />
+            <state relative-caret-position="501">
+              <caret line="1305" column="0" selection-start-line="1305" selection-start-column="0" selection-end-line="1305" selection-end-column="0" />
               <folding>
                 <element signature="e#7#85#0#PHP" expanded="true" />
+                <marker date="1462202569000" expanded="true" signature="28926:29054" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="28935:28960" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="28964:28989" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="28993:29018" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="29022:29049" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="38649:38873" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="38657:38739" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="38660:38739" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="38743:38868" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="38746:38868" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="38778:38863" placeholder="..." />
+                <marker date="1462202569000" expanded="true" signature="38781:38859" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -64,7 +88,7 @@
       <file leaf-file-name="includes.local.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/includes.local.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
+            <state relative-caret-position="420">
               <caret line="32" column="27" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="27" />
               <folding>
                 <element signature="e#7#279#0#PHP" expanded="true" />
@@ -76,18 +100,8 @@
       <file leaf-file-name="Collection.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/Collection.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="1904" column="26" selection-start-line="1904" selection-start-column="8" selection-end-line="1904" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="iEdges.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/PHPLib/iEdges.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="115" column="76" selection-start-line="115" selection-start-column="76" selection-end-line="115" selection-end-column="76" />
+            <state relative-caret-position="201">
+              <caret line="1915" column="20" selection-start-line="1915" selection-start-column="20" selection-end-line="1915" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -96,8 +110,8 @@
       <file leaf-file-name="tWrapper.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/tWrapper.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="186" column="33" selection-start-line="186" selection-start-column="20" selection-end-line="186" selection-end-column="33" />
+            <state relative-caret-position="216">
+              <caret line="296" column="39" selection-start-line="296" selection-start-column="20" selection-end-line="296" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -106,7 +120,7 @@
       <file leaf-file-name="Node.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PHPLib/Node.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="545">
+            <state relative-caret-position="663">
               <caret line="115" column="0" selection-start-line="111" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
               <folding>
                 <element signature="e#7#93#0#PHP" expanded="true" />
@@ -141,7 +155,6 @@
         <option value="$PROJECT_DIR$/test/Database.php" />
         <option value="$PROJECT_DIR$/old/Edge.old.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Descriptors.php" />
-        <option value="$PROJECT_DIR$/test/Document.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/types.inc.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/kinds.inc.php" />
         <option value="$PROJECT_DIR$/test/test.php" />
@@ -159,8 +172,6 @@
         <option value="$PROJECT_DIR$/test/Term.php" />
         <option value="$PROJECT_DIR$/composer.json" />
         <option value="$PROJECT_DIR$/test/Collection.php" />
-        <option value="$PROJECT_DIR$/src/PHPLib/MongoDB/Edges.php" />
-        <option value="$PROJECT_DIR$/src/PHPLib/ArangoDB/Edges.php" />
         <option value="$PROJECT_DIR$/test/Edge.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/MongoDB/Collection.php" />
@@ -176,13 +187,16 @@
         <option value="$PROJECT_DIR$/src/PHPLib/ArangoDB/Database.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/predicates.inc.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/descriptors.inc.php" />
-        <option value="$PROJECT_DIR$/src/PHPLib/tWrapper.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Term.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Descriptor.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Node.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Collection.php" />
+        <option value="$PROJECT_DIR$/src/PHPLib/tWrapper.php" />
+        <option value="$PROJECT_DIR$/src/PHPLib/MongoDB/Edges.php" />
+        <option value="$PROJECT_DIR$/src/PHPLib/ArangoDB/Edges.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/iEdges.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/Document.php" />
+        <option value="$PROJECT_DIR$/test/Document.php" />
         <option value="$PROJECT_DIR$/src/PHPLib/functions.php" />
       </list>
     </option>
@@ -290,28 +304,11 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="milkolib" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
+        <subPane />
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -472,22 +469,25 @@
       <workItem from="1461750363755" duration="11167000" />
       <workItem from="1461830437947" duration="5413000" />
       <workItem from="1461837648526" duration="7014000" />
+      <workItem from="1461919723827" duration="616000" />
+      <workItem from="1462010081907" duration="7000" />
+      <workItem from="1462183523029" duration="12127000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="605839000" />
+    <option name="totallyTimeSpent" value="618589000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2819063" sideWeight="0.49467275" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2907916" sideWeight="0.49467275" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.55212355" sideWeight="0.5015886" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2746365" sideWeight="0.49467275" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27625203" sideWeight="0.49467275" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.231303" sideWeight="0.49841145" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24878837" sideWeight="0.5053272" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -533,7 +533,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="52" />
+      <option name="time" value="53" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -542,13 +542,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2170">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/Document.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="126" column="43" selection-start-line="126" selection-start-column="43" selection-end-line="126" selection-end-column="43" />
         </state>
       </provider>
     </entry>
@@ -601,13 +594,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/defines.inc.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Server.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="104">
@@ -657,24 +643,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/MongoDB/Edges.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/triagens/arangodb/lib/triagens/ArangoDb/EdgeHandler.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="383">
           <caret line="285" column="77" selection-start-line="285" selection-start-column="20" selection-end-line="285" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Edges.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-412">
-          <caret line="964" column="20" selection-start-line="964" selection-start-column="20" selection-end-line="964" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -689,13 +661,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="261">
           <caret line="522" column="10" selection-start-line="522" selection-start-column="10" selection-end-line="522" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="381">
-          <caret line="785" column="0" selection-start-line="777" selection-start-column="0" selection-end-line="785" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -755,13 +720,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/Wrapper.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="29" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/predicates.inc.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
@@ -780,7 +738,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
           <caret line="265" column="16" selection-start-line="265" selection-start-column="6" selection-end-line="265" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -788,13 +745,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="359">
           <caret line="41" column="23" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Descriptor.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="148" column="20" selection-start-line="148" selection-start-column="20" selection-end-line="148" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -812,26 +762,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Database.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="511" column="32" selection-start-line="511" selection-start-column="31" selection-end-line="511" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Term.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="728">
-          <caret line="267" column="0" selection-start-line="154" selection-start-column="0" selection-end-line="267" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/descriptors.inc.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4065">
           <caret line="275" column="41" selection-start-line="275" selection-start-column="41" selection-end-line="275" selection-end-column="41" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Edge.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="91" column="0" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/includes.local.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="32" column="27" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="27" />
+          <folding>
+            <element signature="e#7#279#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -843,25 +795,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/tWrapper.php">
+    <entry file="file://$PROJECT_DIR$/defines.inc.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="186" column="33" selection-start-line="186" selection-start-column="20" selection-end-line="186" selection-end-column="33" />
+        <state relative-caret-position="20">
+          <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/Edge.php">
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/MongoDB/Edges.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="91" column="0" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+        <state relative-caret-position="393">
+          <caret line="97" column="19" selection-start-line="97" selection-start-column="19" selection-end-line="97" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Edges.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1845">
+          <caret line="152" column="19" selection-start-line="152" selection-start-column="19" selection-end-line="152" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/iEdges.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="88" column="0" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/Node.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="545">
+        <state relative-caret-position="663">
           <caret line="115" column="0" selection-start-line="111" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
           <folding>
             <element signature="e#7#93#0#PHP" expanded="true" />
@@ -869,46 +837,96 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PHPLib/iEdges.php">
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/ArangoDB/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="115" column="76" selection-start-line="115" selection-start-column="76" selection-end-line="115" selection-end-column="76" />
+        <state relative-caret-position="201">
+          <caret line="567" column="20" selection-start-line="567" selection-start-column="20" selection-end-line="567" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Term.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="247" column="25" selection-start-line="247" selection-start-column="25" selection-end-line="247" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Descriptor.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="281" column="20" selection-start-line="281" selection-start-column="20" selection-end-line="281" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/Database.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="348" column="33" selection-start-line="348" selection-start-column="20" selection-end-line="348" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PHPLib/tWrapper.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="296" column="39" selection-start-line="296" selection-start-column="20" selection-end-line="296" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/Collection.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="1904" column="26" selection-start-line="1904" selection-start-column="8" selection-end-line="1904" selection-end-column="26" />
+        <state relative-caret-position="201">
+          <caret line="1915" column="20" selection-start-line="1915" selection-start-column="20" selection-end-line="1915" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/Document.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="1299" column="35" selection-start-line="1299" selection-start-column="35" selection-end-line="1299" selection-end-column="35" />
+        <state relative-caret-position="156">
+          <caret line="1342" column="63" selection-start-line="1342" selection-start-column="63" selection-end-line="1342" selection-end-column="63" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/includes.local.php">
+    <entry file="file://$PROJECT_DIR$/test/Wrapper.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="32" column="27" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="27" />
-          <folding>
-            <element signature="e#7#279#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="240">
+          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/Document.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1023">
+          <caret line="488" column="0" selection-start-line="488" selection-start-column="0" selection-end-line="488" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PHPLib/functions.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="1916" column="0" selection-start-line="1916" selection-start-column="0" selection-end-line="1916" selection-end-column="0" />
+        <state relative-caret-position="501">
+          <caret line="1305" column="0" selection-start-line="1305" selection-start-column="0" selection-end-line="1305" selection-end-column="0" />
           <folding>
             <element signature="e#7#85#0#PHP" expanded="true" />
+            <marker date="1462202569000" expanded="true" signature="28926:29054" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="28935:28960" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="28964:28989" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="28993:29018" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="29022:29049" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="38649:38873" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="38657:38739" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="38660:38739" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="38743:38868" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="38746:38868" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="38778:38863" placeholder="..." />
+            <marker date="1462202569000" expanded="true" signature="38781:38859" placeholder="..." />
           </folding>
         </state>
       </provider>

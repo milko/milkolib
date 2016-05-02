@@ -28,6 +28,11 @@ require_once( 'kinds.inc.php' );
  */
 require_once('descriptors.inc.php');
 
+/**
+ * Global functions.
+ */
+require_once('functions.php');
+
 /*=======================================================================================
  *																						*
  *									Document.php										*
@@ -825,10 +830,15 @@ class Document extends Container
 		$this->doValidate( $data, $descriptors );
 
 		//
+		// Set validated data.
+		//
+		$this->exchangeArray( $data );
+
+		//
 		// Validate subdocuments.
 		//
-		$subs = $this->getArrayCopy();
-		$this->doValidateSubdocuments( $subs );
+//		$subs = $this->getArrayCopy();
+//		$this->doValidateSubdocuments( $subs );
 
 	} // Validate.
 
@@ -1170,7 +1180,7 @@ class Document extends Container
 			// Parse descriptor.
 			//
 			if( (! in_array( $key, $this->mCollection->GetInternalOffsets() ))
-				&& (! array_key_exists( $key, $theOffsets )) )
+			 && (! array_key_exists( $key, $theOffsets )) )
 			{
 				//
 				// Collect descriptor.
@@ -1180,7 +1190,7 @@ class Document extends Container
 					$theOffsets[ $key ] = $descriptor;
 				else
 					throw new \RuntimeException (
-						"The descriptor $key is not registered." );				// !@! ==>
+						"The descriptor [$key] is not registered." );			// !@! ==>
 
 			} // Not an internal offset and not yet collected.
 
@@ -1195,7 +1205,7 @@ class Document extends Container
 
 
 	/*===================================================================================
-	 *	doValidate																		*
+	 *	doValidateProperty																*
 	 *==================================================================================*/
 
 	/**
@@ -1223,23 +1233,22 @@ class Document extends Container
 		// Init local storage.
 		//
 		$stored = FALSE;
-		$value = & $theData[ $theKey ];
 
 		//
 		// Handle documents.
 		//
-		if( $value instanceof Document )
+		if( $theData[ $theKey ] instanceof Document )
 		{
 			//
 			// Insert new documents.
 			//
-			if( $value->IsModified()
-			 || (! $value->IsPersistent()) )
+			if( $theData[ $theKey ]->IsModified()
+			 || (! $theData[ $theKey ]->IsPersistent()) )
 			{
 				//
 				// Store document.
 				//
-				$value->Store();
+				$theData[ $theKey ]->Store();
 
 				//
 				// Signal.
@@ -1250,60 +1259,114 @@ class Document extends Container
 			//
 			// Replace with reference.
 			//
-			$value = $this->doCreateReference( $theKey, $value );
+			$theData[ $theKey ] = $this->doCreateReference( $theKey, $theData[ $theKey ] );
 
 		} // Document instance.
 
 		//
-		// Validate by data type.
+		// Handle non-internal descriptors.
 		//
-		switch( $theOffsets[ $theKey ][ kTAG_DATA_TYPE ] )
+		elseif( ! in_array( $theKey, $this->mCollection->GetInternalOffsets() ) )
 		{
 			//
-			// Primitives.
+			// Validate by data type.
 			//
-			case kTYPE_MIXED:
-				break;
+			switch( $theOffsets[ $theKey ][ kTAG_DATA_TYPE ] )
+			{
+				//
+				// Primitives.
+				//
+				case kTYPE_MIXED:
+					break;
 
-			case kTYPE_STRING:
-				$value = (string)$value;
-				break;
+				case kTYPE_STRING:
+					$theData[ $theKey ] = (string)$theData[ $theKey ];
+					break;
 
-			case kTYPE_INT:
-				if( is_numeric( $value ) )
-					$value = (int)$value;
-				else
-					throw new \RuntimeException (
-						"The descriptor $theKey is not numeric." );				// !@! ==>
-				break;
+				case kTYPE_INT:
+					$result = CheckIntegerValue( $theData[ $theKey ] );
+					if( $result === NULL )
+						unset( $theData[ $theKey ] );
+					elseif( $result === FALSE )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+						  . "should be an integer." );							// !@! ==>
+					break;
 
-			case kTYPE_FLOAT:
-				if( is_numeric( $value ) )
-					$value = (double)$value;
-				else
-					throw new \RuntimeException (
-						"The descriptor $theKey is not numeric." );				// !@! ==>
-				break;
+				case kTYPE_FLOAT:
+					$result = CheckFloatValue( $theData[ $theKey ] );
+					if( $result === NULL )
+						unset( $theData[ $theKey ] );
+					elseif( $result === FALSE )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "should be a floating point number." );			// !@! ==>
+					break;
 
-			case kTYPE_BOOLEAN:
-				$value = (bool)$value;
-				break;
+				case kTYPE_BOOLEAN:
+					$result = CheckBooleanValue( $theData[ $theKey ] );
+					if( $result === NULL )
+						unset( $theData[ $theKey ] );
+					elseif( $result === FALSE )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid boolean." );						// !@! ==>
+					break;
 
-			//
-			// Derived types.
-			//
-			case kTYPE_URL:
-				// We don't check URLs.
-				$value = (string)$value;
-				break;
+				//
+				// Derived types.
+				//
+				case kTYPE_URL:
+					$result = CheckLinkValue( $theData[ $theKey ] );
+					if( $result === NULL )
+						unset( $theData[ $theKey ] );
+					elseif( $result === FALSE )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid link." );							// !@! ==>
+					break;
 
-			case kTYPE_STRING_DATE:
-				// We don't check URLs.
-				$value = (string)$value;
-				if( strlen( $value ) != )
-				break;
+				case kTYPE_STRING_DATE:
+					$result = CheckDateValue( $theData[ $theKey ] );
+					if( $result === NULL )
+						unset( $theData[ $theKey ] );
+					elseif( $result === FALSE )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid date." );							// !@! ==>
+					break;
 
-		} // Validating by data type.
+				case kTYPE_STRING_LAT:
+					$result = ParseCoordinate( $theData[ $theKey ] );
+					if( ! count( $result ) )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid coordinate." );					// !@! ==>
+					$result = CheckLatitude( $result );
+					if( $result === FALSE )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid latitude." );						// !@! ==>
+					$theData[ $theKey ] = $result;
+					break;
+
+				case kTYPE_STRING_LON:
+					$result = ParseCoordinate( $theData[ $theKey ] );
+					if( ! count( $result ) )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid coordinate." );					// !@! ==>
+					$result = CheckLongitude( $result );
+					if( $result === FALSE )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid longitude." );					// !@! ==>
+					$theData[ $theKey ] = $result;
+					break;
+
+			} // Validating by data type.
+
+		} // Not an internal descriptor.
 
 	} // doValidateProperty.
 

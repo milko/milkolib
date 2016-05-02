@@ -24,6 +24,11 @@ elseif( kENGINE == "ARANGO" )
 	require_once(dirname(__DIR__) . "/arango.local.php");
 
 //
+// Include local definitions.
+//
+require_once(dirname(__DIR__) . "/defines.inc.php");
+
+//
 // Include utility functions.
 //
 require_once( "functions.php" );
@@ -72,12 +77,44 @@ elseif( kENGINE == "ARANGO" )
 	echo( '$server = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
 	$server = new \Milko\PHPLib\ArangoDB\Server( $url );
 }
-echo( '$database = $server->RetrieveDatabase( "test_milkolib" );' . "\n" );
-$database = $server->GetDatabase( "test_milkolib" );
-echo( '$collection = $database->RetrieveCollection( "test_collection" );' . "\n" );
-$collection = $database->GetCollection( "test_collection" );
-echo( '$collection->Truncate();' . "\n" );
-$collection->Truncate();
+
+echo( "\n" );
+
+//
+// Drop database.
+//
+echo( "Drop database:\n" );
+echo( '$tmp = $server->NewDatabase( "test_milkolib" );' . "\n" );
+$tmp = $server->NewDatabase( "test_milkolib" );
+echo( '$tmp->Drop();' . "\n" );
+$tmp->Drop();
+
+echo( "\n" );
+
+//
+// Instantiate wrapper.
+//
+echo( "Instantiate wrapper:\n" );
+echo( '$database = $server->NewWrapper( "test_milkolib" );' . "\n" );
+$database = $server->NewWrapper( "test_milkolib" );
+echo( "Class: " . get_class( $database ) . "\n" );
+
+echo( "\n" );
+
+//
+// Cache data dictionary.
+//
+echo( "Cache data dictionary:\n" );
+echo( '$database->CacheDataDictionary();' . "\n" );
+$database->CacheDataDictionary();
+
+echo( "\n" );
+
+//
+// Instantiate collection.
+//
+echo( '$collection = $database->NewCollection( "test_collection" );' . "\n" );
+$collection = $database->NewCollection( "test_collection" );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -184,6 +221,277 @@ catch( RuntimeException $error )
 	echo( "FALIED! - Should not have raised an exception.\n" );
 	echo( $error->getMessage() . "\n" );
 }
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Load test descriptors.
+//
+echo( "Load test descriptors\n" );
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_INT', kTAG_SYMBOL => 'kTYPE_INT',
+		kTAG_DATA_TYPE => kTYPE_INT,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test integer' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_FLOAT', kTAG_SYMBOL => 'kTYPE_FLOAT',
+		kTAG_DATA_TYPE => kTYPE_FLOAT,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test float' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_BOOLEAN', kTAG_SYMBOL => 'kTYPE_BOOLEAN',
+		kTAG_DATA_TYPE => kTYPE_BOOLEAN,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test boolean' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_URL', kTAG_SYMBOL => 'kTYPE_URL',
+		kTAG_DATA_TYPE => kTYPE_URL,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test URL' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_STRING_DATE', kTAG_SYMBOL => 'kTYPE_STRING_DATE',
+		kTAG_DATA_TYPE => kTYPE_STRING_DATE,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test string date' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_STRING_LAT', kTAG_SYMBOL => 'kTYPE_STRING_LAT',
+		kTAG_DATA_TYPE => kTYPE_STRING_LAT,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test string latitude' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_STRING_LON', kTAG_SYMBOL => 'kTYPE_STRING_LON',
+		kTAG_DATA_TYPE => kTYPE_STRING_LON,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test string longitude' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Set invalid integer.
+//
+echo( "Set invalid integer:\n" );
+echo( '$B[ "test_kTYPE_INT" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_INT" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$B[ "test_kTYPE_INT" ] = "25";' . "\n" );
+	$B[ "test_kTYPE_INT" ] = "25";
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ "test_kTYPE_INT" ] );
+}
+
+echo( "\n" );
+
+//
+// Set invalid float.
+//
+echo( "Set invalid float:\n" );
+echo( '$B[ "test_kTYPE_FLOAT" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_FLOAT" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$B[ "test_kTYPE_FLOAT" ] = "25";' . "\n" );
+	$B[ "test_kTYPE_FLOAT" ] = "25";
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ "test_kTYPE_FLOAT" ] );
+}
+
+echo( "\n" );
+
+//
+// Set invalid boolean.
+//
+echo( "Set invalid boolean:\n" );
+echo( '$B[ "test_kTYPE_BOOLEAN" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_BOOLEAN" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$B[ "test_kTYPE_BOOLEAN" ] = "Y";' . "\n" );
+	$B[ "test_kTYPE_BOOLEAN" ] = "Y";
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ "test_kTYPE_BOOLEAN" ] );
+}
+
+echo( "\n" );
+
+//
+// Set invalid URL.
+//
+echo( "Set invalid URL:\n" );
+echo( '$B[ "test_kTYPE_URL" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_URL" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$B[ "test_kTYPE_URL" ] = "http://www.apple.com";' . "\n" );
+	$B[ "test_kTYPE_URL" ] = "http://www.apple.com";
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ "test_kTYPE_URL" ] );
+}
+
+echo( "\n" );
+
+//
+// Set invalid string date.
+//
+echo( "Set invalid string date:\n" );
+echo( '$B[ "test_kTYPE_STRING_DATE" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_STRING_DATE" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$B[ "test_kTYPE_STRING_DATE" ] = "  198702  ";' . "\n" );
+	$B[ "test_kTYPE_STRING_DATE" ] = "  198702  ";
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ "test_kTYPE_STRING_DATE" ] );
+}
+
+echo( "\n" );
+
+//
+// Set invalid string latitude.
+//
+echo( "Set invalid string latitude:\n" );
+echo( '$B[ "test_kTYPE_STRING_LAT" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_STRING_LAT" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	try
+	{
+		echo( '$B[ "test_kTYPE_STRING_LAT" ] = "91°n";' . "\n" );
+		$B[ "test_kTYPE_STRING_LAT" ] = "91°n";
+		echo( '$B->Validate();' . "\n" );
+		$B->Validate();
+		echo( "FALIED! - Should have raised an exception.\n" );
+	}
+	catch( RuntimeException $error )
+	{
+		echo( "SUCCEEDED! - Has raised an exception.\n" );
+		echo( $error->getMessage() . "\n" );
+		echo( '$B[ "test_kTYPE_STRING_LAT" ] = "22°33\'44.1234\"n";' . "\n" );
+		$B[ "test_kTYPE_STRING_LAT" ] = "22°33'44.1234\"n";
+		echo( '$B->Validate();' . "\n" );
+		$B->Validate();
+		var_dump( $B[ "test_kTYPE_STRING_LAT" ] );
+	}
+}
+
+echo( "\n" );
+
+//
+// Set invalid string longitude.
+//
+echo( "Set invalid string longitude:\n" );
+echo( '$B[ "test_kTYPE_STRING_LON" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_STRING_LON" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	try
+	{
+		echo( '$B[ "test_kTYPE_STRING_LON" ] = "181°n";' . "\n" );
+		$B[ "test_kTYPE_STRING_LON" ] = "181°n";
+		echo( '$B->Validate();' . "\n" );
+		$B->Validate();
+		echo( "FALIED! - Should have raised an exception.\n" );
+	}
+	catch( RuntimeException $error )
+	{
+		echo( "SUCCEEDED! - Has raised an exception.\n" );
+		echo( $error->getMessage() . "\n" );
+		echo( '$B[ "test_kTYPE_STRING_LON" ] = "123°33\'44.1234\"e";' . "\n" );
+		$B[ "test_kTYPE_STRING_LON" ] = "123°33'44.1234\"e";
+		echo( '$B->Validate();' . "\n" );
+		$B->Validate();
+		var_dump( $B[ "test_kTYPE_STRING_LON" ] );
+	}
+}
+exit;
 
 echo( "\n====================================================================================\n\n" );
 
