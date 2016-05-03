@@ -61,7 +61,7 @@ const kTAG_MODIFICATION		= ':mod';
  * The property holds the <em>reference to the object</em> that represents the current
  * object's <em>namespace</em>, expressed as a <em>document identifier</em>.
  *
- * Type: <tt>{@link kTYPE_STRING}</tt>
+ * Type: <tt>{@link kTYPE_REF_TERM}</tt>
  * Kind: <tt>{@link kKIND_DISCRETE}</tt>
  */
 const kTAG_NS				= ':ns';

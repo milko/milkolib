@@ -291,6 +291,24 @@ $term = new \Milko\PHPLib\Descriptor( $collection, [
 $term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
 $term->Store();
 
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_REF', kTAG_SYMBOL => 'kTYPE_REF',
+		kTAG_DATA_TYPE => kTYPE_REF,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test object reference' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_kTYPE_REF_TERM', kTAG_SYMBOL => 'kTYPE_REF_TERM',
+		kTAG_DATA_TYPE => kTYPE_REF_TERM,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test term reference' ] ]
+);
+$term[ $collection->KeyOffset() ] = $term[ kTAG_GID ];
+$term->Store();
+
 echo( "\n====================================================================================\n\n" );
 
 //
@@ -490,6 +508,60 @@ catch( RuntimeException $error )
 		$B->Validate();
 		var_dump( $B[ "test_kTYPE_STRING_LON" ] );
 	}
+}
+
+echo( "\n" );
+
+//
+// Set invalid reference.
+//
+echo( "Set invalid reference:\n" );
+echo( '$B[ "test_kTYPE_REF" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_REF" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$handle_col = $database->NewDescriptorsCollection();' . "\n" );
+	$handle_col = $database->NewDescriptorsCollection();
+	echo( '$B[ "test_kTYPE_REF" ] = $handle_col->BuildDocumentHandle( $handle_col, kTAG_GID );' . "\n" );
+	$B[ "test_kTYPE_REF" ] = $handle_col->BuildDocumentHandle( $handle_col, kTAG_GID );
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ "test_kTYPE_REF" ] );
+}
+
+echo( "\n" );
+
+//
+// Set invalid term reference.
+//
+echo( "Set invalid term reference:\n" );
+echo( '$B[ "test_kTYPE_REF_TERM" ] = "pippo";' . "\n" );
+$B[ "test_kTYPE_REF_TERM" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$handle_col = $database->NewTermsCollection();' . "\n" );
+	$handle_col = $database->NewTermsCollection();
+	echo( '$B[ "test_kTYPE_REF_TERM" ] = kTYPE_REF_TERM;' . "\n" );
+	$B[ "test_kTYPE_REF_TERM" ] = kTYPE_REF_TERM;
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ "test_kTYPE_REF_TERM" ] );
 }
 exit;
 

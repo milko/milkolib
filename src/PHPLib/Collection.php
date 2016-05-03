@@ -719,6 +719,26 @@ abstract class Collection
 	} // NewDocumentKey.
 
 
+	/*===================================================================================
+	 *	BuildDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Build a document handle.</h4>
+	 *
+	 * This method should return a document handle from the provided collection and document
+	 * key, the method expects two arguments: a {@link Collection} instance or a string
+	 * containing the collection name, and the document key.
+	 *
+	 * Derived classes must implement this method.
+	 *
+	 * @param mixed					$theCollection		Collection instance or name.
+	 * @param mixed					$theKey				Document key.
+	 * @return mixed				Document handle.
+	 */
+	abstract public function BuildDocumentHandle( $theCollection, $theKey );
+
+
 
 /*=======================================================================================
  *																						*
@@ -1454,11 +1474,53 @@ abstract class Collection
 
 
 	/*===================================================================================
+	 *	CountByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count documents by key.</h4>
+	 *
+	 * This method can be used to return the number of documents matching the provided key,
+	 * the returned value will be either <tt>1</tt> or <tt>0</tt>.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param mixed					$theKey				Document key.
+	 * @return int					The number of selected documents.
+	 */
+	abstract public function CountByKey( $theKey );
+
+
+	/*===================================================================================
+	 *	CountByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count documents by handle.</h4>
+	 *
+	 * This method can be used to return the number of documents matching the provided
+	 * document handle, the returned value will be either <tt>1</tt> or <tt>0</tt>.
+	 *
+	 * @param mixed					$theHandle			Document handle.
+	 * @return int					The number of selected documents.
+	 *
+	 * @uses Database()
+	 */
+	public function CountByHandle( $theHandle )
+	{
+		return
+			$this->Database()->NewCollection( $theHandle[ 0 ] )
+				->CountByKey( $theHandle[ 1 ] );									// ==>
+
+	} // CountByHandle.
+
+
+	/*===================================================================================
 	 *	CountByExample																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Find documents by example.</h4>
+	 * <h4>Count documents by example.</h4>
 	 *
 	 * This method can be used to return the number of documents matching the provided
 	 * example document. The method will select all documents in the collection whose

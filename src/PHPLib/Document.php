@@ -1364,6 +1364,30 @@ class Document extends Container
 					$theData[ $theKey ] = $result;
 					break;
 
+				//
+				// Referential types.
+				//
+				case kTYPE_REF:
+					if( ! $stored )
+					{
+						if( ! $this->mCollection->CountByHandle( $theData[ $theKey ] ) )
+							throw new \RuntimeException (
+								"The value of descriptor [$theKey] "
+								. "is not a valid object reference." );			// !@! ==>
+					}
+					break;
+
+				case kTYPE_REF_TERM:
+					if( ! $stored )
+					{
+						if( ! $this->mCollection->Database()->NewTermsCollection()
+								->CountByKey( $theData[ $theKey ] ) )
+							throw new \RuntimeException (
+								"The value of descriptor [$theKey] "
+								. "is not a valid term reference." );			// !@! ==>
+					}
+					break;
+
 			} // Validating by data type.
 
 		} // Not an internal descriptor.

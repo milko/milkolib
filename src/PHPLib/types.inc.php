@@ -86,11 +86,11 @@ const kTYPE_STRING_DATE = ':type:string:date';
 /**
  * <h4>String latitude.</h4><p />
  *
- * This type defines a latitude expressed in <tt>HDDMMSS.SSSS</tt> where <tt>H</tt> is the
+ * This type defines a latitude expressed in <tt>DD˚MM'SS.SSS"H</tt> where <tt>H</tt> is the
  * hemisphere (<tt>N</tt> or <tt>S</tt>), <tt>DD</tt> is the degrees, <tt>MM</tt> is the
  * minutes and <tt>SS.SSS</tt> represents the seconds as a floating point number or integer.
  * You may omit the seconds or the seconds and minutes, all digits must be provided. The
- * degrees must range between <tt>-90</tt> to lower than <tt>90</tt>, the minutes and
+ * degrees must range between <tt>0</tt> to lower than <tt>90</tt>, the minutes and
  * seconds must range between  <tt>0</tt> to lower than <tt>60</tt>. This data type is
  * useful to calculate the maximum error of a coordinate.
  */
@@ -99,13 +99,13 @@ const kTYPE_STRING_LAT = ':type:string:lat';
 /**
  * <h4>String longitude.</h4><p />
  *
- * This type defines a longitude expressed in <tt>HDDDMMSS.SSSS</tt> where <tt>H</tt> is the
- * hemisphere (<tt>E</tt> or <tt>W</tt>), <tt>DDD</tt> is the degrees, <tt>MM</tt> is the
- * minutes and <tt>SS.SSS</tt> represents the seconds as a floating point number or integer.
- * You may omit the seconds or the seconds and minutes, all digits must be provided. The
- * degrees must range between <tt>-180</tt> to lower than <tt>180</tt>, the minutes and
- * seconds must range between  <tt>0</tt> to lower than <tt>60</tt>. This data type is
- * useful to calculate the maximum error of a coordinate.
+ * This type defines a longitude expressed in <tt>DDD˚MM'SS.SSS"H</tt> where <tt>H</tt> is
+ * the hemisphere (<tt>E</tt> or <tt>W</tt>), <tt>DDD</tt> is the degrees, <tt>MM</tt> is
+ * the minutes and <tt>SS.SSS</tt> represents the seconds as a floating point number or
+ * integer. You may omit the seconds or the seconds and minutes, all digits must be
+ * provided. The degrees must range between <tt>0</tt> to lower than <tt>180</tt>, the
+ * minutes and seconds must range between  <tt>0</tt> to lower than <tt>60</tt>. This data
+ * type is useful to calculate the maximum error of a coordinate.
  */
 const kTYPE_STRING_LON = ':type:string:lon';
 

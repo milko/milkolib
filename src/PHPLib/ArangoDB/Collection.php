@@ -436,6 +436,33 @@ class Collection extends \Milko\PHPLib\Collection
 	} // NewDocumentKey.
 
 
+	/*===================================================================================
+	 *	BuildDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Build a document handle.</h4>
+	 *
+	 * We implement this method by concatenating the current collection name with the
+	 * provided key cast to a string separated by a slash.
+	 *
+	 * @param mixed					$theCollection		Collection instance or name.
+	 * @param mixed					$theKey				Document key.
+	 * @return mixed				Document handle.
+	 */
+	public function BuildDocumentHandle( $theCollection, $theKey )
+	{
+		//
+		// Handle collection instance.
+		//
+		if( $theCollection instanceof \Milko\PHPLib\Collection )
+			return $theCollection->documentHandleCreate( $theKey );					// ==>
+
+		return (string)$theCollection . '/' . $theKey;								// ==>
+
+	} // BuildDocumentHandle.
+
+
 
 /*=======================================================================================
  *																						*
@@ -1189,6 +1216,55 @@ class Collection extends \Milko\PHPLib\Collection
 		return $result->getCount();													// ==>
 
 	} // CountByQuery.
+
+
+	/*===================================================================================
+	 *	CountByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count documents by key.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::count()} method.
+	 *
+	 * @param mixed					$theKey				Document key.
+	 * @return int					The number of selected documents.
+	 *
+	 * @uses collectionName()
+	 * @uses triagens\ArangoDb\DocumentHandler::getById()
+	 */
+	public function CountByKey( $theKey )
+	{
+		//
+		// Try finding document.
+		//
+		try
+		{
+			//
+			// Find document.
+			//
+			$this->mDocumentHandler->getById( $this->collectionName(), $theKey );
+
+			return 1;																// ==>
+
+		} // Document found.
+
+		//
+		// Handle missing document.
+		//
+		catch( ArangoServerException $error )
+		{
+			//
+			// Handle exceptions.
+			//
+			if( $error->getCode() != 404 )
+				throw $error;													// !@! ==>
+
+		} // Document not found.
+
+		return 0;																	// ==>
+
+	} // CountByKey.
 
 
 	/*===================================================================================

@@ -307,6 +307,33 @@ class Collection extends \Milko\PHPLib\Collection
 	} // NewDocumentKey.
 
 
+	/*===================================================================================
+	 *	BuildDocumentHandle																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Build a document handle.</h4>
+	 *
+	 * We implement this method to return an array of two elements: the first is the
+	 * collection name, the second is the document key.
+	 *
+	 * @param mixed					$theCollection		Collection instance or name.
+	 * @param mixed					$theKey				Document key.
+	 * @return mixed				Document handle.
+	 */
+	public function BuildDocumentHandle( $theCollection, $theKey )
+	{
+		//
+		// Handle collection instance.
+		//
+		if( $theCollection instanceof \Milko\PHPLib\Collection )
+			return $theCollection->documentHandleCreate( $theKey );					// ==>
+
+		return [ (string)$theCollection, $theKey ];									// ==>
+
+	} // BuildDocumentHandle.
+
+
 
 /*=======================================================================================
  *																						*
@@ -876,6 +903,25 @@ class Collection extends \Milko\PHPLib\Collection
 		return $this->mConnection->count( $theFilter );								// ==>
 
 	} // CountByQuery.
+
+
+	/*===================================================================================
+	 *	CountByKey																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count documents by key.</h4>
+	 *
+	 * We overload this method to use the {@link \MongoDB\Collection::count()} method.
+	 *
+	 * @param mixed					$theKey				Document key.
+	 * @return int					The number of selected documents.
+	 */
+	public function CountByKey( $theKey )
+	{
+		return $this->mConnection->count( [ $this->KeyOffset() => $theKey ] );		// ==>
+		
+	} // CountByKey.
 
 
 	/*===================================================================================

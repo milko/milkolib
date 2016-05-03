@@ -670,13 +670,13 @@ trait tWrapper
 				kTAG_LID => 'lat', kTAG_SYMBOL => 'kTYPE_STRING_LAT',
 				kTAG_NAME => [ 'en' => 'String latitude' ],
 				kTAG_DESCRIPTION => [ 'en' =>
-					'This type defines a latitude expressed in <tt>HDDMMSS.SSSS</tt> ' .
+					'This type defines a latitude expressed in <tt>DD˚MM\'SS.SSS"H</tt> ' .
 					'where <tt>H</tt> is the hemisphere (<tt>N</tt> or <tt>S</tt>), ' .
 					'<tt>DD</tt> is the degrees, <tt>MM</tt> is the minutes and ' .
 					'<tt>SS.SSS</tt> represents the seconds as a floating point number ' .
 					'or integer. You may omit the seconds or the seconds and minutes, ' .
 					'all digits must be provided. The degrees must range between ' .
-					'<tt>-90</tt> to lower than <tt>90</tt>, the minutes and seconds ' .
+					'<tt>0</tt> to lower than <tt>90</tt>, the minutes and seconds ' .
 					'must range between  <tt>0</tt> to lower than <tt>60</tt>. This data ' .
 					'type is useful to calculate the maximum error of a coordinate.' ] ]
 		);
@@ -687,15 +687,16 @@ trait tWrapper
 				kTAG_LID => 'lon', kTAG_SYMBOL => 'kTYPE_STRING_LON',
 				kTAG_NAME => [ 'en' => 'String longitude' ],
 				kTAG_DESCRIPTION => [ 'en' =>
-					'This type defines a longitude expressed in <tt>HDDDMMSS.SSSS</tt> ' .
-					'where <tt>H</tt> is the hemisphere (<tt>E</tt> or <tt>W</tt>), ' .
-					'<tt>DDD</tt> is the degrees, <tt>MM</tt> is the minutes and ' .
-					'<tt>SS.SSS</tt> represents the seconds as a floating point number ' .
-					'or integer. You may omit the seconds or the seconds and minutes, ' .
-					'all digits must be provided. The degrees must range between ' .
-					'<tt>-180</tt> to lower than <tt>180</tt>, the minutes and seconds ' .
-					'must range between  <tt>0</tt> to lower than <tt>60</tt>. This data ' .
-					'type is useful to calculate the maximum error of a coordinate.' ] ]
+					'This type defines a longitude expressed in ' .
+					'<tt>DDD˚MM\'SS.SSS"H</tt> where <tt>H</tt> is the hemisphere ' .
+					'(<tt>E</tt> or <tt>W</tt>), <tt>DDD</tt> is the degrees, ' .
+					'<tt>MM</tt> is the minutes and <tt>SS.SSS</tt> represents the ' .
+					'seconds as a floating point number or integer. You may omit ' .
+					'the seconds or the seconds and minutes, all digits must be ' .
+					'provided. The degrees must range between <tt>0</tt> to lower ' .
+					'than <tt>180</tt>, the minutes and seconds must range between ' .
+					'<tt>0</tt> to lower than <tt>60</tt>. This data type is useful ' .
+					'to calculate the maximum error of a coordinate.' ] ]
 		);
 		$term->PrepareInsert();
 		$theCollection->Insert( $term->toArray() );
@@ -1475,7 +1476,7 @@ trait tWrapper
 		//
 		$term = new Descriptor( $theCollection, [ kTAG_NS => $ns,
 				kTAG_LID => 'ns', kTAG_SYMBOL => 'kTAG_NS',
-				kTAG_DATA_TYPE => kTYPE_STRING,
+				kTAG_DATA_TYPE => kTYPE_REF_TERM,
 				kTAG_DATA_KIND => [ kKIND_DISCRETE ],
 				kTAG_NAME => [ 'en' => 'Namespace reference' ],
 				kTAG_DESCRIPTION => [ 'en' =>
