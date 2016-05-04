@@ -131,16 +131,16 @@ class Term extends Document
 		parent::__construct( $theCollection, $theData );
 
 		//
-		// Set namespace.
-		//
-		if( $ns !== NULL )
-			$this->offsetSet( kTAG_NS, $ns );
-
-		//
 		// Set local identifier.
 		//
 		if( $lid !== NULL )
 			$this->offsetSet( kTAG_LID, $lid );
+
+		//
+		// Set namespace.
+		//
+		if( $ns !== NULL )
+			$this->offsetSet( kTAG_NS, $ns );
 
 		//
 		// Set global identifier.

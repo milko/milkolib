@@ -190,7 +190,8 @@ class Predicate extends Edge
 	 *
 	 * @uses ResolveReference()
 	 */
-	static function NewPredicate( Collection $theCollection, $thePredicate,
+	static function NewPredicate( Collection $theCollection,
+								  			 $thePredicate,
 											 $theSource, $theDestination,
 								  array		 $theData = [] )
 	{

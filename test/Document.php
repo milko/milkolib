@@ -37,7 +37,6 @@ require_once( "functions.php" );
 // Reference class.
 //
 use Milko\PHPLib\MongoDB\Document;
-use Milko\PHPLib\MongoDB\Collection;
 
 //
 // Document test classes.
@@ -530,8 +529,8 @@ catch( RuntimeException $error )
 	echo( $error->getMessage() . "\n" );
 	echo( '$handle_col = $database->NewDescriptorsCollection();' . "\n" );
 	$handle_col = $database->NewDescriptorsCollection();
-	echo( '$B[ "test_kTYPE_REF" ] = $handle_col->BuildDocumentHandle( $handle_col, kTAG_GID );' . "\n" );
-	$B[ "test_kTYPE_REF" ] = $handle_col->BuildDocumentHandle( $handle_col, kTAG_GID );
+	echo( '$B[ "test_kTYPE_REF" ] = $handle_col->BuildDocumentHandle( kTAG_GID, $handle_col );' . "\n" );
+	$B[ "test_kTYPE_REF" ] = $handle_col->BuildDocumentHandle( kTAG_GID, $handle_col );
 	echo( '$B->Validate();' . "\n" );
 	$B->Validate();
 	var_dump( $B[ "test_kTYPE_REF" ] );

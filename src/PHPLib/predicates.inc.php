@@ -59,12 +59,22 @@ const kPREDICATE_PART_OF = ':predicate:PART-OF';
  * <h4>Type of.</h4><p />
  *
  * This predicate indicates that the subject of the relationship represents the type of the
- * object of the relationship. This predicate can also be as a group and a proxy: it may
+ * object of the relationship. This predicate can also act as a group and a proxy: it may
  * define a formal group by collecting all elements that relate to it, and it acts as a
  * proxy, because this relationship type implies that all the elements related to the group
  * will relate directly to the object of the current relationship.
  */
 const kPREDICATE_TYPE_OF = ':predicate:TYPE-OF';
+
+/**
+ * <h4>Category of.</h4><p />
+ *
+ * This predicate indicates that the subject of the relationship represents the category of
+ * the object of the relationship. This predicate defines a formal group which contains an
+ * underlining structure, but does not act as an element of that structure: it is used to
+ * collect a set of elements under a common category.
+ */
+const kPREDICATE_CATEGORY_OF = ':predicate:CATEGORY-OF';
 
 /**
  * <h4>Kind of.</h4><p />

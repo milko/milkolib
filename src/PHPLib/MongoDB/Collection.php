@@ -317,12 +317,18 @@ class Collection extends \Milko\PHPLib\Collection
 	 * We implement this method to return an array of two elements: the first is the
 	 * collection name, the second is the document key.
 	 *
-	 * @param mixed					$theCollection		Collection instance or name.
 	 * @param mixed					$theKey				Document key.
+	 * @param mixed					$theCollection		Collection instance or name.
 	 * @return mixed				Document handle.
 	 */
-	public function BuildDocumentHandle( $theCollection, $theKey )
+	public function BuildDocumentHandle( $theKey, $theCollection = NULL )
 	{
+		//
+		// Set current collection.
+		//
+		if( $theCollection === NULL )
+			$theCollection = $this;
+
 		//
 		// Handle collection instance.
 		//
@@ -922,6 +928,29 @@ class Collection extends \Milko\PHPLib\Collection
 		return $this->mConnection->count( [ $this->KeyOffset() => $theKey ] );		// ==>
 		
 	} // CountByKey.
+
+
+	/*===================================================================================
+	 *	CountByHandle																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Count documents by handle.</h4>
+	 *
+	 * We implement this method to use the {@link Collection::CountByKey()} method.
+	 *
+	 * @param mixed					$theHandle			Document handle.
+	 * @return int					The number of selected documents.
+	 *
+	 * @uses Database()
+	 */
+	public function CountByHandle( $theHandle )
+	{
+		return
+			$this->Database()->NewCollection( $theHandle[ 0 ] )
+				->CountByKey( $theHandle[ 1 ] );									// ==>
+
+	} // CountByHandle.
 
 
 	/*===================================================================================

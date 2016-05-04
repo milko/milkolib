@@ -258,11 +258,11 @@ class Descriptor extends Term
 
 
 
-/*=======================================================================================
- *																						*
- *								PUBLIC TRAVERSAL INTERFACE								*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *								PUBLIC TRAVERSAL INTERFACE								*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -290,6 +290,93 @@ class Descriptor extends Term
 				$this->mCollection->Database()->NewDescriptorKey() );
 
 	} // PrepareInsert.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PUBLIC ENUMERATION INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	GetEnumerations																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return descriptor controlled vocabulary.</h4>
+	 *
+	 * This method should return a nested aray of all defined controlled vocabulary elements
+	 * for the current descriptor, the method will return an array of elements structured as
+	 * follows:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kTOKEN_ENUM_TERM}</tt>: This element will contain the enumerated
+	 * 		value as a term instance key; if the element is a category, this item will be
+	 * 		omitted.
+	 * 	<li><tt>{@link kTOKEN_ENUM_CATEGORY}</tt>: This element will contain the instance
+	 * 		key of the term that represents a category; if the element is an enumerated
+	 * 		value, this item will be omitted, if the element is a category this item will
+	 * 		be provided.
+	 * 	<li><tt>{@link kTOKEN_ENUM_NESTED}</tt>: If the current element has a nested list,
+	 * 		it will be contained in this item.
+	 * </ul>
+	 *
+	 * If the current descriptor is not persistent, the method will raise an exception.
+	 *
+	 * @throws \RuntimeException
+	 *
+	 * @uses IsPersistent()
+	 * @uses getEnumeratedList()
+	 *
+	 */
+	public function GetEnumerations()
+	{
+		//
+		// Go if persistent.
+		//
+		if( $this->IsPersistent() )
+		{
+			//
+			// Check data type.
+			//
+			if( $this->offsetExists( kTAG_DATA_TYPE ) )
+			{
+				//
+				// Get document key.
+				//
+				$handle = $this->mCollection->NewDocumentHandle( $this );
+
+				//
+				// Get types collection.
+				//
+				$types = $this->mCollection->Database()->NewTypesCollection();
+
+				//
+				// Init enumerated list.
+				//
+				$list = [];
+
+				//
+				// Traverse controlled vocabulary.
+				//
+				$this->getEnumeratedList( $types, $handle, $list );
+
+				return $list;														// ==>
+
+			} // Has data type.
+
+			throw new \RuntimeException (
+				"The descriptor doesn't have a data type." );					// !@! ==>
+
+		} // Descriptor is stored.
+
+		throw new \RuntimeException (
+			"Unable to retrieve descriptor controlled vocabulary." );			// !@! ==>
+
+	} // GetEnumerations.
 
 
 
@@ -354,11 +441,11 @@ class Descriptor extends Term
 
 
 
-/*=======================================================================================
- *																						*
- *						PROTECTED NAMESPACE COLLECTION INTERFACE						*
- *																						*
- *======================================================================================*/
+	/*=======================================================================================
+	 *																						*
+	 *						PROTECTED NAMESPACE COLLECTION INTERFACE						*
+	 *																						*
+	 *======================================================================================*/
 
 
 
@@ -369,7 +456,7 @@ class Descriptor extends Term
 	/**
 	 * <h4>Get namespace collection.</h4>
 	 *
-	 * We overload this method to return the wrapper default terms collection..
+	 * We overload this method to return the wrapper default terms collection.
 	 *
 	 * @return Collection					Namespace collection.
 	 */
@@ -378,6 +465,150 @@ class Descriptor extends Term
 		return $this->mCollection->Database()->NewTermsCollection();				// ==>
 
 	} // getNamespaceCollection.
+
+
+
+/*=======================================================================================
+ *																						*
+ *								PROTECTED ENUMERATION INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	getEnumeratedList																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get controlled vocabulary list.</h4>
+	 *
+	 * This method will traverse the enumerated graph connected to the provided handle and
+	 * return a list with elements structured as follows:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kTOKEN_ENUM_TERM}</tt>: This element will contain the enumerated
+	 * 		value as a term instance key; if the element is a category, this item will be
+	 * 		omitted.
+	 * 	<li><tt>{@link kTOKEN_ENUM_CATEGORY}</tt>: This element will contain the instance
+	 * 		key of the term that represents a category; if the element is an enumerated
+	 * 		value, this item will be omitted, if the element is a category this item will
+	 * 		be provided.
+	 * 	<li><tt>{@link kTOKEN_ENUM_NESTED}</tt>: If the current element has a nested list,
+	 * 		it will be contained in this item.
+	 * </ul>
+	 *
+	 * If the handle is not found, the method will raise an exception.
+	 *
+	 * @param Collection			$theGraph			The edges collection.
+	 * @param mixed					$theVertex			The vertex document handle.
+	 * @param array				   &$theList			Will receive the list.
+	 * @throws \RuntimeException
+	 */
+	protected function getEnumeratedList( Collection $theGraph,
+										  			 $theVertex,
+										  array		&$theList )
+	{
+		//
+		// Get vertex incoming edges.
+		//
+		$edges = $theGraph->FindByVertex(
+			$theVertex, [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY,
+						  kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN ] );
+		if( count( $edges ) )
+		{
+			//
+			// Iterate edges.
+			//
+			foreach( $edges as $edge )
+			{
+				//
+				// Init local storage.
+				//
+				$predicate = $edge[ kTAG_PREDICATE_TERM ];
+				$vertex_handle = $edge[ $theGraph->VertexSource() ];
+
+				//
+				// Parse by predicate.
+				//
+				switch( $predicate )
+				{
+					//
+					// Traverse types.
+					//
+					case kPREDICATE_TYPE_OF:
+						$this->getEnumeratedList( $theGraph, $vertex_handle, $theList );
+						break;
+
+					//
+					// Traverse categories.
+					//
+					case kPREDICATE_CATEGORY_OF:
+						// Create element.
+						$index = count( $theList );
+						$theList[ $index ] = [];
+						$element = & $theList[ $index ];
+
+						// Get vertex.
+						$vertex =
+							$this->mCollection->FindByHandle(
+								$vertex_handle,
+								[ kTOKEN_OPT_MANY => FALSE,
+								  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+						if( $vertex === NULL )
+							throw new \RuntimeException (
+								"Unresolved document handle." );				// !@! ==>
+
+						// Load element.
+						$element[ kTOKEN_ENUM_CATEGORY ] =
+							$vertex[ $vertex->Collection()->KeyOffset() ];
+						$element[ kTOKEN_ENUM_NESTED ] = [];
+
+						// Recurse.
+						$this->getEnumeratedList(
+							$theGraph,
+							$vertex_handle,
+							$element[ kTOKEN_ENUM_NESTED ] );
+						break;
+
+					//
+					// Collect enumerations.
+					//
+					case kPREDICATE_ENUM_OF:
+						// Create element.
+						$index = count( $theList );
+						$theList[ $index ] = [];
+						$element = & $theList[ $index ];
+
+						// Get vertex.
+						$vertex =
+							$this->mCollection->FindByHandle(
+								$vertex_handle,
+								[ kTOKEN_OPT_MANY => FALSE,
+									kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+						if( $vertex === NULL )
+							throw new \RuntimeException (
+								"Unresolved document handle." );				// !@! ==>
+
+						// Load element.
+						$element[ kTOKEN_ENUM_TERM ] =
+							$vertex[ $vertex->Collection()->KeyOffset() ];
+						$element[ kTOKEN_ENUM_NESTED ] = [];
+
+						// Recurse.
+						$this->getEnumeratedList(
+							$theGraph,
+							$vertex_handle,
+							$element[ kTOKEN_ENUM_NESTED ] );
+						break;
+
+				} // Parsing by predicate.
+
+			} // Iterating found edges.
+
+		} // Found edges.
+
+	} // getEnumeratedList.
 
 
 

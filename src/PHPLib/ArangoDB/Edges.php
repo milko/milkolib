@@ -1078,9 +1078,12 @@ class Edges extends Collection
 		//
 		// Get vertex handle.
 		//
-		$handle = ( $theVertex instanceof \ArrayObject )
-				? $this->NewDocumentHandle( $theVertex )
-				: $theVertex->getHandle();
+		if( $theVertex instanceof Document )
+			$handle = $theVertex->getHandle();
+		elseif( $theVertex instanceof \ArrayObject )
+			$handle = $this->NewDocumentHandle( $theVertex );
+		else
+			$handle = $theVertex;
 
 		//
 		// Select connected edges.

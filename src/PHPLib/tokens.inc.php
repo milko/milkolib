@@ -258,5 +258,50 @@ define( "kTOKEN_GEOMETRY",				'coordinates' );
  */
 define( "kTOKEN_RADIUS",				'radius' );
 
+/*=======================================================================================
+ *	ENUMERATED LIST TOKENS																*
+ *======================================================================================*/
+
+/**
+ * Controlled vocabulary
+ *
+ * This token is used as the offset of the controlled vocabulary is, the value is an array
+ * whose elements are stored as follows:
+ *
+ * <ul>
+ * 	<li><tt>{@link kTOKEN_ENUM_TERM}</tt>: This element will contain the enumerated value as
+ *		a term instance key; if the element is a category, this item will be omitted.
+ * 	<li><tt>{@link kTOKEN_ENUM_CATEGORY}</tt>: This element will contain the instance key of
+ *		the term that represents a category; if the element is an enumerated value, this
+ *		item will be omitted, if the element is a category this item will be provided.
+ * 	<li><tt>{@link kTOKEN_ENUM_NESTED}</tt>: If the current element has a nested list, it
+ *		will be contained in this item.
+ * </ul>
+ */
+define( "kTOKEN_ENUM_LIST",					'list' );
+
+/**
+ * Enumerated value
+ *
+ * This token is used as the offset where the enumerated value is provided, the value is a
+ * term key.
+ */
+define( "kTOKEN_ENUM_TERM",					'enum' );
+
+/**
+ * Enumerated category
+ *
+ * This token is used as the offset where the enumerated category is provided, the value is
+ * the key of a term that represents a container or category, but not an enumerated value.
+ */
+define( "kTOKEN_ENUM_CATEGORY",				'cat' );
+
+/**
+ * Enumerated nested list
+ *
+ * This token is used as the offset where the eventual nested enumeration list is stored.
+ */
+define( "kTOKEN_ENUM_NESTED",				'nest' );
+
 
 ?>
