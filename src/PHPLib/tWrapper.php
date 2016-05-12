@@ -323,10 +323,7 @@ trait tWrapper
 			//
 			if( ($descriptor[ kTAG_DATA_TYPE ] == kTYPE_ENUM)
 			 || ($descriptor[ kTAG_DATA_TYPE ] == kTYPE_ENUM_SET) )
-			{
 				$data[ kTOKEN_ENUM_LIST ] = $descriptor->GetEnumerations();
-				print_r( $data[ kTOKEN_ENUM_LIST ] );
-			}
 
 			//
 			// cache descriptor.

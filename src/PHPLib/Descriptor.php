@@ -569,6 +569,11 @@ class Descriptor extends Term
 							$theGraph,
 							$vertex_handle,
 							$element[ kTOKEN_ENUM_NESTED ] );
+
+						// Remove empty.
+						if( ! count( $element[ kTOKEN_ENUM_NESTED ] ) )
+							unset( $element[ kTOKEN_ENUM_NESTED ] );
+
 						break;
 
 					//
@@ -585,7 +590,7 @@ class Descriptor extends Term
 							$this->mCollection->FindByHandle(
 								$vertex_handle,
 								[ kTOKEN_OPT_MANY => FALSE,
-									kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+								  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 						if( $vertex === NULL )
 							throw new \RuntimeException (
 								"Unresolved document handle." );				// !@! ==>
@@ -600,6 +605,11 @@ class Descriptor extends Term
 							$theGraph,
 							$vertex_handle,
 							$element[ kTOKEN_ENUM_NESTED ] );
+
+						// Remove empty.
+						if( ! count( $element[ kTOKEN_ENUM_NESTED ] ) )
+							unset( $element[ kTOKEN_ENUM_NESTED ] );
+
 						break;
 
 				} // Parsing by predicate.

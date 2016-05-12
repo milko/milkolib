@@ -702,7 +702,7 @@ class Collection extends \Milko\PHPLib\Collection
 					//
 					if( $found !== NULL )
 						$result[] =
-							$this->formatDocument(
+							$collection->formatDocument(
 								$found, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );
 
 				} // Collection exists.
@@ -731,7 +731,7 @@ class Collection extends \Milko\PHPLib\Collection
 			//
 			if( $found !== NULL )
 				return
-					$this->formatDocument(
+					$collection->formatDocument(
 						$found, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );			// ==>
 
 		} // Collection exists.

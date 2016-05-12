@@ -86,6 +86,8 @@ echo( "\n" );
 echo( "Cache data dictionary:\n" );
 echo( '$database->CacheDataDictionary();' . "\n" );
 $database->CacheDataDictionary();
+$x = $database->GetDescriptor( ":type:data" );
+print_r( $x );
 exit;
 
 echo( "\n" );

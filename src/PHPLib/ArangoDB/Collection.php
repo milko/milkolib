@@ -986,8 +986,9 @@ class Collection extends \Milko\PHPLib\Collection
 					// Format document.
 					//
 					$result[] =
-						$this->formatDocument(
-							$document, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );
+						$this->Database()->NewCollection( $handle[ 0 ] )
+							->formatDocument(
+								$document, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );
 
 				} // Document found.
 
@@ -1026,8 +1027,9 @@ class Collection extends \Milko\PHPLib\Collection
 			$document = $this->mDocumentHandler->getById( $handle[ 0 ], $handle[ 1 ] );
 
 			return
-				$this->formatDocument(
-					$document, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );			// ==>
+				$this->Database()->NewCollection( $handle[ 0 ] )
+					->formatDocument(
+						$document, $theOptions[ kTOKEN_OPT_FORMAT ], TRUE );		// ==>
 
 		} // Document found.
 
