@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -86,7 +86,7 @@ echo( "\n" );
 echo( "Cache data dictionary:\n" );
 echo( '$database->CacheDataDictionary();' . "\n" );
 $database->CacheDataDictionary();
-$x = $database->GetDescriptor( ":type:data" );
+$x = $database->GetDescriptor( ":node-kind" );
 print_r( $x );
 exit;
 

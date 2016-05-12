@@ -308,7 +308,7 @@ class Descriptor extends Term
 	/**
 	 * <h4>Return descriptor controlled vocabulary.</h4>
 	 *
-	 * This method should return a nested aray of all defined controlled vocabulary elements
+	 * This method will return a nested aray of all defined controlled vocabulary elements
 	 * for the current descriptor, the method will return an array of elements structured as
 	 * follows:
 	 *

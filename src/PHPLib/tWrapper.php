@@ -578,7 +578,7 @@ trait tWrapper
 		$theCollection->Insert( $term->toArray() );
 		$ns_predicate = $term[ $key ];
 
-		$term = new Term( $theCollection, [ kTAG_NS => $nsp,
+		$term = new Term( $theCollection, [ kTAG_NS => $ns_kind,
 				kTAG_LID => 'private',
 				kTAG_NAME => [ 'en' => 'Private' ],
 				kTAG_DESCRIPTION => [ 'en' =>
@@ -1331,150 +1331,19 @@ trait tWrapper
 		$ns = Term::GetByGID( $theTerms, '' )[ $theTerms->KeyOffset() ];
 
 		//
-		// kTAG_DATA_TYPE
+		// Load data types.
 		//
-		$term = new Term( $theTerms, [ kTAG_NS => kTYPE_TYPE,
-				kTAG_LID => 'data', kTAG_SYMBOL => 'kTAG_DATA_TYPE',
-				kTAG_NODE_KIND => kKIND_TYPE,
-				kTAG_NAME => [ 'en' => 'Data type' ],
-				kTAG_DESCRIPTION => [ 'en' =>
-					'This defines the data type of a descriptor.' ] ]
-		);
-		$term->PrepareInsert();
-		$theTerms->Insert( $term->toArray() );
-		$type = $theTerms->NewDocumentHandle( $term );
+		$this->initDataType( $ns, $theTerms, $theTypes );
 
-		// PRIMITIVES.
-		$src = $theTerms->BuildDocumentHandle( kTYPE_MIXED );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-		$enum_mixed = $src;
+		//
+		// Load data kinds.
+		//
+		$this->initDataKind( $ns, $theTerms, $theTypes );
 
-		$src = $theTerms->BuildDocumentHandle( kTYPE_STRING );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-		$enum_string = $src;
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_INT );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_FLOAT );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_BOOLEAN );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		// DERIVED.
-		$src = $theTerms->BuildDocumentHandle( kTYPE_URL );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_string );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_STRING_DATE );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_STRING_LAT );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_string );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_STRING_LON );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_string );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		// REFERENTIAL.
-		$src = $theTerms->BuildDocumentHandle( kTYPE_REF );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_mixed );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-		$enum_ref = $src;
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_REF_TERM );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_ref );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		// LOCALISED.
-		$src = $theTerms->BuildDocumentHandle( kTYPE_DATE );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_TIMESTAMP );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		// CATEGORICAL.
-		$src = $theTerms->BuildDocumentHandle( kTYPE_ENUM );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_string );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-		$enum_enum = $src;
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_ENUM_SET );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_enum );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		// STRUCTURED.
-		$src = $theTerms->BuildDocumentHandle( kTYPE_ARRAY );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_STRUCT );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-		$enum_struct = $src;
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_SHAPE );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_struct );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_LANG_STRING );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_struct );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
-		$enum_lang_string = $src;
-
-		$src = $theTerms->BuildDocumentHandle( kTYPE_LANG_STRINGS );
-		$pred = Predicate::NewPredicate(
-			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_lang_string );
-		$pred->PrepareInsert();
-		$theTypes->Insert( $pred->toArray() );
+		//
+		// Load node kinds.
+		//
+		$this->initNodeKind( $ns, $theTerms, $theTypes );
 
 	} // initTypes.
 
@@ -1704,6 +1573,12 @@ trait tWrapper
 		$desc[ $theCollection->KeyOffset() ] = $desc[ kTAG_GID ];
 		$desc->PrepareInsert();
 		$theCollection->Insert( $desc->toArray() );
+		$src = $theTerms->BuildDocumentHandle( kTAG_DATA_KIND );
+		$dst = $theCollection->NewDocumentHandle( $desc );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_TYPE_OF, $src, $dst );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
 		//
 		// kTAG_REF_COUNT
 		//
@@ -1843,8 +1718,437 @@ trait tWrapper
 		$desc[ $theCollection->KeyOffset() ] = $desc[ kTAG_GID ];
 		$desc->PrepareInsert();
 		$theCollection->Insert( $desc->toArray() );
+		$src = $theTerms->BuildDocumentHandle( kTAG_NODE_KIND );
+		$dst = $theCollection->NewDocumentHandle( $desc );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_TYPE_OF, $src, $dst );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
 
 	} // initDescriptors.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED ENUMERATIONS INTERFACE							*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	initDataType																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Init data type type.</h4>
+	 *
+	 * This method will load the data type type.
+	 *
+	 * @param string				$theNamespace		Namespace term key.
+	 * @param Collection			$theTerms			Terms collection.
+	 * @param Collection			$theTypes			Types collection.
+	 */
+	protected function initDataType( $theNamespace, Collection $theTerms,
+									 Collection $theTypes )
+	{
+		//
+		// kTAG_DATA_TYPE
+		//
+		$term = new Term( $theTerms, [ kTAG_NS => kTYPE_TYPE,
+				kTAG_LID => 'data', kTAG_SYMBOL => 'kTAG_DATA_TYPE',
+				kTAG_NODE_KIND => kKIND_TYPE,
+				kTAG_NAME => [ 'en' => 'Data type' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'This defines the data type of a descriptor.' ] ]
+		);
+		$term->PrepareInsert();
+		$theTerms->Insert( $term->toArray() );
+		$type = $theTerms->NewDocumentHandle( $term );
+
+		// PRIMITIVES.
+		$src = $theTerms->BuildDocumentHandle( kTYPE_MIXED );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_mixed = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_STRING );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_INT );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_FLOAT );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_BOOLEAN );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		// DERIVED.
+		$src = $theTerms->BuildDocumentHandle( kTYPE_URL );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_string );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_STRING_DATE );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_STRING_LAT );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_string );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_STRING_LON );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_string );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		// REFERENTIAL.
+		$src = $theTerms->BuildDocumentHandle( kTYPE_REF );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_mixed );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_ref = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_REF_TERM );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_ref );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		// LOCALISED.
+		$src = $theTerms->BuildDocumentHandle( kTYPE_DATE );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_TIMESTAMP );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		// CATEGORICAL.
+		$src = $theTerms->BuildDocumentHandle( kTYPE_ENUM );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_string );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_enum = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_ENUM_SET );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		// STRUCTURED.
+		$src = $theTerms->BuildDocumentHandle( kTYPE_ARRAY );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_STRUCT );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_struct = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_SHAPE );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_struct );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_LANG_STRING );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_struct );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_lang_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kTYPE_LANG_STRINGS );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum_lang_string );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+
+	} // initDataType.
+
+
+	/*===================================================================================
+	 *	initDataKind																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Init data kind type.</h4>
+	 *
+	 * This method will load the data kind type.
+	 *
+	 * @param string				$theNamespace		Namespace term key.
+	 * @param Collection			$theTerms			Terms collection.
+	 * @param Collection			$theTypes			Types collection.
+	 */
+	protected function initDataKind( $theNamespace, Collection $theTerms,
+													Collection $theTypes )
+	{
+		//
+		// kTAG_DATA_KIND
+		//
+		$term = new Term( $theTerms, [ kTAG_NS => kTYPE_KIND,
+				kTAG_LID => 'data', kTAG_SYMBOL => 'kTAG_DATA_KIND',
+				kTAG_NODE_KIND => kKIND_TYPE,
+				kTAG_NAME => [ 'en' => 'Data kind' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'This defines the data kind of a descriptor.' ] ]
+		);
+		$term->PrepareInsert();
+		$theTerms->Insert( $term->toArray() );
+		$type = $theTerms->NewDocumentHandle( $term );
+
+		//
+		// Domain.
+		//
+		$term = new Term( $theTerms, [ kTAG_NS => kTAG_DATA_KIND,
+				kTAG_LID => 'domain',
+				kTAG_NODE_KIND => kKIND_CATEGORY,
+				kTAG_NAME => [ 'en' => 'Data domain' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'This defines the domain of a descriptor, select one to define the ' .
+					'data domain.' ] ]
+		);
+		$term->PrepareInsert();
+		$theTerms->Insert( $term->toArray() );
+		$category = $theTerms->NewDocumentHandle( $term );
+
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_CATEGORY_OF, $category, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum = $category;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_CATEGORICAL );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_QUANTITATIVE );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_DISCRETE );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		//
+		// Usage.
+		//
+		$term = new Term( $theTerms, [ kTAG_NS => kTAG_DATA_KIND,
+				kTAG_LID => 'usage',
+				kTAG_NODE_KIND => kKIND_CATEGORY,
+				kTAG_NAME => [ 'en' => 'Data usage' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'This defines the usage of a descriptor, select one to define the ' .
+					'data usage.' ] ]
+		);
+		$term->PrepareInsert();
+		$theTerms->Insert( $term->toArray() );
+		$category = $theTerms->NewDocumentHandle( $term );
+
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_CATEGORY_OF, $category, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum = $category;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_RECOMMENDED );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_REQUIRED );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		//
+		// Access.
+		//
+		$term = new Term( $theTerms, [ kTAG_NS => kTAG_DATA_KIND,
+				kTAG_LID => 'access',
+				kTAG_NODE_KIND => kKIND_CATEGORY,
+				kTAG_NAME => [ 'en' => 'Data access' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'This defines access to a descriptor, select one or more to define ' .
+					'the data access.' ] ]
+		);
+		$term->PrepareInsert();
+		$theTerms->Insert( $term->toArray() );
+		$category = $theTerms->NewDocumentHandle( $term );
+
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_CATEGORY_OF, $category, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum = $category;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_PRIVATE_DISPLAY );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_PRIVATE_SEARCH );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_PRIVATE_MODIFY );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		//
+		// Cardinality.
+		//
+		$term = new Term( $theTerms, [ kTAG_NS => kTAG_DATA_KIND,
+				kTAG_LID => 'cardinality',
+				kTAG_NODE_KIND => kKIND_CATEGORY,
+				kTAG_NAME => [ 'en' => 'Cardinality' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'This defines the cardinality of a descriptor, select one or more ' .
+					'to define data cardinality.' ] ]
+		);
+		$term->PrepareInsert();
+		$theTerms->Insert( $term->toArray() );
+		$category = $theTerms->NewDocumentHandle( $term );
+
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_CATEGORY_OF, $category, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum = $category;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_LIST );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_SUMMARY );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_LOOKUP );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $enum );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_string = $src;
+
+	} // initDataKind.
+
+
+	/*===================================================================================
+	 *	initNodeKind																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Init node kind type.</h4>
+	 *
+	 * This method will load the node kind type.
+	 *
+	 * @param string				$theNamespace		Namespace term key.
+	 * @param Collection			$theTerms			Terms collection.
+	 * @param Collection			$theTypes			Types collection.
+	 */
+	protected function initNodeKind( $theNamespace, Collection $theTerms,
+									 				Collection $theTypes )
+	{
+		//
+		// kTAG_NODE_KIND
+		//
+		$term = new Term( $theTerms, [ kTAG_NS => $theNamespace,
+				kTAG_LID => 'node-kind', kTAG_SYMBOL => 'kTAG_NODE_KIND',
+				kTAG_NODE_KIND => kKIND_TYPE,
+				kTAG_NAME => [ 'en' => 'Node kind' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'This defines the kind or function of a graph node, select one ' .
+					'or many elements.' ] ]
+		);
+		$term->PrepareInsert();
+		$theTerms->Insert( $term->toArray() );
+		$type = $theTerms->NewDocumentHandle( $term );
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_ROOT );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_mixed = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_TYPE );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_mixed = $src;
+
+		$src = $theTerms->BuildDocumentHandle( kKIND_CATEGORY );
+		$pred = Predicate::NewPredicate(
+			$theTypes, kPREDICATE_ENUM_OF, $src, $type );
+		$pred->PrepareInsert();
+		$theTypes->Insert( $pred->toArray() );
+		$enum_mixed = $src;
+
+	} // initNodeKind.
 
 
 
