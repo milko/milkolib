@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -336,6 +336,19 @@ $term = new \Milko\PHPLib\Descriptor( $collection, [
 $test_descriptor2 = $term->Store();
 var_dump( $test_descriptor2 );
 
+//
+// Load test descriptor 3.
+//
+echo( "Load test descriptor 3\n" );
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_descriptor3', kTAG_SYMBOL => 'test_descriptor2',
+		kTAG_DATA_TYPE => kTYPE_STRUCT,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test descriptor 3' ] ]
+);
+$test_descriptor2 = $term->Store();
+var_dump( $test_descriptor2 );
+
 echo( "\n====================================================================================\n\n" );
 
 //
@@ -644,6 +657,56 @@ catch( RuntimeException $error )
 	$B->Validate();
 	var_dump( $B[ kTAG_DATA_KIND ] );
 }
+
+echo( "\n" );
+
+//
+// Set invalid structure element.
+//
+echo( "Set invalid structure element:\n" );
+echo( '$B[ "@3" ] = "pippo";' . "\n" );
+$B[ "@3" ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$handle_col = $database->NewTermsCollection();' . "\n" );
+	$handle_col = $database->NewTermsCollection();
+	echo( '$B[ "@3" ] = [ kTAG_DATA_KIND => "pippo" ];' . "\n" );
+	$B[ "@3" ] = [ kTAG_DATA_KIND => "pippo" ];
+	try
+	{
+		echo( '$B->Validate();' . "\n" );
+		$B->Validate();
+		echo( "FALIED! - Should have raised an exception.\n" );
+	}
+	catch( RuntimeException $error )
+	{
+		echo( "SUCCEEDED! - Has raised an exception.\n" );
+		echo( $error->getMessage() . "\n" );
+		echo( '$handle_col = $database->NewTermsCollection();' . "\n" );
+		$handle_col = $database->NewTermsCollection();
+		echo( '$B[ "@3" ] = [ kTAG_DATA_KIND => kKIND_SUMMARY ];' . "\n" );
+		$B[ "@3" ] = [ kTAG_DATA_KIND => kKIND_SUMMARY ];
+		echo( '$B->Validate();' . "\n" );
+		$B->Validate();
+		var_dump( $B[ "@3" ] );
+	}
+}
+
+echo( "\n" );
+
+//
+// Set invalid structure element.
+//
+echo( "Current document:\n" );
+print_r( $B->getArrayCopy() );
 
 echo( "\n====================================================================================\n\n" );
 

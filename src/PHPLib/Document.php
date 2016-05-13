@@ -1484,6 +1484,10 @@ class Document extends Container
 				break;
 
 			case kTYPE_STRUCT:
+				if( ! is_array( $theData[ $theKey ] ) )
+					throw new \RuntimeException (
+						"The descriptor [$theKey] "
+						. "is not a structure." );								// !@! ==>
 				$this->doValidate( $theData[ $theKey ], $theOffsets );
 				break;
 
