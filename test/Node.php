@@ -34,25 +34,19 @@ require_once(dirname(__DIR__) . "/defines.inc.php");
 require_once( "functions.php" );
 
 //
-// Reference class.
-//
-use Milko\PHPLib\MongoDB\Document;
-use Milko\PHPLib\MongoDB\Collection;
-
-//
 // Instantiate object.
 //
+echo( '$url = kDSN . "/test_milkolib/test_collection";' . "\n" );
+$url = kDSN . "/test_milkolib/test_collection";
+echo( "$url\n" );
+
 if( kENGINE == "MONGO" )
 {
-	echo( '$url = "mongodb://localhost:27017/test_milkolib/test_collection";' . "\n" );
-	$url = "mongodb://localhost:27017/test_milkolib/test_collection";
 	echo( '$server = new \Milko\PHPLib\MongoDB\Server( $url' . " );\n" );
 	$server = new \Milko\PHPLib\MongoDB\Server( $url );
 }
 elseif( kENGINE == "ARANGO" )
 {
-	echo('$url = "tcp://localhost:8529/test_milkolib/test_collection";' . "\n");
-	$url = "tcp://localhost:8529/test_milkolib/test_collection";
 	echo( '$server = new \Milko\PHPLib\ArangoDB\Server( $url' . " );\n" );
 	$server = new \Milko\PHPLib\ArangoDB\Server( $url );
 }

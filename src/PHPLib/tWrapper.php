@@ -141,28 +141,7 @@ trait tWrapper
 		// Iterate descriptors.
 		//
 		foreach( $theDescriptor as $descriptor )
-		{
-			//
-			// Convert document.
-			//
-			$data = $descriptor->toArray();
-
-			//
-			// Get key.
-			//
-			$key = $data[ $descriptor->Collection()->KeyOffset() ];
-			unset( $data[ $descriptor->Collection()->KeyOffset() ] );
-
-			//
-			// cache descriptor.
-			//
-			$result = $this->mCache->set( $key, $data );
-			if( $result === FALSE )
-				throw new \RuntimeException(
-					$this->mCache->getResultMessage(),
-					$this->mCache->getResultCode() );							// !@! ==>
-
-		} // Iterating descriptors.
+			$this->CacheDescriptor( $descriptor );
 
 	} // SetDescriptor.
 
@@ -375,33 +354,52 @@ trait tWrapper
 		//
 		$list = $descriptors->Find();
 		foreach( $list as $descriptor )
-		{
-			//
-			// Convert document.
-			//
-			$data = $descriptor->toArray();
-
-			//
-			// Get key.
-			//
-			$key = $data[ $descriptors->KeyOffset() ];
-			unset( $data[ $descriptors->KeyOffset() ] );
-
-			//
-			// Handle enumerated types.
-			//
-			if( ($descriptor[ kTAG_DATA_TYPE ] == kTYPE_ENUM)
-			 || ($descriptor[ kTAG_DATA_TYPE ] == kTYPE_ENUM_SET) )
-				$data[ kTOKEN_ENUM_LIST ] = $descriptor->GetEnumerations();
-
-			//
-			// cache descriptor.
-			//
-			$this->mCache->add( $key, $data );
-
-		} // Iterating descriptors.
+			$this->CacheDescriptor( $descriptor );
 
 	} // CacheDataDictionary.
+
+
+	/*===================================================================================
+	 *	CacheDescriptor																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Cache descriptor.</h4>
+	 *
+	 * This method will load the descriptor into the cache.
+	 *
+	 * @param Descriptor			$theDescriptor		Descriptor instance.
+	 */
+	public function CacheDescriptor( Descriptor $theDescriptor )
+	{
+		//
+		// Convert document.
+		//
+		$data = $theDescriptor->toArray();
+
+		//
+		// Get key.
+		//
+		$key = $data[ $theDescriptor->Collection()->KeyOffset() ];
+		unset( $data[ $theDescriptor->Collection()->KeyOffset() ] );
+
+		//
+		// Handle enumerated types.
+		//
+		if( ($theDescriptor[ kTAG_DATA_TYPE ] == kTYPE_ENUM)
+		 || ($theDescriptor[ kTAG_DATA_TYPE ] == kTYPE_ENUM_SET) )
+			$data[ kTOKEN_ENUM_LIST ] = $theDescriptor->GetEnumerations();
+
+		//
+		// cache descriptor.
+		//
+		$result = $this->mCache->add( $key, $data );
+		if( $result === FALSE )
+			throw new \RuntimeException(
+				$this->mCache->getResultMessage(),
+				$this->mCache->getResultCode() );								// !@! ==>
+
+	} // CacheDescriptor.
 
 
 

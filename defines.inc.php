@@ -32,7 +32,7 @@
  * for <b>MongoDB</b>.
  */
 if( ! defined( 'kENGINE' ) )
-	define( 'kENGINE', "ARANGO" );
+	define( 'kENGINE', "MONGO" );
 
 /*=======================================================================================
  *	DATA SERVER ENVIRONMENT																*
@@ -44,8 +44,13 @@ if( ! defined( 'kENGINE' ) )
  *
  * This defines the server default URLs, per database engine.
  */
-define( 'kDSN_MONGO', "mongodb://localhost:27017" );	// MongoDB.
-define( 'kDSN_ARANGO', "tcp://localhost:8529" );		// ArangoDB.
+if( ! defined( 'kDSN' ) )
+{
+	if( kENGINE == "MONGO" )
+		define( 'kDSN', "mongodb://localhost:27017" );	// MongoDB.
+	elseif( kENGINE == "ARANGO" )
+		define( 'kDSN', "tcp://localhost:8529" );		// ArangoDB.
+}
 
 /*=======================================================================================
  *	MEMCACHED DEFINITIONS																*
