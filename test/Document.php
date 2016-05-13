@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "MONGO" );
+define( 'kENGINE', "ARANGO" );
 
 //
 // Include local definitions.
@@ -47,13 +47,13 @@ class C extends \Milko\PHPLib\Document
 {
 	protected function doCreateReference( $theOffset, \Milko\PHPLib\Document $theDocument )
 	{
-		if( $theOffset == "@9999" )
+		if( $theOffset == "@2" )
 			return $theDocument[ $theDocument->Collection()->KeyOffset() ];
 		return parent::doCreateReference( $theOffset, $theDocument );
 	}
 	protected function doResolveReference( $theOffset, $theReference )
 	{
-		if( $theOffset == "@9999" )
+		if( $theOffset == "@2" )
 			return $this->Collection()->FindByKey( $theReference );
 		return parent::doResolveReference( $theOffset, $theReference );
 	}
@@ -311,6 +311,34 @@ $term->Store();
 echo( "\n====================================================================================\n\n" );
 
 //
+// Load test descriptor 1.
+//
+echo( "Load test descriptor 1\n" );
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_descriptor1', kTAG_SYMBOL => 'test_descriptor1',
+		kTAG_DATA_TYPE => kTYPE_REF,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test descriptor 1' ] ]
+);
+$test_descriptor1 = $term->Store();
+var_dump( $test_descriptor1 );
+
+//
+// Load test descriptor 2.
+//
+echo( "Load test descriptor 2\n" );
+$term = new \Milko\PHPLib\Descriptor( $collection, [
+		kTAG_LID => 'test_descriptor2', kTAG_SYMBOL => 'test_descriptor2',
+		kTAG_DATA_TYPE => kTYPE_REF,
+		kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+		kTAG_NAME => [ 'en' => 'Test descriptor 2' ] ]
+);
+$test_descriptor2 = $term->Store();
+var_dump( $test_descriptor2 );
+
+echo( "\n====================================================================================\n\n" );
+
+//
 // Set invalid integer.
 //
 echo( "Set invalid integer:\n" );
@@ -562,7 +590,60 @@ catch( RuntimeException $error )
 	$B->Validate();
 	var_dump( $B[ "test_kTYPE_REF_TERM" ] );
 }
-exit;
+
+echo( "\n" );
+
+//
+// Set invalid enumeration.
+//
+echo( "Set invalid enumeration:\n" );
+echo( '$B[ kTAG_DATA_TYPE ] = "pippo";' . "\n" );
+$B[ kTAG_DATA_TYPE ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$handle_col = $database->NewTermsCollection();' . "\n" );
+	$handle_col = $database->NewTermsCollection();
+	echo( '$B[ kTAG_DATA_TYPE ] = kTYPE_REF_TERM;' . "\n" );
+	$B[ kTAG_DATA_TYPE ] = kTYPE_REF_TERM;
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ kTAG_DATA_TYPE ] );
+}
+
+echo( "\n" );
+
+//
+// Set invalid enumerated set.
+//
+echo( "Set invalid enumerated set:\n" );
+echo( '$B[ kTAG_DATA_KIND ] = "pippo";' . "\n" );
+$B[ kTAG_DATA_KIND ] = "pippo";
+try
+{
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	echo( "FALIED! - Should have raised an exception.\n" );
+}
+catch( RuntimeException $error )
+{
+	echo( "SUCCEEDED! - Has raised an exception.\n" );
+	echo( $error->getMessage() . "\n" );
+	echo( '$handle_col = $database->NewTermsCollection();' . "\n" );
+	$handle_col = $database->NewTermsCollection();
+	echo( '$B[ kTAG_DATA_KIND ] = kKIND_SUMMARY;' . "\n" );
+	$B[ kTAG_DATA_KIND ] = kKIND_SUMMARY;
+	echo( '$B->Validate();' . "\n" );
+	$B->Validate();
+	var_dump( $B[ kTAG_DATA_KIND ] );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -681,10 +762,10 @@ echo( "\n" );
 // Add embedded documents.
 //
 echo( "Add embedded documents:\n" );
-echo( '$document[ "@9998" ] = $sub1;' . "\n" );
-$document[ "@9998" ] = $sub1;
-echo( '$document[ "@9999" ] = $sub2;' . "\n" );
-$document[ "@9999" ] = $sub2;
+echo( '$document[ "@1" ] = $sub1;' . "\n" );
+$document[ "@1" ] = $sub1;
+echo( '$document[ "@2" ] = $sub2;' . "\n" );
+$document[ "@2" ] = $sub2;
 
 echo( "\n" );
 
@@ -707,8 +788,8 @@ echo( "\n=======================================================================
 // Retrieve embedded document 1.
 //
 echo( "Retrieve embedded document 1:\n" );
-echo( '$sub1 = $document->ResolveReference( "@9998" );' . "\n" );
-$sub1 = $document->ResolveReference( "@9998" );
+echo( '$sub1 = $document->ResolveReference( "@1" );' . "\n" );
+$sub1 = $document->ResolveReference( "@1" );
 echo( "Class: " . get_class( $sub1 ) . "\n" );
 echo( "Modified:   " . (( $sub1->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub1->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -721,8 +802,8 @@ echo( "\n" );
 // Retrieve embedded document 2.
 //
 echo( "Retrieve embedded document 2:\n" );
-echo( '$sub2 = $document->ResolveReference( "@9999" );' . "\n" );
-$sub2 = $document->ResolveReference( "@9999" );
+echo( '$sub2 = $document->ResolveReference( "@2" );' . "\n" );
+$sub2 = $document->ResolveReference( "@2" );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );
 echo( "Persistent: " . (( $sub2->IsPersistent() ) ? "Yes\n" : "No\n") );
@@ -735,8 +816,8 @@ echo( "\n" );
 // Retrieve embedded document 2.
 //
 echo( "Retrieve embedded document 2:\n" );
-echo( '$sub2 = $document->ResolveReference( "@9999", $document[ "@9999" ] );' . "\n" );
-$sub2 = $document->ResolveReference( "@9999", $document[ "@9999" ] );
+echo( '$sub2 = $document->ResolveReference( "@2", $document[ "@2" ] );' . "\n" );
+$sub2 = $document->ResolveReference( "@2", $document[ "@2" ] );
 var_dump( $document[ "sub2" ] );
 echo( "Class: " . get_class( $sub2 ) . "\n" );
 echo( "Modified:   " . (( $sub2->IsModified() ) ? "Yes\n" : "No\n") );

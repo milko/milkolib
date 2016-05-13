@@ -988,7 +988,7 @@ function CheckShapeValue( &$theValue )
 							//
 							$theValue
 								= array( kTOKEN_TYPE => $type,
-								kTOKEN_GEOMETRY => $geometry[ 0 ][ 0 ] );
+										 kTOKEN_GEOMETRY => $geometry[ 0 ][ 0 ] );
 
 							return TRUE;											// ==>
 
@@ -1033,10 +1033,10 @@ function CheckShapeValue( &$theValue )
 							//
 							$theValue
 								= array( kTOKEN_TYPE => $type,
-								kTOKEN_RADIUS => $geometry[ 0 ][ 0 ][ 2 ],
-								kTOKEN_GEOMETRY
-								=> array( $geometry[ 0 ][ 0 ][ 0 ],
-									$geometry[ 0 ][ 0 ][ 1 ] ) );
+										 kTOKEN_RADIUS => $geometry[ 0 ][ 0 ][ 2 ],
+										 kTOKEN_GEOMETRY
+										 	=> array( $geometry[ 0 ][ 0 ][ 0 ],
+													  $geometry[ 0 ][ 0 ][ 1 ] ) );
 
 							return TRUE;											// ==>
 
@@ -1077,7 +1077,7 @@ function CheckShapeValue( &$theValue )
 						//
 						$theValue
 							= array( kTOKEN_TYPE => $type,
-							kTOKEN_GEOMETRY => $geometry[ 0 ] );
+									 kTOKEN_GEOMETRY => $geometry[ 0 ] );
 
 						return TRUE;												// ==>
 
@@ -1121,7 +1121,7 @@ function CheckShapeValue( &$theValue )
 				//
 				$theValue
 					= array( kTOKEN_TYPE => $type,
-					kTOKEN_GEOMETRY => $geometry );
+							 kTOKEN_GEOMETRY => $geometry );
 
 				return TRUE;													// ==>
 

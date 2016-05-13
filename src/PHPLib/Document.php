@@ -1266,133 +1266,258 @@ class Document extends Container
 		//
 		// Handle non-internal descriptors.
 		//
-		elseif( ! in_array( $theKey, $this->mCollection->GetInternalOffsets() ) )
+		if( ! in_array( $theKey, $this->mCollection->GetInternalOffsets() ) )
 		{
 			//
-			// Validate by data type.
+			// Cast lists.
 			//
-			switch( $theOffsets[ $theKey ][ kTAG_DATA_TYPE ] )
+			if( $theOffsets[ $theKey ][ kTAG_DATA_KIND ] == kKIND_LIST )
 			{
 				//
-				// Primitives.
+				// Cast to array.
 				//
-				case kTYPE_MIXED:
-					break;
-
-				case kTYPE_STRING:
-					$theData[ $theKey ] = (string)$theData[ $theKey ];
-					break;
-
-				case kTYPE_INT:
-					$result = CheckIntegerValue( $theData[ $theKey ] );
-					if( $result === NULL )
-						unset( $theData[ $theKey ] );
-					elseif( $result === FALSE )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-						  . "should be an integer." );							// !@! ==>
-					break;
-
-				case kTYPE_FLOAT:
-					$result = CheckFloatValue( $theData[ $theKey ] );
-					if( $result === NULL )
-						unset( $theData[ $theKey ] );
-					elseif( $result === FALSE )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-							. "should be a floating point number." );			// !@! ==>
-					break;
-
-				case kTYPE_BOOLEAN:
-					$result = CheckBooleanValue( $theData[ $theKey ] );
-					if( $result === NULL )
-						unset( $theData[ $theKey ] );
-					elseif( $result === FALSE )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-							. "is not a valid boolean." );						// !@! ==>
-					break;
+				if( ! is_array( $theData[ $theKey ] ) )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "should be an array." );								// !@! ==>
 
 				//
-				// Derived types.
+				// Reference element.
 				//
-				case kTYPE_URL:
-					$result = CheckLinkValue( $theData[ $theKey ] );
-					if( $result === NULL )
-						unset( $theData[ $theKey ] );
-					elseif( $result === FALSE )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-							. "is not a valid link." );							// !@! ==>
-					break;
-
-				case kTYPE_STRING_DATE:
-					$result = CheckDateValue( $theData[ $theKey ] );
-					if( $result === NULL )
-						unset( $theData[ $theKey ] );
-					elseif( $result === FALSE )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-							. "is not a valid date." );							// !@! ==>
-					break;
-
-				case kTYPE_STRING_LAT:
-					$result = ParseCoordinate( $theData[ $theKey ] );
-					if( ! count( $result ) )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-							. "is not a valid coordinate." );					// !@! ==>
-					$result = CheckLatitude( $result );
-					if( $result === FALSE )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-							. "is not a valid latitude." );						// !@! ==>
-					$theData[ $theKey ] = $result;
-					break;
-
-				case kTYPE_STRING_LON:
-					$result = ParseCoordinate( $theData[ $theKey ] );
-					if( ! count( $result ) )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-							. "is not a valid coordinate." );					// !@! ==>
-					$result = CheckLongitude( $result );
-					if( $result === FALSE )
-						throw new \RuntimeException (
-							"The value of descriptor [$theKey] "
-							. "is not a valid longitude." );					// !@! ==>
-					$theData[ $theKey ] = $result;
-					break;
+				$element = & $theData[ $theKey ];
 
 				//
-				// Referential types.
+				// Validate array elements.
 				//
-				case kTYPE_REF:
-					if( ! $stored )
-					{
-						if( ! $this->mCollection->CountByHandle( $theData[ $theKey ] ) )
-							throw new \RuntimeException (
-								"The value of descriptor [$theKey] "
-								. "is not a valid object reference." );			// !@! ==>
-					}
-					break;
+				foreach( $element as $key => $value )
+					$this->doValidateType(
+						$theKey, $element[ $key ], $theOffsets, $stored );
 
-				case kTYPE_REF_TERM:
-					if( ! $stored )
-					{
-						if( ! $this->mCollection->Database()->NewTermsCollection()
-								->CountByKey( $theData[ $theKey ] ) )
-							throw new \RuntimeException (
-								"The value of descriptor [$theKey] "
-								. "is not a valid term reference." );			// !@! ==>
-					}
-					break;
+			} // List.
 
-			} // Validating by data type.
+			//
+			// Validate scalars.
+			//
+			else
+				$this->doValidateType(
+					$theKey, $theData, $theOffsets, $stored );
 
 		} // Not an internal descriptor.
 
 	} // doValidateProperty.
+
+
+	/*===================================================================================
+	 *	doValidateType																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Validate type.</h4>
+	 *
+	 * This method will validate the provided scalar value against its supposed type, if
+	 * possible, the value will be cast to the correct type, if not, the method will raise
+	 * an exception.
+	 *
+	 * @param string				$theKey				Property offset.
+	 * @param mixed				   &$theData			Property data.
+	 * @param array				   &$theOffsets			Document offsets.
+	 * @param bool					$didStore			<tt>TRUE</tt> was a document
+	 * 													instance.
+	 * @throws \RuntimeException
+	 *
+	 * @uses CheckIntegerValue()
+	 * @uses CheckFloatValue()
+	 * @uses CheckBooleanValue()
+	 * @uses CheckLinkValue()
+	 * @uses CheckDateValue()
+	 * @uses ParseCoordinate()
+	 * @uses doValidate()
+	 */
+	protected function doValidateType( $theKey, &$theData, array &$theOffsets, $didStore )
+	{
+		//
+		// Validate by data type.
+		//
+		switch( $theOffsets[ $theKey ][ kTAG_DATA_TYPE ] )
+		{
+			//
+			// Primitives.
+			//
+			case kTYPE_MIXED:
+				break;
+
+			case kTYPE_STRING:
+				$theData[ $theKey ] = (string)$theData[ $theKey ];
+				break;
+
+			case kTYPE_INT:
+				$result = CheckIntegerValue( $theData[ $theKey ] );
+				if( $result === NULL )
+					unset( $theData[ $theKey ] );
+				elseif( $result === FALSE )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "should be an integer." );							// !@! ==>
+				break;
+
+			case kTYPE_FLOAT:
+				$result = CheckFloatValue( $theData[ $theKey ] );
+				if( $result === NULL )
+					unset( $theData[ $theKey ] );
+				elseif( $result === FALSE )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "should be a floating point number." );				// !@! ==>
+				break;
+
+			case kTYPE_BOOLEAN:
+				$result = CheckBooleanValue( $theData[ $theKey ] );
+				if( $result === NULL )
+					unset( $theData[ $theKey ] );
+				elseif( $result === FALSE )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "is not a valid boolean." );							// !@! ==>
+				break;
+
+			//
+			// Derived types.
+			//
+			case kTYPE_URL:
+				$result = CheckLinkValue( $theData[ $theKey ] );
+				if( $result === NULL )
+					unset( $theData[ $theKey ] );
+				elseif( $result === FALSE )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "is not a valid link." );								// !@! ==>
+				break;
+
+			case kTYPE_STRING_DATE:
+				$result = CheckDateValue( $theData[ $theKey ] );
+				if( $result === NULL )
+					unset( $theData[ $theKey ] );
+				elseif( $result === FALSE )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "is not a valid date." );								// !@! ==>
+				break;
+
+			case kTYPE_STRING_LAT:
+				$result = ParseCoordinate( $theData[ $theKey ] );
+				if( ! count( $result ) )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "is not a valid coordinate." );						// !@! ==>
+				$result = CheckLatitude( $result );
+				if( $result === FALSE )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "is not a valid latitude." );							// !@! ==>
+				$theData[ $theKey ] = $result;
+				break;
+
+			case kTYPE_STRING_LON:
+				$result = ParseCoordinate( $theData[ $theKey ] );
+				if( ! count( $result ) )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "is not a valid coordinate." );						// !@! ==>
+				$result = CheckLongitude( $result );
+				if( $result === FALSE )
+					throw new \RuntimeException (
+						"The value of descriptor [$theKey] "
+						. "is not a valid longitude." );						// !@! ==>
+				$theData[ $theKey ] = $result;
+				break;
+
+			//
+			// Referential types.
+			//
+			case kTYPE_REF:
+				if( ! $didStore )
+				{
+					if( ! $this->mCollection->CountByHandle( $theData[ $theKey ] ) )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid object reference." );				// !@! ==>
+				}
+				break;
+
+			case kTYPE_REF_TERM:
+				if( ! $didStore )
+				{
+					if( ! $this->mCollection->Database()->NewTermsCollection()
+						->CountByKey( $theData[ $theKey ] ) )
+						throw new \RuntimeException (
+							"The value of descriptor [$theKey] "
+							. "is not a valid term reference." );				// !@! ==>
+				}
+				break;
+
+			//
+			// Enumerated types.
+			//
+			case kTYPE_ENUM_SET:
+				if( ! is_array( $theData[ $theKey ] ) )
+					$theData[ $theKey ] = [ $theData[ $theKey ] ];
+			case kTYPE_ENUM:
+				$result =
+					$this->mCollection->Database()->CheckEnumerations(
+						$theKey, $theData[ $theKey ] );
+				if( $result !== TRUE )
+				{
+					if( $result === NULL )
+						throw new \RuntimeException (
+							"The descriptor [$theKey] "
+							. "cannot be found in cache." );					// !@! ==>
+					throw new \RuntimeException (
+						"Invalid enumerations for descriptor [$theKey]: " .
+						implode( ', ', $result ) . '.' );						// !@! ==>
+				}
+				break;
+
+			//
+			// Structured types.
+			//
+			case kTYPE_ARRAY:
+				break;
+
+			case kTYPE_STRUCT:
+				$this->doValidate( $theData[ $theKey ], $theOffsets );
+				break;
+
+			case kTYPE_SHAPE:
+				// MILKO - Need to develop checking script or accomodate parsing functioons.
+				break;
+
+			case kTYPE_LANG_STRING:
+				if( ! is_array( $theData[ $theKey ] ) )
+					throw new \RuntimeException (
+						"Invalid format for descriptor [$theKey]." );			// !@! ==>
+				foreach( $theData[ $theKey ] as $key => $value )
+					$theData[ $theKey ][ $key ] = (string)$value;
+				break;
+
+			case kTYPE_LANG_STRINGS:
+				if( ! is_array( $theData[ $theKey ] ) )
+					throw new \RuntimeException (
+						"Invalid format for descriptor [$theKey]." );			// !@! ==>
+				foreach( $theData[ $theKey ] as $key => $value )
+				{
+					if( ! is_array( $value ) )
+						$value = [ $value ];
+					$tmp = $value;
+					$value = [];
+					foreach( $tmp as $string )
+						$value[] = (string)$string;
+					$theData[ $theKey ][ $key ] = $value;
+				}
+				break;
+
+		} // Validating by data type.
+
+	} // doValidateType.
 
 
 	/*===================================================================================

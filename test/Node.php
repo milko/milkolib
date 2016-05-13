@@ -86,8 +86,12 @@ echo( "\n" );
 echo( "Cache data dictionary:\n" );
 echo( '$database->CacheDataDictionary();' . "\n" );
 $database->CacheDataDictionary();
-$x = $database->GetDescriptor( ":node-kind" );
+$x = $database->GetDescriptor( kTAG_DATA_TYPE );
 print_r( $x );
+var_dump( $database->CheckEnumerations( kTAG_DATA_TYPE, [ kTYPE_STRUCT, kTYPE_LANG_STRINGS ] ) );
+var_dump( $database->CheckEnumerations( kTAG_DATA_TYPE, [ kTYPE_STRUCT, "pippo" ] ) );
+var_dump( $database->CheckEnumerations( kTAG_NS, [ kTYPE_STRUCT, kTYPE_LANG_STRINGS ] ) );
+var_dump( $database->CheckEnumerations( "pippo", [ kTYPE_STRUCT, kTYPE_LANG_STRINGS ] ) );
 exit;
 
 echo( "\n" );

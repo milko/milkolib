@@ -270,6 +270,75 @@ trait tWrapper
 	} // DelDescriptor.
 
 
+	/*===================================================================================
+	 *	CheckEnumerations																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Check enumerations.</h4>
+	 *
+	 * This method will check whether the provided enumeration(s) are valid choices for the
+	 * provided descriptor. The method expects two parameters: the descriptor key and the
+	 * enumeration(s) to check; provide an array for more than one enumeration.
+	 *
+	 * The method will return the following values:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: The provided descriptor cannot be found.
+	 * 	<li><tt>TRUE</tt>: All provided enumerations are supported.
+	 * 	<li><tt>array</tt>: The list of enumerations which are not supported.
+	 * </ul>
+	 *
+	 * @param string				$theDescriptor		Descriptor key.
+	 * @param string|array			$theEnumeration		Enumeration(s).
+	 * @return mixed				<tt>NULL</tt>, <tt>TRUE</tt> or <tt>array</tt>.
+	 *
+	 * @uses GetDescriptor()
+	 * @uses validateEnumerations()
+	 *
+	 */
+	public function CheckEnumerations( $theDescriptor, $theEnumeration )
+	{
+		//
+		// Get descriptor.
+		//
+		$descriptor = $this->GetDescriptor( $theDescriptor );
+		if( $descriptor !== NULL )
+		{
+			//
+			// Normalise enumerations.
+			//
+			if( ! is_array( $theEnumeration ) )
+				$theEnumeration = [ $theEnumeration ];
+			
+			//
+			// Extract descriptor enumerations.
+			//
+			if( array_key_exists( kTOKEN_ENUM_LIST, $descriptor ) )
+			{
+				//
+				// Validate enumerations.
+				//
+				$this->validateEnumerations(
+					$descriptor[ kTOKEN_ENUM_LIST ], $theEnumeration );
+
+				//
+				// Handle valid.
+				//
+				if( ! count( $theEnumeration ) )
+					return TRUE;													// ==>
+
+			} // Has controlled vocabulary.
+
+			return $theEnumeration;													// ==>
+
+		} // Gound descriptor.
+
+		return NULL;																// ==>
+
+	} // CheckEnumerations.
+
+
 
 /*=======================================================================================
  *																						*
@@ -333,6 +402,68 @@ trait tWrapper
 		} // Iterating descriptors.
 
 	} // CacheDataDictionary.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED VALIDATION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	validateEnumerations															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Validate enumerations.</h4>
+	 *
+	 * This method will check whether the provided enumerations belong to the provided
+	 * controlled vocabulary, each valid element will be removed from the provided
+	 * enumerated list until the list is empty or the whole controlled vocabulary has been
+	 * traversed.
+	 *
+	 * @param array					$theVocabulary		Controlled vocabulary.
+	 * @param array				   &$theEnums			Enumerated list.
+	 */
+	protected function validateEnumerations( array $theVocabulary, array &$theEnums )
+	{
+		//
+		// Check if all are validated.
+		//
+		if( count( $theEnums ) )
+		{
+			//
+			// Iterate vocabulary.
+			//
+			foreach( $theVocabulary as $vocabulary )
+			{
+				//
+				// Handle enumerated declaration.
+				//
+				if( array_key_exists( kTOKEN_ENUM_TERM, $vocabulary ) )
+					$theEnums = array_diff( $theEnums, [ $vocabulary[ kTOKEN_ENUM_TERM ] ] );
+
+				//
+				// Stop if all are valid.
+				//
+				if( ! count( $theEnums ) )
+					break;														// =>
+
+				//
+				// Handle nested enumerations.
+				//
+				if( array_key_exists( kTOKEN_ENUM_NESTED, $vocabulary ) )
+					$this->validateEnumerations(
+						$vocabulary[ kTOKEN_ENUM_NESTED ], $theEnums );
+
+			} // Traversing controlled vocabulary.
+
+		} // Enumerations left to validate.
+
+	} // initCache.
 
 
 

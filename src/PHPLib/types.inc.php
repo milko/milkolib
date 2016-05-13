@@ -193,7 +193,7 @@ const kTYPE_STRUCT = ':type:struct';
 /**
  * <h4>Shape.</h4><p />
  *
- * This data type defines a geometric shapewhich is expressed as a GeoJSON construct, it is
+ * This data type defines a geometric shape which is expressed as a GeoJSON construct, it is
  * an array composed by two key/value elements:
  *
  * <ul>
