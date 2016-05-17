@@ -191,6 +191,106 @@ class DHS
 
 
 	/*===================================================================================
+	 *	InitTypes																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Initialise namespaces and types.</h4>
+	 *
+	 * This method will load the base namespaces and enumerated types.
+	 */
+	public function InitTypes()
+	{
+		//
+		// Init local storage.
+		//
+		$types = $this->mDatabase->NewTypesCollection();
+		$terms = $this->mDatabase->NewTermsCollection();
+		$descriptors = $this->mDatabase->NewDescriptorsCollection();
+
+		//
+		// Instantiate DHS namespace.
+		//
+		$ns = new \Milko\PHPLib\Term( $terms );
+		$ns[ kTAG_LID ] = self::kDHS_NAMESPACE;
+		$ns[ kTAG_NAME ] = [ 'en' => "Demographic and Health Surveys (DHS) Program" ];
+		$ns[ kTAG_DESCRIPTION ] = [ 'en' => "This namespace groups all metadata " .
+											"regarding the USAID Demographic and Health " .
+											"Surveys" ];
+		$ns->Store();
+
+		//
+		// Instantiate DHS measurement type namespace.
+		//
+		$enum = new \Milko\PHPLib\Term( $terms );
+		$enum[ kTAG_NS ] = $ns;
+		$enum[ kTAG_LID ] = 'MeasurementType';
+		$enum[ kTAG_NODE_KIND ] = [ kKIND_TYPE ];
+		$enum[ kTAG_NAME ] = [ 'en' => "Measurement type" ];
+		$dst = $enum->Store();
+
+		//
+		// Set measurement type enumerations.
+		//
+		$enums = [
+			'Mean' => 'Mean',
+			'Median' => 'Median',
+			'Number' => 'Number',
+			'Percent' => 'Percent',
+			'Rate' => 'Rate'
+		];
+		foreach( $enums as $key => $name )
+		{
+			$term = new \Milko\PHPLib\Term( $terms );
+			$term[ kTAG_NS ] = $enum[ $terms->KeyOffset() ];
+			$term[ kTAG_LID ] = $key;
+			$term[ kTAG_NAME ] = [ 'en' => $name ];
+			$src = $term->Store();
+			$pred =
+				\Milko\PHPLib\Predicate::NewPredicate(
+					$types, kPREDICATE_ENUM_OF, $src, $dst );
+			$pred->Store();
+		}
+
+		//
+		// Instantiate DHS indicator type namespace.
+		//
+		$enum = new \Milko\PHPLib\Term( $terms );
+		$enum[ kTAG_NS ] = self::kDHS_NAMESPACE;
+		$enum[ kTAG_LID ] = 'IndicatorType';
+		$enum[ kTAG_NODE_KIND ] = [ kKIND_TYPE ];
+		$enum[ kTAG_NAME ] = [ 'en' => "Indicator types" ];
+		$dst = $enum->Store();
+
+		//
+		// Set indicator type enumerations.
+		//
+		$enums = [
+			'I' => 'Indicator',
+			'D' => 'Weighted denominator',
+			'U' => 'Unweighted denominator',
+			'T' => 'Distribution total (100%)',
+			'S' => 'Special answers (don\'t know/missing)',
+			'E' => 'Sampling errors',
+			'C' => 'Confidence interval'
+		];
+		foreach( $enums as $key => $name )
+		{
+			$term = new \Milko\PHPLib\Term( $terms );
+			$term[ kTAG_NS ] = $enum[ $terms->KeyOffset() ];
+			$term[ kTAG_LID ] = $key;
+			$term[ kTAG_NAME ] = [ 'en' => $name ];
+			$src = $term->Store();
+			$pred =
+				\Milko\PHPLib\Predicate::NewPredicate(
+					$types, kPREDICATE_ENUM_OF, $src, $dst );
+			$pred->Store();
+		}
+
+	} // InitTypes.
+
+
+	/*===================================================================================
 	 *	InitBaseDescriptors																*
 	 *==================================================================================*/
 
@@ -209,26 +309,11 @@ class DHS
 		$descriptors = $this->mDatabase->NewDescriptorsCollection();
 
 		//
-		// Instantiate namespace term.
-		//
-		$namespace = new \Milko\PHPLib\Term(
-			$terms,
-			[
-				kTAG_LID => self::kDHS_NAMESPACE,
-				kTAG_NAME => [ 'en' => 'Demographic and Health Surveys (DHS) Program' ],
-				kTAG_DESCRIPTION => [ 'en' =>
-					'This namespace groups all metadata regarding the USAID ' .
-					'Demographic and Health Surveys.' ]
-			]
-		);
-		$namespace->Store();
-
-		//
 		// Load base descriptors.
 		//
 		$indicators =
 			json_decode( file_get_contents( self::kDHS_URL_INDICATORS ), TRUE )
-				[ 'Data' ];
+			[ 'Data' ];
 
 		//
 		// Initialise match table.
@@ -238,7 +323,6 @@ class DHS
 		//
 		// Load match table.
 		//
-		$enumerated = [];
 		foreach( $indicators as $indicator )
 		{
 			//
@@ -292,10 +376,6 @@ class DHS
 					break;
 
 				case 'MeasurementType':
-					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_STRING;
-					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_CATEGORICAL, kKIND_SUMMARY ];
-					break;
-
 				case 'IndicatorType':
 					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_ENUM;
 					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_CATEGORICAL ];
@@ -310,7 +390,8 @@ class DHS
 					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_BOOLEAN;
 					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_DISCRETE ];
 					break;
-			}
+
+			} // Setting data types.
 
 			//
 			// Store descriptor.
@@ -325,62 +406,42 @@ class DHS
 					= $descriptor[ $descriptors->KeyOffset() ];
 
 			//
-			// Collect enumerated descriptor handles.
+			// Connect enumeration types.
 			//
 			switch( $indicator[ 'fieldname' ] )
 			{
-				case 'IndicatorType':
-					$enumerated[ 'IndicatorType' ] = $handle;
+				case 'MeasurementType':
+					$pred =
+						\Milko\PHPLib\Predicate::NewPredicate(
+							$types,
+							kPREDICATE_TYPE_OF,
+							$terms->FindByKey(
+								$descriptor[ kTAG_GID ],
+								[ kTOKEN_OPT_MANY => FALSE,
+								  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] ),
+							$handle );
+					$pred->Store();
+					$this->mDatabase->SetDescriptor( $descriptor );
 					break;
-			}
+
+				case 'IndicatorType':
+					$pred =
+						\Milko\PHPLib\Predicate::NewPredicate(
+							$types,
+							kPREDICATE_TYPE_OF,
+							$terms->FindByKey(
+								$descriptor[ kTAG_GID ],
+								[ kTOKEN_OPT_MANY => FALSE,
+									kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] ),
+							$handle );
+					$pred->Store();
+					$this->mDatabase->SetDescriptor( $descriptor );
+					break;
+
+			} // Setting enumerated types.
 
 		} // Loading descriptors.
-
-		//
-		// Instantiate indicator type type.
-		//
-		$enum_type = new \Milko\PHPLib\Term( $terms );
-		$enum_type[ kTAG_NS ] = self::kDHS_NAMESPACE;
-		$enum_type[ kTAG_LID ] = 'IndicatorType';
-		$enum_type[ kTAG_NODE_KIND ] = [ kKIND_TYPE ];
-		$enum_type[ kTAG_NAME ] = [ 'en' => "Indicator types" ];
-		$dst = $enum_type->Store();
-
-		//
-		// Set indicator type enumerations.
-		//
-		$enums = [
-			'I' => 'Indicator',
-			'D' => 'Weighted denominator',
-			'U' => 'Unweighted denominator',
-			'T' => 'Distribution total (100%)',
-			'S' => 'Special answers (don\'t know/missing)',
-			'E' => 'Sampling errors',
-			'C' => 'Confidence interval'
-		];
-		foreach( $enums as $key => $name )
-		{
-			$term = new \Milko\PHPLib\Term( $terms );
-			$term[ kTAG_NS ] = $enum_type[ $terms->KeyOffset() ];
-			$term[ kTAG_LID ] = $key;
-			$term[ kTAG_NAME ] = [ 'en' => $name ];
-			$src = $term->Store();
-			$pred =
-				\Milko\PHPLib\Predicate::NewPredicate(
-					$types, kPREDICATE_ENUM_OF, $src, $dst );
-			$pred->Store();
-		}
-
-		//
-		// Link enumerations.
-		//
-		$pred =
-			\Milko\PHPLib\Predicate::NewPredicate(
-				$types, kPREDICATE_ENUM_OF, $dst, $enumerated[ 'IndicatorType' ] );
-		$pred->Store();
-		echo( "\n" );
-		$x = $this->mDatabase->GetDescriptor( $this->mMatchTable[ 'IndicatorType' ] );
-		print_r( $x );
+		print_r( $this->mDatabase->GetDescriptor( "@9" ) );
 
 	} // InitBaseDescriptors.
 

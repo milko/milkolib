@@ -18,6 +18,7 @@
  * Initialisation definition.
  */
 define( 'doINIT', TRUE );
+define( 'kENGINE', 'ARANGO' );
 
 /*
  * Global includes.
@@ -74,6 +75,14 @@ echo( "************************************************************\n" );
 //
 echo( "- Initialising data dictionary: " );
 $dhs = new DHS( doINIT );
+echo( ".......... " );
+echo( "Done.\n" );
+
+//
+// Initialise DHS namespaces.
+//
+echo( "- Initialising DHS namespaces: " );
+$dhs->InitTypes();
 echo( ".......... " );
 echo( "Done.\n" );
 

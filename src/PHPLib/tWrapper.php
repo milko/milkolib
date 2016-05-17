@@ -393,7 +393,7 @@ trait tWrapper
 		//
 		// cache descriptor.
 		//
-		$result = $this->mCache->add( $key, $data );
+		$result = $this->mCache->set( $key, $data );
 		if( $result === FALSE )
 			throw new \RuntimeException(
 				$this->mCache->getResultMessage(),
