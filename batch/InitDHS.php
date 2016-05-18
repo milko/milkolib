@@ -73,25 +73,29 @@ echo( "************************************************************\n" );
 //
 // Initialise DHS object.
 //
-echo( "- Initialising data dictionary: " );
+echo( "- Initialising data dictionary: ......... " );
 $dhs = new DHS( doINIT );
-echo( ".......... " );
 echo( "Done.\n" );
 
 //
 // Initialise DHS namespaces.
 //
-echo( "- Initialising DHS namespaces: " );
+echo( "- Initialising DHS namespaces: .......... " );
 $dhs->InitTypes();
-echo( ".......... " );
 echo( "Done.\n" );
 
 //
-// Initialise DHS descriptors.
+// Initialise DHS indicator descriptors.
 //
-echo( "- Initialising DHS descriptors: " );
-$dhs->InitBaseDescriptors();
-echo( ".......... " );
+echo( "- Initialising DHS indicator descriptors: " );
+$dhs->InitIndicators();
+echo( "Done.\n" );
+
+//
+// Initialise DHS data descriptors.
+//
+echo( "- Initialising DHS data descriptors: .... " );
+$dhs->InitDataIndicators();
 echo( "Done.\n" );
 
 

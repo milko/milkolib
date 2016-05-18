@@ -67,6 +67,26 @@ class DHS
 		'http://api.dhsprogram.com/rest/dhs/indicators/fields?f=json';
 
 	/**
+	 * <h4>DHS data descriptors URL.</h4>
+	 *
+	 * This constant holds the <i>DHS data descriptors URL</i>.
+	 *
+	 * @var string
+	 */
+	const kDHS_URL_DATA_INDICATORS =
+		'http://api.dhsprogram.com/rest/dhs/data/fields?f=json';
+
+	/**
+	 * <h4>DHS country descriptors URL.</h4>
+	 *
+	 * This constant holds the <i>DHS country descriptors URL</i>.
+	 *
+	 * @var string
+	 */
+	const kDHS_URL_COUNTRY_INDICATORS =
+		'http://api.dhsprogram.com/rest/dhs/countries/fields?f=json';
+
+	/**
 	 * <h4>Wrapper object.</h4>
 	 *
 	 * This data member holds the <i>database object</i> that contains data and metadata.
@@ -215,8 +235,8 @@ class DHS
 		$ns[ kTAG_LID ] = self::kDHS_NAMESPACE;
 		$ns[ kTAG_NAME ] = [ 'en' => "Demographic and Health Surveys (DHS) Program" ];
 		$ns[ kTAG_DESCRIPTION ] = [ 'en' => "This namespace groups all metadata " .
-											"regarding the USAID Demographic and Health " .
-											"Surveys" ];
+			"regarding the USAID Demographic and Health " .
+			"Surveys" ];
 		$ns->Store();
 
 		//
@@ -291,7 +311,7 @@ class DHS
 
 
 	/*===================================================================================
-	 *	InitBaseDescriptors																*
+	 *	InitIndicators																	*
 	 *==================================================================================*/
 
 	/**
@@ -299,7 +319,7 @@ class DHS
 	 *
 	 * This method will load the base descriptors and load the descriptor match table.
 	 */
-	public function InitBaseDescriptors()
+	public function InitIndicators()
 	{
 		//
 		// Init local storage.
@@ -418,7 +438,7 @@ class DHS
 							$terms->FindByKey(
 								$descriptor[ kTAG_GID ],
 								[ kTOKEN_OPT_MANY => FALSE,
-								  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] ),
+									kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_HANDLE ] ),
 							$handle );
 					$pred->Store();
 					$this->mDatabase->SetDescriptor( $descriptor );
@@ -441,9 +461,133 @@ class DHS
 			} // Setting enumerated types.
 
 		} // Loading descriptors.
-		print_r( $this->mDatabase->GetDescriptor( "@9" ) );
 
-	} // InitBaseDescriptors.
+	} // InitIndicators.
+
+
+	/*===================================================================================
+	 *	InitDataIndicators																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Initialise data descriptors.</h4>
+	 *
+	 * This method will load the data descriptors and load the descriptor match table.
+	 */
+	public function InitDataIndicators()
+	{
+		//
+		// Init local storage.
+		//
+		$types = $this->mDatabase->NewTypesCollection();
+		$terms = $this->mDatabase->NewTermsCollection();
+		$descriptors = $this->mDatabase->NewDescriptorsCollection();
+
+		//
+		// Load base descriptors.
+		//
+		$indicators =
+			json_decode( file_get_contents( self::kDHS_URL_DATA_INDICATORS ), TRUE )
+			[ 'Data' ];
+
+		//
+		// Load match table.
+		//
+		foreach( $indicators as $indicator )
+		{
+			//
+			// Init descriptor.
+			//
+			$descriptor = new \Milko\PHPLib\Descriptor( $descriptors );
+
+			//
+			// Set identifiers.
+			//
+			$descriptor[ kTAG_NS ] = self::kDHS_NAMESPACE;
+			$descriptor[ kTAG_LID ] = $indicator[ 'fieldname' ];
+			$descriptor[ kTAG_SYMBOL ] = $indicator[ 'fieldname' ];
+
+			//
+			// Set names.
+			//
+			$descriptor[ kTAG_NAME ] = [ 'en' => $indicator[ 'fieldname' ] ];
+			$descriptor[ kTAG_DESCRIPTION ] =
+				[ 'en' => str_replace( "\t", '', $indicator[ 'fieldDescription' ] ) ];
+
+			//
+			// Set data types.
+			//
+			switch( $indicator[ 'fieldname' ] )
+			{
+				case 'Indicator':
+				case 'CountryName':
+				case 'SurveyId':
+				case 'IndicatorId':
+				case 'CharacteristicLabel':
+				case 'ByVariableLabel':
+				case 'SurveyYearLabel':
+					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_STRING;
+					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_DISCRETE ];
+					break;
+
+				case 'CharacteristicCategory':
+				case 'CharacteristicId':
+				case 'RegionId':
+				case 'SurveyType':
+					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_STRING;
+					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_CATEGORICAL, kKIND_SUMMARY ];
+					break;
+
+				case 'DataId':
+				case 'Precision':
+				case 'SurveyYear':
+				case 'CharacteristicOrder':
+				case 'ByVariableId':
+					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_INT;
+					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_DISCRETE ];
+					break;
+
+				case 'DenominatorWeighted':
+				case 'DenominatorUnweighted':
+					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_INT;
+					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_QUANTITATIVE ];
+					break;
+
+				case 'Value':
+				case 'CILow':
+				case 'CIHigh':
+					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_FLOAT;
+					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_QUANTITATIVE ];
+					break;
+
+				case 'DHS_CountryCode':
+					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_ENUM;
+					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_CATEGORICAL ];
+					break;
+
+				case 'IsTotal':
+				case 'IsPreferred':
+					$descriptor[ kTAG_DATA_TYPE ] = kTYPE_BOOLEAN;
+					$descriptor[ kTAG_DATA_KIND ] = [ kKIND_DISCRETE ];
+					break;
+
+			} // Setting data types.
+
+			//
+			// Store descriptor.
+			//
+			$handle = $descriptor->Store();
+
+			//
+			// Set match table entry.
+			//
+			if( ! array_key_exists( $indicator[ 'fieldname' ], $this->mMatchTable ) )
+				$this->mMatchTable[ $indicator[ 'fieldname' ] ]
+					= $descriptor[ $descriptors->KeyOffset() ];
+
+		} // Loading descriptors.
+
+	} // InitDataIndicators.
 
 
 
