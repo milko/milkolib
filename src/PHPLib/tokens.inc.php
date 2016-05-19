@@ -271,6 +271,9 @@ define( "kTOKEN_RADIUS",				'radius' );
  * <ul>
  * 	<li><tt>{@link kTOKEN_ENUM_TERM}</tt>: This element will contain the enumerated value as
  *		a term instance key; if the element is a category, this item will be omitted.
+ * 	<li><tt>{@link kTOKEN_ENUM_PREFERRED}</tt>: This element will contain the preferred
+ * 		enumerated value as a term instance key; if the element is a category, this item
+ * 		will be omitted.
  * 	<li><tt>{@link kTOKEN_ENUM_CATEGORY}</tt>: This element will contain the instance key of
  *		the term that represents a category; if the element is an enumerated value, this
  *		item will be omitted, if the element is a category this item will be provided.
@@ -287,6 +290,14 @@ define( "kTOKEN_ENUM_LIST",					'list' );
  * term key.
  */
 define( "kTOKEN_ENUM_TERM",					'enum' );
+
+/**
+ * Preferred enumerated value
+ *
+ * This token is used as the offset where the preferred enumerated value is provided, the
+ * value is the term key that should be used in place of the {@link kTOKEN_ENUM_TERM} value.
+ */
+define( "kTOKEN_ENUM_PREFERRED",			'pref' );
 
 /**
  * Enumerated category

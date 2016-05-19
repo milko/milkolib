@@ -1,0 +1,90 @@
+ByLabels,"Formerly the set of labels for different universes within the indicator, e.g. All women, Currently Married Women. No longer used.",:type:mixed,:kind:discrete
+ByVariableId,"A characteristic ID identifying a further level of disaggregation, when an indicator is disaggregated in multiple ways. For example, Current Use of Contraception is disaggregated by Age, but also for All women, currently married women and sexually active unmarried women. Age is presented in the characteristic category above; the disaggregation for All women, currently married women and sexually active unmarried women is captured in the ByVariableId and ByVariableLabel. If this additional level of disaggregation is not used for the indicator the ByVariableId will be 0 and the ByVariableLabel will be blank. A common use of the ByVariableId and ByVariable...",:type:string,:kind:discrete
+ByVariableLabel,The descriptive label for the level of disaggregation provided in the ByVariableId.,:type:string,:kind:discrete
+CharacteristicCategory,DHS has defined a list of characteristic categories that are used across surveys to make sure the data can be compared across countries very easily. This category can be used to filter data. See also CharacteristicLabel.,:type:string,":kind:categorical,:kind:summary"
+CharacteristicId,DHS has defined a list of characteristics that are used across surveys to make sure the data can be compared across countries very easily. A characteristic ID gives you the unique ID that represents that particular characteristic.,:type:string,":kind:categorical,:kind:summary"
+CharacteristicLabel,"This field provides label of the characteristic within a particular characteristic category. For example, Urban and Rural are the two characteristics within the category Residence.",:type:string,:kind:discrete
+CharacteristicOrder,Sort order in which to display characteristics.,:type:int,:kind:discrete
+CIHigh,The upper bound of the 95% confidence interval for the indicator. The confidence interval is only presented for the maternal mortality ratio and the HIV prevalence indicators.,:type:float,:kind:quantitative
+CILow,The upper bound of the 95% confidence interval for the indicator. The confidence interval is only presented for the maternal mortality ratio and the HIV prevalence indicators.,:type:float,:kind:quantitative
+CountryName,DHS specific country name.,:type:string,:kind:discrete
+DataId,A unique numeric record ID corresponding to the data record provided.,:type:int,:kind:discrete
+Definition,Provides a definition of the specified indicator. The definition can be used to provide detailed information to your users.,:type:string,:kind:discrete
+Denominator,Provides a definition of the denominator of the specified indicator. The denominator definition can be used to provide detailed information to your users.,:type:string,:kind:discrete
+DenominatorUnweighted,The unweighted denominator for the indicator data.,:type:float,:kind:quantitative
+DenominatorWeighted,The weighted denominator for the indicator data.,:type:float,:kind:quantitative
+DHS_CountryCode,Two-letter DHS specific country code.,:type:enum,:kind:categorical
+FieldworkEnd,The month and year of the end of fieldwork for the survey (note: day is always returned as 1).,:type:string,:kind:quantitative
+FieldworkStart,The month and year of the start of fieldwork for the survey (note: day is always returned as 1).,:type:string,:kind:quantitative
+FIPS_countryCode,Federal Information Processing Standards(FIPS) specific country code.,:type:string,:kind:discrete
+Footnotes,Footnotes about the survey.,:type:string,:kind:discrete
+ImplementingOrg,The name of the implementing organization(s) for the survey.,:type:string,:kind:discrete
+Indicator,The name or label of the particular indicator for this data.,:type:string,:kind:discrete
+IndicatorId,Indicator ID for the specified indicator. Each indicator will always have a unique ID and can be used across surveys.,:type:string,:kind:discrete
+IndicatorId,Indicator ID for the specified indicator. Each indicator will always have a unique ID and can be used across surveys.,:type:string,:kind:discrete
+IndicatorName,Indicator label describing the specified indicator.,:type:string,:kind:discrete
+IndicatorOldId,Provides the old numeric ID for the indicator used in API version 1. Available for legacy usage/support only.,:type:string,:kind:discrete
+IndicatorOrder,Indicator Order is used for ordering indicators within the levels.,:type:int,:kind:discrete
+IndicatorType,Type of indicator. ,:type:enum,:kind:categorical
+InfoType,Describing the type of information that was requested.,:type:string,:kind:discrete
+Interface,Interface Type of each update.,:type:string,":kind:categorical,:kind:summary"
+ISO2_countryCode,International Organization of Standards(ISO) specific two-letter country code.,:type:string,:kind:discrete
+ISO3_countryCode,International Organization of Standards(ISO) specific three-letter country code.,:type:string,:kind:discrete
+IsPreferred,"If a particular indicator has multiple values because it is disaggregated in multiple ways, this column will identify which is the preferred value to display by default.",:type:bool,:kind:discrete
+IsQuickStat,This column will display a '1' for DHS Quickstat indicators that are used or viewed most often. The information can be utilized to serve the most common data to users quickly.,:type:bool,:kind:discrete
+IsTotal,This column will identify if a certain value is a Total value used for national totals.,:type:bool,:kind:discrete
+Label,Indicator label describing the specified indicator.,:type:string,:kind:discrete
+Level1,Each indicator is grouped in a three level hierarchy. This column provides the top level grouping and is the major subject area.,:type:string,":kind:categorical,:kind:summary"
+Level2,Each indicator is grouped in a three level hierarchy. This column provides the second level grouping and is the topic area within the major subject.,:type:string,":kind:categorical,:kind:summary"
+Level3,"Each indicator is grouped in a three level hierarchy. This column provides the third level grouping and is the universe for the topic (typically Women, Men, Both Sexes, Children, Households, Population).",:type:string,":kind:categorical,:kind:summary"
+MaxAgeMen,The maximum age of men included in the survey (typically 49/54/59/64 years).,:type:int,:kind:quantitative
+MaxAgeWomen,The maximum age of women included in the survey (typically 49 years).,:type:int,:kind:quantitative
+MeasurementType,Specifies the type of measurement. ,:type:enum,:kind:categorical
+MinAgeMen,The minimum age of men included in the survey (typically 15 years).,:type:int,:kind:quantitative
+MinAgeWomen,The minimum age of women included in the survey (typically 15 years).,:type:int,:kind:quantitative
+NumberOfFacilities,"For SPA or service availability surveys, the number of health facilities visited.",:type:int,:kind:quantitative
+NumberofHouseholds,The total number of households interviewed in the survey.,:type:int,:kind:quantitative
+NumberOfMen,The total number of men interviewed in the survey.,:type:int,:kind:quantitative
+NumberOfSamplePoints,The number of sample points (or clusters/enumeration areas) visited in the survey.,:type:int,:kind:quantitative
+NumberOfWomen,The total number of women interviewed in the survey.,:type:int,:kind:quantitative
+NumberScale,Number Scale provides the precision (number of decimal places) that should be presented for the indicator.,:type:int,:kind:discrete
+Precision,The number of decimal places that should be presented for value of the indicator.,:type:int,:kind:discrete
+PublicationDate,Date specifying when the survey data was published.,:type:string,:kind:quantitative
+PublicationDescription,Detailed description of the publication.,:type:string,:kind:discrete
+PublicationID,Unique numeric ID for each publication.,:type:int,:kind:discrete
+PublicationSize,Size in bytes of the publication PDF file.,:type:int,:kind:quantitative
+PublicationTitle,Title for the publication.,:type:string,:kind:discrete
+PublicationURL,The URL providing access to the publication.,:type:string:url,:kind:discrete
+QuickStatOrder,This column will provide an integer to help provide a special sort order for all the Quickstat Indicators. These are indicators that display a '1' in the IsQuickStat column and are used or viewed most often. The information can be utilized to serve the most common data to users quickly.,:type:int,:kind:discrete
+RegionId,Unique ID given to each survey and region.,:type:string,":kind:categorical,:kind:summary"
+RegionName,The region name for the surveys (countries) returned as a result of a specific query. E.g. region name for Egypt is North Africa/West Asia/Europe,:type:string,":kind:categorical,:kind:summary"
+RegionOrder,A numeric value that can be used for ordering regions/sub-regions in a list.,:type:int,:kind:discrete
+ReleaseDate,Date specifying when the survey data was made available.,:type:string,:kind:quantitative
+Removed,"Indicating whether the survey or indicator was removed. 0 = Added/Updated, 1 = Removed.",:type:string,":kind:categorical,:kind:summary"
+RowNumber,A unique to identify each row,:type:int,:kind:discrete
+SDRID,This column contains the Spatial Data Repository Indicator ID.,:type:int,:kind:discrete
+ShortName,Provides a short name for the specified indicator that can be used when displaying the indicator within the hierarchy level if the indicator label is too long. If space is available we recommend using the indicator label.,:type:string,:kind:discrete
+SubRegionName,The sub region name for the surveys (countries) returned as a result of a specific query. E.g. Egypt is in the North Africa sub region.,:type:string,":kind:categorical,:kind:summary"
+SurveyCharacteristicID,Numeric survey characteristic ID.,:type:string,:kind:discrete
+SurveyCharacteristicIds,"A list of IDs for the survey characteristics that includes additional topics, modules or features that were included in the survey beyond the standard. See the survey characteristics for the descriptions associated with each ID.",:type:enum-set,:kind:categorical
+SurveyCharacteristicName,"Name of the survey characteristic (topic, module, or feature)",:type:string,:kind:discrete
+SurveyId,"DHS survey ID. Each survey will always have a unique ID (of the form ccyyyyttt where cc is the DHS country code, yyyy is the survey year, and ttt is the survey type) and can be used to obtain national or subnational data for a particular survey.",:type:string,:kind:discrete
+SurveyNum,Unique numeric id assigned to each survey.,:type:int,:kind:discrete
+SurveyStatus,Specifies whether the survey is ongoing or completed.,:type:string,":kind:categorical,:kind:summary"
+SurveyType,"The survey type determines whether the survey was a DHS, AIS, MIS, SPA, RHS or other type of survey.",:type:string,":kind:categorical,:kind:summary"
+SurveyYear,The principal year in which the survey was conducted.,:type:int,:kind:quantitative
+SurveyYearLabel,"The survey year label provides the range of years in which the fieldwork took place. For example if a survey started in 1998 and finished in 1999, the survey year would be 1998 while the survey year label would provide 1998-99. This information could be used to make the user interface more intuitive and accurate.",:type:string,:kind:discrete
+TagID,Numeric ID for the tag.,:type:string,:kind:discrete
+TagIds,A list of tag IDs for selecting indicators according to tagged groups. See the tags list for the descriptions associated with each ID.,:type:enum-set,:kind:categorical
+TagName,Name of the tag.,:type:string,:kind:discrete
+TagOrder,Sort order for the tags.,:type:int,:kind:discrete
+TagType,"Tag Type: 0 = Subject groups, 1 = Indicator sets (e.g. MDGs, PEPFAR, UNGASS, UNAIDS, PMI/RBM, MICS, UNESCO)",:type:string,":kind:categorical,:kind:summary"
+ThumbnailURL,A thumbnail image of the publication cover.,:type:string:url,:kind:discrete
+UNAIDS_countryCode,UNAIDS specific three-letter country code.,:type:string,:kind:discrete
+UNICEF_countryCode,UNICEF specific three-letter country code.,:type:string,:kind:discrete
+UniverseOfMen,"The universe of men interviewed: All Men, Ever Married Men, or Husbands.",:type:string,":kind:categorical,:kind:summary"
+UniverseOfWomen,The universe of women interviewed: All Women or Ever Married Women.,:type:string,":kind:categorical,:kind:summary"
+UNSTAT_countryCode,UNSTAT specific three-letter country code.,:type:string,:kind:discrete
+UpdateDate,Date specifying when the update occurred.,:type:time-stamp,:kind:quantitative
+Value,"The actual value (percentage, rate, number, etc.) of the particular indicator specified. The value can be used to provide statistics to users.",:type:mixed,:kind:quantitative
+WHO_countryCode,WHO specific two-letter country code.,:type:string,:kind:discrete

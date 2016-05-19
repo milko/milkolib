@@ -269,14 +269,13 @@ trait tWrapper
 	 * </ul>
 	 *
 	 * @param string				$theDescriptor		Descriptor key.
-	 * @param string|array			$theEnumeration		Enumeration(s).
+	 * @param string|array		   &$theEnumeration		Enumeration(s).
 	 * @return mixed				<tt>NULL</tt>, <tt>TRUE</tt> or <tt>array</tt>.
 	 *
 	 * @uses GetDescriptor()
 	 * @uses validateEnumerations()
-	 *
 	 */
-	public function CheckEnumerations( $theDescriptor, $theEnumeration )
+	public function CheckEnumerations( $theDescriptor, &$theEnumeration )
 	{
 		//
 		// Get descriptor.
@@ -287,9 +286,10 @@ trait tWrapper
 			//
 			// Normalise enumerations.
 			//
-			if( ! is_array( $theEnumeration ) )
-				$theEnumeration = [ $theEnumeration ];
-			
+			$enums = ( is_array( $theEnumeration ) )
+				? $theEnumeration
+				: [ $theEnumeration ];
+
 			//
 			// Extract descriptor enumerations.
 			//
@@ -298,24 +298,79 @@ trait tWrapper
 				//
 				// Validate enumerations.
 				//
-				$this->validateEnumerations(
-					$descriptor[ kTOKEN_ENUM_LIST ], $theEnumeration );
+				$this->validateEnumerations( $descriptor[ kTOKEN_ENUM_LIST ], $enums );
 
 				//
 				// Handle valid.
 				//
-				if( ! count( $theEnumeration ) )
+				if( ! count( $enums ) )
+				{
+					//
+					// Set preferred enumerations.
+					//
+					$this->PreferredEnumerations( $descriptor, $theEnumeration );
+
 					return TRUE;													// ==>
+
+				} // All enumerations ae valid.
 
 			} // Has controlled vocabulary.
 
-			return $theEnumeration;													// ==>
+			return $enums;															// ==>
 
 		} // Gound descriptor.
 
 		return NULL;																// ==>
 
 	} // CheckEnumerations.
+
+
+	/*===================================================================================
+	 *	PreferredEnumerations															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set preferred enumerations.</h4>
+	 *
+	 * This method will check whether the provided enumeration(s) have preferred values and
+	 * will set them. The method expects two parameters: the descriptor key and the
+	 * enumeration(s) to check; provide an array for more than one enumeration.
+	 *
+	 * @param array					$theDescriptor		Cached descriptor record.
+	 * @param string|array		   &$theEnumeration		Enumeration(s).
+	 */
+	public function PreferredEnumerations( array $theDescriptor, &$theEnumeration )
+	{
+		//
+		// Extract descriptor enumerations.
+		//
+		if( array_key_exists( kTOKEN_ENUM_LIST, $theDescriptor ) )
+		{
+			//
+			// Handle many enumerations.
+			//
+			if( is_array( $theEnumeration ) )
+			{
+				//
+				// Iterate enumerations.
+				//
+				$keys = array_keys( $theEnumeration );
+				foreach( $keys as $key )
+					$this->setPreferredEnumeration(
+						$theDescriptor[ kTOKEN_ENUM_LIST ], $theEnumeration[ $key ] );
+
+			} // Many enumerations.
+
+			//
+			// Handle single enumeration.
+			//
+			else
+				$this->setPreferredEnumeration(
+					$theDescriptor[ kTOKEN_ENUM_LIST ], $theEnumeration );
+
+		} // Has controlled vocabulary.
+
+	} // PreferredEnumerations.
 
 
 
@@ -461,7 +516,60 @@ trait tWrapper
 
 		} // Enumerations left to validate.
 
-	} // initCache.
+	} // validateEnumerations.
+
+
+	/*===================================================================================
+	 *	setPreferredEnumeration															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Validate enumerations.</h4>
+	 *
+	 * This method will check whether the provided enumerations belong to the provided
+	 * controlled vocabulary, each valid element will be removed from the provided
+	 * enumerated list until the list is empty or the whole controlled vocabulary has been
+	 * traversed.
+	 *
+	 * @param array					$theVocabulary		Controlled vocabulary.
+	 * @param string			   &$theEnum			Enumerated value.
+	 */
+	protected function setPreferredEnumeration( array $theVocabulary, &$theEnum )
+	{
+		//
+		// Iterate vocabulary.
+		//
+		foreach( $theVocabulary as $vocabulary )
+		{
+			//
+			// Handle preferred value.
+			//
+			if( array_key_exists( kTOKEN_ENUM_TERM, $vocabulary )
+			 && ($vocabulary[ kTOKEN_ENUM_TERM ] == $theEnum) )
+			{
+				//
+				// Check preferred.
+				//
+				if( array_key_exists( kTOKEN_ENUM_PREFERRED, $vocabulary ) )
+					$theEnum = $vocabulary[ kTOKEN_ENUM_PREFERRED ];
+
+				//
+				// Break loop.
+				//
+				break;
+
+			} // Found matching enumeration.
+
+			//
+			// Handle nested enumerations.
+			//
+			if( array_key_exists( kTOKEN_ENUM_NESTED, $vocabulary ) )
+				$this->setPreferredEnumeration(
+					$vocabulary[ kTOKEN_ENUM_NESTED ], $theEnum );
+
+		} // Traversing controlled vocabulary.
+
+	} // setPreferredEnumeration.
 
 
 

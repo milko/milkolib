@@ -175,7 +175,7 @@ class Document extends Container
 	 * Derived classes should first call their parent constructor.
 	 *
 	 * @param Collection			$theCollection		Collection name.
-	 * @param array					$theData			Document data.
+	 * @param mixed					$theData			Document data.
 	 */
 	public function __construct( Collection $theCollection, array $theData = [] )
 	{

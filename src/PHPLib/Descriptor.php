@@ -316,6 +316,9 @@ class Descriptor extends Term
 	 * 	<li><tt>{@link kTOKEN_ENUM_TERM}</tt>: This element will contain the enumerated
 	 * 		value as a term instance key; if the element is a category, this item will be
 	 * 		omitted.
+	 * 	<li><tt>{@link kTOKEN_ENUM_PREFERRED}</tt>: This element will contain the preferred
+	 * 		enumerated value as a term instance key; if the element is a category, or if the
+	 * 		current element is valid, this item will be omitted.
 	 * 	<li><tt>{@link kTOKEN_ENUM_CATEGORY}</tt>: This element will contain the instance
 	 * 		key of the term that represents a category; if the element is an enumerated
 	 * 		value, this item will be omitted, if the element is a category this item will
@@ -490,6 +493,9 @@ class Descriptor extends Term
 	 * 	<li><tt>{@link kTOKEN_ENUM_TERM}</tt>: This element will contain the enumerated
 	 * 		value as a term instance key; if the element is a category, this item will be
 	 * 		omitted.
+	 * 	<li><tt>{@link kTOKEN_ENUM_PREFERRED}</tt>: This element will contain the preferred
+	 * 		enumerated value as a term instance key; if the element is a category, or if the
+	 * 		current element is valid, this item will be omitted.
 	 * 	<li><tt>{@link kTOKEN_ENUM_CATEGORY}</tt>: This element will contain the instance
 	 * 		key of the term that represents a category; if the element is an enumerated
 	 * 		value, this item will be omitted, if the element is a category this item will
@@ -517,6 +523,11 @@ class Descriptor extends Term
 						  kTOKEN_OPT_DIRECTION => kTOKEN_OPT_DIRECTION_IN ] );
 		if( count( $edges ) )
 		{
+			//
+			// Init preferred.
+			//
+			$preferred = NULL;
+
 			//
 			// Iterate edges.
 			//
@@ -590,7 +601,7 @@ class Descriptor extends Term
 							$this->mCollection->FindByHandle(
 								$vertex_handle,
 								[ kTOKEN_OPT_MANY => FALSE,
-								  kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+									kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
 						if( $vertex === NULL )
 							throw new \RuntimeException (
 								"Unresolved document handle." );				// !@! ==>
@@ -612,9 +623,34 @@ class Descriptor extends Term
 
 						break;
 
+					//
+					// Set preferred.
+					//
+					case kPREDICATE_PREFERRED:
+						// Get vertex.
+						$vertex =
+							$this->mCollection->FindByHandle(
+								$vertex_handle,
+								[ kTOKEN_OPT_MANY => FALSE,
+									kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_DOCUMENT ] );
+						if( $vertex === NULL )
+							throw new \RuntimeException (
+								"Unresolved document handle." );				// !@! ==>
+
+						// Load preferred.
+						$preferred = $vertex[ $vertex->Collection()->KeyOffset() ];
+
+						break;
+
 				} // Parsing by predicate.
 
 			} // Iterating found edges.
+
+			//
+			// Set preferred.
+			//
+			if( $preferred !== NULL )
+				$element[ kTOKEN_ENUM_PREFERRED ] = $preferred;
 
 		} // Found edges.
 

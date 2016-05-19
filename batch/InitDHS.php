@@ -73,29 +73,64 @@ echo( "************************************************************\n" );
 //
 // Initialise DHS object.
 //
-echo( "- Initialising data dictionary: ......... " );
+echo( "- Initialising data dictionary: .......... " );
 $dhs = new DHS( doINIT );
 echo( "Done.\n" );
 
 //
 // Initialise DHS namespaces.
 //
-echo( "- Initialising DHS namespaces: .......... " );
-$dhs->InitTypes();
+echo( "- Initialising DHS namespaces: ........... " );
+$dhs->InitNamespaces();
 echo( "Done.\n" );
 
 //
-// Initialise DHS indicator descriptors.
+// Initialise DHS descriptors.
 //
-echo( "- Initialising DHS indicator descriptors: " );
+echo( "- Initialising DHS descriptors: .......... " );
+$dhs->InitDescriptors();
+echo( "Done.\n" );
+
+//
+// Initialise DHS countries.
+//
+echo( "- Initialising DHS countries: ............ " );
+$dhs->InitCountries();
+echo( "Done.\n" );
+
+//
+// Initialise DHS measurement types.
+//
+echo( "- Initialising DHS measurement types: .... " );
+$dhs->InitMeasurementTypes();
+echo( "Done.\n" );
+
+//
+// Initialise DHS indicator types.
+//
+echo( "- Initialising DHS indicator types: ...... " );
+$dhs->InitIndicatorTypes();
+echo( "Done.\n" );
+
+//
+// Initialise DHS survey characteristics.
+//
+echo( "- Initialising DHS survey characteristics: " );
+$dhs->InitSurveyCharacteristics();
+echo( "Done.\n" );
+
+//
+// Initialise DHS tags.
+//
+echo( "- Initialising DHS tags: ................. " );
+$dhs->InitTags();
+echo( "Done.\n" );
+
+//
+// Initialise DHS indicators.
+//
+echo( "- Initialising DHS indicators: ........... " );
 $dhs->InitIndicators();
-echo( "Done.\n" );
-
-//
-// Initialise DHS data descriptors.
-//
-echo( "- Initialising DHS data descriptors: .... " );
-$dhs->InitDataIndicators();
 echo( "Done.\n" );
 
 
