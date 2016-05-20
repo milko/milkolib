@@ -18,7 +18,7 @@
  * Initialisation definition.
  */
 define( 'doINIT', TRUE );
-define( 'kENGINE', 'ARANGO' );
+define( 'kENGINE', 'MONGO' );
 
 /*
  * Global includes.
@@ -71,9 +71,9 @@ echo( "* Cache port:          " . kSESSION_CACHE_PORT . "\n" );
 echo( "************************************************************\n" );
 
 //
-// Initialise DHS object.
+// Initialise DHS data dictionary.
 //
-echo( "- Initialising data dictionary: .......... " );
+echo( "- Initialising DHS data dictionary: ...... " );
 $dhs = new DHS( doINIT );
 echo( "Done.\n" );
 
@@ -129,9 +129,23 @@ echo( "Done.\n" );
 //
 // Initialise DHS indicators.
 //
-echo( "- Initialising DHS indicators: ........... " );
+echo( "- Initialising DHS indicators: " );
 $dhs->InitIndicators();
-echo( "Done.\n" );
+echo( " Done.\n" );
+
+//
+// Initialise DHS surveys.
+//
+echo( "- Initialising DHS surveys: " );
+$dhs->InitSurveys();
+echo( " Done.\n" );
+
+//
+// Initialise DHS data.
+//
+echo( "- Initialising DHS data: " );
+$dhs->InitData();
+echo( " Done.\n" );
 
 
 ?>

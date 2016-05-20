@@ -20,7 +20,7 @@ FIPS_countryCode,Federal Information Processing Standards(FIPS) specific country
 Footnotes,Footnotes about the survey.,:type:string,:kind:discrete
 ImplementingOrg,The name of the implementing organization(s) for the survey.,:type:string,:kind:discrete
 Indicator,The name or label of the particular indicator for this data.,:type:string,:kind:discrete
-IndicatorId,Indicator ID for the specified indicator. Each indicator will always have a unique ID and can be used across surveys.,:type:string,:kind:discrete
+IndicatorData,Whether the record contains indicator data (descriptor is assumed).,:type:bool,:kind:discrete
 IndicatorId,Indicator ID for the specified indicator. Each indicator will always have a unique ID and can be used across surveys.,:type:string,:kind:discrete
 IndicatorName,Indicator label describing the specified indicator.,:type:string,:kind:discrete
 IndicatorOldId,Provides the old numeric ID for the indicator used in API version 1. Available for legacy usage/support only.,:type:string,:kind:discrete

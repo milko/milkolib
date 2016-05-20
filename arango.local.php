@@ -147,5 +147,19 @@ const kTAG_ARANGO_DESCRIPTORS = 'descriptors';
  */
 const kTAG_ARANGO_RESOURCES = 'resources';
 
+/**
+ * <h4>Default surveys collection.</h4><p />
+ *
+ * This defines the default surveys collection name.
+ */
+const kTAG_ARANGO_SURVEYS = 'surveys';
+
+/**
+ * <h4>Default data collection.</h4><p />
+ *
+ * This defines the default data collection name.
+ */
+const kTAG_ARANGO_DATA = 'data';
+
 
 ?>

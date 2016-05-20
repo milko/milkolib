@@ -159,6 +159,42 @@ class Database extends \Milko\PHPLib\Database
 	} // NewResourcesCollection.
 
 
+	/*===================================================================================
+	 *	NewSurveysCollection															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a surveys collection object.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_MONGO_SURVEYS} collection name.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	public function NewSurveysCollection()
+	{
+		return $this->NewCollection( kTAG_MONGO_SURVEYS );							// ==>
+
+	} // NewSurveysCollection.
+
+
+	/*===================================================================================
+	 *	NewDataCollection																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a data collection object.</h4>
+	 *
+	 * We overload this method to use the {@link kTAG_MONGO_DATA} collection name.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	public function NewDataCollection()
+	{
+		return $this->NewCollection( kTAG_MONGO_DATA );								// ==>
+
+	} // NewDataCollection.
+
+
 
 /*=======================================================================================
  *																						*

@@ -493,6 +493,48 @@ abstract class Database extends Container
 
 
 	/*===================================================================================
+	 *	NewSurveysCollection															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a surveys collection object.</h4>
+	 *
+	 * This method can be used to create a collection object that stores surveys, this
+	 * collection will store information about surveys.
+	 *
+	 * If the collection already exists, it will be returned, if not, it will be created and
+	 * added to the working collections of the database which are stored in the object's
+	 * inherited array object.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	abstract public function NewSurveysCollection();
+
+
+	/*===================================================================================
+	 *	NewDataCollection																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Create a data collection object.</h4>
+	 *
+	 * This method can be used to create a collection object that stores data, this
+	 * collection will store survey data points.
+	 *
+	 * If the collection already exists, it will be returned, if not, it will be created and
+	 * added to the working collections of the database which are stored in the object's
+	 * inherited array object.
+	 *
+	 * If the server is not connected, the connection will be opened automatically.
+	 *
+	 * @return Collection			Collection object.
+	 */
+	abstract public function NewDataCollection();
+
+
+	/*===================================================================================
 	 *	GetCollection																	*
 	 *==================================================================================*/
 

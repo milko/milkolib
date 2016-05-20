@@ -113,5 +113,19 @@ const kTAG_MONGO_DESCRIPTORS = '_descriptors';
  */
 const kTAG_MONGO_RESOURCES = '_resources';
 
+/**
+ * <h4>Default surveys collection.</h4><p />
+ *
+ * This defines the default surveys collection name.
+ */
+const kTAG_MONGO_SURVEYS = '_surveys';
+
+/**
+ * <h4>Default data collection.</h4><p />
+ *
+ * This defines the default data collection name.
+ */
+const kTAG_MONGO_DATA = '_data';
+
 
 ?>

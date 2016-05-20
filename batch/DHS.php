@@ -77,6 +77,26 @@ class DHS
 		'http://api.dhsprogram.com/rest/dhs/indicators?f=json';
 
 	/**
+	 * <h4>DHS surveys URL.</h4>
+	 *
+	 * This constant holds the <i>DHS surveys URL</i>.
+	 *
+	 * @var string
+	 */
+	const kDHS_URL_SURVEYS =
+		'http://api.dhsprogram.com/rest/dhs/surveys?f=json';
+
+	/**
+	 * <h4>DHS data URL.</h4>
+	 *
+	 * This constant holds the <i>DHS data URL</i>.
+	 *
+	 * @var string
+	 */
+	const kDHS_URL_DATA =
+		'http://api.dhsprogram.com/rest/dhs/data?f=json';
+
+	/**
 	 * <h4>DHS country codes URL.</h4>
 	 *
 	 * This constant holds the <i>DHS country codes URL</i>.
@@ -244,9 +264,7 @@ class DHS
 		//
 		// Init local storage.
 		//
-		$types = $this->mDatabase->NewTypesCollection();
 		$terms = $this->mDatabase->NewTermsCollection();
-		$descriptors = $this->mDatabase->NewDescriptorsCollection();
 
 		//
 		// Instantiate DHS namespace.
@@ -276,8 +294,6 @@ class DHS
 		//
 		// Init local storage.
 		//
-		$types = $this->mDatabase->NewTypesCollection();
-		$terms = $this->mDatabase->NewTermsCollection();
 		$descriptors = $this->mDatabase->NewDescriptorsCollection();
 
 		//
@@ -502,7 +518,8 @@ class DHS
 			'Median' => 'Median',
 			'Number' => 'Number',
 			'Percent' => 'Percent',
-			'Rate' => 'Rate'
+			'Rate' => 'Rate',
+			'Ratio' => 'Ratio'
 		];
 		foreach( $enums as $key => $name )
 		{
@@ -570,7 +587,8 @@ class DHS
 			'T' => 'Distribution total (100%)',
 			'S' => 'Special answers (don\'t know/missing)',
 			'E' => 'Sampling errors',
-			'C' => 'Confidence interval'
+			'C' => 'Confidence interval',
+			'N' => '???'
 		];
 		foreach( $enums as $key => $name )
 		{
@@ -765,18 +783,18 @@ class DHS
 		//
 		// Init local storage.
 		//
-		$types = $this->mDatabase->NewTypesCollection();
-		$terms = $this->mDatabase->NewTermsCollection();
 		$descriptors = $this->mDatabase->NewDescriptorsCollection();
 
 		//
-		// Load country codes.
+		// Load indicators.
 		//
 		$page = 1;
 		$lines = 100;
 		$url = self::kDHS_URL_INDICATORS . "&page=$page&perpage=$lines";
 		$records = json_decode( file_get_contents( $url ), TRUE );
-		while( $records[ 'Recordcount' ] )
+		$count = $records[ 'RecordCount' ];
+		$counter = $total = ceil( $count/11 );
+		while( $count )
 		{
 			//
 			// Get data reference.
@@ -844,9 +862,10 @@ class DHS
 							case strtolower( 'TagIds' ):
 								$list = explode( ',', $value );
 								$value = [];
-								foreach( $tmp as $elm )
+								foreach( $list as $elm )
 									$value[] =
-										self::kDHS_NAMESPACE . ':' . $field . ':' . trim( $elm );
+										self::kDHS_NAMESPACE . ':' .
+										$field . ':' . trim( $elm );
 								break;
 						}
 
@@ -864,6 +883,15 @@ class DHS
 				//
 				$descriptor->Store();
 
+				//
+				// Progress.
+				//
+				if( ! --$counter )
+				{
+					$counter = $total;
+					echo( '.' );
+				}
+
 			} // Iterating lines.
 
 			//
@@ -872,10 +900,275 @@ class DHS
 			$page++;
 			$url = self::kDHS_URL_INDICATORS . "&page=$page&perpage=$lines";
 			$records = json_decode( file_get_contents( $url ), TRUE );
+			$count = ( array_key_exists( 'RecordCount', $records ) )
+				? $records[ 'RecordCount' ]
+				: $records[ 'Recordcount' ];
 
 		} // Found indicators.
 
+		//
+		// Progress.
+		//
+		echo( '.' );
+
 	} // InitIndicators.
+
+
+	/*===================================================================================
+	 *	InitSurveys																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Initialise surveys.</h4>
+	 *
+	 * This method will load the surveys.
+	 */
+	public function InitSurveys()
+	{
+		//
+		// Init local storage.
+		//
+		$surveys = $this->mDatabase->NewSurveysCollection();
+
+		//
+		// Load surveys.
+		//
+		$page = 1;
+		$lines = 100;
+		$url = self::kDHS_URL_SURVEYS . "&page=$page&perpage=$lines";
+		$records = json_decode( file_get_contents( $url ), TRUE );
+		$count = $records[ 'RecordCount' ];
+		$counter = $total = ceil( $count/14 );
+		while( $count )
+		{
+			//
+			// Get data reference.
+			//
+			$data = & $records[ 'Data' ];
+
+			//
+			// Iterate lines.
+			//
+			foreach( $data as $line )
+			{
+				//
+				// Init descriptor.
+				//
+				$document = new \Milko\PHPLib\Document( $surveys );
+
+				//
+				// Set identifiers.
+				//
+				$document[ $surveys->KeyOffset() ] = $line[ 'SurveyId' ];
+
+				//
+				// Set other data.
+				//
+				$fields = [
+					'SurveyId', 'SurveyNum', 'DHS_CountryCode', 'SurveyYear', 'SurveyType',
+					'SurveyYearLabel', 'IndicatorData', 'RegionName', 'SubregionName',
+					'PublicationDate', 'ReleaseDate', 'SurveyCharacteristicIds',
+					'FieldworkStart', 'FieldworkEnd', 'Footnotes', 'ImplementingOrg',
+					'NumberOfSamplePoints', 'NumberofHouseholds',
+					'UniverseOfWomen', 'NumberOfWomen', 'MinAgeWomen', 'MaxAgeWomen',
+					'UniverseOfMen', 'NumberOfMen', 'MinAgeMen', 'MaxAgeMen',
+					'NumberOfFacilities'
+				];
+				foreach( $fields as $field )
+				{
+					//
+					// Skip empty data.
+					//
+					if( strlen( $value = trim( $line[ $field ] ) ) )
+					{
+						switch( strtolower( $field ) )
+						{
+							case strtolower( 'DHS_CountryCode' ):
+								$value =
+									self::kDHS_NAMESPACE . ':' . $field . ':' . $value;
+								break;
+
+							case strtolower( 'SurveyCharacteristicIds' ):
+								$list = explode( ',', $value );
+								$value = [];
+								foreach( $list as $elm )
+									$value[] =
+										self::kDHS_NAMESPACE . ':' .
+										$field . ':' . trim( $elm );
+								break;
+						}
+
+						//
+						// Set value.
+						//
+						$document[ $this->mMatchTable[ strtolower( $field ) ] ] = $value;
+
+					} // Has value.
+
+				} // Iterating other fields.
+
+				//
+				// Save document.
+				//
+				$document->Store();
+
+				//
+				// Progress.
+				//
+				if( ! --$counter )
+				{
+					$counter = $total;
+					echo( '.' );
+				}
+
+			} // Iterating lines.
+
+			//
+			// Get next.
+			//
+			$page++;
+			$url = self::kDHS_URL_SURVEYS . "&page=$page&perpage=$lines";
+			$records = json_decode( file_get_contents( $url ), TRUE );
+			$count = ( array_key_exists( 'RecordCount', $records ) )
+				? $records[ 'RecordCount' ]
+				: $records[ 'Recordcount' ];
+
+		} // Found indicators.
+
+		//
+		// Progress.
+		//
+		echo( '.' );
+
+	} // InitSurveys.
+
+
+	/*===================================================================================
+	 *	InitData																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Initialise surveys.</h4>
+	 *
+	 * This method will load the surveys.
+	 */
+	public function InitData()
+	{
+		//
+		// Init local storage.
+		//
+		$collection = $this->mDatabase->NewDataCollection();
+
+		//
+		// Load surveys.
+		//
+		$page = 1;
+		$lines = 100;
+		$url = self::kDHS_URL_DATA . "&page=$page&perpage=$lines";
+		$records = json_decode( file_get_contents( $url ), TRUE );
+		$count = $records[ 'RecordCount' ];
+		$counter = $total = ceil( $count/17 );
+		while( $count )
+		{
+			//
+			// Get data reference.
+			//
+			$data = & $records[ 'Data' ];
+
+			//
+			// Iterate lines.
+			//
+			foreach( $data as $line )
+			{
+				//
+				// Init descriptor.
+				//
+				$document = new \Milko\PHPLib\Document( $collection );
+
+				//
+				// Set identifiers.
+				//
+				$document[ $collection->KeyOffset() ]
+					= $line[ 'SurveyId' ] . ':' . $line[ 'DataId' ];
+
+				//
+				// Set other data.
+				//
+				$fields = [
+					'DataId', 'Value', 'Precision', 'DHS_CountryCode',
+					'SurveyYear', 'SurveyId', 'IndicatorId', 'IndicatorOrder',
+					'CharacteristicId','CharacteristicOrder', 'CharacteristicCategory',
+					'CharacteristicLabel', 'ByVariableId', 'ByVariableLabel',
+					'IsTotal', 'IsPreferred', 'SDRID', 'RegionId', 'SurveyYearLabel',
+					'SurveyType', 'DenominatorWeighted', 'DenominatorUnweighted',
+					'CILow', 'CIHigh'
+				];
+				foreach( $fields as $field )
+				{
+					//
+					// Skip empty data.
+					//
+					if( strlen( $value = trim( $line[ $field ] ) ) )
+					{
+						switch( strtolower( $field ) )
+						{
+							case strtolower( 'DHS_CountryCode' ):
+								$value =
+									self::kDHS_NAMESPACE . ':' . $field . ':' . $value;
+								break;
+						}
+
+						//
+						// Set value.
+						//
+						$document[ $this->mMatchTable[ strtolower( $field ) ] ] = $value;
+
+					} // Has value.
+
+				} // Iterating other fields.
+
+				//
+				// Normalise value.
+				//
+				$document[ $this->mMatchTable[ strtolower( "Value" ) ] ]
+					= ( $document[ $this->mMatchTable[ strtolower( "Precision" ) ] ] )
+					? (double)$document[ $this->mMatchTable[ strtolower( "Value" ) ] ]
+					: (int)$document[ $this->mMatchTable[ strtolower( "Value" ) ] ];
+
+				//
+				// Save document.
+				//
+				$document->Store();
+
+				//
+				// Progress.
+				//
+				if( ! --$counter )
+				{
+					$counter = $total;
+					echo( '.' );
+				}
+
+			} // Iterating lines.
+
+			//
+			// Get next.
+			//
+			$page++;
+			$url = self::kDHS_URL_DATA . "&page=$page&perpage=$lines";
+			$records = json_decode( file_get_contents( $url ), TRUE );
+			$count = ( array_key_exists( 'RecordCount', $records ) )
+				? $records[ 'RecordCount' ]
+				: $records[ 'Recordcount' ];
+
+		} // Found indicators.
+
+		//
+		// Progress.
+		//
+		echo( '.' );
+
+	} // InitData.
 
 
 
