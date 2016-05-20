@@ -48,6 +48,24 @@ elseif( kENGINE == "ARANGO" )
 class DHS
 {
 	/**
+	 * <h4>URL read retries.</h4>
+	 *
+	 * This constant holds the <i>number of times to retry an URL</i>.
+	 *
+	 * @var int
+	 */
+	const kRETRIES = 10;
+
+	/**
+	 * <h4>URL read retries interval.</h4>
+	 *
+	 * This constant holds the <i>number of seconds between URL retries</i>.
+	 *
+	 * @var int
+	 */
+	const kRETRIES_INTERVAL = 10;
+
+	/**
 	 * <h4>DHS namespace key.</h4>
 	 *
 	 * This constant holds the <i>DHS namespace key</i>.
@@ -94,7 +112,7 @@ class DHS
 	 * @var string
 	 */
 	const kDHS_URL_DATA =
-		'http://api.dhsprogram.com/rest/dhs/data?f=json';
+		'http://api.dhsprogram.com/rest/dhs/data/';
 
 	/**
 	 * <h4>DHS country codes URL.</h4>
@@ -414,11 +432,20 @@ class DHS
 		$descriptor = $descriptors->BuildDocumentHandle( $indicator );
 
 		//
-		// Load country codes.
+		// Read country codes.
 		//
-		$countries =
-			json_decode( file_get_contents( self::kDHS_URL_COUNTRY_CODES ), TRUE )
-			[ 'Data' ];
+		$retries = self::kRETRIES;
+		while( $retries-- )
+		{
+			$countries =
+				json_decode( file_get_contents( self::kDHS_URL_COUNTRY_CODES ), TRUE )
+				[ 'Data' ];
+			if( $countries === FALSE )
+				sleep( self::kRETRIES_INTERVAL );
+			else
+				break;															// =>
+
+		} // Trying URL.
 
 		//
 		// Iterate codes.
@@ -647,11 +674,20 @@ class DHS
 		$descriptor = $descriptors->BuildDocumentHandle( $indicator );
 
 		//
-		// Load country codes.
+		// Read survey characteristics.
 		//
-		$list =
-			json_decode( file_get_contents( self::kDHS_URL_SURVEY_CHARACTERISTICS ), TRUE )
-			[ 'Data' ];
+		$retries = self::kRETRIES;
+		while( $retries-- )
+		{
+			$list =
+				json_decode( file_get_contents( self::kDHS_URL_SURVEY_CHARACTERISTICS ), TRUE )
+				[ 'Data' ];
+			if( $list === FALSE )
+				sleep( self::kRETRIES_INTERVAL );
+			else
+				break;															// =>
+
+		} // Trying URL.
 
 		//
 		// Iterate codes.
@@ -724,11 +760,20 @@ class DHS
 		$descriptor = $descriptors->BuildDocumentHandle( $indicator );
 
 		//
-		// Load country codes.
+		// Read tags.
 		//
-		$list =
-			json_decode( file_get_contents( self::kDHS_URL_TAGS ), TRUE )
-			[ 'Data' ];
+		$retries = self::kRETRIES;
+		while( $retries-- )
+		{
+			$list =
+				json_decode( file_get_contents( self::kDHS_URL_TAGS ), TRUE )
+				[ 'Data' ];
+			if( $list === FALSE )
+				sleep( self::kRETRIES_INTERVAL );
+			else
+				break;															// =>
+
+		} // Trying URL.
 
 		//
 		// Iterate codes.
@@ -784,17 +829,30 @@ class DHS
 		// Init local storage.
 		//
 		$descriptors = $this->mDatabase->NewDescriptorsCollection();
-
-		//
-		// Load indicators.
-		//
 		$page = 1;
 		$lines = 100;
 		$url = self::kDHS_URL_INDICATORS . "&page=$page&perpage=$lines";
-		$records = json_decode( file_get_contents( $url ), TRUE );
+
+		//
+		// Read indicators.
+		//
+		$retries = self::kRETRIES;
+		while( $retries-- )
+		{
+			$records = json_decode( file_get_contents( $url ), TRUE );
+			if( $records === FALSE )
+				sleep( self::kRETRIES_INTERVAL );
+			else
+				break;															// =>
+
+		} // Trying URL.
+
+		//
+		// Iterate indicators.
+		//
 		$count = $records[ 'RecordCount' ];
 		$counter = $total = ceil( $count/11 );
-		while( $count )
+		while( count( $records[ 'Data' ] ) )
 		{
 			//
 			// Get data reference.
@@ -899,10 +957,16 @@ class DHS
 			//
 			$page++;
 			$url = self::kDHS_URL_INDICATORS . "&page=$page&perpage=$lines";
-			$records = json_decode( file_get_contents( $url ), TRUE );
-			$count = ( array_key_exists( 'RecordCount', $records ) )
-				? $records[ 'RecordCount' ]
-				: $records[ 'Recordcount' ];
+			$retries = self::kRETRIES;
+			while( $retries-- )
+			{
+				$records = json_decode( file_get_contents( $url ), TRUE );
+				if( $records === FALSE )
+					sleep( self::kRETRIES_INTERVAL );
+				else
+					break;															// =>
+
+			} // Trying URL.
 
 		} // Found indicators.
 
@@ -929,17 +993,27 @@ class DHS
 		// Init local storage.
 		//
 		$surveys = $this->mDatabase->NewSurveysCollection();
-
-		//
-		// Load surveys.
-		//
 		$page = 1;
 		$lines = 100;
 		$url = self::kDHS_URL_SURVEYS . "&page=$page&perpage=$lines";
-		$records = json_decode( file_get_contents( $url ), TRUE );
+
+		//
+		// Read surveys.
+		//
+		$retries = self::kRETRIES;
+		while( $retries-- )
+		{
+			$records = json_decode( file_get_contents( $url ), TRUE );
+			if( $records === FALSE )
+				sleep( self::kRETRIES_INTERVAL );
+			else
+				break;															// =>
+
+		} // Trying URL.
+
 		$count = $records[ 'RecordCount' ];
 		$counter = $total = ceil( $count/14 );
-		while( $count )
+		while( count( $records[ 'Data' ] ) )
 		{
 			//
 			// Get data reference.
@@ -1006,6 +1080,13 @@ class DHS
 					} // Has value.
 
 				} // Iterating other fields.
+				
+				//
+				// Load survey data.
+				//
+				$data_points = $this->loadSurveyData( $line[ 'SurveyId' ] );
+				if( count( $data_points ) )
+					$document[ kTAG_DATA ] = $data_points;
 
 				//
 				// Save document.
@@ -1028,10 +1109,16 @@ class DHS
 			//
 			$page++;
 			$url = self::kDHS_URL_SURVEYS . "&page=$page&perpage=$lines";
-			$records = json_decode( file_get_contents( $url ), TRUE );
-			$count = ( array_key_exists( 'RecordCount', $records ) )
-				? $records[ 'RecordCount' ]
-				: $records[ 'Recordcount' ];
+			$retries = self::kRETRIES;
+			while( $retries-- )
+			{
+				$records = json_decode( file_get_contents( $url ), TRUE );
+				if( $records === FALSE )
+					sleep( self::kRETRIES_INTERVAL );
+				else
+					break;															// =>
+
+			} // Trying URL.
 
 		} // Found indicators.
 
@@ -1058,17 +1145,27 @@ class DHS
 		// Init local storage.
 		//
 		$collection = $this->mDatabase->NewDataCollection();
-
-		//
-		// Load surveys.
-		//
 		$page = 1;
 		$lines = 100;
 		$url = self::kDHS_URL_DATA . "&page=$page&perpage=$lines";
-		$records = json_decode( file_get_contents( $url ), TRUE );
+
+		//
+		// Read data.
+		//
+		$retries = self::kRETRIES;
+		while( $retries-- )
+		{
+			$records = json_decode( file_get_contents( $url ), TRUE );
+			if( $records === FALSE )
+				sleep( self::kRETRIES_INTERVAL );
+			else
+				break;															// =>
+
+		} // Trying URL.
+
 		$count = $records[ 'RecordCount' ];
 		$counter = $total = ceil( $count/17 );
-		while( $count )
+		while( count( $records[ 'Data' ] ) )
 		{
 			//
 			// Get data reference.
@@ -1156,10 +1253,16 @@ class DHS
 			//
 			$page++;
 			$url = self::kDHS_URL_DATA . "&page=$page&perpage=$lines";
-			$records = json_decode( file_get_contents( $url ), TRUE );
-			$count = ( array_key_exists( 'RecordCount', $records ) )
-				? $records[ 'RecordCount' ]
-				: $records[ 'Recordcount' ];
+			$retries = self::kRETRIES;
+			while( $retries-- )
+			{
+				$records = json_decode( file_get_contents( $url ), TRUE );
+				if( $records === FALSE )
+					sleep( self::kRETRIES_INTERVAL );
+				else
+					break;															// =>
+
+			} // Trying URL.
 
 		} // Found indicators.
 
@@ -1169,6 +1272,189 @@ class DHS
 		echo( '.' );
 
 	} // InitData.
+
+
+
+/*=======================================================================================
+ *																						*
+ *					PROTECTED DATA DICTIONARY INITIALISATION INTERFACE					*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	loadSurveyData																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load survey data.</h4>
+	 *
+	 * This method will load the DHS survey data points, it will read all data points
+	 * related to the provided survey ID, load them into the survey and store them into
+	 * the data collection.
+	 *
+	 * @param string				$theSurvey			Survey ID.
+	 * @return array				The list of survey data points.
+	 */
+	public function loadSurveyData( $theSurvey )
+	{
+		//
+		// Init local storage.
+		//
+		$data_points = [];
+		$collection = $this->mDatabase->NewDataCollection();
+		$descriptors = $this->mDatabase->NewDescriptorsCollection();
+		$page = 1;
+		$lines = 100;
+		$url = self::kDHS_URL_DATA . "$theSurvey?f=json&page=$page&perpage=$lines";
+
+		//
+		// Read data.
+		//
+		$retries = self::kRETRIES;
+		while( $retries-- )
+		{
+			$records = json_decode( file_get_contents( $url ), TRUE );
+			if( $records === FALSE )
+				sleep( self::kRETRIES_INTERVAL );
+			else
+				break;															// =>
+
+		} // Trying URL.
+
+		//
+		// Iterate data.
+		//
+		while( count( $records[ 'Data' ] ) )
+		{
+			//
+			// Get data reference.
+			//
+			$data = & $records[ 'Data' ];
+
+			//
+			// Iterate lines.
+			//
+			foreach( $data as $line )
+			{
+				//
+				// Init descriptor.
+				//
+				$document = new \Milko\PHPLib\Document( $collection );
+
+				//
+				// Set identifiers.
+				//
+				$document[ $collection->KeyOffset() ]
+					= $line[ 'SurveyId' ] . ':' . $line[ 'DataId' ];
+
+				//
+				// Set other data.
+				//
+				$fields = [
+					'DataId', 'Value', 'Precision', 'DHS_CountryCode',
+					'SurveyYear', 'SurveyId', 'IndicatorId', 'IndicatorOrder',
+					'CharacteristicId','CharacteristicOrder', 'CharacteristicCategory',
+					'CharacteristicLabel', 'ByVariableId', 'ByVariableLabel',
+					'IsTotal', 'IsPreferred', 'SDRID', 'RegionId', 'SurveyYearLabel',
+					'SurveyType', 'DenominatorWeighted', 'DenominatorUnweighted',
+					'CILow', 'CIHigh'
+				];
+				foreach( $fields as $field )
+				{
+					//
+					// Skip empty data.
+					//
+					if( strlen( $value = trim( $line[ $field ] ) ) )
+					{
+						switch( strtolower( $field ) )
+						{
+							case strtolower( 'DHS_CountryCode' ):
+								$value =
+									self::kDHS_NAMESPACE . ':' . $field . ':' . $value;
+								break;
+						}
+
+						//
+						// Set value.
+						//
+						$document[ $this->mMatchTable[ strtolower( $field ) ] ] = $value;
+
+					} // Has value.
+
+				} // Iterating other fields.
+
+				//
+				// Normalise value.
+				//
+				$document[ $this->mMatchTable[ strtolower( "Value" ) ] ]
+					= ( $document[ $this->mMatchTable[ strtolower( "Precision" ) ] ] )
+					? (double)$document[ $this->mMatchTable[ strtolower( "Value" ) ] ]
+					: (int)$document[ $this->mMatchTable[ strtolower( "Value" ) ] ];
+
+				//
+				// Save document.
+				//
+				$document->Store();
+
+				//
+				// Init data point structure.
+				//
+				$index = count( $data_points );
+				$data_points[ $index ] = [];
+				$point = & $data_points[ $index ];
+
+				//
+				// Add survey data.
+				//
+				$descr = self::kDHS_NAMESPACE . ':' . $line[ 'IndicatorId' ];
+				$descriptor = \Milko\PHPLib\Descriptor::GetByGID( $descriptors, $descr );
+				if( ! count( $descriptor ) )
+					throw new RuntimeException(
+						"Descriptor [$descr] not found." );						// !@! ==>
+				$point[ $descriptor[ 0 ][ $descriptors->KeyOffset() ] ]
+					= $document[ $this->mMatchTable[ strtolower( "Value" ) ] ];
+				$point[ $this->mMatchTable[ strtolower( "Value" ) ] ]
+					= (string)$line[ 'Value' ];
+				$fields = [
+					'CharacteristicId', 'CharacteristicCategory', 'IsTotal', 'IsPreferred',
+					'SDRID', 'RegionId', 'DenominatorWeighted', 'DenominatorUnweighted',
+					'CILow', 'CIHigh'
+				];
+				foreach( $fields as $field )
+				{
+					if( strlen( trim( $line[ $field ] ) ) )
+						$point[ $this->mMatchTable[ strtolower( $field ) ] ]
+							= $document[ $this->mMatchTable[ strtolower( $field ) ] ];
+				}
+
+			} // Iterating lines.
+
+			//
+			// Get next.
+			//
+			$page++;
+			$url = self::kDHS_URL_DATA . "$theSurvey?f=json&page=$page&perpage=$lines";
+			//
+			// Read data.
+			//
+			$retries = self::kRETRIES;
+			while( $retries-- )
+			{
+				$records = json_decode( file_get_contents( $url ), TRUE );
+				if( $records === FALSE )
+					sleep( self::kRETRIES_INTERVAL );
+				else
+					break;															// =>
+
+			} // Trying URL.
+
+		} // Found indicators.
+
+		return $data_points;														// ==>
+
+	} // loadSurveyData.
 
 
 

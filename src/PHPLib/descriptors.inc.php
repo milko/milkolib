@@ -275,5 +275,19 @@ const kTAG_NODE_REF			= ':node-ref';
  */
 const kTAG_NODE_KIND		= ':node-kind';
 
+/*=======================================================================================
+ *	DATA PROPERTIES																		*
+ *======================================================================================*/
+
+/**
+ * <h4>Data structure.</h4><p />
+ *
+ * The property holds an array of data structures.
+ *
+ * Type: <tt>{@link kTYPE_STRUCT}</tt>.
+ * Kind: <tt>{@link kKIND_LIST}</tt>
+ */
+const kTAG_DATA			= ':data';
+
 
 ?>

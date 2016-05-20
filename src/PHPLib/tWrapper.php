@@ -1961,6 +1961,20 @@ trait tWrapper
 			$theTypes, kPREDICATE_TYPE_OF, $src, $dst );
 		$pred->PrepareInsert();
 		$theTypes->Insert( $pred->toArray() );
+		//
+		// kTAG_DATA
+		//
+		$desc = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'data', kTAG_SYMBOL => 'kTAG_DATA',
+				kTAG_DATA_TYPE => kTYPE_STRUCT,
+				kTAG_DATA_KIND => [ kKIND_LIST ],
+				kTAG_NAME => [ 'en' => 'Data' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds an array of data structures.' ] ]
+		);
+		$desc[ $theCollection->KeyOffset() ] = $desc[ kTAG_GID ];
+		$desc->PrepareInsert();
+		$theCollection->Insert( $desc->toArray() );
 
 	} // initDescriptors.
 

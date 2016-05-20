@@ -1271,7 +1271,7 @@ class Document extends Container
 			//
 			// Cast lists.
 			//
-			if( $theOffsets[ $theKey ][ kTAG_DATA_KIND ] == kKIND_LIST )
+			if( in_array( kKIND_LIST, $theOffsets[ $theKey ][ kTAG_DATA_KIND ] ) )
 			{
 				//
 				// Cast to array.
@@ -1287,11 +1287,22 @@ class Document extends Container
 				$element = & $theData[ $theKey ];
 
 				//
+				// Validate structures list.
+				//
+				if( $theOffsets[ $theKey ][ kTAG_DATA_TYPE ] == kTYPE_STRUCT )
+				{
+					foreach( $element as $key => $value )
+						$this->doValidate( $element[ $key ], $theOffsets );
+
+				} // List of structures.
+
+				//
 				// Validate array elements.
 				//
-				foreach( $element as $key => $value )
-					$this->doValidateType(
-						$theKey, $element[ $key ], $theOffsets, $stored );
+				else
+					foreach( $element as $key => $value )
+						$this->doValidateType(
+							$theKey, $element[ $key ], $theOffsets, $stored );
 
 			} // List.
 

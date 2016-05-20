@@ -143,9 +143,9 @@ echo( " Done.\n" );
 //
 // Initialise DHS data.
 //
-echo( "- Initialising DHS data: " );
-$dhs->InitData();
-echo( " Done.\n" );
+//echo( "- Initialising DHS data: " );
+//$dhs->InitData();
+//echo( " Done.\n" );
 
 
 ?>

@@ -385,6 +385,39 @@ class Descriptor extends Term
 
 /*=======================================================================================
  *																						*
+ *							STATIC IDENTIFICATION INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	GetByGID																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return a descriptor by global identifier.</h4>
+	 *
+	 * We overload this method to match directly the global identifier.
+	 *
+	 * @param Collection			$theCollection		Collection.
+	 * @param string				$theIdentifier		Global identifier.
+	 * @return Term					Term object or <tt>NULL</tt>.
+	 * @throws \RuntimeException
+	 *
+	 * @uses Collection::FindByKey()
+	 */
+	static function GetByGID( Collection $theCollection, $theIdentifier )
+	{
+		return $theCollection->FindByExample(
+			[ kTAG_GID => (string)$theIdentifier ] );								// ==>
+
+	} // GetByGID.
+
+
+
+/*=======================================================================================
+ *																						*
  *							PROTECTED VALIDATION INTERFACE								*
  *																						*
  *======================================================================================*/
