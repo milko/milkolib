@@ -18,7 +18,7 @@
  * Initialisation definition.
  */
 define( 'doINIT', TRUE );
-define( 'kENGINE', 'MONGO' );
+define( 'kENGINE', 'ARANGO' );
 
 /*
  * Global includes.

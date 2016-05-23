@@ -438,7 +438,7 @@ class DHS
 		while( $retries-- )
 		{
 			$countries =
-				json_decode( file_get_contents( self::kDHS_URL_COUNTRY_CODES ), TRUE )
+				json_decode( @file_get_contents( self::kDHS_URL_COUNTRY_CODES ), TRUE )
 				[ 'Data' ];
 			if( $countries === FALSE )
 				sleep( self::kRETRIES_INTERVAL );
@@ -680,7 +680,7 @@ class DHS
 		while( $retries-- )
 		{
 			$list =
-				json_decode( file_get_contents( self::kDHS_URL_SURVEY_CHARACTERISTICS ), TRUE )
+				json_decode( @file_get_contents( self::kDHS_URL_SURVEY_CHARACTERISTICS ), TRUE )
 				[ 'Data' ];
 			if( $list === FALSE )
 				sleep( self::kRETRIES_INTERVAL );
@@ -766,7 +766,7 @@ class DHS
 		while( $retries-- )
 		{
 			$list =
-				json_decode( file_get_contents( self::kDHS_URL_TAGS ), TRUE )
+				json_decode( @file_get_contents( self::kDHS_URL_TAGS ), TRUE )
 				[ 'Data' ];
 			if( $list === FALSE )
 				sleep( self::kRETRIES_INTERVAL );
@@ -839,7 +839,7 @@ class DHS
 		$retries = self::kRETRIES;
 		while( $retries-- )
 		{
-			$records = json_decode( file_get_contents( $url ), TRUE );
+			$records = json_decode( @file_get_contents( $url ), TRUE );
 			if( $records === FALSE )
 				sleep( self::kRETRIES_INTERVAL );
 			else
@@ -960,7 +960,7 @@ class DHS
 			$retries = self::kRETRIES;
 			while( $retries-- )
 			{
-				$records = json_decode( file_get_contents( $url ), TRUE );
+				$records = json_decode( @file_get_contents( $url ), TRUE );
 				if( $records === FALSE )
 					sleep( self::kRETRIES_INTERVAL );
 				else
@@ -1003,7 +1003,7 @@ class DHS
 		$retries = self::kRETRIES;
 		while( $retries-- )
 		{
-			$records = json_decode( file_get_contents( $url ), TRUE );
+			$records = json_decode( @file_get_contents( $url ), TRUE );
 			if( $records === FALSE )
 				sleep( self::kRETRIES_INTERVAL );
 			else
@@ -1112,7 +1112,7 @@ class DHS
 			$retries = self::kRETRIES;
 			while( $retries-- )
 			{
-				$records = json_decode( file_get_contents( $url ), TRUE );
+				$records = json_decode( @file_get_contents( $url ), TRUE );
 				if( $records === FALSE )
 					sleep( self::kRETRIES_INTERVAL );
 				else
@@ -1155,7 +1155,7 @@ class DHS
 		$retries = self::kRETRIES;
 		while( $retries-- )
 		{
-			$records = json_decode( file_get_contents( $url ), TRUE );
+			$records = json_decode( @file_get_contents( $url ), TRUE );
 			if( $records === FALSE )
 				sleep( self::kRETRIES_INTERVAL );
 			else
@@ -1256,7 +1256,7 @@ class DHS
 			$retries = self::kRETRIES;
 			while( $retries-- )
 			{
-				$records = json_decode( file_get_contents( $url ), TRUE );
+				$records = json_decode( @file_get_contents( $url ), TRUE );
 				if( $records === FALSE )
 					sleep( self::kRETRIES_INTERVAL );
 				else
@@ -1315,7 +1315,7 @@ class DHS
 		$retries = self::kRETRIES;
 		while( $retries-- )
 		{
-			$records = json_decode( file_get_contents( $url ), TRUE );
+			$records = json_decode( @file_get_contents( $url ), TRUE );
 			if( $records === FALSE )
 				sleep( self::kRETRIES_INTERVAL );
 			else
@@ -1442,7 +1442,7 @@ class DHS
 			$retries = self::kRETRIES;
 			while( $retries-- )
 			{
-				$records = json_decode( file_get_contents( $url ), TRUE );
+				$records = json_decode( @file_get_contents( $url ), TRUE );
 				if( $records === FALSE )
 					sleep( self::kRETRIES_INTERVAL );
 				else
