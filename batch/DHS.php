@@ -1084,9 +1084,9 @@ class DHS
 				//
 				// Load survey data.
 				//
-				$data_points = $this->loadSurveyData( $line[ 'SurveyId' ] );
-				if( count( $data_points ) )
-					$document[ kTAG_DATA ] = $data_points;
+//				$data_points = $this->loadSurveyData( $line[ 'SurveyId' ] );
+//				if( count( $data_points ) )
+//					$document[ kTAG_DATA ] = $data_points;
 
 				//
 				// Save document.
@@ -1135,9 +1135,9 @@ class DHS
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Initialise surveys.</h4>
+	 * <h4>Initialise survey data.</h4>
 	 *
-	 * This method will load the surveys.
+	 * This method will load the surveys data at sub-national level.
 	 */
 	public function InitData()
 	{
@@ -1146,8 +1146,8 @@ class DHS
 		//
 		$collection = $this->mDatabase->NewDataCollection();
 		$page = 1;
-		$lines = 100;
-		$url = self::kDHS_URL_DATA . "&page=$page&perpage=$lines";
+		$lines = 600;
+		$url = self::kDHS_URL_DATA . "subnational?f=json&page=$page&perpage=$lines";
 
 		//
 		// Read data.
@@ -1185,8 +1185,11 @@ class DHS
 				//
 				// Set identifiers.
 				//
-				$document[ $collection->KeyOffset() ]
-					= $line[ 'SurveyId' ] . ':' . $line[ 'DataId' ];
+				$document[ $collection->KeyOffset() ] = (int)$line[ 'DataId' ];
+//				$document[ $collection->KeyOffset() ]
+//					= $line[ 'SurveyId' ] . ':'
+//					. $line[ 'RegionId' ] . ':'
+//					. $line[ 'DataId' ];
 
 				//
 				// Set other data.
@@ -1252,7 +1255,7 @@ class DHS
 			// Get next.
 			//
 			$page++;
-			$url = self::kDHS_URL_DATA . "&page=$page&perpage=$lines";
+			$url = self::kDHS_URL_DATA . "subnational?f=json&page=$page&perpage=$lines";
 			$retries = self::kRETRIES;
 			while( $retries-- )
 			{

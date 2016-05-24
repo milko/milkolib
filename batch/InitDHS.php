@@ -18,7 +18,7 @@
  * Initialisation definition.
  */
 define( 'doINIT', TRUE );
-define( 'kENGINE', 'ARANGO' );
+define( 'kENGINE', 'MONGO' );
 
 /*
  * Global includes.
@@ -143,9 +143,9 @@ echo( " Done.\n" );
 //
 // Initialise DHS data.
 //
-//echo( "- Initialising DHS data: " );
-//$dhs->InitData();
-//echo( " Done.\n" );
+echo( "- Initialising DHS data: " );
+$dhs->InitData();
+echo( " Done.\n" );
 
 
 ?>
