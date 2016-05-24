@@ -1274,6 +1274,118 @@ class DHS
 	} // InitData.
 
 
+	/*===================================================================================
+	 *	GetDistinct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get distinct values.</h4>
+	 *
+	 * This method will display the distinct values of a set of descriptors, it should be
+	 * called once all data has been loaded.
+	 *
+	 * @return array				List of distinct values.
+	 */
+	public function GetDistinct()
+	{
+		//
+		// Init local storage.
+		//
+		$collection = $this->mDatabase->NewDataCollection();
+		$descriptors = $this->mDatabase->NewDescriptorsCollection();
+		$skip = 0;
+		$lines = 1000;
+
+		//
+		// Init distinct values.
+		//
+		$descr_list = [ 'CharacteristicId', 'CharacteristicCategory',
+						'CharacteristicLabel', 'ByVariableLabel',
+						'RegionId', 'SurveyType' ];
+
+		//
+		// Get descriptor offsets.
+		//
+		$offsets = [];
+		foreach( $descr_list as $descriptor )
+		{
+			$key = self::kDHS_NAMESPACE . ':' . $descriptor;
+			$document = \Milko\PHPLib\Descriptor::GetByGID( $descriptors, $key );
+			if( ! $document )
+				throw new RuntimeException( "Unknown offset [$descriptor]." );	// !@! ==>
+			$offsets[ $document[ 0 ][ $descriptors->KeyOffset() ] ]
+				= [ "Descriptor" => $descriptor,
+					"Distinct" => [] ];
+		}
+
+		//
+		// Read data.
+		//
+		$count = $collection->Count();
+		$cursor = $collection->FindByExample(
+			[], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY,
+				  kTOKEN_OPT_SKIP => $skip,
+				  kTOKEN_OPT_LIMIT => $lines ] );
+		$counter = $total = ceil( $count/18 );
+		while( count( $cursor ) )
+		{
+			//
+			// Iterate page.
+			//
+			foreach( $cursor as $line )
+			{
+				//
+				// Iterate offsets.
+				//
+				foreach( $offsets as $offset => $data )
+				{
+					//
+					// Check offset.
+					//
+					if( array_key_exists( $offset, $line ) )
+					{
+						//
+						// Add distinct.
+						//
+						if( ! in_array( $line[ $offset ], $data[ "Distinct" ] ) )
+							$offsets[ $offset ][ "Distinct" ][] = $line[ $offset ];
+
+					} // Has offset.
+
+				} // Iterating offsets.
+
+				//
+				// Progress.
+				//
+				if( ! --$counter )
+				{
+					$counter = $total;
+					echo( '.' );
+				}
+
+			} // Iterating page.
+
+			//
+			// Next page.
+			//
+			$skip += $lines;
+			$cursor = $collection->FindByExample(
+				[], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY,
+					  kTOKEN_OPT_SKIP => $skip,
+					  kTOKEN_OPT_LIMIT => $lines ] );
+
+		} // Found records.
+
+		//
+		// Progress.
+		//
+		echo( '.' );
+
+		return $offsets;															// ==>
+
+	} // GetDistinct.
+
+
 
 /*=======================================================================================
  *																						*
