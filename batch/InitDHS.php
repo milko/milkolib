@@ -73,56 +73,56 @@ echo( "************************************************************\n" );
 //
 // Initialise DHS data dictionary.
 //
-echo( "- Initialising DHS data dictionary: ...... " );
+echo( "- Initialising DHS data dictionary: .................. " );
 $dhs = new DHS( doINIT );
 echo( "Done.\n" );
 
 //
 // Initialise DHS namespaces.
 //
-echo( "- Initialising DHS namespaces: ........... " );
+echo( "- Initialising DHS namespaces: ....................... " );
 $dhs->InitNamespaces();
 echo( "Done.\n" );
 
 //
 // Initialise DHS descriptors.
 //
-echo( "- Initialising DHS descriptors: .......... " );
+echo( "- Initialising DHS descriptors: ...................... " );
 $dhs->InitDescriptors();
 echo( "Done.\n" );
 
 //
 // Initialise DHS countries.
 //
-echo( "- Initialising DHS countries: ............ " );
+echo( "- Initialising DHS countries: ........................ " );
 $dhs->InitCountries();
 echo( "Done.\n" );
 
 //
 // Initialise DHS measurement types.
 //
-echo( "- Initialising DHS measurement types: .... " );
+echo( "- Initialising DHS measurement types: ................ " );
 $dhs->InitMeasurementTypes();
 echo( "Done.\n" );
 
 //
 // Initialise DHS indicator types.
 //
-echo( "- Initialising DHS indicator types: ...... " );
+echo( "- Initialising DHS indicator types: .................. " );
 $dhs->InitIndicatorTypes();
 echo( "Done.\n" );
 
 //
 // Initialise DHS survey characteristics.
 //
-echo( "- Initialising DHS survey characteristics: " );
+echo( "- Initialising DHS survey characteristics: ........... " );
 $dhs->InitSurveyCharacteristics();
 echo( "Done.\n" );
 
 //
 // Initialise DHS tags.
 //
-echo( "- Initialising DHS tags: ................. " );
+echo( "- Initialising DHS tags: ............................. " );
 $dhs->InitTags();
 echo( "Done.\n" );
 
@@ -144,8 +144,11 @@ echo( " Done.\n" );
 // Initialise DHS data.
 //
 echo( "- Initialising DHS data: " );
-$dhs->InitData();
-echo( " Done.\n" );
+$retries = $dhs->InitData();
+if( $retries )
+	echo( " Done (retries: $retries).\n" );
+else
+	echo( " Done.\n" );
 
 
 ?>

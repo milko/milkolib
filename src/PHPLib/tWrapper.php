@@ -1962,6 +1962,39 @@ trait tWrapper
 		$pred->PrepareInsert();
 		$theTypes->Insert( $pred->toArray() );
 		//
+		// kTAG_DESCRIPTOR
+		//
+		$desc = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'descriptor', kTAG_SYMBOL => 'kTAG_DESCRIPTOR',
+				kTAG_DATA_TYPE => kTYPE_STRING,
+				kTAG_DATA_KIND => [ kKIND_DISCRETE ],
+				kTAG_NAME => [ 'en' => 'Descriptor' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the descriptor key or value offset, ' .
+					'it is used in records where the descriptor value has ' .
+					'other elements such as categories or other qualifiers.'] ]
+		);
+		$desc[ $theCollection->KeyOffset() ] = $desc[ kTAG_GID ];
+		$desc->PrepareInsert();
+		$theCollection->Insert( $desc->toArray() );
+		//
+		// kTAG_VALUE
+		//
+		$desc = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'value', kTAG_SYMBOL => 'kTAG_VALUE',
+				kTAG_DATA_TYPE => kTYPE_MIXED,
+				kTAG_DATA_KIND => [ kKIND_QUANTITATIVE ],
+				kTAG_NAME => [ 'en' => 'Value' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the descriptor value, ' .
+					'it is used in records where the descriptor value has ' .
+					'other elements such as categories or other qualifiers; ' .
+					'the value is assumed quantitative.'] ]
+		);
+		$desc[ $theCollection->KeyOffset() ] = $desc[ kTAG_GID ];
+		$desc->PrepareInsert();
+		$theCollection->Insert( $desc->toArray() );
+		//
 		// kTAG_DATA
 		//
 		$desc = new Descriptor( $theCollection, [ kTAG_NS => $ns,

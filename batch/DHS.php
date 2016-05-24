@@ -851,7 +851,7 @@ class DHS
 		// Iterate indicators.
 		//
 		$count = $records[ 'RecordCount' ];
-		$counter = $total = ceil( $count/11 );
+		$counter = $total = ceil( $count/23 );
 		while( count( $records[ 'Data' ] ) )
 		{
 			//
@@ -1012,7 +1012,7 @@ class DHS
 		} // Trying URL.
 
 		$count = $records[ 'RecordCount' ];
-		$counter = $total = ceil( $count/14 );
+		$counter = $total = ceil( $count/26 );
 		while( count( $records[ 'Data' ] ) )
 		{
 			//
@@ -1144,9 +1144,12 @@ class DHS
 		//
 		// Init local storage.
 		//
-		$collection = $this->mDatabase->NewDataCollection();
+		$match = [];
+		$errors = 0;
 		$page = 1;
 		$lines = 600;
+		$collection = $this->mDatabase->NewDataCollection();
+		$descriptors = $this->mDatabase->NewDescriptorsCollection();
 		$url = self::kDHS_URL_DATA . "subnational?f=json&page=$page&perpage=$lines";
 
 		//
@@ -1157,14 +1160,17 @@ class DHS
 		{
 			$records = json_decode( @file_get_contents( $url ), TRUE );
 			if( $records === FALSE )
+			{
 				sleep( self::kRETRIES_INTERVAL );
+				$errors++;
+			}
 			else
 				break;															// =>
 
 		} // Trying URL.
 
 		$count = $records[ 'RecordCount' ];
-		$counter = $total = ceil( $count/17 );
+		$counter = $total = ceil( $count/29 );
 		while( count( $records[ 'Data' ] ) )
 		{
 			//
@@ -1178,9 +1184,25 @@ class DHS
 			foreach( $data as $line )
 			{
 				//
-				// Init descriptor.
+				// Init descriptor document.
 				//
 				$document = new \Milko\PHPLib\Document( $collection );
+
+				//
+				// Get descriptor record.
+				//
+				$descr = self::kDHS_NAMESPACE . ':' . $line[ 'IndicatorId' ];
+				if( ! array_key_exists( $descr, $match ) )
+				{
+					$descriptor = \Milko\PHPLib\Descriptor::GetByGID( $descriptors, $descr );
+					if( ! count( $descriptor ) )
+						throw new RuntimeException(
+							"Descriptor [$descr] not found." );						// !@! ==>
+					$descriptor = $descriptor[ 0 ][ $descriptors->KeyOffset() ];
+					$match[ $descr ] = $descriptor;
+				}
+				else
+					$descriptor = $match[ $descr ];
 
 				//
 				// Set identifiers.
@@ -1190,6 +1212,24 @@ class DHS
 //					= $line[ 'SurveyId' ] . ':'
 //					. $line[ 'RegionId' ] . ':'
 //					. $line[ 'DataId' ];
+
+				//
+				// Set descriptor.
+				//
+				$document[ kTAG_DESCRIPTOR ] = $descriptor;
+
+				//
+				// Normalise value.
+				//
+				$document[ kTAG_VALUE ]
+					= ( $line[ 'Precision' ] )
+					? (double)$line[ 'Value' ]
+					: (int)$line[ 'Value' ];
+
+				//
+				// Set descriptor value.
+				//
+				$document[ $descriptor ] = $document[ kTAG_VALUE ];
 
 				//
 				// Set other data.
@@ -1213,27 +1253,24 @@ class DHS
 						switch( strtolower( $field ) )
 						{
 							case strtolower( 'DHS_CountryCode' ):
-								$value =
-									self::kDHS_NAMESPACE . ':' . $field . ':' . $value;
+								$document[ $this->mMatchTable[ strtolower( $field ) ] ]
+									= self::kDHS_NAMESPACE . ':' . $field . ':' . $value;
+								break;
+
+							case strtolower( 'Value' ):
+								$document[ $this->mMatchTable[ strtolower( $field ) ] ]
+									= (string)$value;
+								break;
+
+							default:
+								$document[ $this->mMatchTable[ strtolower( $field ) ] ]
+									= $value;
 								break;
 						}
-
-						//
-						// Set value.
-						//
-						$document[ $this->mMatchTable[ strtolower( $field ) ] ] = $value;
 
 					} // Has value.
 
 				} // Iterating other fields.
-
-				//
-				// Normalise value.
-				//
-				$document[ $this->mMatchTable[ strtolower( "Value" ) ] ]
-					= ( $document[ $this->mMatchTable[ strtolower( "Precision" ) ] ] )
-					? (double)$document[ $this->mMatchTable[ strtolower( "Value" ) ] ]
-					: (int)$document[ $this->mMatchTable[ strtolower( "Value" ) ] ];
 
 				//
 				// Save document.
@@ -1261,7 +1298,10 @@ class DHS
 			{
 				$records = json_decode( @file_get_contents( $url ), TRUE );
 				if( $records === FALSE )
+				{
 					sleep( self::kRETRIES_INTERVAL );
+					$errors++;
+				}
 				else
 					break;															// =>
 
@@ -1273,6 +1313,8 @@ class DHS
 		// Progress.
 		//
 		echo( '.' );
+
+		return $errors;																// ==>
 
 	} // InitData.
 

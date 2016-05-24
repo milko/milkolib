@@ -280,6 +280,28 @@ const kTAG_NODE_KIND		= ':node-kind';
  *======================================================================================*/
 
 /**
+ * <h4>Descriptor.</h4><p />
+ *
+ * The property holds the descriptor offset, it is used in records where the descriptor
+ * value is composed of many elements.
+ *
+ * Type: <tt>{@link kTYPE_STRING}</tt>.
+ * Kind: <tt>{@link kKIND_DISCRETE}</tt>
+ */
+const kTAG_DESCRIPTOR	= ':descriptor';
+
+/**
+ * <h4>Value.</h4><p />
+ *
+ * The property holds the descriptor value, it is used in records where the descriptor
+ * value is composed of many elements; the descriptor value is generally quantitative.
+ *
+ * Type: <tt>{@link kTYPE_MIXED}</tt>.
+ * Kind: <tt>{@link kKIND_QUANTITATIVE}</tt>
+ */
+const kTAG_VALUE		= ':value';
+
+/**
  * <h4>Data structure.</h4><p />
  *
  * The property holds an array of data structures.
