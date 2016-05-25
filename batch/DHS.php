@@ -992,9 +992,10 @@ class DHS
 		//
 		// Init local storage.
 		//
+		$errors = 0;
 		$surveys = $this->mDatabase->NewSurveysCollection();
 		$page = 1;
-		$lines = 100;
+		$lines = 10;
 		$url = self::kDHS_URL_SURVEYS . "&page=$page&perpage=$lines";
 
 		//
@@ -1005,7 +1006,10 @@ class DHS
 		{
 			$records = json_decode( @file_get_contents( $url ), TRUE );
 			if( $records === FALSE )
+			{
+				$errors++;
 				sleep( self::kRETRIES_INTERVAL );
+			}
 			else
 				break;															// =>
 
@@ -1084,9 +1088,7 @@ class DHS
 				//
 				// Load survey data.
 				//
-//				$data_points = $this->loadSurveyData( $line[ 'SurveyId' ] );
-//				if( count( $data_points ) )
-//					$document[ kTAG_DATA ] = $data_points;
+				$errors += $this->loadSurveyData( $line[ 'SurveyId' ] );
 
 				//
 				// Save document.
@@ -1114,193 +1116,9 @@ class DHS
 			{
 				$records = json_decode( @file_get_contents( $url ), TRUE );
 				if( $records === FALSE )
-					sleep( self::kRETRIES_INTERVAL );
-				else
-					break;															// =>
-
-			} // Trying URL.
-
-		} // Found indicators.
-
-		//
-		// Progress.
-		//
-		echo( '.' );
-
-	} // InitSurveys.
-
-
-	/*===================================================================================
-	 *	InitData																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Initialise survey data.</h4>
-	 *
-	 * This method will load the surveys data at sub-national level.
-	 */
-	public function InitData()
-	{
-		//
-		// Init local storage.
-		//
-		$match = [];
-		$errors = 0;
-		$page = 1;
-		$lines = 600;
-		$collection = $this->mDatabase->NewDataCollection();
-		$descriptors = $this->mDatabase->NewDescriptorsCollection();
-		$url = self::kDHS_URL_DATA . "subnational?f=json&page=$page&perpage=$lines";
-
-		//
-		// Read data.
-		//
-		$retries = self::kRETRIES;
-		while( $retries-- )
-		{
-			$records = json_decode( @file_get_contents( $url ), TRUE );
-			if( $records === FALSE )
-			{
-				sleep( self::kRETRIES_INTERVAL );
-				$errors++;
-			}
-			else
-				break;															// =>
-
-		} // Trying URL.
-
-		$count = $records[ 'RecordCount' ];
-		$counter = $total = ceil( $count/29 );
-		while( count( $records[ 'Data' ] ) )
-		{
-			//
-			// Get data reference.
-			//
-			$data = & $records[ 'Data' ];
-
-			//
-			// Iterate lines.
-			//
-			foreach( $data as $line )
-			{
-				//
-				// Init descriptor document.
-				//
-				$document = new \Milko\PHPLib\Document( $collection );
-
-				//
-				// Get descriptor record.
-				//
-				$descr = self::kDHS_NAMESPACE . ':' . $line[ 'IndicatorId' ];
-				if( ! array_key_exists( $descr, $match ) )
 				{
-					$descriptor = \Milko\PHPLib\Descriptor::GetByGID( $descriptors, $descr );
-					if( ! count( $descriptor ) )
-						throw new RuntimeException(
-							"Descriptor [$descr] not found." );						// !@! ==>
-					$descriptor = $descriptor[ 0 ][ $descriptors->KeyOffset() ];
-					$match[ $descr ] = $descriptor;
-				}
-				else
-					$descriptor = $match[ $descr ];
-
-				//
-				// Set identifiers.
-				//
-				$document[ $collection->KeyOffset() ] = (int)$line[ 'DataId' ];
-//				$document[ $collection->KeyOffset() ]
-//					= $line[ 'SurveyId' ] . ':'
-//					. $line[ 'RegionId' ] . ':'
-//					. $line[ 'DataId' ];
-
-				//
-				// Set descriptor.
-				//
-				$document[ kTAG_DESCRIPTOR ] = $descriptor;
-
-				//
-				// Normalise value.
-				//
-				$document[ kTAG_VALUE ]
-					= ( $line[ 'Precision' ] )
-					? (double)$line[ 'Value' ]
-					: (int)$line[ 'Value' ];
-
-				//
-				// Set descriptor value.
-				//
-				$document[ $descriptor ] = $document[ kTAG_VALUE ];
-
-				//
-				// Set other data.
-				//
-				$fields = [
-					'DataId', 'Value', 'Precision', 'DHS_CountryCode',
-					'SurveyYear', 'SurveyId', 'IndicatorId', 'IndicatorOrder',
-					'CharacteristicId','CharacteristicOrder', 'CharacteristicCategory',
-					'CharacteristicLabel', 'ByVariableId', 'ByVariableLabel',
-					'IsTotal', 'IsPreferred', 'SDRID', 'RegionId', 'SurveyYearLabel',
-					'SurveyType', 'DenominatorWeighted', 'DenominatorUnweighted',
-					'CILow', 'CIHigh'
-				];
-				foreach( $fields as $field )
-				{
-					//
-					// Skip empty data.
-					//
-					if( strlen( $value = trim( $line[ $field ] ) ) )
-					{
-						switch( strtolower( $field ) )
-						{
-							case strtolower( 'DHS_CountryCode' ):
-								$document[ $this->mMatchTable[ strtolower( $field ) ] ]
-									= self::kDHS_NAMESPACE . ':' . $field . ':' . $value;
-								break;
-
-							case strtolower( 'Value' ):
-								$document[ $this->mMatchTable[ strtolower( $field ) ] ]
-									= (string)$value;
-								break;
-
-							default:
-								$document[ $this->mMatchTable[ strtolower( $field ) ] ]
-									= $value;
-								break;
-						}
-
-					} // Has value.
-
-				} // Iterating other fields.
-
-				//
-				// Save document.
-				//
-				$document->Store();
-
-				//
-				// Progress.
-				//
-				if( ! --$counter )
-				{
-					$counter = $total;
-					echo( '.' );
-				}
-
-			} // Iterating lines.
-
-			//
-			// Get next.
-			//
-			$page++;
-			$url = self::kDHS_URL_DATA . "subnational?f=json&page=$page&perpage=$lines";
-			$retries = self::kRETRIES;
-			while( $retries-- )
-			{
-				$records = json_decode( @file_get_contents( $url ), TRUE );
-				if( $records === FALSE )
-				{
-					sleep( self::kRETRIES_INTERVAL );
 					$errors++;
+					sleep( self::kRETRIES_INTERVAL );
 				}
 				else
 					break;															// =>
@@ -1316,119 +1134,7 @@ class DHS
 
 		return $errors;																// ==>
 
-	} // InitData.
-
-
-	/*===================================================================================
-	 *	GetDistinct																		*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get distinct values.</h4>
-	 *
-	 * This method will display the distinct values of a set of descriptors, it should be
-	 * called once all data has been loaded.
-	 *
-	 * @return array				List of distinct values.
-	 */
-	public function GetDistinct()
-	{
-		//
-		// Init local storage.
-		//
-		$collection = $this->mDatabase->NewDataCollection();
-		$descriptors = $this->mDatabase->NewDescriptorsCollection();
-		$skip = 0;
-		$lines = 1000;
-
-		//
-		// Init distinct values.
-		//
-		$descr_list = [ 'CharacteristicId', 'CharacteristicCategory',
-						'CharacteristicLabel', 'ByVariableLabel',
-						'RegionId', 'SurveyType' ];
-
-		//
-		// Get descriptor offsets.
-		//
-		$offsets = [];
-		foreach( $descr_list as $descriptor )
-		{
-			$key = self::kDHS_NAMESPACE . ':' . $descriptor;
-			$document = \Milko\PHPLib\Descriptor::GetByGID( $descriptors, $key );
-			if( ! $document )
-				throw new RuntimeException( "Unknown offset [$descriptor]." );	// !@! ==>
-			$offsets[ $document[ 0 ][ $descriptors->KeyOffset() ] ]
-				= [ "Descriptor" => $descriptor,
-					"Distinct" => [] ];
-		}
-
-		//
-		// Read data.
-		//
-		$count = $collection->Count();
-		$cursor = $collection->FindByExample(
-			[], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY,
-				  kTOKEN_OPT_SKIP => $skip,
-				  kTOKEN_OPT_LIMIT => $lines ] );
-		$counter = $total = ceil( $count/18 );
-		while( count( $cursor ) )
-		{
-			//
-			// Iterate page.
-			//
-			foreach( $cursor as $line )
-			{
-				//
-				// Iterate offsets.
-				//
-				foreach( $offsets as $offset => $data )
-				{
-					//
-					// Check offset.
-					//
-					if( array_key_exists( $offset, $line ) )
-					{
-						//
-						// Add distinct.
-						//
-						if( ! in_array( $line[ $offset ], $data[ "Distinct" ] ) )
-							$offsets[ $offset ][ "Distinct" ][] = $line[ $offset ];
-
-					} // Has offset.
-
-				} // Iterating offsets.
-
-				//
-				// Progress.
-				//
-				if( ! --$counter )
-				{
-					$counter = $total;
-					echo( '.' );
-				}
-
-			} // Iterating page.
-
-			//
-			// Next page.
-			//
-			$skip += $lines;
-			$cursor = $collection->FindByExample(
-				[], [ kTOKEN_OPT_FORMAT => kTOKEN_OPT_FORMAT_ARRAY,
-					  kTOKEN_OPT_SKIP => $skip,
-					  kTOKEN_OPT_LIMIT => $lines ] );
-
-		} // Found records.
-
-		//
-		// Progress.
-		//
-		echo( '.' );
-
-		return $offsets;															// ==>
-
-	} // GetDistinct.
+	} // InitSurveys.
 
 
 
@@ -1448,168 +1154,189 @@ class DHS
 	 * <h4>Load survey data.</h4>
 	 *
 	 * This method will load the DHS survey data points, it will read all data points
-	 * related to the provided survey ID, load them into the survey and store them into
-	 * the data collection.
+	 * related to the provided survey ID and store them into the data collection.
 	 *
 	 * @param string				$theSurvey			Survey ID.
-	 * @return array				The list of survey data points.
 	 */
 	public function loadSurveyData( $theSurvey )
 	{
 		//
 		// Init local storage.
 		//
-		$data_points = [];
+		$match = [];
+		$errors = 0;
+		$page = 1;
+		$lines = 400;
+		$retries = self::kRETRIES;
 		$collection = $this->mDatabase->NewDataCollection();
 		$descriptors = $this->mDatabase->NewDescriptorsCollection();
-		$page = 1;
-		$lines = 100;
-		$url = self::kDHS_URL_DATA . "$theSurvey?f=json&page=$page&perpage=$lines";
+		$breakdown = [ 'national', 'background' ];
 
 		//
-		// Read data.
+		// Iterate domains.
 		//
-		$retries = self::kRETRIES;
-		while( $retries-- )
+		foreach( $breakdown as $domain )
 		{
-			$records = json_decode( @file_get_contents( $url ), TRUE );
-			if( $records === FALSE )
-				sleep( self::kRETRIES_INTERVAL );
-			else
-				break;															// =>
-
-		} // Trying URL.
-
-		//
-		// Iterate data.
-		//
-		while( count( $records[ 'Data' ] ) )
-		{
-			//
-			// Get data reference.
-			//
-			$data = & $records[ 'Data' ];
-
-			//
-			// Iterate lines.
-			//
-			foreach( $data as $line )
-			{
-				//
-				// Init descriptor.
-				//
-				$document = new \Milko\PHPLib\Document( $collection );
-
-				//
-				// Set identifiers.
-				//
-				$document[ $collection->KeyOffset() ]
-					= $line[ 'SurveyId' ] . ':' . $line[ 'DataId' ];
-
-				//
-				// Set other data.
-				//
-				$fields = [
-					'DataId', 'Value', 'Precision', 'DHS_CountryCode',
-					'SurveyYear', 'SurveyId', 'IndicatorId', 'IndicatorOrder',
-					'CharacteristicId','CharacteristicOrder', 'CharacteristicCategory',
-					'CharacteristicLabel', 'ByVariableId', 'ByVariableLabel',
-					'IsTotal', 'IsPreferred', 'SDRID', 'RegionId', 'SurveyYearLabel',
-					'SurveyType', 'DenominatorWeighted', 'DenominatorUnweighted',
-					'CILow', 'CIHigh'
-				];
-				foreach( $fields as $field )
-				{
-					//
-					// Skip empty data.
-					//
-					if( strlen( $value = trim( $line[ $field ] ) ) )
-					{
-						switch( strtolower( $field ) )
-						{
-							case strtolower( 'DHS_CountryCode' ):
-								$value =
-									self::kDHS_NAMESPACE . ':' . $field . ':' . $value;
-								break;
-						}
-
-						//
-						// Set value.
-						//
-						$document[ $this->mMatchTable[ strtolower( $field ) ] ] = $value;
-
-					} // Has value.
-
-				} // Iterating other fields.
-
-				//
-				// Normalise value.
-				//
-				$document[ $this->mMatchTable[ strtolower( "Value" ) ] ]
-					= ( $document[ $this->mMatchTable[ strtolower( "Precision" ) ] ] )
-					? (double)$document[ $this->mMatchTable[ strtolower( "Value" ) ] ]
-					: (int)$document[ $this->mMatchTable[ strtolower( "Value" ) ] ];
-
-				//
-				// Save document.
-				//
-				$document->Store();
-
-				//
-				// Init data point structure.
-				//
-				$index = count( $data_points );
-				$data_points[ $index ] = [];
-				$point = & $data_points[ $index ];
-
-				//
-				// Add survey data.
-				//
-				$descr = self::kDHS_NAMESPACE . ':' . $line[ 'IndicatorId' ];
-				$descriptor = \Milko\PHPLib\Descriptor::GetByGID( $descriptors, $descr );
-				if( ! count( $descriptor ) )
-					throw new RuntimeException(
-						"Descriptor [$descr] not found." );						// !@! ==>
-				$point[ $descriptor[ 0 ][ $descriptors->KeyOffset() ] ]
-					= $document[ $this->mMatchTable[ strtolower( "Value" ) ] ];
-				$point[ $this->mMatchTable[ strtolower( "Value" ) ] ]
-					= (string)$line[ 'Value' ];
-				$fields = [
-					'CharacteristicId', 'CharacteristicCategory', 'IsTotal', 'IsPreferred',
-					'SDRID', 'RegionId', 'DenominatorWeighted', 'DenominatorUnweighted',
-					'CILow', 'CIHigh'
-				];
-				foreach( $fields as $field )
-				{
-					if( strlen( trim( $line[ $field ] ) ) )
-						$point[ $this->mMatchTable[ strtolower( $field ) ] ]
-							= $document[ $this->mMatchTable[ strtolower( $field ) ] ];
-				}
-
-			} // Iterating lines.
-
-			//
-			// Get next.
-			//
-			$page++;
-			$url = self::kDHS_URL_DATA . "$theSurvey?f=json&page=$page&perpage=$lines";
 			//
 			// Read data.
 			//
-			$retries = self::kRETRIES;
+			$url = self::kDHS_URL_DATA
+				. "$theSurvey,$domain?f=json&page=$page&perpage=$lines";
 			while( $retries-- )
 			{
 				$records = json_decode( @file_get_contents( $url ), TRUE );
 				if( $records === FALSE )
+				{
+					$errors++;
 					sleep( self::kRETRIES_INTERVAL );
+				}
 				else
 					break;															// =>
 
 			} // Trying URL.
 
-		} // Found indicators.
+			//
+			// Iterate while there is data.
+			//
+			while( count( $records[ 'Data' ] ) )
+			{
+				//
+				// Get data reference.
+				//
+				$data = & $records[ 'Data' ];
 
-		return $data_points;														// ==>
+				//
+				// Iterate lines.
+				//
+				foreach( $data as $line )
+				{
+					//
+					// Init descriptor document.
+					//
+					$document = new \Milko\PHPLib\Document( $collection );
+
+					//
+					// Get descriptor record.
+					//
+					$descr = self::kDHS_NAMESPACE . ':' . $line[ 'IndicatorId' ];
+					if( ! array_key_exists( $descr, $match ) )
+					{
+						$descriptor =
+							\Milko\PHPLib\Descriptor::GetByGID( $descriptors, $descr );
+						if( ! count( $descriptor ) )
+							throw new RuntimeException(
+								"Descriptor [$descr] not found." );				// !@! ==>
+						$descriptor = $descriptor[ 0 ][ $descriptors->KeyOffset() ];
+						$match[ $descr ] = $descriptor;
+					}
+					else
+						$descriptor = $match[ $descr ];
+
+					//
+					// Set identifiers.
+					//
+//					$document[ $collection->KeyOffset() ] = (int)$line[ 'DataId' ];
+//					$document[ $collection->KeyOffset() ]
+//						= $line[ 'SurveyId' ] . ':'
+//						. $line[ 'RegionId' ] . ':'
+//						. $line[ 'DataId' ];
+
+					//
+					// Set descriptor.
+					//
+					$document[ kTAG_DESCRIPTOR ] = $descriptor;
+
+					//
+					// Normalise value.
+					//
+					$document[ kTAG_VALUE ]
+						= ( $line[ 'Precision' ] )
+						? (double)$line[ 'Value' ]
+						: (int)$line[ 'Value' ];
+
+					//
+					// Set descriptor value.
+					//
+					$document[ $descriptor ] = $document[ kTAG_VALUE ];
+
+					//
+					// Set descriptor breakdown.
+					//
+					$document[ kTAG_BREAKDOWN ] = $domain;
+
+					//
+					// Set other data.
+					//
+					$fields = [
+						'DataId', 'Value', 'Precision', 'DHS_CountryCode',
+						'SurveyYear', 'SurveyId', 'IndicatorId', 'IndicatorOrder',
+						'CharacteristicId','CharacteristicOrder', 'CharacteristicCategory',
+						'CharacteristicLabel', 'ByVariableId', 'ByVariableLabel',
+						'IsTotal', 'IsPreferred', 'SDRID', 'RegionId', 'SurveyYearLabel',
+						'SurveyType', 'DenominatorWeighted', 'DenominatorUnweighted',
+						'CILow', 'CIHigh'
+					];
+					foreach( $fields as $field )
+					{
+						//
+						// Skip empty data.
+						//
+						if( strlen( $value = trim( $line[ $field ] ) ) )
+						{
+							switch( strtolower( $field ) )
+							{
+								case strtolower( 'DHS_CountryCode' ):
+									$document[ $this->mMatchTable[ strtolower( $field ) ] ]
+										= self::kDHS_NAMESPACE . ':' . $field . ':' . $value;
+									break;
+
+								case strtolower( 'Value' ):
+									$document[ $this->mMatchTable[ strtolower( $field ) ] ]
+										= (string)$value;
+									break;
+
+								default:
+									$document[ $this->mMatchTable[ strtolower( $field ) ] ]
+										= $value;
+									break;
+							}
+
+						} // Has value.
+
+					} // Iterating other fields.
+
+					//
+					// Save document.
+					//
+					$document->Store();
+
+				} // Iterating lines.
+
+				//
+				// Get next.
+				//
+				$page++;
+				$url = self::kDHS_URL_DATA
+					. "$theSurvey,$domain?f=json&page=$page&perpage=$lines";
+				$retries = self::kRETRIES;
+				while( $retries-- )
+				{
+					$records = json_decode( @file_get_contents( $url ), TRUE );
+					if( $records === FALSE )
+					{
+						$errors++;
+						sleep( self::kRETRIES_INTERVAL );
+					}
+					else
+						break;												// =>
+
+				} // Trying URL.
+
+			} // There is data.
+
+		} // Iterating domains.
+
+		return $errors;																// ==>
 
 	} // loadSurveyData.
 

@@ -12,7 +12,7 @@
 //
 // Global definitions.
 //
-define( 'kENGINE', "ARANGO" );
+define( 'kENGINE', "MONGO" );
 
 //
 // Include local definitions.
@@ -27,6 +27,11 @@ elseif( kENGINE == "ARANGO" )
 // Include utility functions.
 //
 require_once( "functions.php" );
+
+//
+// Enable exception logging.
+//
+triagens\ArangoDb\Exception::enableLogging();
 
 //
 // Reference class.
@@ -61,31 +66,78 @@ $collection->Truncate();
 echo( "\n====================================================================================\n\n" );
 
 //
-// Set timestamp.
+// Add records.
 //
-echo( "Set timestamp:\n" );
-echo( '$result = $collection->NewTimestamp();' . "\n" );
-$result = $collection->NewTimestamp();
-var_dump( $result );
-
-echo( "\n" );
-
-//
-// Get timestamp.
-//
-echo( "Get timestamp:\n" );
-echo( '$result = $collection->GetTimestamp( $result );' . "\n" );
-$result = $collection->GetTimestamp( $result );
-var_dump( $result );
+echo( "Add records:\n" );
+$records = [
+	[ "color" => "red", "number" => 7 ],
+	[ "color" => "green", "number" => 6 ],
+	[ "color" => "yellow", "number" => 3 ],
+	[ "color" => "yellow", "number" => 5 ],
+	[ "color" => "blue", "number" => 8 ],
+	[ "color" => "black", "number" => 10 ] ];
+$result = $collection->InsertMany( $records );
+print_r( $records );
 
 echo( "\n====================================================================================\n\n" );
 
 //
-// Init wrapper.
+// Get distinct.
 //
-echo( "Init wrapper:\n" );
-echo( '$database->InitWrapper( TRUE );' . "\n" );
-$database->InitWrapper( TRUE );
+echo( "Get distinct:\n" );
+echo( '$result = $collection->Distinct( "color", FALSE );' . "\n" );
+$result = $collection->Distinct( "color", FALSE );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Get distinct with count.
+//
+echo( "Get distinct with count:\n" );
+echo( '$result = $collection->Distinct( "color", TRUE );' . "\n" );
+$result = $collection->Distinct( "color", TRUE );
+print_r( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Get distinct by query.
+//
+echo( "Get distinct by query:\n" );
+echo( '$result = $collection->DistinctByQuery( "color", [ "color" => "yellow" ], FALSE );' . "\n" );
+$result = $collection->DistinctByQuery( "color", [ "color" => "yellow" ], FALSE );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Get distinct by query with count.
+//
+echo( "Get distinct by query with count:\n" );
+echo( '$result = $collection->DistinctByQuery( "color", [ "color" => "yellow" ], TRUE );' . "\n" );
+$result = $collection->DistinctByQuery( "color", [ "color" => "yellow" ], TRUE );
+print_r( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Get distinct by example.
+//
+echo( "Get distinct by example:\n" );
+echo( '$result = $collection->DistinctByExample( "color", [ "color" => "yellow" ], FALSE );' . "\n" );
+$result = $collection->DistinctByExample( "color", [ "color" => "yellow" ], FALSE );
+print_r( $result );
+
+echo( "\n" );
+
+//
+// Get distinct by example with count.
+//
+echo( "Get distinct by example with count:\n" );
+echo( '$result = $collection->DistinctByExample( "color", [ "color" => "yellow" ], TRUE );' . "\n" );
+$result = $collection->DistinctByExample( "color", [ "color" => "yellow" ], TRUE );
+print_r( $result );
 
 
 ?>

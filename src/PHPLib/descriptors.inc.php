@@ -302,6 +302,17 @@ const kTAG_DESCRIPTOR	= ':descriptor';
 const kTAG_VALUE		= ':value';
 
 /**
+ * <h4>Breakdown.</h4><p />
+ *
+ * The property holds the descriptor breakdown category, it is used in records where the
+ * descriptor value is composed of many elements; the descriptor value is categorical.
+ *
+ * Type: <tt>{@link kTYPE_STRING}</tt>.
+ * Kind: <tt>{@link kKIND_CATEGORICAL}</tt>
+ */
+const kTAG_BREAKDOWN	= ':breakdown';
+
+/**
  * <h4>Data structure.</h4><p />
  *
  * The property holds an array of data structures.

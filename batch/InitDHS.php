@@ -137,14 +137,7 @@ echo( " Done.\n" );
 // Initialise DHS surveys.
 //
 echo( "- Initialising DHS surveys: " );
-$dhs->InitSurveys();
-echo( " Done.\n" );
-
-//
-// Initialise DHS data.
-//
-echo( "- Initialising DHS data: " );
-$retries = $dhs->InitData();
+$retries = $dhs->InitSurveys();
 if( $retries )
 	echo( " Done (retries: $retries).\n" );
 else

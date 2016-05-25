@@ -864,6 +864,133 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *								PUBLIC DISTINCT INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Distinct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property.</h4>
+	 *
+	 * We implement this method by using the {@link \MongoDB\Collection::distinct()} method,
+	 * if only distinct values are required, or call the {@link MapReduce()} method if
+	 * counts are requested.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 *
+	 * @uses MapReduce()
+	 * @uses \MongoDB\Collection::distinct()
+	 */
+	public function Distinct( $theOffset, $doCount = FALSE )
+	{
+		//
+		// Handle only distinct.
+		//
+		if( ! $doCount )
+			return $this->mConnection->distinct( $theOffset );						// ==>
+
+		//
+		// Aggregate.
+		//
+		$result =
+			$this->MapReduce( [
+				[ '$group' => [ '_id' => '$' . $theOffset,
+								'count' => [ '$sum' => 1 ] ] ] ] );
+
+		//
+		// Format result.
+		//
+		$list = [];
+		foreach( $result as $item )
+			$list[ $item[ '_id' ] ] = $item[ 'count' ];
+
+		return $list;																// ==>
+
+	} // Distinct.
+
+
+	/*===================================================================================
+	 *	DistinctByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property by query.</h4>
+	 *
+	 * We implement this method by using the {@link \MongoDB\Collection::distinct()} method,
+	 * if only distinct values are required, or call the {@link MapReduce()} method if
+	 * counts are requested.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 *
+	 * @uses MapReduce()
+	 * @uses \MongoDB\Collection::distinct()
+	 */
+	public function DistinctByQuery( $theOffset, $theFilter, $doCount = FALSE )
+	{
+		//
+		// Handle only distinct.
+		//
+		if( ! $doCount )
+			return $this->mConnection->distinct( $theOffset, $theFilter );			// ==>
+
+		//
+		// Aggregate.
+		//
+		$result =
+			$this->MapReduce( [
+				[ '$match' => $theFilter ],
+				[ '$group' => [ '_id' => '$' . $theOffset,
+								'count' => [ '$sum' => 1 ] ] ] ] );
+
+		//
+		// Format result.
+		//
+		$list = [];
+		foreach( $result as $item )
+			$list[ $item[ '_id' ] ] = $item[ 'count' ];
+
+		return $list;																// ==>
+
+	} // DistinctByQuery.
+
+
+	/*===================================================================================
+	 *	DistinctByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property by example.</h4>
+	 *
+	 * We implement this method by calling {@link DistinctByQuery()}, since the example
+	 * document represents a query.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param array					$theDocument		Example document as an array.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 *
+	 * @uses DistinctByQuery()
+	 */
+	public function DistinctByExample( $theOffset, array $theDocument, $doCount = FALSE )
+	{
+		return $this->DistinctByQuery( $theOffset, $theDocument, $doCount );		// ==>
+
+	} // DistinctByExample.
+
+
+
+/*=======================================================================================
+ *																						*
  *								PUBLIC COUNTING INTERFACE								*
  *																						*
  *======================================================================================*/

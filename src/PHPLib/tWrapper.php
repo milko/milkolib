@@ -1978,6 +1978,23 @@ trait tWrapper
 		$desc->PrepareInsert();
 		$theCollection->Insert( $desc->toArray() );
 		//
+		// kTAG_BREAKDOWN
+		//
+		$desc = new Descriptor( $theCollection, [ kTAG_NS => $ns,
+				kTAG_LID => 'breakdown', kTAG_SYMBOL => 'kTAG_BREAKDOWN',
+				kTAG_DATA_TYPE => kTYPE_STRING,
+				kTAG_DATA_KIND => [ kKIND_CATEGORICAL ],
+				kTAG_NAME => [ 'en' => 'Breakdown' ],
+				kTAG_DESCRIPTION => [ 'en' =>
+					'The property holds the descriptor breakdown category, ' .
+					'it is used in records where the descriptor value has ' .
+					'other elements such as categories or other qualifiers; ' .
+					'the value is categorical.'] ]
+		);
+		$desc[ $theCollection->KeyOffset() ] = $desc[ kTAG_GID ];
+		$desc->PrepareInsert();
+		$theCollection->Insert( $desc->toArray() );
+		//
 		// kTAG_VALUE
 		//
 		$desc = new Descriptor( $theCollection, [ kTAG_NS => $ns,

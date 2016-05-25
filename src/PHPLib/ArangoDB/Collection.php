@@ -1155,6 +1155,169 @@ class Collection extends \Milko\PHPLib\Collection
 
 /*=======================================================================================
  *																						*
+ *								PUBLIC DISTINCT INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Distinct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property.</h4>
+	 *
+	 * We implement this method by using the <tt>RETURN DISTINCT</tt> AQL statement.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 *
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 */
+	public function Distinct( $theOffset, $doCount = FALSE )
+	{
+		//
+		// Init query.
+		//
+	    $statement = ( $doCount )
+				   ? 'FOR r IN @@c COLLECT k = r.@f WITH COUNT INTO n RETURN{ k, n }'
+				   : 'FOR r IN @@c RETURN DISTINCT r.@f';
+		$filter = [
+			'query' => $statement,
+			'bindVars' => [ '@c' => $this->collectionName(),
+							'f' => $theOffset ] ];
+
+		//
+		// Execute statement.
+		//
+		$statement = new ArangoStatement( $this->mDatabase->Connection(), $filter );
+		$result = $statement->execute();
+
+		//
+		// Handle only values.
+		//
+		if( ! $doCount )
+			return $result->getAll();												// ==>
+
+		//
+		// Build results array.
+		//
+		$list = [];
+		foreach( $result as $item )
+		{
+			$data = $item->getAll();
+			$list[ $data[ 'k' ] ] = $data[ 'n' ];
+		}
+
+		return $list;																// ==>
+
+	} // Distinct.
+
+
+	/*===================================================================================
+	 *	DistinctByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property by query.</h4>
+	 *
+	 * We implement this method by using the {@link DistinctByExample()} method.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 *
+	 * @uses DistinctByExample()
+	 */
+	public function DistinctByQuery( $theOffset, $theFilter, $doCount = FALSE )
+	{
+		return $this->DistinctByExample( $theOffset, $theFilter, $doCount );		// ==>
+
+	} // DistinctByQuery.
+
+
+	/*===================================================================================
+	 *	DistinctByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property by example.</h4>
+	 *
+	 * We implement this method by using the <tt>RETURN DISTINCT</tt> AQL statement and
+	 * building an AQL filter from the provided example document.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param array					$theDocument		Example document as an array.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 *
+	 * @uses triagens\ArangoDb\Statement::execute()
+	 */
+	public function DistinctByExample( $theOffset, array $theDocument, $doCount = FALSE )
+	{
+		//
+		// Build statement.
+		//
+		$i = 0;
+		$filter = [];
+		$bind = [ '@c' => $this->collectionName(), 'f' => $theOffset ];
+		$statement = 'FOR r IN @@c ';
+		foreach( $theDocument as $key => $value )
+		{
+			$i++;
+			$filter[] = 'r.' . '`' . $key . '` == ' . "@v$i";
+			$bind[ "v$i" ] = $value;
+		}
+		if( count( $filter ) )
+		{
+			$filter = implode( ' AND ', $filter );
+			$statement .= "FILTER $filter";
+		}
+		if( $doCount )
+			$statement .= ' COLLECT k = r.@f WITH COUNT INTO n RETURN{ k, n }';
+		else
+			$statement .= ' RETURN DISTINCT r.@f';
+
+		//
+		// Init query.
+		//
+		$filter = [
+			'query' => $statement,
+			'bindVars' => $bind ];
+
+		//
+		// Execute statement.
+		//
+		$statement = new ArangoStatement( $this->mDatabase->Connection(), $filter );
+		$result = $statement->execute();
+
+		//
+		// Handle only values.
+		//
+		if( ! $doCount )
+			return $result->getAll();												// ==>
+
+		//
+		// Build results array.
+		//
+		$list = [];
+		foreach( $result as $item )
+		{
+			$data = $item->getAll();
+			$list[ $data[ 'k' ] ] = $data[ 'n' ];
+		}
+
+		return $list;																// ==>
+
+	} // DistinctByExample.
+
+
+
+/*=======================================================================================
+ *																						*
  *								PUBLIC COUNTING INTERFACE								*
  *																						*
  *======================================================================================*/

@@ -1432,6 +1432,93 @@ abstract class Collection
 
 /*=======================================================================================
  *																						*
+ *								PUBLIC DISTINCT INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	Distinct																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property.</h4>
+	 *
+	 * This method can be used to return all the distinct values of a property contained in
+	 * the collection, the method expects parameter that represents the property offset and
+	 * a boolean flag that determines whether to return the element count.
+	 *
+	 * If the element count flag is <tt>TRUE</tt>, the method will return an array indexed
+	 * by the distinct property values and with the count as value, if <tt>FALSE</tt>, the
+	 * method will return an array with the distint values.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 */
+	abstract public function Distinct( $theOffset, $doCount = FALSE );
+
+
+	/*===================================================================================
+	 *	DistinctByQuery																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property by query.</h4>
+	 *
+	 * This method can be used to return the distinct values of a property contained in the
+	 * collection matching the query provided in the database native format. The method
+	 * expects the property offset, the query filter and a boolean flag that determines
+	 * whether to return the element count.
+	 *
+	 * If the element count flag is <tt>TRUE</tt>, the method will return an array indexed
+	 * by the distinct property values and with the count as value, if <tt>FALSE</tt>, the
+	 * method will return an array with the distint values.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param mixed					$theFilter			The selection criteria.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 */
+	abstract public function DistinctByQuery( $theOffset, $theFilter, $doCount = FALSE );
+
+
+	/*===================================================================================
+	 *	DistinctByExample																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Return the distinct values of a property by example.</h4>
+	 *
+	 * This method can be used to return the distinct values of a property contained in the
+	 * collection matching the provided example document. The method expects the property
+	 * offset, the example document provided as an array and a boolean flag that determines
+	 * whether to return the element count.
+	 *
+	 * If the element count flag is <tt>TRUE</tt>, the method will return an array indexed
+	 * by the distinct property values and with the count as value, if <tt>FALSE</tt>, the
+	 * method will return an array with the distint values.
+	 *
+	 * This method must be implemented by derived concrete classes.
+	 *
+	 * @param string				$theOffset			The property offset.
+	 * @param array					$theDocument		Example document as an array.
+	 * @param boolean				$doCount			Return element counts.
+	 * @return array				The result set.
+	 */
+	abstract public function DistinctByExample( 	  $theOffset,
+												array $theDocument,
+													  $doCount = FALSE );
+
+
+
+/*=======================================================================================
+ *																						*
  *								PUBLIC COUNTING INTERFACE								*
  *																						*
  *======================================================================================*/

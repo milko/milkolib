@@ -52,6 +52,15 @@ foreach( $result as $record )
 	var_dump( $record[ '_id' ] );
 	var_dump( $record );
 }
+
+echo( "\n*===================================================================================\n" );
+
+$result = $collection->distinct( "data" );
+echo( gettype( $result ) . "\n" );
+foreach( $result as $record )
+{
+	var_dump( $record );
+}
 exit;
 
 echo( "\n*===================================================================================\n" );
