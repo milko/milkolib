@@ -1262,7 +1262,11 @@ class DHS
 					//
 					// Set descriptor breakdown.
 					//
-					$document[ kTAG_BREAKDOWN ] = $domain;
+					$document[ kTAG_BREAKDOWN ]
+						= ( strlen( trim( $line[ 'RegionId' ] ) )
+						 && (trim( $line[ 'CharacteristicCategory' ] ) == 'Region') )
+						? 'regional'
+						: $domain;
 
 					//
 					// Set other data.
