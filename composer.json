@@ -24,5 +24,8 @@
 	},
 	"require-dev": {
 		"apigen/apigen": "^4.1"
+	},
+	"require": {
+		"devster/ubench": "1.1.*-dev"
 	}
 }
