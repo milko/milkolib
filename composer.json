@@ -20,12 +20,10 @@
 	},
 	"require": {
 		"mongodb/mongodb": ">=1.0-stable",
-		"triagens/arangodb": ">=2.8-stable"
+		"triagens/arangodb": ">=2.8-stable",
+		"devster/ubench": ">=1.2-stable"
 	},
 	"require-dev": {
 		"apigen/apigen": "^4.1"
-	},
-	"require": {
-		"devster/ubench": "1.1.*-dev"
 	}
 }
