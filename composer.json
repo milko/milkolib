@@ -21,7 +21,8 @@
 	"require": {
 		"mongodb/mongodb": ">=1.0-stable",
 		"triagens/arangodb": ">=2.8-stable",
-		"devster/ubench": ">=1.2-stable"
+		"devster/ubench": ">=1.2-stable",
+		"phpoffice/phpexcel": ">=1.8.1-stable"
 	},
 	"require-dev": {
 		"apigen/apigen": "^4.1"
