@@ -73,13 +73,24 @@ $file_array = $file_object->getActiveSheet()->toArray( NULL, TRUE, TRUE, TRUE );
 //
 $client = new MongoDB\Client( "mongodb://localhost:27017" );
 $database = $client->selectDatabase( $db_name );
+
+//
+// Open household collection connection.
+//
 $collection = $database->selectCollection( 'household' );
 $collection->drop();
 
 //
+// Open household temporary collection connection.
+//
+$collection_temp = $database->selectCollection( 'TEMP_household' );
+$collection_temp->drop();
+
+//
 // Get rid of excel reader and data.
 //
-$file_object = $file_reader = NULL;
+unset( $file_object );
+unset( $file_reader );
 
 //
 // Inform.
@@ -116,8 +127,6 @@ for( $row = 4; $row < (count( $file_array ) - 3); $row++ )
 				$value = DateTime::createFromFormat( 'd-m-y', $value );
 				$value = $value->format( 'Ymd' );
 			}
-			else
-				$value = (int)$value;
 
 			//
 			// Set value.
@@ -139,7 +148,7 @@ for( $row = 4; $row < (count( $file_array ) - 3); $row++ )
 //
 // Write data.
 //
-$collection->insertMany( $records );
+$collection_temp->insertMany( $records );
 
 //
 // Inform.
@@ -150,5 +159,197 @@ echo( "* Duration:          " . $benchmark->getTime() . "\n" );
 echo( "* Memory usage:      " . $benchmark->getMemoryUsage() . "\n" );
 echo( "* Memory peak:       " . $benchmark->getMemoryPeak() . "\n" );
 echo( "************************************************************\n" );
+
+//
+// Get rid of records buffer.
+//
+unset( $records );
+
+//
+// Inform.
+//
+echo( "==> Checking variables:\n" );
+
+//
+// Normalise data types.
+//
+$types = [];
+foreach( $ddict as $variable )
+{
+	//
+	// Inform.
+	//
+	echo( "    [$variable]: " );
+
+	//
+	// Init loop storage.
+	//
+	$types[ $variable ] = 'int';
+
+	//
+	// Get distinct values.
+	//
+	$values = $collection_temp->distinct( $variable );
+	foreach( $values as $value )
+	{
+		//
+		// Handle string.
+		//
+		if( is_string( $value ) )
+		{
+			$types[ $variable ] = 'string';
+			break;															// =>
+		}
+
+		//
+		// Handle float.
+		//
+		else
+		{
+			//
+			// Determine decimal different from 0.
+			//
+			$tmp = explode( '.', (string)$value );
+			if( (count( $tmp) > 1)
+			 && ($tmp[ 1 ] != '0') )
+			{
+				$types[ $variable ] = 'double';
+				break;														// =>
+			}
+		}
+	}
+
+	//
+	// Inform.
+	//
+	echo( $types[ $variable ] . "\n" );
+}
+
+//
+// Inform.
+//
+echo( "==> Updating variables.\n" );
+
+//
+// Write final collection.
+//
+$records = [];
+$cursor = $collection_temp->find();
+foreach( $cursor as $record )
+{
+	//
+	// Convert to array.
+	//
+	$record = $record->getArrayCopy();
+
+	//
+	// Convert data.
+	//
+	foreach( $types as $variable => $type )
+	{
+		if( array_key_exists( $variable, $record ) )
+		{
+			switch( $type )
+			{
+				case 'int':
+					$record[ $variable ] = (int)$record[ $variable ];
+					break;
+
+				case 'double':
+					$record[ $variable ] = (double)$record[ $variable ];
+					break;
+
+				case 'string':
+					$record[ $variable ] = (string)$record[ $variable ];
+					break;
+			}
+		}
+	}
+
+	//
+	// Save record.
+	//
+	$records[] = $record;
+}
+
+//
+// Clear collection.
+//
+$collection_temp->drop();
+
+//
+// Inform.
+//
+echo( "==> Writing data in temp collection.\n" );
+
+//
+// Write data.
+//
+$collection_temp->insertMany( $records );
+
+//
+// Inform.
+//
+echo( "==> Creating final collection.\n" );
+
+//
+// Sort by COMMUNE, EQUIPE, GRAPPE and MENAGE.
+//
+$sort = [ 'COMMUNE' => 1, 'EQUIPE' => 1, 'GRAPPE' => 1, 'MENAGE' => 1 ];
+$cursor = $collection_temp->find( [], ['sort' => $sort ] );
+
+//
+// Iterate records.
+//
+$id = 1;
+$records = [];
+foreach( $cursor as $record )
+{
+	//
+	// Set record identifier.
+	//
+	$record[ '_id' ] = "h:$id";
+
+	//
+	// Set household identifier.
+	//
+	$record[ '@household_id' ] = $id;
+
+	//
+	// Set line identifier.
+	//
+	$tmp = [];
+	$tmp[] = $record[ 'COMMUNE' ];
+	$tmp[] = $record[ 'EQUIPE' ];
+	$tmp[] = $record[ 'GRAPPE' ];
+	$tmp[] = $record[ 'MENAGE' ];
+	$record[ 'uid' ] = implode( ':', $tmp );
+
+	//
+	// Save record.
+	//
+	$records[] = $record;
+
+	//
+	// Increment identifier.
+	//
+	$id++;
+}
+
+//
+// Write data.
+//
+$collection->insertMany( $records );
+
+//
+// Inform.
+//
+echo( "==> Dropping temporary collection.\n" );
+
+//
+// Clear collection.
+//
+$collection_temp->drop();
+
 
 ?>
