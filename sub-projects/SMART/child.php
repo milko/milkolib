@@ -1,14 +1,15 @@
 <?php
 
 /**
- * Load household dataset
+ * Load child dataset
  *
- * This script can be used to load a household dataset, it will open the provided excel
- * file, load the <tt>household</tt> collection with the data by adding a single variable,
- * <tt>@household_id</tt>, which will contain the unique household identifier.
+ * This script can be used to load a child dataset, it will open the provided excel
+ * file, load the <tt>child</tt> collection with the data by adding a single variable,
+ * <tt>@child_id</tt>, which will contain the unique child identifier.
  *
  * The identifier will be a sequence number determined by sorting the original dataset by
- * <tt>COMMUNE</tt>, <tt>EQUIPE</tt>, <tt>GRAPPE</tt> and <tt>MENAGE</tt>.
+ * <tt>COMMUNE</tt>, <tt>EQUIPE</tt>, <tt>GRAPPE</tt>, <tt>MENAGE</tt>, <tt>MERE</tt> and
+ * <tt>ENFANT</tt>.
  *
  * The file is expected to have variable names in the <tt>3rd</tt> row and data starting
  * from the <tt>4th</tt>.
@@ -22,7 +23,9 @@
  * 	<li><tt>$4</tt>: Administrative unit variable name.
  * 	<li><tt>$5</tt>: Team variable name.
  * 	<li><tt>$6</tt>: Cluster variable name.
- * 	<li><tt>$7</tt>: Unit identifier variable name.
+ * 	<li><tt>$7</tt>: Household identifier variable name.
+ * 	<li><tt>$8</tt>: mother identifier variable name.
+ * 	<li><tt>$9</tt>: Unit identifier variable name.
  * </ul>
  *
  *	@package	Batch
@@ -52,7 +55,7 @@ require_once(dirname(dirname(__DIR__)) . "/includes.local.php");
 //
 // Check arguments.
 //
-if( $argc < 8 )
+if( $argc < 10 )
 	exit
 	(
 		"Usage: php -f household.php " .
@@ -62,6 +65,8 @@ if( $argc < 8 )
 		"<administrative unit variable name> " .
 		"<team variable name> " .
 		"<cluster variable name>" .
+		"<household identifier variable name>" .
+		"<mother identifier variable name>" .
 		"<unit identifier variable name>" .
 		"\n"
 	);
@@ -71,7 +76,7 @@ if( $argc < 8 )
 //
 $file = new SplFileObject( $argv[ 1 ], "r" );
 if( (! $file->isFile())
- || (! $file->isWritable()) )
+	|| (! $file->isWritable()) )
 	exit( "Invalid file reference [$file].\n" );
 
 //
@@ -82,7 +87,9 @@ $date_name = $argv[ 3 ];
 $admin_name = $argv[ 4 ];
 $team_name = $argv[ 5 ];
 $cluster_name = $argv[ 6 ];
-$unit_name = $argv[ 7 ];
+$household_name = $argv[ 7 ];
+$mother_name = $argv[ 8 ];
+$unit_name = $argv[ 9 ];
 
 //
 // Create benchmark.
@@ -108,13 +115,13 @@ $database = $client->selectDatabase( $db_name );
 //
 // Open household collection connection.
 //
-$collection = $database->selectCollection( 'household' );
+$collection = $database->selectCollection( 'child' );
 $collection->drop();
 
 //
 // Open household temporary collection connection.
 //
-$collection_temp = $database->selectCollection( 'TEMP_household' );
+$collection_temp = $database->selectCollection( 'TEMP_child' );
 $collection_temp->drop();
 
 //
@@ -127,15 +134,17 @@ unset( $file_reader );
 // Inform.
 //
 echo( "\n************************************************************\n" );
-echo( "* File name:                    " . $file->getRealPath() . "\n" );
-echo( "* Number of rows:               " . (count( $file_array ) - 3) . "\n" );
-echo( "* Database:                     " . $collection->getDatabaseName() . "\n" );
-echo( "* Collection:                   " . $collection->getCollectionName() . "\n" );
-echo( "* Date variable:                $date_name\n" );
-echo( "* Administrative unit variable: $admin_name\n" );
-echo( "* Team unit variable:           $team_name\n" );
-echo( "* Cluster variable:             $cluster_name\n" );
-echo( "* Unit identifier variable:     $unit_name\n" );
+echo( "* File name:                     " . $file->getRealPath() . "\n" );
+echo( "* Number of rows:                " . (count( $file_array ) - 3) . "\n" );
+echo( "* Database:                      " . $collection->getDatabaseName() . "\n" );
+echo( "* Collection:                    " . $collection->getCollectionName() . "\n" );
+echo( "* Date variable:                 $date_name\n" );
+echo( "* Administrative unit variable:  $admin_name\n" );
+echo( "* Team unit variable:            $team_name\n" );
+echo( "* Cluster variable:              $cluster_name\n" );
+echo( "* Household identifier variable: $household_name\n" );
+echo( "* Mother identifier variable:    $mother_name\n" );
+echo( "* Unit identifier variable:      $unit_name\n" );
 echo( "************************************************************\n" );
 
 //
@@ -247,7 +256,7 @@ foreach( $ddict as $variable )
 			//
 			$tmp = explode( '.', (string)$value );
 			if( (count( $tmp) > 1)
-			 && ($tmp[ 1 ] != '0') )
+				&& ($tmp[ 1 ] != '0') )
 			{
 				$types[ $variable ] = 'double';
 				break;														// =>
@@ -329,9 +338,10 @@ $collection_temp->insertMany( $records );
 echo( "==> Creating final collection.\n" );
 
 //
-// Sort by COMMUNE, EQUIPE, GRAPPE and MENAGE.
+// Sort.
 //
-$sort = [ $admin_name => 1, $team_name => 1, $cluster_name => 1, $unit_name => 1 ];
+$sort = [ $admin_name => 1, $team_name => 1, $cluster_name => 1,
+		  $household_name => 1, $mother_name => 1, $unit_name => 1 ];
 $cursor = $collection_temp->find( [], ['sort' => $sort ] );
 
 //
@@ -344,7 +354,7 @@ foreach( $cursor as $record )
 	//
 	// Set household identifier.
 	//
-	$record[ '@household_id' ] = $id;
+	$record[ '@child_id' ] = $id;
 
 	//
 	// Set line identifier.
@@ -353,6 +363,8 @@ foreach( $cursor as $record )
 	$tmp[] = $record[ $admin_name ];
 	$tmp[] = $record[ $team_name ];
 	$tmp[] = $record[ $cluster_name ];
+	$tmp[] = $record[ $household_name ];
+	$tmp[] = $record[ $mother_name ];
 	$tmp[] = $record[ $unit_name ];
 	$record[ '_id' ] = implode( ':', $tmp );
 
