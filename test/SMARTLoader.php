@@ -26,23 +26,23 @@ require_once( kPATH_LIBRARY_ROOT . "/src/PHPLib/SMARTLoader.php" );
 //
 // Instantiate object.
 //
-echo( '$test = new SMARTLoader();' . "\n\n" );
+echo( '$test = new SMARTLoader();' . "\n" );
 $test = new SMARTLoader();
 
 //
 // Set household dataset.
 //
-echo( '$result = $test->SetHouseholdDataset( __DIR__ . "/SMART/HOUSEHOLD.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MENAGE" );' . "\n\n" );
+echo( '$result = $test->SetHouseholdDataset( __DIR__ . "/SMART/HOUSEHOLD.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MENAGE" );' . "\n" );
 $result = $test->SetHouseholdDataset( __DIR__ . "/SMART/HOUSEHOLD.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MENAGE" );
-print_r( $result );
 
 //
 // Load household dataset.
 //
 echo( '$result = $test->LoadHouseholdDataset();' . "\n" );
 $result = $test->LoadHouseholdDataset();
-print_r( $result );
-echo( "\n" );
+var_dump( $result );
+if( $test->HouseholdStatus() == SMARTLoader::kOFFSET_STATUS_ERROR )
+	print_r( $test->HouseholdDuplicates() );
 
 ?>
 
