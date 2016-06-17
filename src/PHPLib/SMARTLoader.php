@@ -191,7 +191,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_IDENT = 'cluster';
+	const kOFFSET_IDENT = 'ident';
 
 	/**
 	 * <h4>Dataset data dictionary.</h4>
@@ -232,6 +232,16 @@ class SMARTLoader extends Container
 	 * @var string
 	 */
 	const kOFFSET_DUPS = 'dups';
+
+	/**
+	 * <h4>Dataset required variables offset.</h4>
+	 *
+	 * This constant holds the <i>offset</i> that <i>contains the list of required
+	 * dataset variables</i>.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_REQUIRED = 'reqs';
 
 	/**
 	 * <h4>Dataset status offset.</h4>
@@ -281,6 +291,42 @@ class SMARTLoader extends Container
 	 * @var string
 	 */
 	const kOFFSET_STATUS_ERROR = 'error';
+
+	/**
+	 * <h4>Default date variable.</h4>
+	 *
+	 * This constant holds the default name for the dataset date.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_DEFAULT_DATE = '@date';
+
+	/**
+	 * <h4>Default location variable.</h4>
+	 *
+	 * This constant holds the default name for the dataset location.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_DEFAULT_LOCATION = '@location';
+
+	/**
+	 * <h4>Default team variable.</h4>
+	 *
+	 * This constant holds the default name for the dataset team.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_DEFAULT_TEAM = '@team';
+
+	/**
+	 * <h4>Default cluster variable.</h4>
+	 *
+	 * This constant holds the default name for the dataset cluster.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_DEFAULT_CLUSTER = '@cluster';
 
 	/**
 	 * <h4>Client connection.</h4>
@@ -354,6 +400,7 @@ class SMARTLoader extends Container
 	 * 	<li><tt>{@link kOFFSET_CLUSTER}</tt>: The cluster variable name (string).
 	 * 	<li><tt>{@link kOFFSET_IDENT}</tt>: The identifier variable name (string).
 	 * 	<li><tt>{@link kOFFSET_STATUS}</tt>: The processing status (string).
+	 * 	<li><tt>{@link kOFFSET_REQUIRED}</tt>: List of required variables (array).
 	 * 	<li><tt>{@link kOFFSET_DDICT}</tt>: The data dictionary (array).
 	 * 	<li><tt>{@link kOFFSET_DUPS}</tt>: The eventual duplicate records (array).
 	 * </ul>
@@ -381,6 +428,7 @@ class SMARTLoader extends Container
 	 * 		(string).
 	 * 	<li><tt>{@link kOFFSET_IDENT}</tt>: The identifier variable name (string).
 	 * 	<li><tt>{@link kOFFSET_STATUS}</tt>: The processing status (string).
+	 * 	<li><tt>{@link kOFFSET_REQUIRED}</tt>: List of required variables (array).
 	 * 	<li><tt>{@link kOFFSET_DDICT}</tt>: The data dictionary (array).
 	 * 	<li><tt>{@link kOFFSET_DUPS}</tt>: The eventual duplicate records (array).
 	 * </ul>
@@ -410,6 +458,7 @@ class SMARTLoader extends Container
 	 * 		(string).
 	 * 	<li><tt>{@link kOFFSET_IDENT}</tt>: The identifier variable name (string).
 	 * 	<li><tt>{@link kOFFSET_STATUS}</tt>: The processing status (string).
+	 * 	<li><tt>{@link kOFFSET_REQUIRED}</tt>: List of required variables (array).
 	 * 	<li><tt>{@link kOFFSET_DDICT}</tt>: The data dictionary (array).
 	 * 	<li><tt>{@link kOFFSET_DUPS}</tt>: The eventual duplicate records (array).
 	 * </ul>
@@ -678,11 +727,26 @@ class SMARTLoader extends Container
 										 string $theCluster,
 										 string $theIdentifier )
 	{
-		return
-			$this->mHouseholdInfo =
-				$this->setDataset(
-					$thePath, $theHeader, $theData, $theDate, $theLocation,
-					$theTeam, $theCluster, $theIdentifier );						// ==>
+		//
+		// Fill record.
+		//
+		$this->mHouseholdInfo =
+			$this->setDataset(
+				$thePath, $theHeader, $theData, $theDate, $theLocation,
+				$theTeam, $theCluster, $theIdentifier );
+
+		//
+		// Set required fields.
+		//
+		$this->mHouseholdInfo[ self::kOFFSET_REQUIRED ] = [
+			$this->mHouseholdInfo[ self::kOFFSET_DATE ],
+			$this->mHouseholdInfo[ self::kOFFSET_LOCATION ],
+			$this->mHouseholdInfo[ self::kOFFSET_TEAM ],
+			$this->mHouseholdInfo[ self::kOFFSET_CLUSTER ],
+			$this->mHouseholdInfo[ self::kOFFSET_IDENT ]
+		];
+
+		return $this->mHouseholdInfo;												// ==>
 
 	} // SetHouseholdDataset.
 
@@ -728,11 +792,27 @@ class SMARTLoader extends Container
 									  string $theIdentifier,
 									  string $theHousehold )
 	{
-		return
-			$this->mMotherInfo =
-				$this->setDataset(
-					$thePath, $theHeader, $theData, $theDate, $theLocation,
-					$theTeam, $theCluster, $theIdentifier, $theHousehold );			// ==>
+		//
+		// Fill record.
+		//
+		$this->mMotherInfo =
+			$this->setDataset(
+				$thePath, $theHeader, $theData, $theDate, $theLocation,
+				$theTeam, $theCluster, $theIdentifier, $theHousehold );
+
+		//
+		// Set required fields.
+		//
+		$this->mHouseholdInfo[ self::kOFFSET_REQUIRED ] = [
+			$this->mHouseholdInfo[ self::kOFFSET_DATE ],
+			$this->mHouseholdInfo[ self::kOFFSET_LOCATION ],
+			$this->mHouseholdInfo[ self::kOFFSET_TEAM ],
+			$this->mHouseholdInfo[ self::kOFFSET_CLUSTER ],
+			$this->mHouseholdInfo[ self::kOFFSET_IDENT ],
+			$this->mHouseholdInfo[ self::kOFFSET_IDENT_HOUSEHOLD ]
+		];
+
+		return $this->mMotherInfo;													// ==>
 
 	} // SetMotherDataset.
 
@@ -780,12 +860,29 @@ class SMARTLoader extends Container
 									 string $theHousehold,
 									 string $theMother )
 	{
-		return
-			$this->mChildInfo =
-				$this->setDataset(
-					$thePath, $theHeader, $theData, $theDate,
-					$theLocation, $theTeam, $theCluster,
-					$theIdentifier, $theHousehold, $theMother );					// ==>
+		//
+		// Fill record.
+		//
+		$this->mChildInfo =
+			$this->setDataset(
+				$thePath, $theHeader, $theData, $theDate,
+				$theLocation, $theTeam, $theCluster,
+				$theIdentifier, $theHousehold, $theMother );
+
+		//
+		// Set required fields.
+		//
+		$this->mHouseholdInfo[ self::kOFFSET_REQUIRED ] = [
+			$this->mHouseholdInfo[ self::kOFFSET_DATE ],
+			$this->mHouseholdInfo[ self::kOFFSET_LOCATION ],
+			$this->mHouseholdInfo[ self::kOFFSET_TEAM ],
+			$this->mHouseholdInfo[ self::kOFFSET_CLUSTER ],
+			$this->mHouseholdInfo[ self::kOFFSET_IDENT ],
+			$this->mHouseholdInfo[ self::kOFFSET_IDENT_HOUSEHOLD ],
+			$this->mHouseholdInfo[ self::kOFFSET_IDENT_MOTHER ]
+		];
+
+		return $this->mMotherInfo;													// ==>
 
 	} // SetChildDataset.
 
@@ -1484,6 +1581,69 @@ class SMARTLoader extends Container
 
 
 	/*===================================================================================
+	 *	HouseholdRequired																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get household required fields.</h4>
+	 *
+	 * This method can be used to retrieve the household required fields, if the dataset was
+	 * not yet set, the method will raise an exception.
+	 *
+	 * @return string
+	 *
+	 * @uses getDatasetRequired()
+	 */
+	public function HouseholdRequired()
+	{
+		return $this->getDatasetRequired( $this->mHouseholdInfo );					// ==>
+
+	} // HouseholdRequired.
+
+
+	/*===================================================================================
+	 *	MotherRequired																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get mother required fields.</h4>
+	 *
+	 * This method can be used to retrieve the mother required fields, if the dataset was
+	 * not yet set, the method will raise an exception.
+	 *
+	 * @return string
+	 *
+	 * @uses getDatasetRequired()
+	 */
+	public function MotherRequired()
+	{
+		return $this->getDatasetRequired( $this->mMotherInfo );						// ==>
+
+	} // MotherRequired.
+
+
+	/*===================================================================================
+	 *	ChildRequired																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get child required fields.</h4>
+	 *
+	 * This method can be used to retrieve the child required fields, if the dataset was not
+	 * yet set, the method will raise an exception.
+	 *
+	 * @return string
+	 *
+	 * @uses getDatasetRequired()
+	 */
+	public function ChildRequired()
+	{
+		return $this->getDatasetRequired( $this->mChildInfo );						// ==>
+
+	} // ChildRequired.
+
+
+	/*===================================================================================
 	 *	HouseholdDictionary																*
 	 *==================================================================================*/
 
@@ -1812,7 +1972,7 @@ class SMARTLoader extends Container
 		// Check file.
 		//
 		if( (! $file->isFile())
-			|| (! $file->isWritable()) )
+		 || (! $file->isWritable()) )
 			throw new InvalidArgumentException(
 				"Invalid file reference [$thePath]." );							// !@! ==>
 
@@ -2259,6 +2419,40 @@ class SMARTLoader extends Container
 
 
 	/*===================================================================================
+	 *	getDatasetRequired																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get dataset required variables.</h4>
+	 *
+	 * This method can be used by public accessor methods to retrieve the dataset required
+	 * variables list, if the dataset record was not yet set, the method will raise an
+	 * exception.
+	 *
+	 * The method expects a reference to the data member holding the dataset record.
+	 *
+	 * @param array				   &$theMember			Reference to dataset record.
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	protected function getDatasetRequired( &$theMember )
+	{
+		//
+		// Check dataset record member.
+		//
+		if( is_array( $theMember ) )
+			return $theMember[ self::kOFFSET_REQUIRED ];							// ==>
+
+		//
+		// Check parameter.
+		//
+		throw new RuntimeException(
+			"Dataset not yet defined." );										// !@! ==>
+
+	} // getDatasetRequired.
+
+
+	/*===================================================================================
 	 *	getDatasetDictionary															*
 	 *==================================================================================*/
 
@@ -2354,11 +2548,6 @@ class SMARTLoader extends Container
 												  array  $theData )
 	{
 		//
-		// Init local storage.
-		//
-		$records = [];
-
-		//
 		// Init collection.
 		//
 		$collection = $this->Database()->selectCollection( "temp_$theName" );
@@ -2406,27 +2595,53 @@ class SMARTLoader extends Container
 					//
 					// Set value.
 					//
-					$record[ $variable ] = $value;
+					switch( $variable )
+					{
+						case $theInfo[ self::kOFFSET_DATE ]:
+							$record[ self::kOFFSET_DEFAULT_DATE ] = $value;
+							break;
+
+						case $theInfo[ self::kOFFSET_LOCATION ]:
+							$record[ self::kOFFSET_LOCATION ] = $value;
+							break;
+
+						case $theInfo[ self::kOFFSET_TEAM ]:
+							$record[ self::kOFFSET_DEFAULT_TEAM ] = $value;
+							break;
+
+						case $theInfo[ self::kOFFSET_CLUSTER ]:
+							$record[ self::kOFFSET_DEFAULT_CLUSTER ] = $value;
+							break;
+
+						default:
+							$record[ $variable ] = $value;
+							break;
+					}
 
 				} // Has value.
 
 				//
-				// Save record.
+				// Check empty required variables.
 				//
-				if( count( $record ) )
-					$records[] = $record;
+				elseif( in_array( $variable, $theInfo[ self::kOFFSET_REQUIRED ] ) )
+					throw new RuntimeException(
+						"Empty required variable value [$variable] " .
+						"at line $row." );										// !@! ==>
 
 			} // Iterating variable names.
 
+			//
+			// Save record.
+			//
+			if( count( $record ) )
+			{
+				$record[ '_id' ] = $row;
+				$collection->insertOne( $record );
+			}
+
 		} // Iterating rows.
 
-		//
-		// Write data.
-		//
-		if( count( $records ) )
-			$collection->insertMany( $records );
-
-		return count( $records );													// ==>
+		return $collection->count();												// ==>
 
 	} // loadDatasetTempCollection.
 
@@ -2472,32 +2687,29 @@ class SMARTLoader extends Container
 			foreach( $values as $value )
 			{
 				//
+				// Handle number.
+				//
+				if( is_numeric( $value ) )
+				{
+					//
+					// Check decimal.
+					//
+					$tmp = explode( '.', (string)$value );
+					if( (count( $tmp ) > 1)
+					 && ($tmp[ 1 ] != '0') )
+						$types[ $variable ] = 'double';
+
+				} // Is numeric.
+
+				//
 				// Handle string.
 				//
-				if( is_string( $value ) )
+				else
 				{
 					$types[ $variable ] = 'string';
 					break;														// =>
 
 				} // Value is string.
-
-				//
-				// Handle number.
-				//
-				else
-				{
-					//
-					// Determine decimal different from 0.
-					//
-					$tmp = explode( '.', (string)$value );
-					if( (count( $tmp) > 1)
-						&& ($tmp[ 1 ] != '0') )
-					{
-						$types[ $variable ] = 'double';
-						break;													// =>
-					}
-
-				} // Value is number.
 
 			} // Iterating variable distinct values.
 
