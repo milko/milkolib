@@ -100,6 +100,12 @@ $file_object = $file_reader->load( $path );						// Load data.
 $file_array = $file_object->getActiveSheet()->toArray( NULL, TRUE, TRUE, TRUE );
 
 //
+// Get rid of Excel reader and data.
+//
+unset( $file_object );
+unset( $file_reader );
+
+//
 // Open database connection.
 //
 $client = new MongoDB\Client( "mongodb://localhost:27017" );
@@ -116,12 +122,6 @@ $collection->drop();
 //
 $collection_temp = $database->selectCollection( 'TEMP_household' );
 $collection_temp->drop();
-
-//
-// Get rid of excel reader and data.
-//
-unset( $file_object );
-unset( $file_reader );
 
 //
 // Inform.
