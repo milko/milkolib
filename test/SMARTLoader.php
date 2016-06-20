@@ -36,13 +36,89 @@ echo( '$result = $test->SetHouseholdDataset( __DIR__ . "/SMART/HOUSEHOLD.xlsx", 
 $result = $test->SetHouseholdDataset( __DIR__ . "/SMART/HOUSEHOLD.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MENAGE" );
 
 //
+// Set mother dataset.
+//
+echo( '$result = $test->SetMotherDataset( __DIR__ . "/SMART/MOTHER.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MERE", "MENAGE" );' . "\n" );
+$result = $test->SetMotherDataset( __DIR__ . "/SMART/MOTHER.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MERE", "MENAGE" );
+
+//
+// Set child dataset.
+//
+echo( '$result = $test->SetChildDataset( __DIR__ . "/SMART/CHILD.xlsx", 2, 3, "SURVDATE", "COMMUNE", "TEAM", "CLUSTER", "ID", "HH", "MOTHER" );' . "\n" );
+$result = $test->SetChildDataset( __DIR__ . "/SMART/CHILD.xlsx", 2, 3, "SURVDATE", "COMMUNE", "TEAM", "CLUSTER", "ID", "HH", "MOTHER" );
+
+echo( "\n====================================================================================\n\n" );
+
+//
 // Load household dataset.
 //
 echo( '$result = $test->LoadHouseholdDataset();' . "\n" );
 $result = $test->LoadHouseholdDataset();
 var_dump( $result );
-if( $test->HouseholdStatus() == SMARTLoader::kOFFSET_STATUS_ERROR )
-	print_r( $test->HouseholdDuplicates() );
+switch( $test->HouseholdStatus() )
+{
+	case SMARTLoader::kOFFSET_STATUS_IDLE:
+		echo( "==> Dataset is empty\n" );
+		break;
+
+	case SMARTLoader::kOFFSET_STATUS_DUPLICATES:
+		echo( "==> Dataset has duplicates:\n" );
+		print_r( $test->HouseholdDuplicates() );
+		exit;
+
+	case SMARTLoader::kOFFSET_STATUS_LOADED:
+		echo( "==> Dataset loaded.\n" );
+		break;
+}
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Load mother dataset.
+//
+echo( '$result = $test->LoadMotherDataset();' . "\n" );
+$result = $test->LoadMotherDataset();
+var_dump( $result );
+switch( $test->MotherStatus() )
+{
+	case SMARTLoader::kOFFSET_STATUS_IDLE:
+		echo( "==> Dataset is empty\n" );
+		break;
+
+	case SMARTLoader::kOFFSET_STATUS_DUPLICATES:
+		echo( "==> Dataset has duplicates:\n" );
+		print_r( $test->MotherDuplicates() );
+		exit;
+
+	case SMARTLoader::kOFFSET_STATUS_LOADED:
+		echo( "==> Dataset loaded.\n" );
+		break;
+}
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Load child dataset.
+//
+echo( '$result = $test->LoadChildDataset();' . "\n" );
+$result = $test->LoadChildDataset();
+var_dump( $result );
+switch( $test->ChildStatus() )
+{
+	case SMARTLoader::kOFFSET_STATUS_IDLE:
+		echo( "==> Dataset is empty\n" );
+		break;
+
+	case SMARTLoader::kOFFSET_STATUS_DUPLICATES:
+		echo( "==> Dataset has duplicates:\n" );
+		print_r( $test->ChildDuplicates() );
+		exit;
+
+	case SMARTLoader::kOFFSET_STATUS_LOADED:
+		echo( "==> Dataset loaded.\n" );
+		break;
+}
+
 
 ?>
 

@@ -184,16 +184,6 @@ class SMARTLoader extends Container
 	const kOFFSET_CLUSTER = 'cluster';
 
 	/**
-	 * <h4>Dataset identifier variable name.</h4>
-	 *
-	 * This constant holds the <i>offset</i> that contains the <i>name of the identifier
-	 * variable</i> in the dataset.
-	 *
-	 * @var string
-	 */
-	const kOFFSET_IDENT = 'ident';
-
-	/**
 	 * <h4>Dataset data dictionary.</h4>
 	 *
 	 * This constant holds the <i>offset</i> that contains the <i>dataset data
@@ -202,6 +192,16 @@ class SMARTLoader extends Container
 	 * @var string
 	 */
 	const kOFFSET_DDICT = 'ddict';
+
+	/**
+	 * <h4>Dataset identifier variable name.</h4>
+	 *
+	 * This constant holds the <i>offset</i> that contains the <i>name of the identifier
+	 * variable</i> in the dataset.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_IDENT = 'ident';
 
 	/**
 	 * <h4>Dataset household identifier variable name.</h4>
@@ -283,14 +283,14 @@ class SMARTLoader extends Container
 	const kOFFSET_STATUS_LOADED = 'load';
 
 	/**
-	 * <h4>Dataset error status.</h4>
+	 * <h4>Dataset duplicates status.</h4>
 	 *
-	 * This constant holds the code corresponding to the error dataset status, it signifies
-	 * that errors were encountered while loading the dataset.
+	 * This constant holds the code corresponding to an error dataset status implying that
+	 * the dataset has duplicate entries.
 	 *
 	 * @var string
 	 */
-	const kOFFSET_STATUS_ERROR = 'error';
+	const kOFFSET_STATUS_DUPLICATES = 'duplicates';
 
 	/**
 	 * <h4>Default date variable.</h4>
@@ -327,6 +327,16 @@ class SMARTLoader extends Container
 	 * @var string
 	 */
 	const kOFFSET_DEFAULT_CLUSTER = '@cluster';
+
+	/**
+	 * <h4>Dataset duplicate cluster variable name.</h4>
+	 *
+	 * This constant holds the <i>offset</i> that contains the <i>name of the mother
+	 * identifier variable</i> in the dataset.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_DUPLICATES_CLUSTER = '@duplicates@';
 
 	/**
 	 * <h4>Client connection.</h4>
@@ -803,13 +813,13 @@ class SMARTLoader extends Container
 		//
 		// Set required fields.
 		//
-		$this->mHouseholdInfo[ self::kOFFSET_REQUIRED ] = [
-			$this->mHouseholdInfo[ self::kOFFSET_DATE ],
-			$this->mHouseholdInfo[ self::kOFFSET_LOCATION ],
-			$this->mHouseholdInfo[ self::kOFFSET_TEAM ],
-			$this->mHouseholdInfo[ self::kOFFSET_CLUSTER ],
-			$this->mHouseholdInfo[ self::kOFFSET_IDENT ],
-			$this->mHouseholdInfo[ self::kOFFSET_IDENT_HOUSEHOLD ]
+		$this->mMotherInfo[ self::kOFFSET_REQUIRED ] = [
+			$this->mMotherInfo[ self::kOFFSET_DATE ],
+			$this->mMotherInfo[ self::kOFFSET_LOCATION ],
+			$this->mMotherInfo[ self::kOFFSET_TEAM ],
+			$this->mMotherInfo[ self::kOFFSET_CLUSTER ],
+			$this->mMotherInfo[ self::kOFFSET_IDENT ],
+			$this->mMotherInfo[ self::kOFFSET_IDENT_HOUSEHOLD ]
 		];
 
 		return $this->mMotherInfo;													// ==>
@@ -872,17 +882,17 @@ class SMARTLoader extends Container
 		//
 		// Set required fields.
 		//
-		$this->mHouseholdInfo[ self::kOFFSET_REQUIRED ] = [
-			$this->mHouseholdInfo[ self::kOFFSET_DATE ],
-			$this->mHouseholdInfo[ self::kOFFSET_LOCATION ],
-			$this->mHouseholdInfo[ self::kOFFSET_TEAM ],
-			$this->mHouseholdInfo[ self::kOFFSET_CLUSTER ],
-			$this->mHouseholdInfo[ self::kOFFSET_IDENT ],
-			$this->mHouseholdInfo[ self::kOFFSET_IDENT_HOUSEHOLD ],
-			$this->mHouseholdInfo[ self::kOFFSET_IDENT_MOTHER ]
+		$this->mChildInfo[ self::kOFFSET_REQUIRED ] = [
+			$this->mChildInfo[ self::kOFFSET_DATE ],
+			$this->mChildInfo[ self::kOFFSET_LOCATION ],
+			$this->mChildInfo[ self::kOFFSET_TEAM ],
+			$this->mChildInfo[ self::kOFFSET_CLUSTER ],
+			$this->mChildInfo[ self::kOFFSET_IDENT ],
+			$this->mChildInfo[ self::kOFFSET_IDENT_HOUSEHOLD ],
+			$this->mChildInfo[ self::kOFFSET_IDENT_MOTHER ]
 		];
 
-		return $this->mMotherInfo;													// ==>
+		return $this->mChildInfo;													// ==>
 
 	} // SetChildDataset.
 
@@ -1785,11 +1795,16 @@ class SMARTLoader extends Container
 	/**
 	 * <h4>Load household dataset.</h4>
 	 *
-	 * This method can be used to set or retrieve the database client, if you provide a
-	 * string, it will be interpreted as the client data source name, if you provide
-	 * <tt>NULL</tt>, the method will return the current value.
+	 * This method can be used to load the household dataset into the database, the method
+	 * will return the status code:
 	 *
-	 * @return bool					<tt>TRUE</tt> success, <tt>FALSE</tt> errors.
+	 * <ul>
+	 * 	<li><tt>{@link kOFFSET_STATUS_IDLE}</tt>: The dataset is empty.
+	 * 	<li><tt>{@link kOFFSET_STATUS_LOADED}</tt>: The dataset was loaded with success.
+	 * 	<li><tt>{@link kOFFSET_STATUS_DUPLICATES}</tt>: Found duplicate entries.
+	 * </ul>.
+	 *
+	 * @return string				Status code.
 	 * @throws RuntimeException
 	 */
 	public function LoadHouseholdDataset()
@@ -1804,9 +1819,8 @@ class SMARTLoader extends Container
 			// We assume there is a single worksheet
 			//
 			$data = $this->HouseholdReader()
-					->load( $this->HouseholdFile() )
-					->getActiveSheet()
-					->toArray( NULL, TRUE, TRUE, TRUE );
+				->getActiveSheet()
+				->toArray( NULL, TRUE, TRUE, TRUE );
 
 			//
 			// Load data in temp collection.
@@ -1839,9 +1853,42 @@ class SMARTLoader extends Container
 					self::kNAME_HOUSEHOLD			// Dataset default name.
 				);
 
+				//
+				// Identify duplicates.
+				//
+				$status = $this->identifyTempCollectionDuplicates(
+					$this->mHouseholdInfo,			// Dataset info record.
+					self::kNAME_HOUSEHOLD			// Dataset default name.
+				);
+
+				//
+				// Handle duplicates.
+				//
+				if( $status == self::kOFFSET_STATUS_DUPLICATES )
+				{
+					//
+					// Write to collection.
+					//
+					$this->signalTempCollectionDuplicates(
+						$this->mHouseholdInfo,		// Dataset info record.
+						self::kNAME_HOUSEHOLD		// Dataset default name.
+					);
+
+					//
+					// Write to file.
+					//
+					$this->signalFileDuplicates(
+						$this->mHouseholdInfo,		// Dataset info record.
+						self::kNAME_HOUSEHOLD		// Dataset default name.
+					);
+
+				} // Has duplicates.
+
+				return $status;														// ==>
+
 			} // Has data.
 
-			return TRUE;															// ==>
+			return self::kOFFSET_STATUS_IDLE;										// ==>
 
 		} // Defined household dataset.
 
@@ -1852,6 +1899,232 @@ class SMARTLoader extends Container
 			"Dataset not yet defined." );										// !@! ==>
 
 	} // LoadHouseholdDataset.
+
+
+	/*===================================================================================
+	 *	LoadMotherDataset																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load mother dataset.</h4>
+	 *
+	 * This method can be used to load the mother dataset into the database, the method
+	 * will return the status code:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kOFFSET_STATUS_IDLE}</tt>: The dataset is empty.
+	 * 	<li><tt>{@link kOFFSET_STATUS_LOADED}</tt>: The dataset was loaded with success.
+	 * 	<li><tt>{@link kOFFSET_STATUS_DUPLICATES}</tt>: Found duplicate entries.
+	 * </ul>.
+	 *
+	 * @return string				Status code.
+	 * @throws RuntimeException
+	 */
+	public function LoadMotherDataset()
+	{
+		//
+		// Check dataset.
+		//
+		if( is_array( $this->mMotherInfo ) )
+		{
+			//
+			// Load dataset sheet.
+			// We assume there is a single worksheet
+			//
+			$data = $this->MotherReader()
+				->getActiveSheet()
+				->toArray( NULL, TRUE, TRUE, TRUE );
+
+			//
+			// Load data in temp collection.
+			//
+			$count =
+				$this->loadDatasetTempCollection(
+					$this->mMotherInfo,				// Dataset info record.
+					self::kNAME_MOTHER,				// Dataset default name,
+					$data							// Dataset array.
+				);
+
+			//
+			// Skip empty dataset.
+			//
+			if( $count )
+			{
+				//
+				// Collect data types.
+				//
+				$this->collectTempCollectionDataTypes(
+					$this->mMotherInfo,				// Dataset info record.
+					self::kNAME_MOTHER				// Dataset default name,
+				);
+
+				//
+				// Normalise data types in temp collection.
+				//
+				$this->normaliseTempCollectionDataTypes(
+					$this->mMotherInfo,				// Dataset info record.
+					self::kNAME_MOTHER				// Dataset default name,
+				);
+
+				//
+				// Identify duplicates.
+				//
+				$status = $this->identifyTempCollectionDuplicates(
+					$this->mMotherInfo,				// Dataset info record.
+					self::kNAME_MOTHER				// Dataset default name,
+				);
+
+				//
+				// Handle duplicates.
+				//
+				if( $status == self::kOFFSET_STATUS_DUPLICATES )
+				{
+					//
+					// Write to collection.
+					//
+					$this->signalTempCollectionDuplicates(
+						$this->mMotherInfo,			// Dataset info record.
+						self::kNAME_MOTHER			// Dataset default name,
+					);
+
+					//
+					// Write to file.
+					//
+					$this->signalFileDuplicates(
+						$this->mMotherInfo,			// Dataset info record.
+						self::kNAME_MOTHER			// Dataset default name,
+					);
+
+				} // Has duplicates.
+
+				return $status;														// ==>
+
+			} // Has data.
+
+			return self::kOFFSET_STATUS_IDLE;										// ==>
+
+		} // Defined mother dataset.
+
+		//
+		// Check parameter.
+		//
+		throw new RuntimeException(
+			"Dataset not yet defined." );										// !@! ==>
+
+	} // LoadMotherDataset.
+
+
+	/*===================================================================================
+	 *	LoadChildDataset																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load child dataset.</h4>
+	 *
+	 * This method can be used to load the child dataset into the database, the method
+	 * will return the status code:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kOFFSET_STATUS_IDLE}</tt>: The dataset is empty.
+	 * 	<li><tt>{@link kOFFSET_STATUS_LOADED}</tt>: The dataset was loaded with success.
+	 * 	<li><tt>{@link kOFFSET_STATUS_DUPLICATES}</tt>: Found duplicate entries.
+	 * </ul>.
+	 *
+	 * @return string				Status code.
+	 * @throws RuntimeException
+	 */
+	public function LoadChildDataset()
+	{
+		//
+		// Check dataset.
+		//
+		if( is_array( $this->mChildInfo ) )
+		{
+			//
+			// Load dataset sheet.
+			// We assume there is a single worksheet
+			//
+			$data = $this->ChildReader()
+				->getActiveSheet()
+				->toArray( NULL, TRUE, TRUE, TRUE );
+
+			//
+			// Load data in temp collection.
+			//
+			$count =
+				$this->loadDatasetTempCollection(
+					$this->mChildInfo,				// Dataset info record.
+					self::kNAME_CHILD,				// Dataset default name,
+					$data							// Dataset array.
+				);
+
+			//
+			// Skip empty dataset.
+			//
+			if( $count )
+			{
+				//
+				// Collect data types.
+				//
+				$this->collectTempCollectionDataTypes(
+					$this->mChildInfo,				// Dataset info record.
+					self::kNAME_CHILD				// Dataset default name,
+				);
+
+				//
+				// Normalise data types in temp collection.
+				//
+				$this->normaliseTempCollectionDataTypes(
+					$this->mChildInfo,				// Dataset info record.
+					self::kNAME_CHILD				// Dataset default name,
+				);
+
+				//
+				// Identify duplicates.
+				//
+				$status = $this->identifyTempCollectionDuplicates(
+					$this->mChildInfo,				// Dataset info record.
+					self::kNAME_CHILD				// Dataset default name,
+				);
+
+				//
+				// Handle duplicates.
+				//
+				if( $status == self::kOFFSET_STATUS_DUPLICATES )
+				{
+					//
+					// Write to collection.
+					//
+					$this->signalTempCollectionDuplicates(
+						$this->mChildInfo,			// Dataset info record.
+						self::kNAME_CHILD			// Dataset default name,
+					);
+
+					//
+					// Write to file.
+					//
+					$this->signalFileDuplicates(
+						$this->mChildInfo,			// Dataset info record.
+						self::kNAME_CHILD			// Dataset default name,
+					);
+
+				} // Has duplicates.
+
+				return $status;														// ==>
+
+			} // Has data.
+
+			return self::kOFFSET_STATUS_IDLE;										// ==>
+
+		} // Defined child dataset.
+
+		//
+		// Check parameter.
+		//
+		throw new RuntimeException(
+			"Dataset not yet defined." );										// !@! ==>
+
+	} // LoadChildDataset.
 
 
 
@@ -1981,6 +2254,7 @@ class SMARTLoader extends Container
 		//
 		$type = PHPExcel_IOFactory::identify( $thePath );
 		$reader = PHPExcel_IOFactory::createReader( $type );
+		$reader = $reader->load( $thePath );
 
 		//
 		// Init record.
@@ -2556,7 +2830,7 @@ class SMARTLoader extends Container
 		//
 		// Load header row.
 		//
-		$theInfo[ self::kOFFSET_DDICT ] = $theData[ $this->HouseholdHeaderLine() ];
+		$theInfo[ self::kOFFSET_DDICT ] = $theData[ $theInfo[ self::kOFFSET_HEADER ] ];
 
 		//
 		// Iterate rows.
@@ -2602,7 +2876,7 @@ class SMARTLoader extends Container
 							break;
 
 						case $theInfo[ self::kOFFSET_LOCATION ]:
-							$record[ self::kOFFSET_LOCATION ] = $value;
+							$record[ self::kOFFSET_DEFAULT_LOCATION ] = $value;
 							break;
 
 						case $theInfo[ self::kOFFSET_TEAM ]:
@@ -2808,6 +3082,251 @@ class SMARTLoader extends Container
 		$collection->insertMany( $records );
 
 	} // normaliseTempCollectionDataTypes.
+
+
+	/*===================================================================================
+	 *	identifyTempCollectionDuplicates												*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Identify temp collection duplicates.</h4>
+	 *
+	 * This method can be used to identify duplicate records, it will return the status
+	 * code: {@link kOFFSET_STATUS_LOADED} id there are no duplicates, or
+	 * {@link kOFFSET_STATUS_DUPLICATES}.
+	 *
+	 * @param array				   &$theInfo			Dataset info record.
+	 * @param string				$theName			Collection base name.
+	 * @return string				Status code.
+	 * @throws RuntimeException
+	 */
+	protected function identifyTempCollectionDuplicates( array &$theInfo,
+														 string $theName )
+	{
+		//
+		// Init local storage.
+		//
+		$pipeline = [];
+		$collection = $this->Database()->selectCollection( "temp_$theName" );
+
+		//
+		// Init selection group.
+		//
+		$temp = [
+			self::kOFFSET_DEFAULT_LOCATION => '$' . self::kOFFSET_DEFAULT_LOCATION,
+			self::kOFFSET_DEFAULT_TEAM => '$' . self::kOFFSET_DEFAULT_TEAM,
+			self::kOFFSET_DEFAULT_CLUSTER => '$' . self::kOFFSET_DEFAULT_CLUSTER
+		];
+
+		//
+		// Add identifiers to selection group.
+		//
+		for( $i = 4; $i < count( $theInfo[ self::kOFFSET_REQUIRED ] ); $i++ )
+			$temp[ $theInfo[ self::kOFFSET_REQUIRED ][ $i ] ]
+				= '$' . $theInfo[ self::kOFFSET_REQUIRED ][ $i ];
+
+		//
+		// Add group.
+		//
+		$pipeline[] = [
+			'$group' => [ '_id' => $temp,
+				'count' => [ '$sum' => 1 ] ]
+		];
+
+		//
+		// Add duplicates match.
+		//
+		$pipeline[] = [
+			'$match' => [ 'count' => [ '$gt' => 1 ] ]
+		];
+
+		//
+		// Aggregate.
+		//
+		$duplicates =
+			iterator_to_array(
+				$collection->aggregate( $pipeline, [ 'allowDiskUse' => TRUE ] )
+			);
+
+		//
+		// Handle duplicates.
+		//
+		if( count( $duplicates ) )
+		{
+			//
+			// Set status.
+			//
+			$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_DUPLICATES;
+
+			//
+			// Iterate duplicate groups.
+			//
+			$duplicate_id = 1;
+			foreach( $duplicates as $duplicate )
+			{
+				//
+				// Init duplicates entry.
+				//
+				$theInfo[ self::kOFFSET_DUPS ][ $duplicate_id ] = [
+					'Record identifiers' => $duplicate[ '_id' ]->getArrayCopy(),
+					'Duplicate rows' => []
+				];
+
+				//
+				// Get duplicate group.
+				//
+				$duplicate = $duplicate->getArrayCopy();
+				$duplicate = $duplicate[ '_id' ]->getArrayCopy();
+
+				//
+				// Locate duplicates.
+				//
+				$cursor =
+					iterator_to_array(
+						$collection->find( $duplicate )
+					);
+				foreach( $cursor as $document )
+					$theInfo[ self::kOFFSET_DUPS ]
+					[ $duplicate_id ]
+					[ 'Duplicate rows' ]
+					[]
+						= $document[ '_id' ];
+
+				//
+				// Ingrement group identifier.
+				//
+				$duplicate_id++;
+
+			} // Iterating duplicates.
+
+		} // Has duplicates.
+
+		else
+			$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_LOADED;
+
+		return $theInfo[ self::kOFFSET_STATUS ];									// ==>
+
+	} // identifyTempCollectionDuplicates.
+
+
+	/*===================================================================================
+	 *	signalTempCollectionDuplicates													*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Signal temp collection duplicates.</h4>
+	 *
+	 * This method can be used to load duplicate information onto the temporary collection.
+	 *
+	 * @param array				   &$theInfo			Dataset info record.
+	 * @param string				$theName			Collection base name.
+	 */
+	protected function signalTempCollectionDuplicates( array &$theInfo,
+													   string $theName )
+	{
+		//
+		// Check if there are duplicates.
+		//
+		if( count( $theInfo[ self::kOFFSET_DUPS ] ) )
+		{
+			//
+			// Init local storage.
+			//
+			$collection = $this->Database()->selectCollection( "temp_$theName" );
+
+			//
+			// Iterate duplicates.
+			//
+			foreach( $theInfo[ self::kOFFSET_DUPS ] as $id => $data )
+			{
+				//
+				// Set update commands.
+				//
+				$query = [ '_id' => [ '$in' => $data[ 'Duplicate rows' ] ] ];
+				$criteria = [ '$set' => [ self::kOFFSET_DUPLICATES_CLUSTER => $id ] ];
+
+				//
+				// Update documents.
+				//
+				$collection->updateMany( $query, $criteria );
+
+			} // Iterating duplicates.
+
+		} // Has duplicates.
+
+	} // signalTempCollectionDuplicates.
+
+
+	/*===================================================================================
+	 *	signalFileDuplicates															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Signal file duplicates.</h4>
+	 *
+	 * This method can be used to load duplicate information onto the original file.
+	 *
+	 * @param array				   &$theInfo			Dataset info record.
+	 * @param string				$theName			Collection base name.
+	 */
+	protected function signalFileDuplicates( array &$theInfo,
+											 string $theName )
+	{
+		//
+		// Check if there are duplicates.
+		//
+		if( count( $theInfo[ self::kOFFSET_DUPS ] ) )
+		{
+			//
+			// Get worksheet.
+			//
+			$worksheet =
+				$theInfo[ self::kOFFSET_READER ]
+					->getActiveSheet();
+
+			//
+			// Get highest row and column.
+			//
+			$end = $worksheet->getHighestRow();
+			$column = PHPExcel_Cell::columnIndexFromString(
+				$worksheet->getHighestColumn()
+			);
+
+			//
+			// Set header.
+			//
+			$worksheet->setCellValueByColumnAndRow(
+				$column,
+				$theInfo[ self::kOFFSET_HEADER ],
+				self::kOFFSET_DUPLICATES_CLUSTER );
+
+			//
+			// Iterate duplicate groups.
+			//
+			foreach( $theInfo[ self::kOFFSET_DUPS ] as $id => $data )
+			{
+				//
+				// Iterate duplicate rows.
+				//
+				foreach( $data[ 'Duplicate rows' ] as $row )
+					$worksheet->setCellValueByColumnAndRow(
+						$column,
+						$row,
+						$id
+					);
+
+			} // Iterating duplicate groups.
+
+			//
+			// Write file.
+			//
+			$writer = PHPExcel_IOFactory::createWriter(
+					$theInfo[ self::kOFFSET_READER ], 'Excel2007'
+			)->save( $this->getDatasetPath( $theInfo ) );
+
+		} // Has duplicates.
+
+	} // signalFileDuplicates.
 
 
 
