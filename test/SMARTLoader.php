@@ -61,13 +61,16 @@ switch( $test->HouseholdStatus() )
 		echo( "==> Dataset is empty\n" );
 		break;
 
-	case SMARTLoader::kOFFSET_STATUS_DUPLICATES:
-		echo( "==> Dataset has duplicates:\n" );
-		print_r( $test->HouseholdDuplicates() );
-		exit;
-
 	case SMARTLoader::kOFFSET_STATUS_LOADED:
 		echo( "==> Dataset loaded.\n" );
+		break;
+
+	default:
+		if( count( $tmp = $test->HouseholdDuplicates() ) )
+		{
+			echo( "==> Dataset has duplicates:\n" );
+			print_r( $tmp );
+		}
 		break;
 }
 
@@ -85,13 +88,21 @@ switch( $test->MotherStatus() )
 		echo( "==> Dataset is empty\n" );
 		break;
 
-	case SMARTLoader::kOFFSET_STATUS_DUPLICATES:
-		echo( "==> Dataset has duplicates:\n" );
-		print_r( $test->MotherDuplicates() );
-		exit;
-
 	case SMARTLoader::kOFFSET_STATUS_LOADED:
 		echo( "==> Dataset loaded.\n" );
+		break;
+
+	default:
+		if( count( $tmp = $test->MotherDuplicates() ) )
+		{
+			echo( "==> Dataset has duplicates:\n" );
+			print_r( $tmp );
+		}
+		if( count( $tmp = $test->MotherRelated() ) )
+		{
+			echo( "==> Dataset has invalid references:\n" );
+			print_r( $tmp );
+		}
 		break;
 }
 
@@ -116,6 +127,19 @@ switch( $test->ChildStatus() )
 
 	case SMARTLoader::kOFFSET_STATUS_LOADED:
 		echo( "==> Dataset loaded.\n" );
+		break;
+
+	default:
+		if( count( $tmp = $test->ChildDuplicates() ) )
+		{
+			echo( "==> Dataset has duplicates:\n" );
+			print_r( $tmp );
+		}
+		if( count( $tmp = $test->ChildRelated() ) )
+		{
+			echo( "==> Dataset has invalid references:\n" );
+			print_r( $tmp );
+		}
 		break;
 }
 

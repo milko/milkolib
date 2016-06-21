@@ -234,6 +234,16 @@ class SMARTLoader extends Container
 	const kOFFSET_DUPS = 'dups';
 
 	/**
+	 * <h4>Dataset related offset.</h4>
+	 *
+	 * This constant holds the <i>offset</i> that <i>contains the list of invalid referenced
+	 * records</i>.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_RELATED = 'rels';
+
+	/**
 	 * <h4>Dataset required variables offset.</h4>
 	 *
 	 * This constant holds the <i>offset</i> that <i>contains the list of required
@@ -293,6 +303,16 @@ class SMARTLoader extends Container
 	const kOFFSET_STATUS_DUPLICATES = 'duplicates';
 
 	/**
+	 * <h4>Dataset related status.</h4>
+	 *
+	 * This constant holds the code corresponding to an error dataset status implying that
+	 * the dataset has invalid household and/or mother references.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_STATUS_RELATED = 'related';
+
+	/**
 	 * <h4>Default date variable.</h4>
 	 *
 	 * This constant holds the default name for the dataset date.
@@ -329,6 +349,51 @@ class SMARTLoader extends Container
 	const kOFFSET_DEFAULT_CLUSTER = '@cluster';
 
 	/**
+	 * <h4>Default household variable.</h4>
+	 *
+	 * This constant holds the default name for the household identifier variable.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_DEFAULT_HOUSEHOLD = '@household';
+
+	/**
+	 * <h4>Default mother variable.</h4>
+	 *
+	 * This constant holds the default name for the mother identifier variable.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_DEFAULT_MOTHER = '@mother';
+
+	/**
+	 * <h4>Default identifier variable.</h4>
+	 *
+	 * This constant holds the default name for the record identifier variable.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_DEFAULT_IDENT = '@identifier';
+
+	/**
+	 * <h4>Household reference.</h4>
+	 *
+	 * This constant holds the variable name for the household ID.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_HOUSEHOLD_ID = '@id_household';
+
+	/**
+	 * <h4>Mother reference.</h4>
+	 *
+	 * This constant holds the variable name for the mother ID.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_MOTHER_ID = '@id_mother';
+
+	/**
 	 * <h4>Dataset duplicate cluster variable name.</h4>
 	 *
 	 * This constant holds the <i>offset</i> that contains the <i>name of the mother
@@ -337,6 +402,26 @@ class SMARTLoader extends Container
 	 * @var string
 	 */
 	const kOFFSET_DUPLICATES_CLUSTER = '@duplicates@';
+
+	/**
+	 * <h4>Dataset invalid household reference variable name.</h4>
+	 *
+	 * This constant holds the <i>offset</i> of the column <i>signalling an invalid
+	 * household reference</i>.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_RELATED_HOUSEHOLD = '@related_household@';
+
+	/**
+	 * <h4>Dataset invalid mother reference variable name.</h4>
+	 *
+	 * This constant holds the <i>offset</i> of the column <i>signalling an invalid
+	 * mother reference</i>.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_RELATED_MOTHER = '@related_mother@';
 
 	/**
 	 * <h4>Client connection.</h4>
@@ -413,6 +498,7 @@ class SMARTLoader extends Container
 	 * 	<li><tt>{@link kOFFSET_REQUIRED}</tt>: List of required variables (array).
 	 * 	<li><tt>{@link kOFFSET_DDICT}</tt>: The data dictionary (array).
 	 * 	<li><tt>{@link kOFFSET_DUPS}</tt>: The eventual duplicate records (array).
+	 * 	<li><tt>{@link kOFFSET_RELATED}</tt>: The eventual invalid related records (array).
 	 * </ul>
 	 *
 	 * @var array
@@ -441,6 +527,7 @@ class SMARTLoader extends Container
 	 * 	<li><tt>{@link kOFFSET_REQUIRED}</tt>: List of required variables (array).
 	 * 	<li><tt>{@link kOFFSET_DDICT}</tt>: The data dictionary (array).
 	 * 	<li><tt>{@link kOFFSET_DUPS}</tt>: The eventual duplicate records (array).
+	 * 	<li><tt>{@link kOFFSET_RELATED}</tt>: The eventual invalid related records (array).
 	 * </ul>
 	 *
 	 * @var array
@@ -471,6 +558,7 @@ class SMARTLoader extends Container
 	 * 	<li><tt>{@link kOFFSET_REQUIRED}</tt>: List of required variables (array).
 	 * 	<li><tt>{@link kOFFSET_DDICT}</tt>: The data dictionary (array).
 	 * 	<li><tt>{@link kOFFSET_DUPS}</tt>: The eventual duplicate records (array).
+	 * 	<li><tt>{@link kOFFSET_RELATED}</tt>: The eventual invalid related records (array).
 	 * </ul>
 	 *
 	 * @var array
@@ -521,6 +609,14 @@ class SMARTLoader extends Container
 		// Create database.
 		//
 		$this->Database( $theDatabase );
+
+		//
+		// Set collections.
+		//
+		$this->Survey( self::kNAME_SURVEY );
+		$this->Household( self::kNAME_HOUSEHOLD );
+		$this->Mother( self::kNAME_MOTHER );
+		$this->Child( self::kNAME_CHILD );
 
 	} // Constructor.
 
@@ -1779,6 +1875,48 @@ class SMARTLoader extends Container
 	} // ChildDuplicates.
 
 
+	/*===================================================================================
+	 *	MotherRelated																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get mother unit related.</h4>
+	 *
+	 * This method can be used to retrieve the mother unit related, if the dataset was
+	 * not yet set, the method will raise an exception.
+	 *
+	 * @return string
+	 *
+	 * @uses getDatasetRelated()
+	 */
+	public function MotherRelated()
+	{
+		return $this->getDatasetRelated( $this->mMotherInfo );						// ==>
+
+	} // MotherRelated.
+
+
+	/*===================================================================================
+	 *	ChildRelated																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get child unit related.</h4>
+	 *
+	 * This method can be used to retrieve the child unit related, if the dataset was not
+	 * yet set, the method will raise an exception.
+	 *
+	 * @return string
+	 *
+	 * @uses getDatasetRelated()
+	 */
+	public function ChildRelated()
+	{
+		return $this->getDatasetRelated( $this->mChildInfo );						// ==>
+
+	} // ChildRelated.
+
+
 
 /*=======================================================================================
  *																						*
@@ -1884,7 +2022,7 @@ class SMARTLoader extends Container
 
 				} // Has duplicates.
 
-				return $status;														// ==>
+				return $this->mHouseholdInfo[ self::kOFFSET_STATUS ];				// ==>
 
 			} // Has data.
 
@@ -1997,7 +2135,24 @@ class SMARTLoader extends Container
 
 				} // Has duplicates.
 
-				return $status;														// ==>
+				//
+				// Identify related households.
+				//
+				$status = $this->identifyRelatedHouseholds(
+					$this->mMotherInfo,				// Dataset info record.
+					self::kNAME_MOTHER				// Dataset default name,
+				);
+
+				//
+				// Handle missing related households.
+				//
+				if( $status == self::kOFFSET_STATUS_RELATED )
+					$this->signalFileRelatedHouseholds(
+						$this->mMotherInfo,			// Dataset info record.
+						self::kNAME_MOTHER			// Dataset default name,
+					);
+
+				return $this->mMotherInfo[ self::kOFFSET_STATUS ];					// ==>
 
 			} // Has data.
 
@@ -2110,7 +2265,41 @@ class SMARTLoader extends Container
 
 				} // Has duplicates.
 
-				return $status;														// ==>
+				//
+				// Identify related households.
+				//
+				$status = $this->identifyRelatedHouseholds(
+					$this->mChildInfo,				// Dataset info record.
+					self::kNAME_CHILD				// Dataset default name,
+				);
+
+				//
+				// Handle missing related households.
+				//
+				if( $status == self::kOFFSET_STATUS_RELATED )
+					$this->signalFileRelatedHouseholds(
+						$this->mChildInfo,			// Dataset info record.
+						self::kNAME_CHILD			// Dataset default name,
+					);
+
+				//
+				// Identify related mothers.
+				//
+				$status = $this->identifyRelatedMothers(
+					$this->mChildInfo,				// Dataset info record.
+					self::kNAME_CHILD				// Dataset default name,
+				);
+
+				//
+				// Handle missing related mothers.
+				//
+				if( $status == self::kOFFSET_STATUS_RELATED )
+					$this->signalFileRelatedMothers(
+						$this->mChildInfo,			// Dataset info record.
+						self::kNAME_CHILD			// Dataset default name,
+					);
+
+				return $this->mChildInfo[ self::kOFFSET_STATUS ];					// ==>
 
 			} // Has data.
 
@@ -2210,6 +2399,7 @@ class SMARTLoader extends Container
 	 * 	<li><tt>{@link kOFFSET_IDENT}</tt>: The identifier variable name (string).
 	 * 	<li><tt>{@link kOFFSET_STATUS}</tt>: The processing status (string).
 	 * 	<li><tt>{@link kOFFSET_DUPS}</tt>: The eventual duplicate records (array).
+	 * 	<li><tt>{@link kOFFSET_RELATED}</tt>: The eventual invalid related records (array).
 	 * </ul>
 	 *
 	 * @param string				$thePath			Dataset file path.
@@ -2271,7 +2461,8 @@ class SMARTLoader extends Container
 			self::kOFFSET_IDENT		=> $theIdentifier,
 			self::kOFFSET_STATUS	=> self::kOFFSET_STATUS_IDLE,
 			self::kOFFSET_DDICT		=> [],
-			self::kOFFSET_DUPS		=> []
+			self::kOFFSET_DUPS		=> [],
+			self::kOFFSET_RELATED	=> []
 		];
 
 		//
@@ -2793,6 +2984,40 @@ class SMARTLoader extends Container
 	} // getDatasetDuplicates.
 
 
+	/*===================================================================================
+	 *	getDatasetRelated																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get dataset related.</h4>
+	 *
+	 * This method can be used by public accessor methods to retrieve the dataset invalid
+	 * referenced entries, if the dataset record was not yet set, the method will raise an
+	 * exception.
+	 *
+	 * The method expects a reference to the data member holding the dataset record.
+	 *
+	 * @param array				   &$theMember			Reference to dataset record.
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	protected function getDatasetRelated( &$theMember )
+	{
+		//
+		// Check dataset record member.
+		//
+		if( is_array( $theMember ) )
+			return $theMember[ self::kOFFSET_RELATED ];								// ==>
+
+		//
+		// Check parameter.
+		//
+		throw new RuntimeException(
+			"Dataset not yet defined." );										// !@! ==>
+
+	} // getDatasetRelated.
+
+
 
 /*=======================================================================================
  *																						*
@@ -2830,7 +3055,8 @@ class SMARTLoader extends Container
 		//
 		// Load header row.
 		//
-		$theInfo[ self::kOFFSET_DDICT ] = $theData[ $theInfo[ self::kOFFSET_HEADER ] ];
+		foreach( $theData[ $theInfo[ self::kOFFSET_HEADER ] ] as $key => $value )
+			$theInfo[ self::kOFFSET_DDICT ][ (string)$key ] = (string)$value;
 
 		//
 		// Iterate rows.
@@ -2852,55 +3078,15 @@ class SMARTLoader extends Container
 			foreach( $theInfo[ self::kOFFSET_DDICT ] as $column => $variable )
 			{
 				//
-				// Skip empty values.
+				// Trim value.
 				//
 				$value = trim( $data[ $column ] );
+
+				//
+				// Set value.
+				//
 				if( strlen( $value ) )
-				{
-					//
-					// Handle date variable.
-					//
-					if( $variable == $this->HouseholdDate() )
-					{
-						$value = DateTime::createFromFormat( 'd-m-y', $value );
-						$value = $value->format( 'Ymd' );
-					}
-
-					//
-					// Set value.
-					//
-					switch( $variable )
-					{
-						case $theInfo[ self::kOFFSET_DATE ]:
-							$record[ self::kOFFSET_DEFAULT_DATE ] = $value;
-							break;
-
-						case $theInfo[ self::kOFFSET_LOCATION ]:
-							$record[ self::kOFFSET_DEFAULT_LOCATION ] = $value;
-							break;
-
-						case $theInfo[ self::kOFFSET_TEAM ]:
-							$record[ self::kOFFSET_DEFAULT_TEAM ] = $value;
-							break;
-
-						case $theInfo[ self::kOFFSET_CLUSTER ]:
-							$record[ self::kOFFSET_DEFAULT_CLUSTER ] = $value;
-							break;
-
-						default:
-							$record[ $variable ] = $value;
-							break;
-					}
-
-				} // Has value.
-
-				//
-				// Check empty required variables.
-				//
-				elseif( in_array( $variable, $theInfo[ self::kOFFSET_REQUIRED ] ) )
-					throw new RuntimeException(
-						"Empty required variable value [$variable] " .
-						"at line $row." );										// !@! ==>
+					$record[ $variable ] = $value;
 
 			} // Iterating variable names.
 
@@ -2909,9 +3095,30 @@ class SMARTLoader extends Container
 			//
 			if( count( $record ) )
 			{
+				//
+				// Check for missing required variables.
+				//
+				$missing =
+					array_diff(
+						$theInfo[ self::kOFFSET_REQUIRED ],
+						array_intersect(
+							$theInfo[ self::kOFFSET_REQUIRED ],
+							array_keys( $record )
+						)
+					);
+				if( count( $missing ) )
+					throw new RuntimeException(
+						"Missing required variable(s) [" .
+						implode( ', ', $missing ) .
+						"] at line $row." );									// !@! ==>
+
+				//
+				// Write row.
+				//
 				$record[ '_id' ] = $row;
 				$collection->insertOne( $record );
-			}
+
+			} // Record not empty.
 
 		} // Iterating rows.
 
@@ -3113,9 +3320,9 @@ class SMARTLoader extends Container
 		// Init selection group.
 		//
 		$temp = [
-			self::kOFFSET_DEFAULT_LOCATION => '$' . self::kOFFSET_DEFAULT_LOCATION,
-			self::kOFFSET_DEFAULT_TEAM => '$' . self::kOFFSET_DEFAULT_TEAM,
-			self::kOFFSET_DEFAULT_CLUSTER => '$' . self::kOFFSET_DEFAULT_CLUSTER
+			$theInfo[ self::kOFFSET_LOCATION ] => '$' . $theInfo[ self::kOFFSET_LOCATION ],
+			$theInfo[ self::kOFFSET_TEAM ] => '$' . $theInfo[ self::kOFFSET_TEAM ],
+			$theInfo[ self::kOFFSET_CLUSTER ] => '$' . $theInfo[ self::kOFFSET_CLUSTER ]
 		];
 
 		//
@@ -3199,12 +3406,12 @@ class SMARTLoader extends Container
 
 			} // Iterating duplicates.
 
+			return self::kOFFSET_STATUS_DUPLICATES;									// ==>
+
 		} // Has duplicates.
 
-		else
-			$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_LOADED;
-
-		return $theInfo[ self::kOFFSET_STATUS ];									// ==>
+		return
+			$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_LOADED;			// ==>
 
 	} // identifyTempCollectionDuplicates.
 
@@ -3273,7 +3480,7 @@ class SMARTLoader extends Container
 											 string $theName )
 	{
 		//
-		// Check if there are duplicates.
+		// Check if there are invalid references.
 		//
 		if( count( $theInfo[ self::kOFFSET_DUPS ] ) )
 		{
@@ -3327,6 +3534,421 @@ class SMARTLoader extends Container
 		} // Has duplicates.
 
 	} // signalFileDuplicates.
+
+
+	/*===================================================================================
+	 *	identifyRelatedHouseholds														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Identify related households.</h4>
+	 *
+	 * This method can be used to identify related households, it will return the status
+	 * code: {@link kOFFSET_STATUS_LOADED} id there are no errors, or
+	 * {@link kOFFSET_STATUS_RELATED} if there are.
+	 *
+	 * @param array				   &$theInfo			Dataset info record.
+	 * @param string				$theName			Collection base name.
+	 * @return string				Status code.
+	 * @throws RuntimeException
+	 */
+	protected function identifyRelatedHouseholds( array &$theInfo,
+												  string $theName )
+	{
+		//
+		// Init local storage.
+		//
+		$collection = $this->Database()->selectCollection( "temp_$theName" );
+		$households = $this->Database()->selectCollection( "temp_".self::kNAME_HOUSEHOLD );
+		$default = [ self::kOFFSET_LOCATION, self::kOFFSET_TEAM, self::kOFFSET_CLUSTER ];
+
+		//
+		// Init selection group.
+		//
+		$temp = [];
+		foreach( $default as $item )
+			$temp[ $theInfo[ $item ] ] = '$' . $theInfo[ $item ];
+		$temp[ $theInfo[ self::kOFFSET_IDENT_HOUSEHOLD ] ]
+			= '$' . $theInfo[ self::kOFFSET_IDENT_HOUSEHOLD ];
+
+		//
+		// Add group.
+		//
+		$pipeline[] = [
+			'$group' => [ '_id' => $temp ]
+		];
+
+		//
+		// Aggregate.
+		//
+		$related =
+			iterator_to_array(
+				$collection->aggregate( $pipeline, [ 'allowDiskUse' => TRUE ] )
+			);
+
+		//
+		// Handle related households.
+		//
+		if( count( $related ) )
+		{
+			//
+			// Iterate duplicate groups.
+			//
+			foreach( $related as $relation )
+			{
+				//
+				// Normalise relation.
+				//
+				$relation = $relation[ '_id' ]->getArrayCopy();
+
+				//
+				// Init query.
+				//
+				$query = [];
+				foreach( $default as $item )
+					$query[ $this->mHouseholdInfo[ $item ] ]
+						= $relation[ $theInfo[ $item ] ];
+				$query[ $this->mHouseholdInfo[ self::kOFFSET_IDENT ] ]
+					= $relation[ $theInfo[ self::kOFFSET_IDENT_HOUSEHOLD ] ];
+
+				//
+				// Check household.
+				//
+				$household = $households->findOne( $query );
+				if( $household !== NULL )
+				{
+					//
+					// Set update commands.
+					//
+					$criteria = [
+						'$set' => [ self::kOFFSET_HOUSEHOLD_ID => $household[ '_id' ] ]
+					];
+
+					//
+					// Update documents.
+					//
+					$collection->updateMany( $relation, $criteria );
+
+				} // Found household.
+
+				//
+				// Handle missing household.
+				//
+				else
+				{
+					//
+					// Set status.
+					//
+					$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_RELATED;
+
+					//
+					// Add missing info.
+					//
+					$index = count( $theInfo[ self::kOFFSET_RELATED ] );
+					$theInfo[ self::kOFFSET_RELATED ][ $index ]
+						= [ 'Household reference' => $relation,
+							'Rows' => [] ];
+
+					//
+					// Select offending rows.
+					//
+					$documents = $collection->find( $relation );
+					foreach( $documents as $document )
+						$theInfo[ self::kOFFSET_RELATED ][ $index ][ 'Rows' ][]
+							= $document[ '_id' ];
+
+				} // Missing household.
+
+			} // Iterating related households.
+
+		} // Has related households.
+
+		return $theInfo[ self::kOFFSET_STATUS ];									// ==>
+
+	} // identifyRelatedHouseholds.
+
+
+	/*===================================================================================
+	 *	signalFileRelatedHouseholds														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Signal invalid household references.</h4>
+	 *
+	 * This method can be used to signal invalid household references onto the original
+	 * file.
+	 *
+	 * @param array				   &$theInfo			Dataset info record.
+	 * @param string				$theName			Collection base name.
+	 */
+	protected function signalFileRelatedHouseholds( array &$theInfo,
+													string $theName )
+	{
+		//
+		// Check if there are duplicates.
+		//
+		if( count( $theInfo[ self::kOFFSET_RELATED ] ) )
+		{
+			//
+			// Get worksheet.
+			//
+			$worksheet =
+				$theInfo[ self::kOFFSET_READER ]
+					->getActiveSheet();
+
+			//
+			// Get highest row and column.
+			//
+			$end = $worksheet->getHighestRow();
+			$column = PHPExcel_Cell::columnIndexFromString(
+				$worksheet->getHighestColumn()
+			);
+
+			//
+			// Set header.
+			//
+			$worksheet->setCellValueByColumnAndRow(
+				$column,
+				$theInfo[ self::kOFFSET_HEADER ],
+				self::kOFFSET_RELATED_HOUSEHOLD );
+
+			//
+			// Iterate missing related households.
+			//
+			foreach( $theInfo[ self::kOFFSET_RELATED ] as $data )
+			{
+				//
+				// Iterate offending rows.
+				//
+				foreach( $data[ 'Rows' ] as $row )
+					$worksheet->setCellValueByColumnAndRow(
+						$column,
+						$row,
+						'X'
+					);
+
+			} // Iterating duplicate groups.
+
+			//
+			// Write file.
+			//
+			$writer = PHPExcel_IOFactory::createWriter(
+				$theInfo[ self::kOFFSET_READER ], 'Excel2007'
+			)->save( $this->getDatasetPath( $theInfo ) );
+
+		} // Has duplicates.
+
+	} // signalFileRelatedHouseholds.
+
+
+	/*===================================================================================
+	 *	identifyRelatedMothers															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Identify related mothers.</h4>
+	 *
+	 * This method can be used to identify related mothers, it will return the status
+	 * code: {@link kOFFSET_STATUS_LOADED} id there are no errors, or
+	 * {@link kOFFSET_STATUS_RELATED} if there are.
+	 *
+	 * @param array				   &$theInfo			Dataset info record.
+	 * @param string				$theName			Collection base name.
+	 * @return string				Status code.
+	 * @throws RuntimeException
+	 */
+	protected function identifyRelatedMothers( array &$theInfo,
+											   string $theName )
+	{
+		//
+		// Init local storage.
+		//
+		$collection = $this->Database()->selectCollection( "temp_$theName" );
+		$mothers = $this->Database()->selectCollection( "temp_".self::kNAME_MOTHER );
+		$default = [
+			self::kOFFSET_LOCATION,
+			self::kOFFSET_TEAM,
+			self::kOFFSET_CLUSTER,
+			self::kOFFSET_IDENT_HOUSEHOLD
+		];
+
+		//
+		// Init selection group.
+		//
+		$temp = [];
+		foreach( $default as $item )
+			$temp[ $theInfo[ $item ] ] = '$' . $theInfo[ $item ];
+		$temp[ $theInfo[ self::kOFFSET_IDENT_MOTHER ] ]
+			= '$' . $theInfo[ self::kOFFSET_IDENT_MOTHER ];
+
+		//
+		// Add group.
+		//
+		$pipeline[] = [
+			'$group' => [ '_id' => $temp ]
+		];
+
+		//
+		// Aggregate.
+		//
+		$related =
+			iterator_to_array(
+				$collection->aggregate( $pipeline, [ 'allowDiskUse' => TRUE ] )
+			);
+
+		//
+		// Handle related mothers.
+		//
+		if( count( $related ) )
+		{
+			//
+			// Iterate duplicate groups.
+			//
+			foreach( $related as $relation )
+			{
+				//
+				// Normalise relation.
+				//
+				$relation = $relation[ '_id' ]->getArrayCopy();
+
+				//
+				// Init query.
+				//
+				$query = [];
+				foreach( $default as $item )
+					$query[ $this->mMotherInfo[ $item ] ]
+						= $relation[ $theInfo[ $item ] ];
+				$query[ $this->mMotherInfo[ self::kOFFSET_IDENT ] ]
+					= $relation[ $theInfo[ self::kOFFSET_IDENT_MOTHER ] ];
+
+				//
+				// Check household.
+				//
+				$mother = $mothers->findOne( $query );
+				if( $mother !== NULL )
+				{
+					//
+					// Set update commands.
+					//
+					$criteria = [
+						'$set' => [ self::kOFFSET_MOTHER_ID => $mother[ '_id' ] ]
+					];
+
+					//
+					// Update documents.
+					//
+					$collection->updateMany( $relation, $criteria );
+
+				} // Found household.
+
+				//
+				// Handle missing mother.
+				//
+				else
+				{
+					//
+					// Set status.
+					//
+					$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_RELATED;
+
+					//
+					// Add missing info.
+					//
+					$index = count( $theInfo[ self::kOFFSET_RELATED ] );
+					$theInfo[ self::kOFFSET_RELATED ][ $index ]
+						= [ 'Mother reference' => $relation,
+							'Rows' => [] ];
+
+					//
+					// Select offending rows.
+					//
+					$documents = $collection->find( $relation );
+					foreach( $documents as $document )
+						$theInfo[ self::kOFFSET_RELATED ][ $index ][ 'Rows' ][]
+							= $document[ '_id' ];
+
+				} // Missing mother.
+
+			} // Iterating related mothers.
+
+		} // Has related mother.
+
+		return $theInfo[ self::kOFFSET_STATUS ];									// ==>
+
+	} // identifyRelatedMothers.
+
+
+	/*===================================================================================
+	 *	signalFileRelatedMothers														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Signal invalid mother references.</h4>
+	 *
+	 * This method can be used to signal invalid mother references onto the original
+	 * file.
+	 *
+	 * @param array				   &$theInfo			Dataset info record.
+	 * @param string				$theName			Collection base name.
+	 */
+	protected function signalFileRelatedMothers( array &$theInfo,
+												 string $theName )
+	{
+		//
+		// Check if there are invalid references.
+		//
+		if( count( $theInfo[ self::kOFFSET_RELATED ] ) )
+		{
+			//
+			// Get worksheet.
+			//
+			$worksheet =
+				$theInfo[ self::kOFFSET_READER ]
+					->getActiveSheet();
+
+			//
+			// Get highest row and column.
+			//
+			$end = $worksheet->getHighestRow();
+			$column = PHPExcel_Cell::columnIndexFromString(
+				$worksheet->getHighestColumn()
+			);
+
+			//
+			// Set header.
+			//
+			$worksheet->setCellValueByColumnAndRow(
+				$column,
+				$theInfo[ self::kOFFSET_HEADER ],
+				self::kOFFSET_RELATED_MOTHER );
+
+			//
+			// Iterate missing related households.
+			//
+			foreach( $theInfo[ self::kOFFSET_RELATED ] as $data )
+			{
+				//
+				// Iterate offending rows.
+				//
+				foreach( $data[ 'Rows' ] as $row )
+					$worksheet->setCellValueByColumnAndRow(
+						$column,
+						$row,
+						'X'
+					);
+
+			} // Iterating duplicate groups.
+
+			//
+			// Write file.
+			//
+			$writer = PHPExcel_IOFactory::createWriter(
+				$theInfo[ self::kOFFSET_READER ], 'Excel2007'
+			)->save( $this->getDatasetPath( $theInfo ) );
+
+		} // Has duplicates.
+
+	} // signalFileRelatedMothers.
 
 
 
