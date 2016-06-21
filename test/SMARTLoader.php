@@ -57,11 +57,11 @@ $result = $test->LoadHouseholdDataset();
 var_dump( $result );
 switch( $test->HouseholdStatus() )
 {
-	case SMARTLoader::kOFFSET_STATUS_IDLE:
+	case SMARTLoader::kSTATUS_IDLE:
 		echo( "==> Dataset is empty\n" );
 		break;
 
-	case SMARTLoader::kOFFSET_STATUS_LOADED:
+	case SMARTLoader::kSTATUS_LOADED:
 		echo( "==> Dataset loaded.\n" );
 		break;
 
@@ -84,11 +84,11 @@ $result = $test->LoadMotherDataset();
 var_dump( $result );
 switch( $test->MotherStatus() )
 {
-	case SMARTLoader::kOFFSET_STATUS_IDLE:
+	case SMARTLoader::kSTATUS_IDLE:
 		echo( "==> Dataset is empty\n" );
 		break;
 
-	case SMARTLoader::kOFFSET_STATUS_LOADED:
+	case SMARTLoader::kSTATUS_LOADED:
 		echo( "==> Dataset loaded.\n" );
 		break;
 
@@ -116,16 +116,16 @@ $result = $test->LoadChildDataset();
 var_dump( $result );
 switch( $test->ChildStatus() )
 {
-	case SMARTLoader::kOFFSET_STATUS_IDLE:
+	case SMARTLoader::kSTATUS_IDLE:
 		echo( "==> Dataset is empty\n" );
 		break;
 
-	case SMARTLoader::kOFFSET_STATUS_DUPLICATES:
+	case SMARTLoader::kSTATUS_DUPLICATES:
 		echo( "==> Dataset has duplicates:\n" );
 		print_r( $test->ChildDuplicates() );
 		exit;
 
-	case SMARTLoader::kOFFSET_STATUS_LOADED:
+	case SMARTLoader::kSTATUS_LOADED:
 		echo( "==> Dataset loaded.\n" );
 		break;
 

@@ -201,7 +201,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_IDENT = 'ident';
+	const kOFFSET_IDENTIFIER = 'id';
 
 	/**
 	 * <h4>Dataset household identifier variable name.</h4>
@@ -211,7 +211,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_IDENT_HOUSEHOLD = 'id_hh';
+	const kOFFSET_HOUSEHOLD = 'household';
 
 	/**
 	 * <h4>Dataset mother identifier variable name.</h4>
@@ -221,7 +221,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_IDENT_MOTHER = 'id_mm';
+	const kOFFSET_MOTHER = 'mother';
 
 	/**
 	 * <h4>Dataset duplicates offset.</h4>
@@ -231,7 +231,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_DUPS = 'dups';
+	const kOFFSET_DUPS = 'duplicates';
 
 	/**
 	 * <h4>Dataset related offset.</h4>
@@ -241,7 +241,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_RELATED = 'rels';
+	const kOFFSET_RELATED = 'related';
 
 	/**
 	 * <h4>Dataset required variables offset.</h4>
@@ -251,7 +251,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_REQUIRED = 'reqs';
+	const kOFFSET_REQUIRED = 'required';
 
 	/**
 	 * <h4>Dataset status offset.</h4>
@@ -280,7 +280,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_STATUS_IDLE = 'idle';
+	const kSTATUS_IDLE = 'idle';
 
 	/**
 	 * <h4>Dataset loaded status.</h4>
@@ -290,7 +290,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_STATUS_LOADED = 'load';
+	const kSTATUS_LOADED = 'load';
 
 	/**
 	 * <h4>Dataset duplicates status.</h4>
@@ -300,7 +300,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_STATUS_DUPLICATES = 'duplicates';
+	const kSTATUS_DUPLICATES = 'duplicates';
 
 	/**
 	 * <h4>Dataset related status.</h4>
@@ -310,7 +310,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kOFFSET_STATUS_RELATED = 'related';
+	const kSTATUS_RELATED = 'related';
 
 	/**
 	 * <h4>Default date variable.</h4>
@@ -849,7 +849,7 @@ class SMARTLoader extends Container
 			$this->mHouseholdInfo[ self::kOFFSET_LOCATION ],
 			$this->mHouseholdInfo[ self::kOFFSET_TEAM ],
 			$this->mHouseholdInfo[ self::kOFFSET_CLUSTER ],
-			$this->mHouseholdInfo[ self::kOFFSET_IDENT ]
+			$this->mHouseholdInfo[ self::kOFFSET_IDENTIFIER ]
 		];
 
 		return $this->mHouseholdInfo;												// ==>
@@ -914,8 +914,8 @@ class SMARTLoader extends Container
 			$this->mMotherInfo[ self::kOFFSET_LOCATION ],
 			$this->mMotherInfo[ self::kOFFSET_TEAM ],
 			$this->mMotherInfo[ self::kOFFSET_CLUSTER ],
-			$this->mMotherInfo[ self::kOFFSET_IDENT ],
-			$this->mMotherInfo[ self::kOFFSET_IDENT_HOUSEHOLD ]
+			$this->mMotherInfo[ self::kOFFSET_IDENTIFIER ],
+			$this->mMotherInfo[ self::kOFFSET_HOUSEHOLD ]
 		];
 
 		return $this->mMotherInfo;													// ==>
@@ -983,9 +983,9 @@ class SMARTLoader extends Container
 			$this->mChildInfo[ self::kOFFSET_LOCATION ],
 			$this->mChildInfo[ self::kOFFSET_TEAM ],
 			$this->mChildInfo[ self::kOFFSET_CLUSTER ],
-			$this->mChildInfo[ self::kOFFSET_IDENT ],
-			$this->mChildInfo[ self::kOFFSET_IDENT_HOUSEHOLD ],
-			$this->mChildInfo[ self::kOFFSET_IDENT_MOTHER ]
+			$this->mChildInfo[ self::kOFFSET_IDENTIFIER ],
+			$this->mChildInfo[ self::kOFFSET_HOUSEHOLD ],
+			$this->mChildInfo[ self::kOFFSET_MOTHER ]
 		];
 
 		return $this->mChildInfo;													// ==>
@@ -2002,7 +2002,7 @@ class SMARTLoader extends Container
 				//
 				// Handle duplicates.
 				//
-				if( $status == self::kOFFSET_STATUS_DUPLICATES )
+				if( $status == self::kSTATUS_DUPLICATES )
 				{
 					//
 					// Write to collection.
@@ -2022,11 +2022,19 @@ class SMARTLoader extends Container
 
 				} // Has duplicates.
 
+				//
+				// Write to final collection.
+				//
+				if( $this->mHouseholdInfo[ self::kOFFSET_STATUS ] == self::kSTATUS_LOADED )
+				{
+
+				} // No errors.
+
 				return $this->mHouseholdInfo[ self::kOFFSET_STATUS ];				// ==>
 
 			} // Has data.
 
-			return self::kOFFSET_STATUS_IDLE;										// ==>
+			return self::kSTATUS_IDLE;										// ==>
 
 		} // Defined household dataset.
 
@@ -2115,7 +2123,7 @@ class SMARTLoader extends Container
 				//
 				// Handle duplicates.
 				//
-				if( $status == self::kOFFSET_STATUS_DUPLICATES )
+				if( $status == self::kSTATUS_DUPLICATES )
 				{
 					//
 					// Write to collection.
@@ -2146,7 +2154,7 @@ class SMARTLoader extends Container
 				//
 				// Handle missing related households.
 				//
-				if( $status == self::kOFFSET_STATUS_RELATED )
+				if( $status == self::kSTATUS_RELATED )
 					$this->signalFileRelatedHouseholds(
 						$this->mMotherInfo,			// Dataset info record.
 						self::kNAME_MOTHER			// Dataset default name,
@@ -2156,7 +2164,7 @@ class SMARTLoader extends Container
 
 			} // Has data.
 
-			return self::kOFFSET_STATUS_IDLE;										// ==>
+			return self::kSTATUS_IDLE;										// ==>
 
 		} // Defined mother dataset.
 
@@ -2245,7 +2253,7 @@ class SMARTLoader extends Container
 				//
 				// Handle duplicates.
 				//
-				if( $status == self::kOFFSET_STATUS_DUPLICATES )
+				if( $status == self::kSTATUS_DUPLICATES )
 				{
 					//
 					// Write to collection.
@@ -2276,7 +2284,7 @@ class SMARTLoader extends Container
 				//
 				// Handle missing related households.
 				//
-				if( $status == self::kOFFSET_STATUS_RELATED )
+				if( $status == self::kSTATUS_RELATED )
 					$this->signalFileRelatedHouseholds(
 						$this->mChildInfo,			// Dataset info record.
 						self::kNAME_CHILD			// Dataset default name,
@@ -2293,7 +2301,7 @@ class SMARTLoader extends Container
 				//
 				// Handle missing related mothers.
 				//
-				if( $status == self::kOFFSET_STATUS_RELATED )
+				if( $status == self::kSTATUS_RELATED )
 					$this->signalFileRelatedMothers(
 						$this->mChildInfo,			// Dataset info record.
 						self::kNAME_CHILD			// Dataset default name,
@@ -2303,7 +2311,7 @@ class SMARTLoader extends Container
 
 			} // Has data.
 
-			return self::kOFFSET_STATUS_IDLE;										// ==>
+			return self::kSTATUS_IDLE;										// ==>
 
 		} // Defined child dataset.
 
@@ -2458,8 +2466,8 @@ class SMARTLoader extends Container
 			self::kOFFSET_LOCATION	=> $theLocation,
 			self::kOFFSET_TEAM		=> $theTeam,
 			self::kOFFSET_CLUSTER	=> $theCluster,
-			self::kOFFSET_IDENT		=> $theIdentifier,
-			self::kOFFSET_STATUS	=> self::kOFFSET_STATUS_IDLE,
+			self::kOFFSET_IDENTIFIER		=> $theIdentifier,
+			self::kOFFSET_STATUS	=> self::kSTATUS_IDLE,
 			self::kOFFSET_DDICT		=> [],
 			self::kOFFSET_DUPS		=> [],
 			self::kOFFSET_RELATED	=> []
@@ -2469,9 +2477,9 @@ class SMARTLoader extends Container
 		// Add other elements.
 		//
 		if( $theHousehold !== NULL )
-			$record[ self::kOFFSET_IDENT_HOUSEHOLD ] = $theHousehold;
+			$record[ self::kOFFSET_HOUSEHOLD ] = $theHousehold;
 		if( $theMother !== NULL )
-			$record[ self::kOFFSET_IDENT_MOTHER ] = $theMother;
+			$record[ self::kOFFSET_MOTHER ] = $theMother;
 
 		return $record;																// ==>
 
@@ -2771,7 +2779,7 @@ class SMARTLoader extends Container
 		// Check dataset record member.
 		//
 		if( is_array( $theMember ) )
-			return $theMember[ self::kOFFSET_IDENT ];								// ==>
+			return $theMember[ self::kOFFSET_IDENTIFIER ];								// ==>
 
 		//
 		// Check parameter.
@@ -2805,7 +2813,7 @@ class SMARTLoader extends Container
 		// Check dataset record member.
 		//
 		if( is_array( $theMember ) )
-			return $theMember[ self::kOFFSET_IDENT_HOUSEHOLD ];						// ==>
+			return $theMember[ self::kOFFSET_HOUSEHOLD ];						// ==>
 
 		//
 		// Check parameter.
@@ -2839,7 +2847,7 @@ class SMARTLoader extends Container
 		// Check dataset record member.
 		//
 		if( is_array( $theMember ) )
-			return $theMember[ self::kOFFSET_IDENT_MOTHER ];						// ==>
+			return $theMember[ self::kOFFSET_MOTHER ];						// ==>
 
 		//
 		// Check parameter.
@@ -3363,7 +3371,7 @@ class SMARTLoader extends Container
 			//
 			// Set status.
 			//
-			$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_DUPLICATES;
+			$theInfo[ self::kOFFSET_STATUS ] = self::kSTATUS_DUPLICATES;
 
 			//
 			// Iterate duplicate groups.
@@ -3406,12 +3414,12 @@ class SMARTLoader extends Container
 
 			} // Iterating duplicates.
 
-			return self::kOFFSET_STATUS_DUPLICATES;									// ==>
+			return self::kSTATUS_DUPLICATES;									// ==>
 
 		} // Has duplicates.
 
 		return
-			$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_LOADED;			// ==>
+			$theInfo[ self::kOFFSET_STATUS ] = self::kSTATUS_LOADED;			// ==>
 
 	} // identifyTempCollectionDuplicates.
 
@@ -3485,6 +3493,22 @@ class SMARTLoader extends Container
 		if( count( $theInfo[ self::kOFFSET_DUPS ] ) )
 		{
 			//
+			// Init local storage.
+			//
+			$style = [
+				'fill' => [
+					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'color' => [ 'argb' => 'FFFF0000' ]
+				],
+				'font' => [
+					'bold' => TRUE
+				],
+				'alignment' => [
+					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
+				]
+			];
+
+			//
 			// Get worksheet.
 			//
 			$worksheet =
@@ -3512,15 +3536,27 @@ class SMARTLoader extends Container
 			//
 			foreach( $theInfo[ self::kOFFSET_DUPS ] as $id => $data )
 			{
+
 				//
 				// Iterate duplicate rows.
 				//
 				foreach( $data[ 'Duplicate rows' ] as $row )
-					$worksheet->setCellValueByColumnAndRow(
-						$column,
-						$row,
-						$id
-					);
+				{
+					//
+					// Get cell.
+					//
+					$cell = $worksheet->getCellByColumnAndRow( $column, $row );
+
+					//
+					// Set cell style.
+					//
+					$cell->getStyle()->applyFromArray( $style );
+
+					//
+					// Set cell value.
+					//
+					$cell->setValue( "$id - DUPLICATE" );
+				}
 
 			} // Iterating duplicate groups.
 
@@ -3568,8 +3604,8 @@ class SMARTLoader extends Container
 		$temp = [];
 		foreach( $default as $item )
 			$temp[ $theInfo[ $item ] ] = '$' . $theInfo[ $item ];
-		$temp[ $theInfo[ self::kOFFSET_IDENT_HOUSEHOLD ] ]
-			= '$' . $theInfo[ self::kOFFSET_IDENT_HOUSEHOLD ];
+		$temp[ $theInfo[ self::kOFFSET_HOUSEHOLD ] ]
+			= '$' . $theInfo[ self::kOFFSET_HOUSEHOLD ];
 
 		//
 		// Add group.
@@ -3608,8 +3644,8 @@ class SMARTLoader extends Container
 				foreach( $default as $item )
 					$query[ $this->mHouseholdInfo[ $item ] ]
 						= $relation[ $theInfo[ $item ] ];
-				$query[ $this->mHouseholdInfo[ self::kOFFSET_IDENT ] ]
-					= $relation[ $theInfo[ self::kOFFSET_IDENT_HOUSEHOLD ] ];
+				$query[ $this->mHouseholdInfo[ self::kOFFSET_IDENTIFIER ] ]
+					= $relation[ $theInfo[ self::kOFFSET_HOUSEHOLD ] ];
 
 				//
 				// Check household.
@@ -3639,7 +3675,7 @@ class SMARTLoader extends Container
 					//
 					// Set status.
 					//
-					$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_RELATED;
+					$theInfo[ self::kOFFSET_STATUS ] = self::kSTATUS_RELATED;
 
 					//
 					// Add missing info.
@@ -3690,6 +3726,22 @@ class SMARTLoader extends Container
 		if( count( $theInfo[ self::kOFFSET_RELATED ] ) )
 		{
 			//
+			// Init local storage.
+			//
+			$style = [
+				'fill' => [
+					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'color' => [ 'argb' => 'FFFF0000' ]
+				],
+				'font' => [
+					'bold' => TRUE
+				],
+				'alignment' => [
+					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
+				]
+			];
+
+			//
 			// Get worksheet.
 			//
 			$worksheet =
@@ -3721,11 +3773,23 @@ class SMARTLoader extends Container
 				// Iterate offending rows.
 				//
 				foreach( $data[ 'Rows' ] as $row )
-					$worksheet->setCellValueByColumnAndRow(
-						$column,
-						$row,
-						'X'
-					);
+				{
+					//
+					// Get cell.
+					//
+					$cell = $worksheet->getCellByColumnAndRow( $column, $row );
+
+					//
+					// Set cell style.
+					//
+					$cell->getStyle()->applyFromArray( $style );
+
+					//
+					// Set cell value.
+					//
+					$cell->setValue( "MISSING HOUSEHOLD" );
+
+				} // Iterating offending rows.
 
 			} // Iterating duplicate groups.
 
@@ -3736,7 +3800,7 @@ class SMARTLoader extends Container
 				$theInfo[ self::kOFFSET_READER ], 'Excel2007'
 			)->save( $this->getDatasetPath( $theInfo ) );
 
-		} // Has duplicates.
+		} // Has missing households.
 
 	} // signalFileRelatedHouseholds.
 
@@ -3769,7 +3833,7 @@ class SMARTLoader extends Container
 			self::kOFFSET_LOCATION,
 			self::kOFFSET_TEAM,
 			self::kOFFSET_CLUSTER,
-			self::kOFFSET_IDENT_HOUSEHOLD
+			self::kOFFSET_HOUSEHOLD
 		];
 
 		//
@@ -3778,8 +3842,8 @@ class SMARTLoader extends Container
 		$temp = [];
 		foreach( $default as $item )
 			$temp[ $theInfo[ $item ] ] = '$' . $theInfo[ $item ];
-		$temp[ $theInfo[ self::kOFFSET_IDENT_MOTHER ] ]
-			= '$' . $theInfo[ self::kOFFSET_IDENT_MOTHER ];
+		$temp[ $theInfo[ self::kOFFSET_MOTHER ] ]
+			= '$' . $theInfo[ self::kOFFSET_MOTHER ];
 
 		//
 		// Add group.
@@ -3818,8 +3882,8 @@ class SMARTLoader extends Container
 				foreach( $default as $item )
 					$query[ $this->mMotherInfo[ $item ] ]
 						= $relation[ $theInfo[ $item ] ];
-				$query[ $this->mMotherInfo[ self::kOFFSET_IDENT ] ]
-					= $relation[ $theInfo[ self::kOFFSET_IDENT_MOTHER ] ];
+				$query[ $this->mMotherInfo[ self::kOFFSET_IDENTIFIER ] ]
+					= $relation[ $theInfo[ self::kOFFSET_MOTHER ] ];
 
 				//
 				// Check household.
@@ -3849,7 +3913,7 @@ class SMARTLoader extends Container
 					//
 					// Set status.
 					//
-					$theInfo[ self::kOFFSET_STATUS ] = self::kOFFSET_STATUS_RELATED;
+					$theInfo[ self::kOFFSET_STATUS ] = self::kSTATUS_RELATED;
 
 					//
 					// Add missing info.
@@ -3900,6 +3964,22 @@ class SMARTLoader extends Container
 		if( count( $theInfo[ self::kOFFSET_RELATED ] ) )
 		{
 			//
+			// Init local storage.
+			//
+			$style = [
+				'fill' => [
+					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'color' => [ 'argb' => 'FFFF0000' ]
+				],
+				'font' => [
+					'bold' => TRUE
+				],
+				'alignment' => [
+					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
+				]
+			];
+
+			//
 			// Get worksheet.
 			//
 			$worksheet =
@@ -3931,11 +4011,23 @@ class SMARTLoader extends Container
 				// Iterate offending rows.
 				//
 				foreach( $data[ 'Rows' ] as $row )
-					$worksheet->setCellValueByColumnAndRow(
-						$column,
-						$row,
-						'X'
-					);
+				{
+					//
+					// Get cell.
+					//
+					$cell = $worksheet->getCellByColumnAndRow( $column, $row );
+
+					//
+					// Set cell style.
+					//
+					$cell->getStyle()->applyFromArray( $style );
+
+					//
+					// Set cell value.
+					//
+					$cell->setValue( "MISSING MOTHER" );
+
+				} // Iterating offending rows.
 
 			} // Iterating duplicate groups.
 
@@ -3946,7 +4038,7 @@ class SMARTLoader extends Container
 				$theInfo[ self::kOFFSET_READER ], 'Excel2007'
 			)->save( $this->getDatasetPath( $theInfo ) );
 
-		} // Has duplicates.
+		} // Has missing mothers.
 
 	} // signalFileRelatedMothers.
 
