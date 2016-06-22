@@ -789,7 +789,7 @@ class SMARTLoader extends Container
 	 */
 	public function Child( $theValue = NULL )
 	{
-		return $this->manageCollection( $this->mMother, $theValue );				// ==>
+		return $this->manageCollection( $this->mChild, $theValue );					// ==>
 
 	} // Child.
 
@@ -2026,9 +2026,7 @@ class SMARTLoader extends Container
 				// Write to final collection.
 				//
 				if( $this->mHouseholdInfo[ self::kOFFSET_STATUS ] == self::kSTATUS_LOADED )
-				{
-
-				} // No errors.
+					$this->loadFinalHouseholdCollection();
 
 				return $this->mHouseholdInfo[ self::kOFFSET_STATUS ];				// ==>
 
@@ -2159,6 +2157,12 @@ class SMARTLoader extends Container
 						$this->mMotherInfo,			// Dataset info record.
 						self::kNAME_MOTHER			// Dataset default name,
 					);
+
+				//
+				// Write to final collection.
+				//
+				if( $this->mMotherInfo[ self::kOFFSET_STATUS ] == self::kSTATUS_LOADED )
+					$this->loadFinalMotherCollection();
 
 				return $this->mMotherInfo[ self::kOFFSET_STATUS ];					// ==>
 
@@ -2307,6 +2311,12 @@ class SMARTLoader extends Container
 						self::kNAME_CHILD			// Dataset default name,
 					);
 
+				//
+				// Write to final collection.
+				//
+				if( $this->mMotherInfo[ self::kOFFSET_STATUS ] == self::kSTATUS_LOADED )
+					$this->loadFinalChildCollection();
+
 				return $this->mChildInfo[ self::kOFFSET_STATUS ];					// ==>
 
 			} // Has data.
@@ -2322,6 +2332,86 @@ class SMARTLoader extends Container
 			"Dataset not yet defined." );										// !@! ==>
 
 	} // LoadChildDataset.
+
+
+	/*===================================================================================
+	 *	CreateSurveyCollection															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Merge survey collection.</h4>
+	 *
+	 * This method can be used to create the merged survey collection.
+	 *
+	 * The method expects all final collections to be present and not empty, if any error
+	 * occurs, the method will raise an exception.
+	 *
+	 * @throws RuntimeException
+	 */
+	public function CreateSurveyCollection()
+	{
+		//
+		// Check status.
+		//
+		if( ($this->mChildInfo[ self::kOFFSET_STATUS ] == self::kSTATUS_LOADED)
+		 && ($this->mMotherInfo[ self::kOFFSET_STATUS ] == self::kSTATUS_LOADED)
+		 && ($this->mHouseholdInfo[ self::kOFFSET_STATUS ] == self::kSTATUS_LOADED) )
+		{
+			//
+			// Check child collections.
+			//
+			if( $this->mChild->count() )
+			{
+				//
+				// Check mother collections.
+				//
+				if( $this->mMother->count() )
+				{
+					//
+					// Check household collections.
+					//
+					if( $this->mHousehold->count() )
+					{
+						//
+						// Clear temporary collections.
+						//
+						$this->Database()
+							->selectCollection( "temp_" . self::kNAME_CHILD )->drop();
+						$this->Database()
+							->selectCollection( "temp_" . self::kNAME_MOTHER )->drop();
+						$this->Database()
+							->selectCollection( "temp_" . self::kNAME_HOUSEHOLD )->drop();
+
+						//
+						// Merge datasets.
+						//
+						$this->loadFinalSurveyCollection();
+
+				} // Household collection not empty.
+
+				else
+					throw new RuntimeException(
+						"Household dataset is empty." );						// !@! ==>
+
+				} // Mother collection not empty.
+
+				else
+					throw new RuntimeException(
+						"Mother dataset is empty." );								// !@! ==>
+
+			} // Child collection not empty.
+
+			else
+				throw new RuntimeException(
+					"Child dataset is empty." );									// !@! ==>
+
+		} // All checks cleared.
+
+		else
+			throw new RuntimeException(
+				"Datasets need cleaning." );									// !@! ==>
+
+	} // CreateSurveyCollection.
 
 
 
@@ -4041,6 +4131,513 @@ class SMARTLoader extends Container
 		} // Has missing mothers.
 
 	} // signalFileRelatedMothers.
+
+
+	/*===================================================================================
+	 *	loadFinalHouseholdCollection													*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load final household collection.</h4>
+	 *
+	 * This method can be used to load the final household dataset.
+	 */
+	protected function loadFinalHouseholdCollection()
+	{
+		//
+		// Init collections.
+		//
+		$this->mHousehold->drop();
+		$collection =
+			$this->Database()->selectCollection( "temp_" . self::kNAME_HOUSEHOLD );
+
+		//
+		// Init default fields.
+		//
+		$defaults = [
+			$this->mHouseholdInfo[ self::kOFFSET_DATE ]
+				=> self::kOFFSET_DEFAULT_DATE,
+			$this->mHouseholdInfo[ self::kOFFSET_LOCATION ]
+				=> self::kOFFSET_DEFAULT_LOCATION,
+			$this->mHouseholdInfo[ self::kOFFSET_TEAM ]
+				=> self::kOFFSET_DEFAULT_TEAM,
+			$this->mHouseholdInfo[ self::kOFFSET_CLUSTER ]
+				=> self::kOFFSET_DEFAULT_CLUSTER,
+			$this->mHouseholdInfo[ self::kOFFSET_IDENTIFIER ]
+				=> self::kOFFSET_DEFAULT_IDENT
+		];
+
+		//
+		// Init other fields.
+		//
+		$other =
+			array_diff(
+				array_keys( $this->mHouseholdInfo[ self::kOFFSET_DDICT ] ),
+				array_keys( $defaults )
+			);
+
+		//
+		// Iterate temporary collection.
+		//
+		$cursor = $collection->find();
+		foreach( $cursor as $record )
+		{
+			//
+			// Init document.
+			//
+			$document = [ '_id' => $record[ '_id' ] ];
+
+			//
+			// Load default fields.
+			//
+			foreach( $defaults as $name => $default )
+				$document[ $default ] = $record[ $name ];
+
+			//
+			// Load other fields.
+			//
+			foreach( $other as $name )
+			{
+				if( array_key_exists( $name, $record ) )
+					$document[ $name ] = $record[ $name ];
+			}
+
+			//
+			// Save record.
+			//
+			$this->mHousehold->insertOne( $document );
+
+		} // Iterating temporary collection.
+
+	} // loadFinalHouseholdCollection.
+
+
+	/*===================================================================================
+	 *	loadFinalMotherCollection														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load final mother collection.</h4>
+	 *
+	 * This method can be used to load the final mother dataset.
+	 */
+	protected function loadFinalMotherCollection()
+	{
+		//
+		// Init collections.
+		//
+		$this->mMother->drop();
+		$collection =
+			$this->Database()->selectCollection( "temp_" . self::kNAME_MOTHER );
+
+		//
+		// Init default fields.
+		//
+		$defaults = [
+			$this->mMotherInfo[ self::kOFFSET_DATE ] => self::kOFFSET_DEFAULT_DATE,
+			$this->mMotherInfo[ self::kOFFSET_LOCATION ] => self::kOFFSET_DEFAULT_LOCATION,
+			$this->mMotherInfo[ self::kOFFSET_TEAM ] => self::kOFFSET_DEFAULT_TEAM,
+			$this->mMotherInfo[ self::kOFFSET_CLUSTER ] => self::kOFFSET_DEFAULT_CLUSTER,
+			$this->mMotherInfo[ self::kOFFSET_HOUSEHOLD ] => self::kOFFSET_DEFAULT_HOUSEHOLD,
+			$this->mMotherInfo[ self::kOFFSET_IDENTIFIER ] => self::kOFFSET_DEFAULT_IDENT,
+			self::kOFFSET_HOUSEHOLD_ID => self::kOFFSET_HOUSEHOLD_ID
+		];
+
+		//
+		// Init other fields.
+		//
+		$other =
+			array_diff(
+				array_keys( $this->mMotherInfo[ self::kOFFSET_DDICT ] ),
+				array_keys( $defaults )
+			);
+
+		//
+		// Iterate temporary collection.
+		//
+		$cursor = $collection->find();
+		foreach( $cursor as $record )
+		{
+			//
+			// Init document.
+			//
+			$document = [ '_id' => $record[ '_id' ] ];
+
+			//
+			// Load default fields.
+			//
+			foreach( $defaults as $name => $default )
+				$document[ $default ] = $record[ $name ];
+
+			//
+			// Load other fields.
+			//
+			foreach( $other as $name )
+			{
+				if( array_key_exists( $name, $record ) )
+					$document[ $name ] = $record[ $name ];
+			}
+
+			//
+			// Save record.
+			//
+			$this->mMother->insertOne( $document );
+
+		} // Iterating temporary collection.
+
+	} // loadFinalMotherCollection.
+
+
+	/*===================================================================================
+	 *	loadFinalChildCollection														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load final child collection.</h4>
+	 *
+	 * This method can be used to load the final child dataset.
+	 */
+	protected function loadFinalChildCollection()
+	{
+		//
+		// Init collections.
+		//
+		$this->mChild->drop();
+		$collection =
+			$this->Database()->selectCollection( "temp_" . self::kNAME_CHILD );
+
+		//
+		// Init default fields.
+		//
+		$defaults = [
+			$this->mChildInfo[ self::kOFFSET_DATE ] => self::kOFFSET_DEFAULT_DATE,
+			$this->mChildInfo[ self::kOFFSET_LOCATION ] => self::kOFFSET_DEFAULT_LOCATION,
+			$this->mChildInfo[ self::kOFFSET_TEAM ] => self::kOFFSET_DEFAULT_TEAM,
+			$this->mChildInfo[ self::kOFFSET_CLUSTER ] => self::kOFFSET_DEFAULT_CLUSTER,
+			$this->mChildInfo[ self::kOFFSET_HOUSEHOLD ] => self::kOFFSET_DEFAULT_HOUSEHOLD,
+			$this->mChildInfo[ self::kOFFSET_MOTHER ] => self::kOFFSET_DEFAULT_MOTHER,
+			$this->mChildInfo[ self::kOFFSET_IDENTIFIER ] => self::kOFFSET_DEFAULT_IDENT,
+			self::kOFFSET_HOUSEHOLD_ID => self::kOFFSET_HOUSEHOLD_ID,
+			self::kOFFSET_MOTHER_ID => self::kOFFSET_MOTHER_ID
+		];
+
+		//
+		// Init other fields.
+		//
+		$other =
+			array_diff(
+				array_keys( $this->mChildInfo[ self::kOFFSET_DDICT ] ),
+				array_keys( $defaults )
+			);
+
+		//
+		// Iterate temporary collection.
+		//
+		$cursor = $collection->find();
+		foreach( $cursor as $record )
+		{
+			//
+			// Init document.
+			//
+			$document = [ '_id' => $record[ '_id' ] ];
+
+			//
+			// Load default fields.
+			//
+			foreach( $defaults as $name => $default )
+				$document[ $default ] = $record[ $name ];
+
+			//
+			// Load other fields.
+			//
+			foreach( $other as $name )
+			{
+				if( array_key_exists( $name, $record ) )
+					$document[ $name ] = $record[ $name ];
+			}
+
+			//
+			// Save record.
+			//
+			$this->mChild->insertOne( $document );
+
+		} // Iterating temporary collection.
+
+	} // loadFinalChildCollection.
+
+
+	/*===================================================================================
+	 *	loadFinalSurveyCollection														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load final survey collection.</h4>
+	 *
+	 * This method can be used to merge the child, mother and household surveys into the
+	 * final survey collection.
+	 */
+	protected function loadFinalSurveyCollection()
+	{
+		//
+		// Init collections.
+		//
+		$this->mSurvey->drop();
+
+		//
+		// Init default fields.
+		//
+		$defaults = [
+			self::kOFFSET_DEFAULT_DATE,
+			self::kOFFSET_DEFAULT_LOCATION,
+			self::kOFFSET_DEFAULT_TEAM,
+			self::kOFFSET_DEFAULT_CLUSTER,
+			self::kOFFSET_DEFAULT_HOUSEHOLD,
+			self::kOFFSET_DEFAULT_MOTHER,
+			self::kOFFSET_DEFAULT_IDENT
+		];
+
+		//
+		// Init other fields.
+		//
+		$child_fields = $this->getChildFields();
+		$mother_fields = $this->getMotherFields();
+		$household_fields = $this->getHouseholdFields();
+
+		//
+		// Iterate children.
+		//
+		$child_cursor = $this->mChild->find();
+		foreach( $child_cursor as $child )
+		{
+			//
+			// Init document.
+			//
+			$document = [ '_id' => $child[ '_id' ] ];
+
+			//
+			// Load default fields.
+			//
+			foreach( $defaults as $name => $default )
+				$document[ $default ] = $child[ $default ];
+
+			//
+			// Load child fields.
+			//
+			foreach( $child_fields as $name )
+			{
+				if( array_key_exists( $name, $child ) )
+					$document[ $name ] = $child[ $name ];
+			}
+
+			//
+			// Get mother.
+			//
+			$mother =
+				$this->mMother->findOne(
+					[ '_id' => $child[ self::kOFFSET_MOTHER_ID ] ] );
+			if( $mother !== NULL )
+			{
+				//
+				// Set mother ID.
+				//
+				$document[ self::kOFFSET_MOTHER_ID ] = $child[ self::kOFFSET_MOTHER_ID ];
+
+				//
+				// Load mother fields.
+				//
+				foreach( $mother_fields as $name )
+				{
+					if( array_key_exists( $name, $mother ) )
+						$document[ $name ] = $mother[ $name ];
+				}
+
+				//
+				// Get household.
+				//
+				$household =
+					$this->mHousehold->findOne(
+						[ '_id' => $child[ self::kOFFSET_HOUSEHOLD_ID ] ] );
+				if( $household !== NULL )
+				{
+					//
+					// Set household ID.
+					//
+					$document[ self::kOFFSET_HOUSEHOLD_ID ]
+						= $child[ self::kOFFSET_HOUSEHOLD_ID ];
+
+					//
+					// Load household fields.
+					//
+					foreach( $household_fields as $name )
+					{
+						if( array_key_exists( $name, $household ) )
+							$document[ $name ] = $household[ $name ];
+					}
+
+				} // Found household.
+
+				else
+					throw new InvalidArgumentException(
+						"Missing household with ID [" .
+						$child[ self::kOFFSET_HOUSEHOLD_ID ] .
+						"]." );													// !@! ==>
+
+			} // Found mother.
+
+			else
+				throw new InvalidArgumentException(
+					"Missing mother with ID [" .
+					$child[ self::kOFFSET_MOTHER_ID ] .
+					"]." );														// !@! ==>
+
+			//
+			// Save record.
+			//
+			$this->mSurvey->insertOne( $document );
+
+		} // Iterating children.
+
+	} // loadFinalSurveyCollection.
+
+
+
+/*=======================================================================================
+ *																						*
+ *									PROTECTED UTILITIES									*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	getChildFields																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get significant child fields.</h4>
+	 *
+	 * This method can be used to retrieve the list of child collection fields excluding
+	 * default fields.
+	 *
+	 * The method assumes all required information is loaded into the object.
+	 *
+	 * @return array
+	 */
+	protected function getChildFields()
+	{
+		//
+		// Init default fields.
+		//
+		$defaults = [
+			self::kOFFSET_DEFAULT_DATE,
+			self::kOFFSET_DEFAULT_LOCATION,
+			self::kOFFSET_DEFAULT_TEAM,
+			self::kOFFSET_DEFAULT_CLUSTER,
+			self::kOFFSET_DEFAULT_HOUSEHOLD,
+			self::kOFFSET_DEFAULT_MOTHER,
+			self::kOFFSET_DEFAULT_IDENT
+		];
+
+		return
+			array_diff(
+				array_keys( $this->mChildInfo[ self::kOFFSET_DDICT ] ),
+				$defaults,
+				[	$this->mChildInfo[ self::kOFFSET_DATE ],
+					$this->mChildInfo[ self::kOFFSET_LOCATION ],
+					$this->mChildInfo[ self::kOFFSET_TEAM ],
+					$this->mChildInfo[ self::kOFFSET_CLUSTER ],
+					$this->mChildInfo[ self::kOFFSET_HOUSEHOLD ],
+					$this->mChildInfo[ self::kOFFSET_MOTHER ],
+					$this->mChildInfo[ self::kOFFSET_IDENTIFIER ] ],
+				[ self::kOFFSET_HOUSEHOLD_ID, self::kOFFSET_MOTHER_ID ]
+			);																		// ==>
+
+	} // getChildFields.
+
+
+	/*===================================================================================
+	 *	getMotherFields																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get significant mother fields.</h4>
+	 *
+	 * This method can be used to retrieve the list of mother collection fields excluding
+	 * default fields.
+	 *
+	 * The method assumes all required information is loaded into the object.
+	 *
+	 * @return array
+	 */
+	protected function getMotherFields()
+	{
+		//
+		// Init default fields.
+		//
+		$defaults = [
+			self::kOFFSET_DEFAULT_DATE,
+			self::kOFFSET_DEFAULT_LOCATION,
+			self::kOFFSET_DEFAULT_TEAM,
+			self::kOFFSET_DEFAULT_CLUSTER,
+			self::kOFFSET_DEFAULT_HOUSEHOLD,
+			self::kOFFSET_DEFAULT_IDENT
+		];
+
+		return
+			array_diff(
+				array_keys( $this->mMotherInfo[ self::kOFFSET_DDICT ] ),
+				$defaults,
+				[	$this->mMotherInfo[ self::kOFFSET_DATE ],
+					$this->mMotherInfo[ self::kOFFSET_LOCATION ],
+					$this->mMotherInfo[ self::kOFFSET_TEAM ],
+					$this->mMotherInfo[ self::kOFFSET_CLUSTER ],
+					$this->mMotherInfo[ self::kOFFSET_HOUSEHOLD ],
+					$this->mMotherInfo[ self::kOFFSET_IDENTIFIER ] ],
+				[ self::kOFFSET_HOUSEHOLD_ID ]
+			);																		// ==>
+
+	} // getMotherFields.
+
+
+	/*===================================================================================
+	 *	getHouseholdFields																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get significant mother fields.</h4>
+	 *
+	 * This method can be used to retrieve the list of mother collection fields excluding
+	 * default fields.
+	 *
+	 * The method assumes all required information is loaded into the object.
+	 *
+	 * @return array
+	 */
+	protected function getHouseholdFields()
+	{
+		//
+		// Init default fields.
+		//
+		$defaults = [
+			self::kOFFSET_DEFAULT_DATE,
+			self::kOFFSET_DEFAULT_LOCATION,
+			self::kOFFSET_DEFAULT_TEAM,
+			self::kOFFSET_DEFAULT_CLUSTER,
+			self::kOFFSET_DEFAULT_IDENT
+		];
+
+		return
+			array_diff(
+				array_keys( $this->mHouseholdInfo[ self::kOFFSET_DDICT ] ),
+				$defaults,
+				[	$this->mHouseholdInfo[ self::kOFFSET_DATE ],
+					$this->mHouseholdInfo[ self::kOFFSET_LOCATION ],
+					$this->mHouseholdInfo[ self::kOFFSET_TEAM ],
+					$this->mHouseholdInfo[ self::kOFFSET_CLUSTER ],
+					$this->mHouseholdInfo[ self::kOFFSET_IDENTIFIER ] ]
+			);																		// ==>
+
+	} // getHouseholdFields.
 
 
 

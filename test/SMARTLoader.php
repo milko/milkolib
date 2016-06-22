@@ -143,6 +143,14 @@ switch( $test->ChildStatus() )
 		break;
 }
 
+echo( "\n====================================================================================\n\n" );
+
+//
+// Merge datasets.
+//
+echo( '$test->ClearTempCollections();' . "\n" );
+$test->CreateSurveyCollection();
+
 
 ?>
 
