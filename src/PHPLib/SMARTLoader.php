@@ -244,6 +244,16 @@ class SMARTLoader extends Container
 	const kOFFSET_RELATED = 'related';
 
 	/**
+	 * <h4>Dataset orphaned offset.</h4>
+	 *
+	 * This constant holds the <i>offset</i> that <i>contains the list of orphaned
+	 * records</i>.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_ORPHANED = 'orphaned';
+
+	/**
 	 * <h4>Dataset required variables offset.</h4>
 	 *
 	 * This constant holds the <i>offset</i> that <i>contains the list of required
@@ -311,6 +321,16 @@ class SMARTLoader extends Container
 	 * @var string
 	 */
 	const kSTATUS_RELATED = 'related';
+
+	/**
+	 * <h4>Dataset orphaned status.</h4>
+	 *
+	 * This constant holds the code corresponding to an error dataset status implying that
+	 * the dataset has no references to it.
+	 *
+	 * @var string
+	 */
+	const kSTATUS_ORPHANED = 'orphaned';
 
 	/**
 	 * <h4>Default date variable.</h4>
@@ -422,6 +442,26 @@ class SMARTLoader extends Container
 	 * @var string
 	 */
 	const kOFFSET_RELATED_MOTHER = '@related_mother@';
+
+	/**
+	 * <h4>Dataset missing mother variable name.</h4>
+	 *
+	 * This constant holds the <i>offset</i> of the column <i>signalling an orphaned
+	 * household</i>.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_MISSING_MOTHER = '@missing_mother@';
+
+	/**
+	 * <h4>Dataset missing child variable name.</h4>
+	 *
+	 * This constant holds the <i>offset</i> of the column <i>signalling an orphaned
+	 * mother</i>.
+	 *
+	 * @var string
+	 */
+	const kOFFSET_MISSING_CHILD = '@missing_child@';
 
 	/**
 	 * <h4>Client connection.</h4>
@@ -1917,6 +1957,42 @@ class SMARTLoader extends Container
 	} // ChildRelated.
 
 
+	/*===================================================================================
+	 *	HouseholdOrphaned																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get household orphaned.</h4>
+	 *
+	 * This method can be used to retrieve the list of orphaned households.
+	 *
+	 * @return string
+	 */
+	public function HouseholdOrphaned()
+	{
+		return $this->mHouseholdInfo[ self::kOFFSET_ORPHANED ];						// ==>
+
+	} // HouseholdOrphaned.
+
+
+	/*===================================================================================
+	 *	MotherOrphaned																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Get child unit related.</h4>
+	 *
+	 * This method can be used to retrieve the list of orphaned mothers.
+	 *
+	 * @return string
+	 */
+	public function MotherOrphaned()
+	{
+		return $this->mMotherInfo[ self::kOFFSET_ORPHANED ];						// ==>
+
+	} // MotherOrphaned.
+
+
 
 /*=======================================================================================
  *																						*
@@ -2159,6 +2235,13 @@ class SMARTLoader extends Container
 					);
 
 				//
+				// Identify orphaned households.
+				//
+				$status = $this->identifyOrphanHouseholds();
+				if( $status == self::kSTATUS_ORPHANED )
+					$this->signalFileOrphanHouseholds();
+
+				//
 				// Write to final collection.
 				//
 				if( $this->mMotherInfo[ self::kOFFSET_STATUS ] == self::kSTATUS_LOADED )
@@ -2397,13 +2480,13 @@ class SMARTLoader extends Container
 
 				else
 					throw new RuntimeException(
-						"Mother dataset is empty." );								// !@! ==>
+						"Mother dataset is empty." );							// !@! ==>
 
 			} // Child collection not empty.
 
 			else
 				throw new RuntimeException(
-					"Child dataset is empty." );									// !@! ==>
+					"Child dataset is empty." );								// !@! ==>
 
 		} // All checks cleared.
 
@@ -2560,7 +2643,8 @@ class SMARTLoader extends Container
 			self::kOFFSET_STATUS	=> self::kSTATUS_IDLE,
 			self::kOFFSET_DDICT		=> [],
 			self::kOFFSET_DUPS		=> [],
-			self::kOFFSET_RELATED	=> []
+			self::kOFFSET_RELATED	=> [],
+			self::kOFFSET_ORPHANED	=> []
 		];
 
 		//
@@ -4131,6 +4215,178 @@ class SMARTLoader extends Container
 		} // Has missing mothers.
 
 	} // signalFileRelatedMothers.
+
+
+	/*===================================================================================
+	 *	identifyOrphanHouseholds														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Identify orphan households.</h4>
+	 *
+	 * This method can be used to identify households that do not have mothers, if there
+	 * are no orphans the method will return the code: {@link kOFFSET_STATUS_LOADED}, or
+	 * {@link kOFFSET_STATUS_ORPHANED} if there are.
+	 *
+	 * @return string				Status code.
+	 */
+	protected function identifyOrphanHouseholds()
+	{
+		//
+		// Init local storage.
+		//
+		$households = $this->Database()->selectCollection( "temp_".self::kNAME_HOUSEHOLD );
+		$mothers = $this->Database()->selectCollection( "temp_".self::kNAME_MOTHER );
+		$fields = [
+			self::kOFFSET_LOCATION => self::kOFFSET_LOCATION,
+			self::kOFFSET_TEAM => self::kOFFSET_TEAM,
+			self::kOFFSET_CLUSTER => self::kOFFSET_CLUSTER,
+			self::kOFFSET_HOUSEHOLD => self::kOFFSET_IDENTIFIER
+		];
+
+		//
+		// Iterate households.
+		//
+		$cursor = $households->find();
+		foreach( $cursor as $household )
+		{
+			//
+			// Search mothers.
+			//
+			$query = [];
+			foreach( $fields as $mother_field => $household_field )
+				$query[ $this->mMotherInfo[ $mother_field ] ]
+					= $household[ $this->mHouseholdInfo[ $household_field ] ];
+			$mother = $mothers->findOne( $query );
+
+			//
+			// Handle orphaned household.
+			//
+			if( $mother === NULL )
+			{
+				//
+				// Set status.
+				//
+				$this->mHouseholdInfo[ self::kOFFSET_STATUS ] = self::kSTATUS_ORPHANED;
+
+				//
+				// Set household reference.
+				//
+				$reference = [];
+				foreach( $fields as $household_field )
+					$reference[ $this->mHouseholdInfo[ $household_field ] ]
+						= $household[ $this->mHouseholdInfo[ $household_field ] ];
+
+				//
+				// Add orphaned info.
+				//
+				$this->mHouseholdInfo[ self::kOFFSET_ORPHANED ][] = [
+					'Household reference' => $reference,
+					'Row' => $household[ '_id' ]
+				];
+
+			} // No mothers.
+
+		} // Iterating household.
+
+		return $this->mHouseholdInfo[ self::kOFFSET_STATUS ];						// ==>
+
+	} // identifyOrphanHouseholds.
+
+
+	/*===================================================================================
+	 *	signalFileOrphanHouseholds														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Signal invalid mother references.</h4>
+	 *
+	 * This method can be used to signal invalid mother references onto the original
+	 * file.
+	 */
+	protected function signalFileOrphanHouseholds()
+	{
+		//
+		// Check if there are invalid references.
+		//
+		if( count( $this->mHouseholdInfo[ self::kOFFSET_ORPHANED ] ) )
+		{
+			//
+			// Init local storage.
+			//
+			$style = [
+				'fill' => [
+					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'color' => [ 'argb' => 'FFFF0000' ]
+				],
+				'font' => [
+					'bold' => TRUE
+				],
+				'alignment' => [
+					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
+				]
+			];
+
+			//
+			// Get worksheet.
+			//
+			$worksheet =
+				$this->mHouseholdInfo[ self::kOFFSET_READER ]
+					->getActiveSheet();
+
+			//
+			// Get highest row and column.
+			//
+			$end = $worksheet->getHighestRow();
+			$column = PHPExcel_Cell::columnIndexFromString(
+				$worksheet->getHighestColumn()
+			);
+
+			//
+			// Set header.
+			//
+			$worksheet->setCellValueByColumnAndRow(
+				$column,
+				$this->mHouseholdInfo[ self::kOFFSET_HEADER ],
+				self::kOFFSET_MISSING_MOTHER );
+
+			//
+			// Iterate no mothers.
+			//
+			foreach( $this->mHouseholdInfo[ self::kOFFSET_ORPHANED ] as $data )
+			{
+				//
+				// Get row.
+				//
+				$row = $data[ 'Row' ];
+
+				//
+				// Get cell.
+				//
+				$cell = $worksheet->getCellByColumnAndRow( $column, $row );
+
+				//
+				// Set cell style.
+				//
+				$cell->getStyle()->applyFromArray( $style );
+
+				//
+				// Set cell value.
+				//
+				$cell->setValue( "NO MOTHERS" );
+
+			} // Iterating no mothers.
+
+			//
+			// Write file.
+			//
+			$writer = PHPExcel_IOFactory::createWriter(
+				$this->mHouseholdInfo[ self::kOFFSET_READER ], 'Excel2007'
+			)->save( $this->getDatasetPath( $this->mHouseholdInfo ) );
+
+		} // Has missing mothers.
+
+	} // signalFileOrphanHouseholds.
 
 
 	/*===================================================================================

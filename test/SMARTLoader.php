@@ -103,6 +103,11 @@ switch( $test->MotherStatus() )
 			echo( "==> Dataset has invalid references:\n" );
 			print_r( $tmp );
 		}
+		if( count( $tmp = $test->HouseholdOrphaned() ) )
+		{
+			echo( "==> Households without mothers:\n" );
+			print_r( $tmp );
+		}
 		break;
 }
 
@@ -120,11 +125,6 @@ switch( $test->ChildStatus() )
 		echo( "==> Dataset is empty\n" );
 		break;
 
-	case SMARTLoader::kSTATUS_DUPLICATES:
-		echo( "==> Dataset has duplicates:\n" );
-		print_r( $test->ChildDuplicates() );
-		exit;
-
 	case SMARTLoader::kSTATUS_LOADED:
 		echo( "==> Dataset loaded.\n" );
 		break;
@@ -140,6 +140,11 @@ switch( $test->ChildStatus() )
 			echo( "==> Dataset has invalid references:\n" );
 			print_r( $tmp );
 		}
+		if( count( $tmp = $test->MotherOrphaned() ) )
+		{
+			echo( "==> Mothers without children:\n" );
+			print_r( $tmp );
+		}
 		break;
 }
 
@@ -148,7 +153,7 @@ echo( "\n=======================================================================
 //
 // Merge datasets.
 //
-echo( '$test->ClearTempCollections();' . "\n" );
+echo( '$test->CreateSurveyCollection();' . "\n" );
 $test->CreateSurveyCollection();
 
 
