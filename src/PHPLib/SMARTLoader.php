@@ -117,6 +117,16 @@ class SMARTLoader extends Container
 	const kNAME_DDICT = 'ddict';
 
 	/**
+	 * <h4>Original dataset collection name prefix.</h4>
+	 *
+	 * This constant holds the <em>name prefix</em> for the <em>original dataset
+	 * collection</em>.
+	 *
+	 * @var string
+	 */
+	const kNAME_PREFIX_ORIGINAL = 'original_';
+
+	/**
 	 * <h4>Dataset file path.</h4>
 	 *
 	 * This constant holds the <em>offset</em> that <em>identifies the dataset file
@@ -401,6 +411,29 @@ class SMARTLoader extends Container
 	const kDDICT_STATUS = 'status';
 
 	/**
+	 * <h4>Data dictionary dataset columns.</h4>
+	 *
+	 * This constant holds the <em>data dictionary offset</em> for the element that holds
+	 * the <em>list of dataset columns</em>, it is an array in which the index is the column
+	 * cell coordinate and the value is the dataset field name (corresponding header row
+	 * value).
+	 *
+	 * @var string
+	 */
+	const kDDICT_COLUMNS = 'columns';
+
+	/**
+	 * <h4>Data dictionary dataset duplicate columns.</h4>
+	 *
+	 * This constant holds the <em>data dictionary offset</em> for the element that holds
+	 * the <em>list of duplicate dataset columns</em>, it is an array that containd the list
+	 * of duplicate header row values.
+	 *
+	 * @var string
+	 */
+	const kDDICT_COLUMN_DUPS = 'column_dups';
+
+	/**
 	 * <h4>Data dictionary dataset fields.</h4>
 	 *
 	 * This constant holds the <em>data dictionary offset</em> for the element that holds
@@ -430,16 +463,16 @@ class SMARTLoader extends Container
 	 * of the field and it is set by this class when the dataset is loaded:
 	 *
 	 * <ul>
-	 * 	<li><tt>{@link kDDICT_TYPE_STRING</tt>: Any non numeric value will imply this kind.
-	 * 	<li><tt>{@link kDDICT_TYPE_DOUBLE</tt>: Any floating point number with a decimal
+	 * 	<li><tt>{@link kTYPE_STRING</tt>: Any non numeric value will imply this kind.
+	 * 	<li><tt>{@link kTYPE_DOUBLE</tt>: Any floating point number with a decimal
 	 * 		other than <tt>0</tt> will imply this type.
-	 * 	<li><tt>{@link kDDICT_TYPE_INTEGER</tt>: If the set of values is all numeric and
+	 * 	<li><tt>{@link kTYPE_INTEGER</tt>: If the set of values is all numeric and
 	 * 		does not have a floating point, it implies that all values are of integer type.
 	 * </ul>
 	 *
 	 * @var string
 	 */
-	const kDDICT_FIELD_KIND = 'kind';
+	const kFIELD_KIND = 'kind';
 
 	/**
 	 * <h4>Data dictionary field type.</h4>
@@ -449,15 +482,15 @@ class SMARTLoader extends Container
 	 * of the field and is a user determined value:
 	 *
 	 * <ul>
-	 * 	<li><tt>{@link kDDICT_TYPE_STRING</tt>: String.
-	 * 	<li><tt>{@link kDDICT_TYPE_DATE</tt>: Date in <tt>YYYY-MM-DD</tt> format.
-	 * 	<li><tt>{@link kDDICT_TYPE_INTEGER</tt>: Integer.
-	 * 	<li><tt>{@link kDDICT_TYPE_DOUBLE</tt>: Floating point number, double by default.
+	 * 	<li><tt>{@link kTYPE_STRING</tt>: String.
+	 * 	<li><tt>{@link kTYPE_DATE</tt>: Date in <tt>YYYY-MM-DD</tt> format.
+	 * 	<li><tt>{@link kTYPE_INTEGER</tt>: Integer.
+	 * 	<li><tt>{@link kTYPE_DOUBLE</tt>: Floating point number, double by default.
 	 * </ul>
 	 *
 	 * @var string
 	 */
-	const kDDICT_FIELD_TYPE = 'type';
+	const kFIELD_TYPE = 'type';
 
 	/**
 	 * <h4>Data dictionary field name.</h4>
@@ -468,7 +501,16 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kDDICT_FIELD_NAME = 'name';
+	const kFIELD_NAME = 'name';
+
+	/**
+	 * <h4>Data dictionary distinct field values.</h4>
+	 *
+	 * This constant holds the <em>distinct values count</em> for the current field.
+	 *
+	 * @var string
+	 */
+	const kFIELD_DISTINCT = 'distinct';
 
 	/**
 	 * <h4>String type.</h4>
@@ -477,7 +519,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kDDICT_TYPE_STRING = 'string';
+	const kTYPE_STRING = 'string';
 
 	/**
 	 * <h4>Integer type.</h4>
@@ -486,7 +528,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kDDICT_TYPE_INTEGER = 'int';
+	const kTYPE_INTEGER = 'int';
 
 	/**
 	 * <h4>Number kind.</h4>
@@ -498,7 +540,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kDDICT_TYPE_NUMBER = 'number';
+	const kTYPE_NUMBER = 'number';
 
 	/**
 	 * <h4>Double type.</h4>
@@ -507,7 +549,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kDDICT_TYPE_DOUBLE = 'double';
+	const kTYPE_DOUBLE = 'double';
 
 	/**
 	 * <h4>Date type.</h4>
@@ -517,7 +559,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var string
 	 */
-	const kDDICT_TYPE_DATE = 'date';
+	const kTYPE_DATE = 'date';
 
 	/**
 	 * <h4>Dataset idle status.</h4>
@@ -527,7 +569,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_IDLE = 0x00000000;
+	const kSTATUS_IDLE = 0x00000000;
 
 	/**
 	 * <h4>Dataset loaded status.</h4>
@@ -537,7 +579,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_LOADED = 0x00000001;
+	const kSTATUS_LOADED = 0x00000001;
 
 	/**
 	 * <h4>Dataset checked duplicates status.</h4>
@@ -547,7 +589,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_CHECKED_DUPS = 0x00000002;
+	const kSTATUS_CHECKED_DUPS = 0x00000002;
 
 	/**
 	 * <h4>Dataset checked references status.</h4>
@@ -557,7 +599,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_CHECKED_REFS = 0x00000004;
+	const kSTATUS_CHECKED_REFS = 0x00000004;
 
 	/**
 	 * <h4>Dataset processed stats status.</h4>
@@ -567,7 +609,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_STATS = 0x00000008;
+	const kSTATUS_LOADED_STATS = 0x00000008;
 
 	/**
 	 * <h4>Dataset finalised status.</h4>
@@ -577,7 +619,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_VALID = 0x00000010;
+	const kSTATUS_VALID = 0x00000010;
 
 	/**
 	 * <h4>Dataset has duplicate fields status.</h4>
@@ -587,7 +629,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_COLUMNS = 0x00000020;
+	const kSTATUS_DUPLICATE_COLUMNS = 0x00000020;
 
 	/**
 	 * <h4>Dataset has duplicates status.</h4>
@@ -597,7 +639,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_DUPLICATES = 0x00000040;
+	const kSTATUS_DUPLICATE_ENTRIES = 0x00000040;
 
 	/**
 	 * <h4>Dataset has invalid references status.</h4>
@@ -607,7 +649,7 @@ class SMARTLoader extends Container
 	 *
 	 * @var int
 	 */
-	const kDDICT_STATUS_REFERENCES = 0x00000080;
+	const kSTATUS_INVALID_REFERENCES = 0x00000080;
 
 	/**
 	 * <h4>Client connection.</h4>
@@ -1016,114 +1058,28 @@ class SMARTLoader extends Container
 
 /*=======================================================================================
  *																						*
- *								PUBLIC INITIALISATION INTERFACE							*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	InitDictionary																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Initialise data dictionary.</h4>
-	 *
-	 * The duty of this method is to set the {@link mDDICTInfo} data member with the data
-	 * dictionary, it will first attempt to load it from the database, if the data
-	 * dictionary collection is empty, the method will initialise and set the dictionary.
-	 *
-	 * If the dictionary data member is already set, not <tt>NULL</tt>, the method will
-	 * return <tt>NULL</tt>; if the dictionary was either loaded or initialised, the method
-	 * will return <tt>TRUE</tt>.
-	 *
-	 * Any error will trigger an exception.
-	 *
-	 * @uses setDataset()
-	 */
-	public function InitDictionary()
-	{
-		//
-		// Check data dictionary.
-		//
-		if( ! is_array( $this->mDDICTInfo ) )
-		{
-			//
-			// Init local storage.
-			//
-			$datasets = [
-				self::kDDICT_CHILD_ID,
-				self::kDDICT_MOTHER_ID,
-				self::kDDICT_HOUSEHOLD_ID
-			];
-
-			//
-			// Initialise data dictionary.
-			//
-			foreach( $datasets as $dataset )
-			{
-				$document = $this->mDDICT->findOne( [ '_id' => $dataset ] );
-				$this->mDDICTInfo[ $dataset ]
-					= ( $document === NULL )
-					? $this->newDataDictionary( $dataset )
-					: $document->getArrayCopy();
-			}
-
-			return TRUE;															// ==>
-
-		} // Data member not set.
-
-		return NULL;																// ==>
-
-	} // InitDictionary.
-
-
-	/*===================================================================================
-	 *	SaveDictionary																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Save data dictionary.</h4>
-	 *
-	 * The duty of this method is to store the {@link mDDICTInfo} data member into the
-	 * {@link kNAME_DDICT} collection.
-	 */
-	public function SaveDictionary()
-	{
-		//
-		// Check data member.
-		//
-		if( is_array( $this->mDDICTInfo ) )
-		{
-			//
-			// Insert dictionary.
-			//
-			if( ! $this->mDDICT->count() )
-			{
-				foreach( $this->mDDICTInfo as $dataset => $dictionary )
-					$this->mDDICT->insertOne( $dictionary );
-			}
-
-			//
-			// Update dictionary.
-			//
-			else
-			{
-				foreach( $this->mDDICTInfo as $dataset => $dictionary )
-					$this->mDDICT->replaceOne( [ '_id' => $dataset ], $dictionary );
-			}
-		}
-
-	} // SaveDictionary.
-
-
-
-/*=======================================================================================
- *																						*
  *						PUBLIC DICTIONARY MEMBER ACCESSOR INTERFACE						*
  *																						*
  *======================================================================================*/
 
+
+
+	/*===================================================================================
+	 *	DataDictionary																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Retrieve the datadictionary.</h4>
+	 *
+	 * This method can be used to retrieve a copy of the current data dictionary.
+	 *
+	 * @return array				Data dictionary.
+	 */
+	public function DataDictionary( $theValue = NULL )
+	{
+		return $this->mDDICTInfo;													// ==>
+
+	} // DataDictionary.
 
 
 	/*===================================================================================
@@ -1205,66 +1161,6 @@ class SMARTLoader extends Container
 		return $this->datasetPath( self::kDDICT_HOUSEHOLD_ID, $theValue );			// ==>
 
 	} // HouseholdDataset.
-
-
-	/*===================================================================================
-	 *	ChildDatasetReader																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get child file reader.</h4>
-	 *
-	 * This method can be used to retrieve the child dataset Excel reader.
-	 *
-	 * @return PHPExcel_Reader_Abstract
-	 *
-	 * @uses getDatasetReader()
-	 */
-	public function ChildDatasetReader()
-	{
-		return $this->getDatasetReader( self::kDDICT_CHILD_ID );					// ==>
-
-	} // ChildDatasetReader.
-
-
-	/*===================================================================================
-	 *	MotherDatasetReader																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get mother file reader.</h4>
-	 *
-	 * This method can be used to retrieve the mother dataset Excel reader.
-	 *
-	 * @return PHPExcel_Reader_Abstract
-	 *
-	 * @uses getDatasetReader()
-	 */
-	public function MotherDatasetReader()
-	{
-		return $this->getDatasetReader( self::kDDICT_MOTHER_ID );					// ==>
-
-	} // MotherDatasetReader.
-
-
-	/*===================================================================================
-	 *	HouseholdDatasetReader															*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get household file reader.</h4>
-	 *
-	 * This method can be used to retrieve the household dataset Excel reader.
-	 *
-	 * @return PHPExcel_Reader_Abstract
-	 *
-	 * @uses getDatasetReader()
-	 */
-	public function HouseholdDatasetReader()
-	{
-		return $this->getDatasetReader( self::kDDICT_HOUSEHOLD_ID );					// ==>
-
-	} // HouseholdDatasetReader.
 
 
 	/*===================================================================================
@@ -1935,268 +1831,457 @@ class SMARTLoader extends Container
 	} // ChildDatasetMotherOffset.
 
 
+	/*===================================================================================
+	 *	ChildDatasetHeaderCoumns														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve child header columns.</h4>
+	 *
+	 * This method can be used to manage the child data dictionary header columns, this
+	 * element holds the list of header row values and their relative columns in the
+	 * original dataset.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset header columns.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function ChildDatasetHeaderCoumns( $theValue = NULL )
+	{
+		return $this->dictionaryList(
+			self::kDDICT_CHILD_ID, self::kDDICT_COLUMNS, $theValue );				// ==>
+
+	} // ChildDatasetHeaderCoumns.
+
+
+	/*===================================================================================
+	 *	MotherDatasetHeaderCoumns														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve mother header columns.</h4>
+	 *
+	 * This method can be used to manage the mother data dictionary header columns, this
+	 * element holds the list of header row values and their relative columns in the
+	 * original dataset.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset header columns.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function MotherDatasetHeaderCoumns( $theValue = NULL )
+	{
+		return $this->datasetOffset(
+			self::kDDICT_MOTHER_ID, self::kDDICT_COLUMNS, $theValue );				// ==>
+
+	} // MotherDatasetHeaderCoumns.
+
+
+	/*===================================================================================
+	 *	HouseholdDatasetHeaderCoumns													*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve household header columns.</h4>
+	 *
+	 * This method can be used to manage the household data dictionary header columns, this
+	 * element holds the list of header row values and their relative columns in the
+	 * original dataset.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset header columns.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function HouseholdDatasetHeaderCoumns( $theValue = NULL )
+	{
+		return $this->datasetOffset(
+			self::kDDICT_HOUSEHOLD_ID, self::kDDICT_COLUMNS, $theValue );			// ==>
+
+	} // HouseholdDatasetHeaderCoumns.
+
+
+	/*===================================================================================
+	 *	ChildDatasetDuplicateHeaderCoumns												*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve child header duplicate columns.</h4>
+	 *
+	 * This method can be used to manage the child data dictionary header duplicate columns,
+	 * this element holds the list of values that appear more than once in the header row.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset header duplicate columns.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function ChildDatasetDuplicateHeaderCoumns( $theValue = NULL )
+	{
+		return $this->dictionaryList(
+			self::kDDICT_CHILD_ID, self::kDDICT_COLUMN_DUPS, $theValue );			// ==>
+
+	} // ChildDatasetDuplicateHeaderCoumns.
+
+
+	/*===================================================================================
+	 *	MotherDatasetDuplicateHeaderCoumns												*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve mother header duplicate columns.</h4>
+	 *
+	 * This method can be used to manage the mother data dictionary header duplicate columns, this
+	 * element holds the list of header row values and their relative columns in the
+	 * original dataset.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset header duplicate columns.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function MotherDatasetDuplicateHeaderCoumns( $theValue = NULL )
+	{
+		return $this->datasetOffset(
+			self::kDDICT_MOTHER_ID, self::kDDICT_COLUMN_DUPS, $theValue );			// ==>
+
+	} // MotherDatasetDuplicateHeaderCoumns.
+
+
+	/*===================================================================================
+	 *	HouseholdDatasetDuplicateHeaderCoumns											*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve household header duplicate columns.</h4>
+	 *
+	 * This method can be used to manage the household data dictionary header duplicate columns, this
+	 * element holds the list of header row values and their relative columns in the
+	 * original dataset.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset header duplicate columns.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function HouseholdDatasetDuplicateHeaderCoumns( $theValue = NULL )
+	{
+		return $this->datasetOffset(
+			self::kDDICT_HOUSEHOLD_ID, self::kDDICT_COLUMN_DUPS, $theValue );		// ==>
+
+	} // HouseholdDatasetDuplicateHeaderCoumns.
+
+
+	/*===================================================================================
+	 *	ChildDatasetFields																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve child fields.</h4>
+	 *
+	 * This method can be used to manage the child data dictionary fields, this
+	 * element holds the list of field names and types.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset fields.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function ChildDatasetFields( $theValue = NULL )
+	{
+		return $this->dictionaryList(
+			self::kDDICT_CHILD_ID, self::kDDICT_FIELDS, $theValue );				// ==>
+
+	} // ChildDatasetFields.
+
+
+	/*===================================================================================
+	 *	MotherDatasetFields																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve mother fields.</h4>
+	 *
+	 * This method can be used to manage the mother data dictionary fields, this
+	 * element holds the list of field names and types.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset fields.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function MotherDatasetFields( $theValue = NULL )
+	{
+		return $this->datasetOffset(
+			self::kDDICT_MOTHER_ID, self::kDDICT_FIELDS, $theValue );				// ==>
+
+	} // MotherDatasetFields.
+
+
+	/*===================================================================================
+	 *	HouseholdDatasetFields															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Set or retrieve household fields.</h4>
+	 *
+	 * This method can be used to manage the household data dictionary fields, this
+	 * element holds the list of field names and types.
+	 *
+	 * The method expects a single parameter that represents the new value, or the
+	 * operation:
+	 *
+	 * <ul>
+	 * 	<li><tt>NULL</tt>: Retrieve current value.
+	 * 	<li><i>array</i>: Set new value.
+	 * </ul>
+	 *
+	 * @param array|NULL			$theValue			New value or operation.
+	 * @return array				Dataset fields.
+	 *
+	 * @uses dictionaryList()
+	 */
+	public function HouseholdDatasetFields( $theValue = NULL )
+	{
+		return $this->datasetOffset(
+			self::kDDICT_HOUSEHOLD_ID, self::kDDICT_FIELDS, $theValue );			// ==>
+
+	} // HouseholdDatasetFields.
+
+
 
 /*=======================================================================================
  *																						*
- *								PUBLIC OPERATIONS INTERFACE								*
+ *								PUBLIC INITIALISATION INTERFACE							*
  *																						*
  *======================================================================================*/
 
 
 
 	/*===================================================================================
-	 *	LoadHouseholdDataset															*
+	 *	InitDictionary																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Load household dataset.</h4>
+	 * <h4>Initialise data dictionary.</h4>
 	 *
-	 * This method can be used to load the household dataset into the database, the method
-	 * will return the status code:
+	 * The duty of this method is to set the {@link mDDICTInfo} data member with the data
+	 * dictionary, it will first attempt to load it from the database, if the data
+	 * dictionary collection is empty, the method will initialise and set the dictionary.
 	 *
-	 * <ul>
-	 * 	<li><tt>{@link kOFFSET_STATUS_IDLE}</tt>: The dataset is empty.
-	 * 	<li><tt>{@link kOFFSET_STATUS_LOADED}</tt>: The dataset was loaded with success.
-	 * 	<li><tt>{@link kOFFSET_STATUS_DUPLICATES}</tt>: Found duplicate entries.
-	 * </ul>.
+	 * If the dictionary data member is already set, not <tt>NULL</tt>, the method will
+	 * return <tt>NULL</tt>; if the dictionary was either loaded or initialised, the method
+	 * will return <tt>TRUE</tt>.
 	 *
-	 * @return string				Status code.
-	 * @throws RuntimeException
+	 * Any error will trigger an exception.
+	 *
+	 * @uses newDataDictionary()
 	 */
-	public function LoadHouseholdDataset()
+	public function InitDictionary()
 	{
 		//
-		// Check dataset.
+		// Check data dictionary.
 		//
-		if( is_array( $this->mHouseholdInfo ) )
+		if( ! is_array( $this->mDDICTInfo ) )
 		{
 			//
-			// Load dataset sheet.
-			// We assume there is a single worksheet
+			// Init local storage.
 			//
-			$data = $this->HouseholdReader()
-				->getActiveSheet()
-				->toArray( NULL, TRUE, TRUE, TRUE );
+			$datasets = [
+				self::kDDICT_CHILD_ID,
+				self::kDDICT_MOTHER_ID,
+				self::kDDICT_HOUSEHOLD_ID
+			];
 
 			//
-			// Load data in temp collection.
+			// Initialise data dictionary.
 			//
-			$count =
-				$this->loadDatasetTempCollection(
-					$this->mHouseholdInfo,			// Dataset info record.
-					self::kNAME_HOUSEHOLD,			// Dataset default name,
-					$data							// Dataset array.
-				);
-
-			//
-			// Skip empty dataset.
-			//
-			if( $count )
+			foreach( $datasets as $dataset )
 			{
-				//
-				// Collect data types.
-				//
-				$this->collectTempCollectionDataTypes(
-					$this->mHouseholdInfo,			// Dataset info record.
-					self::kNAME_HOUSEHOLD			// Dataset default name.
-				);
+				$document = $this->mDDICT->findOne( [ '_id' => $dataset ] );
+				$this->mDDICTInfo[ $dataset ]
+					= ( $document === NULL )
+					? $this->newDataDictionary( $dataset )
+					: $document->getArrayCopy();
+			}
 
-				//
-				// Normalise data types in temp collection.
-				//
-				$this->normaliseTempCollectionDataTypes(
-					$this->mHouseholdInfo,			// Dataset info record.
-					self::kNAME_HOUSEHOLD			// Dataset default name.
-				);
+			return TRUE;															// ==>
 
-				//
-				// Identify duplicates.
-				//
-				$status = $this->identifyTempCollectionDuplicates(
-					$this->mHouseholdInfo,			// Dataset info record.
-					self::kNAME_HOUSEHOLD			// Dataset default name.
-				);
+		} // Data member not set.
 
-				//
-				// Handle duplicates.
-				//
-				if( $status == self::kDDICT_STATUS_DUPLICATES )
-				{
-					//
-					// Write to collection.
-					//
-					$this->signalTempCollectionDuplicates(
-						$this->mHouseholdInfo,		// Dataset info record.
-						self::kNAME_HOUSEHOLD		// Dataset default name.
-					);
+		return NULL;																// ==>
 
-					//
-					// Write to file.
-					//
-					$this->signalFileDuplicates(
-						$this->mHouseholdInfo,		// Dataset info record.
-						self::kNAME_HOUSEHOLD		// Dataset default name.
-					);
-
-				} // Has duplicates.
-
-				//
-				// Write to final collection.
-				//
-				if( $this->mHouseholdInfo[ self::kDDICT_STATUS ] == self::kDDICT_STATUS_LOADED )
-					$this->loadFinalHouseholdCollection();
-
-				return $this->mHouseholdInfo[ self::kDDICT_STATUS ];				// ==>
-
-			} // Has data.
-
-			return self::kDDICT_STATUS_IDLE;										// ==>
-
-		} // Defined household dataset.
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // LoadHouseholdDataset.
+	} // InitDictionary.
 
 
 	/*===================================================================================
-	 *	LoadMotherDataset																*
+	 *	ResetDictionary																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Load mother dataset.</h4>
+	 * <h4>Reset data dictionary.</h4>
 	 *
-	 * This method can be used to load the mother dataset into the database, the method
-	 * will return the status code:
+	 * The duty of this method is to set the {@link mDDICTInfo} data member to an idle state
+	 * and update the database stored copy.
 	 *
-	 * <ul>
-	 * 	<li><tt>{@link kOFFSET_STATUS_IDLE}</tt>: The dataset is empty.
-	 * 	<li><tt>{@link kOFFSET_STATUS_LOADED}</tt>: The dataset was loaded with success.
-	 * 	<li><tt>{@link kOFFSET_STATUS_DUPLICATES}</tt>: Found duplicate entries.
-	 * </ul>.
+	 * Use this method to reset the data dictionary.
 	 *
-	 * @return string				Status code.
-	 * @throws RuntimeException
+	 * @uses newDataDictionary()
 	 */
-	public function LoadMotherDataset()
+	public function ResetDictionary()
 	{
 		//
-		// Check dataset.
+		// Init local storage.
 		//
-		if( is_array( $this->mMotherInfo ) )
+		$datasets = [
+			self::kDDICT_CHILD_ID,
+			self::kDDICT_MOTHER_ID,
+			self::kDDICT_HOUSEHOLD_ID
+		];
+
+		//
+		// Reset in database.
+		//
+		$this->mDDICT->deleteMany( [] );
+
+		//
+		// Reset data dictionary.
+		//
+		foreach( $datasets as $dataset )
 		{
 			//
-			// Load dataset sheet.
-			// We assume there is a single worksheet
+			// Get idle record.
 			//
-			$data = $this->MotherReader()
-				->getActiveSheet()
-				->toArray( NULL, TRUE, TRUE, TRUE );
+			$document = $this->newDataDictionary( $dataset );
 
 			//
-			// Load data in temp collection.
+			// Reset data member.
 			//
-			$count =
-				$this->loadDatasetTempCollection(
-					$this->mMotherInfo,				// Dataset info record.
-					self::kNAME_MOTHER,				// Dataset default name,
-					$data							// Dataset array.
-				);
+			$this->mDDICTInfo[ $dataset ] = $document;
 
 			//
-			// Skip empty dataset.
+			// Store data member.
 			//
-			if( $count )
-			{
-				//
-				// Collect data types.
-				//
-				$this->collectTempCollectionDataTypes(
-					$this->mMotherInfo,				// Dataset info record.
-					self::kNAME_MOTHER				// Dataset default name,
-				);
+			$this->mDDICT->insertOne( $document );
+		}
 
-				//
-				// Normalise data types in temp collection.
-				//
-				$this->normaliseTempCollectionDataTypes(
-					$this->mMotherInfo,				// Dataset info record.
-					self::kNAME_MOTHER				// Dataset default name,
-				);
+	} // ResetDictionary.
 
-				//
-				// Identify duplicates.
-				//
-				$status = $this->identifyTempCollectionDuplicates(
-					$this->mMotherInfo,				// Dataset info record.
-					self::kNAME_MOTHER				// Dataset default name,
-				);
 
-				//
-				// Handle duplicates.
-				//
-				if( $status == self::kDDICT_STATUS_DUPLICATES )
-				{
-					//
-					// Write to collection.
-					//
-					$this->signalTempCollectionDuplicates(
-						$this->mMotherInfo,			// Dataset info record.
-						self::kNAME_MOTHER			// Dataset default name,
-					);
+	/*===================================================================================
+	 *	SaveDictionary																	*
+	 *==================================================================================*/
 
-					//
-					// Write to file.
-					//
-					$this->signalFileDuplicates(
-						$this->mMotherInfo,			// Dataset info record.
-						self::kNAME_MOTHER			// Dataset default name,
-					);
-
-				} // Has duplicates.
-
-				//
-				// Identify related households.
-				//
-				$status = $this->identifyRelatedHouseholds(
-					$this->mMotherInfo,				// Dataset info record.
-					self::kNAME_MOTHER				// Dataset default name,
-				);
-
-				//
-				// Handle missing related households.
-				//
-				if( $status == self::kDDICT_STATUS_REFERENCES )
-					$this->signalFileRelatedHouseholds(
-						$this->mMotherInfo,			// Dataset info record.
-						self::kNAME_MOTHER			// Dataset default name,
-					);
-
-				//
-				// Write to final collection.
-				//
-				if( $this->mMotherInfo[ self::kDDICT_STATUS ] == self::kDDICT_STATUS_LOADED )
-					$this->loadFinalMotherCollection();
-
-				return $this->mMotherInfo[ self::kDDICT_STATUS ];					// ==>
-
-			} // Has data.
-
-			return self::kDDICT_STATUS_IDLE;										// ==>
-
-		} // Defined mother dataset.
-
+	/**
+	 * <h4>Save data dictionary.</h4>
+	 *
+	 * The duty of this method is to store the {@link mDDICTInfo} data member into the
+	 * {@link kNAME_DDICT} collection.
+	 */
+	public function SaveDictionary()
+	{
 		//
-		// Check parameter.
+		// Check data member.
 		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
+		if( is_array( $this->mDDICTInfo ) )
+		{
+			//
+			// Collect data.
+			//
+			$records = [];
+			foreach( $this->mDDICTInfo as $dataset => $dictionary )
+				$records[] = $dictionary;
 
-	} // LoadMotherDataset.
+			//
+			// Clear existing data dictionary.
+			// MILKO - Had to replace replaceOne() with the below,
+			//		   because bulk write didn't work.
+			//
+			if( $this->mDDICT->count() )
+				$this->mDDICT->deleteMany( [] );
+
+			//
+			// Insert dictionary.
+			//
+			$this->mDDICT->insertMany( $records );
+		}
+
+	} // SaveDictionary.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PUBLIC FILE IMPORT INTERFACE								*
+ *																						*
+ *======================================================================================*/
+
 
 
 	/*===================================================================================
@@ -2206,230 +2291,195 @@ class SMARTLoader extends Container
 	/**
 	 * <h4>Load child dataset.</h4>
 	 *
-	 * This method can be used to load the child dataset into the database, the method
-	 * will return the status code:
+	 * This method can be used to load the child dataset into the database, the original
+	 * file will be stored in a collection named with {@link kNAME_PREFIX_ORIGINAL} as
+	 * prefix and {@link kNAME_CHILD} as suffix.
 	 *
-	 * <ul>
-	 * 	<li><tt>{@link kOFFSET_STATUS_IDLE}</tt>: The dataset is empty.
-	 * 	<li><tt>{@link kOFFSET_STATUS_LOADED}</tt>: The dataset was loaded with success.
-	 * 	<li><tt>{@link kOFFSET_STATUS_DUPLICATES}</tt>: Found duplicate entries.
-	 * </ul>.
+	 * The collection will feature the row number as the ID and the column as the field
+	 * name, the method will return the status code {@link kSTATUS_LOADED} or raise an
+	 * exception if the file was not declared.
 	 *
 	 * @return string				Status code.
-	 * @throws RuntimeException
 	 */
 	public function LoadChildDataset()
 	{
-		//
-		// Check dataset.
-		//
-		if( is_array( $this->mChildInfo ) )
-		{
-			//
-			// Load dataset sheet.
-			// We assume there is a single worksheet
-			//
-			$data = $this->ChildReader()
-				->getActiveSheet()
-				->toArray( NULL, TRUE, TRUE, TRUE );
-
-			//
-			// Load data in temp collection.
-			//
-			$count =
-				$this->loadDatasetTempCollection(
-					$this->mChildInfo,				// Dataset info record.
-					self::kNAME_CHILD,				// Dataset default name,
-					$data							// Dataset array.
-				);
-
-			//
-			// Skip empty dataset.
-			//
-			if( $count )
-			{
-				//
-				// Collect data types.
-				//
-				$this->collectTempCollectionDataTypes(
-					$this->mChildInfo,				// Dataset info record.
-					self::kNAME_CHILD				// Dataset default name,
-				);
-
-				//
-				// Normalise data types in temp collection.
-				//
-				$this->normaliseTempCollectionDataTypes(
-					$this->mChildInfo,				// Dataset info record.
-					self::kNAME_CHILD				// Dataset default name,
-				);
-
-				//
-				// Identify duplicates.
-				//
-				$status = $this->identifyTempCollectionDuplicates(
-					$this->mChildInfo,				// Dataset info record.
-					self::kNAME_CHILD				// Dataset default name,
-				);
-
-				//
-				// Handle duplicates.
-				//
-				if( $status == self::kDDICT_STATUS_DUPLICATES )
-				{
-					//
-					// Write to collection.
-					//
-					$this->signalTempCollectionDuplicates(
-						$this->mChildInfo,			// Dataset info record.
-						self::kNAME_CHILD			// Dataset default name,
-					);
-
-					//
-					// Write to file.
-					//
-					$this->signalFileDuplicates(
-						$this->mChildInfo,			// Dataset info record.
-						self::kNAME_CHILD			// Dataset default name,
-					);
-
-				} // Has duplicates.
-
-				//
-				// Identify related households.
-				//
-				$status = $this->identifyRelatedHouseholds(
-					$this->mChildInfo,				// Dataset info record.
-					self::kNAME_CHILD				// Dataset default name,
-				);
-
-				//
-				// Handle missing related households.
-				//
-				if( $status == self::kDDICT_STATUS_REFERENCES )
-					$this->signalFileRelatedHouseholds(
-						$this->mChildInfo,			// Dataset info record.
-						self::kNAME_CHILD			// Dataset default name,
-					);
-
-				//
-				// Identify related mothers.
-				//
-				$status = $this->identifyRelatedMothers(
-					$this->mChildInfo,				// Dataset info record.
-					self::kNAME_CHILD				// Dataset default name,
-				);
-
-				//
-				// Handle missing related mothers.
-				//
-				if( $status == self::kDDICT_STATUS_REFERENCES )
-					$this->signalFileRelatedMothers(
-						$this->mChildInfo,			// Dataset info record.
-						self::kNAME_CHILD			// Dataset default name,
-					);
-
-				//
-				// Write to final collection.
-				//
-				if( $this->mMotherInfo[ self::kDDICT_STATUS ] == self::kDDICT_STATUS_LOADED )
-					$this->loadFinalChildCollection();
-
-				return $this->mChildInfo[ self::kDDICT_STATUS ];					// ==>
-
-			} // Has data.
-
-			return self::kDDICT_STATUS_IDLE;										// ==>
-
-		} // Defined child dataset.
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
+		return $this->loadDataset( self::kDDICT_CHILD_ID );							// ==>
 
 	} // LoadChildDataset.
 
 
 	/*===================================================================================
-	 *	CreateSurveyCollection															*
+	 *	LoadMotherDataset																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Merge survey collection.</h4>
+	 * <h4>Load mother dataset.</h4>
 	 *
-	 * This method can be used to create the merged survey collection.
+	 * This method can be used to load the mother dataset into the database, the original
+	 * file will be stored in a collection named with {@link kNAME_PREFIX_ORIGINAL} as
+	 * prefix and {@link kNAME_MOTHER} as suffix.
 	 *
-	 * The method expects all final collections to be present and not empty, if any error
-	 * occurs, the method will raise an exception.
+	 * The collection will feature the row number as the ID and the column as the field
+	 * name, the method will return the status code {@link kSTATUS_LOADED} or raise an
+	 * exception if the file was not declared.
 	 *
-	 * @throws RuntimeException
+	 * @return string				Status code.
 	 */
-	public function CreateSurveyCollection()
+	public function LoadMotherDataset()
 	{
-		//
-		// Check status.
-		//
-		if( ($this->mChildInfo[ self::kDDICT_STATUS ] == self::kDDICT_STATUS_LOADED)
-		 && ($this->mMotherInfo[ self::kDDICT_STATUS ] == self::kDDICT_STATUS_LOADED)
-		 && ($this->mHouseholdInfo[ self::kDDICT_STATUS ] == self::kDDICT_STATUS_LOADED) )
-		{
-			//
-			// Check child collections.
-			//
-			if( $this->mChild->count() )
-			{
-				//
-				// Check mother collections.
-				//
-				if( $this->mMother->count() )
-				{
-					//
-					// Check household collections.
-					//
-					if( $this->mHousehold->count() )
-					{
-						//
-						// Clear temporary collections.
-						//
-						$this->Database()
-							->selectCollection( "temp_" . self::kNAME_CHILD )->drop();
-						$this->Database()
-							->selectCollection( "temp_" . self::kNAME_MOTHER )->drop();
-						$this->Database()
-							->selectCollection( "temp_" . self::kNAME_HOUSEHOLD )->drop();
+		return $this->loadDataset( self::kDDICT_MOTHER_ID );						// ==>
 
-						//
-						// Merge datasets.
-						//
-						$this->loadFinalSurveyCollection();
+	} // LoadMotherDataset.
 
-				} // Household collection not empty.
 
-				else
-					throw new RuntimeException(
-						"Household dataset is empty." );						// !@! ==>
+	/*===================================================================================
+	 *	LoadHouseholdDataset															*
+	 *==================================================================================*/
 
-				} // Mother collection not empty.
+	/**
+	 * <h4>Load household dataset.</h4>
+	 *
+	 * This method can be used to load the household dataset into the database, the original
+	 * file will be stored in a collection named with {@link kNAME_PREFIX_ORIGINAL} as
+	 * prefix and {@link kNAME_HOUSEHOLD} as suffix.
+	 *
+	 * The collection will feature the row number as the ID and the column as the field
+	 * name, the method will return the status code {@link kSTATUS_LOADED} or raise an
+	 * exception if the file was not declared.
+	 *
+	 * @return string				Status code.
+	 */
+	public function LoadHouseholdDataset()
+	{
+		return $this->loadDataset( self::kDDICT_HOUSEHOLD_ID );						// ==>
 
-				else
-					throw new RuntimeException(
-						"Mother dataset is empty." );							// !@! ==>
+	} // LoadHouseholdDataset.
 
-			} // Child collection not empty.
 
-			else
-				throw new RuntimeException(
-					"Child dataset is empty." );								// !@! ==>
 
-		} // All checks cleared.
+/*=======================================================================================
+ *																						*
+ *							PUBLIC VALIDATION INTERFACE									*
+ *																						*
+ *======================================================================================*/
 
-		else
-			throw new RuntimeException(
-				"Datasets need cleaning." );									// !@! ==>
 
-	} // CreateSurveyCollection.
+
+	/*===================================================================================
+	 *	LoadChildDatasetHeader															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load child dataset header.</h4>
+	 *
+	 * This method can be used to load the child dataset header into the data dictionary,
+	 * the method will process the header row and check whether it contains duplicate
+	 * values, in which case it will return the {@link kSTATUS_DUPLICATE_COLUMNS} status
+	 * code; if there are no errors, the method will return the current status code.
+	 *
+	 * @return string				Status code.
+	 */
+	public function LoadChildDatasetHeader()
+	{
+		return $this->loadDatasetHeader( self::kDDICT_CHILD_ID );					// ==>
+
+	} // LoadChildDatasetHeader.
+
+
+	/*===================================================================================
+	 *	LoadMotherDatasetHeader															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load mother dataset header.</h4>
+	 *
+	 * This method can be used to load the mother dataset header into the data dictionary,
+	 * the method will process the header row and check whether it contains duplicate
+	 * values, in which case it will return the {@link kSTATUS_DUPLICATE_COLUMNS} status
+	 * code; if there are no errors, the method will return the current status code.
+	 *
+	 * @return string				Status code.
+	 */
+	public function LoadMotherDatasetHeader()
+	{
+		return $this->loadDatasetHeader( self::kDDICT_MOTHER_ID );					// ==>
+
+	} // LoadMotherDatasetHeader.
+
+
+	/*===================================================================================
+	 *	LoadHouseholdDatasetHeader														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load household dataset header.</h4>
+	 *
+	 * This method can be used to load the household dataset header into the data
+	 * dictionary, the method will process the header row and check whether it contains
+	 * duplicate values, in which case it will return the {@link kSTATUS_DUPLICATE_COLUMNS}
+	 * status code; if there are no errors, the method will return the current status code.
+	 *
+	 * @return string				Status code.
+	 */
+	public function LoadHouseholdDatasetHeader()
+	{
+		return $this->loadDatasetHeader( self::kDDICT_HOUSEHOLD_ID );				// ==>
+
+	} // LoadHouseholdDatasetHeader.
+
+
+	/*===================================================================================
+	 *	LoadChildDatasetFields															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load child dataset fields.</h4>
+	 *
+	 * This method can be used to load the child dataset fields into the data dictionary,
+	 * the method will process the dataset columns and determine the data type of each
+	 * column; if the columns have not yet been loaded, the method will raise an exception.
+	 */
+	public function LoadChildDatasetFields()
+	{
+		return $this->loadDatasetFields( self::kDDICT_CHILD_ID );					// ==>
+
+	} // LoadChildDatasetFields.
+
+
+	/*===================================================================================
+	 *	LoadMotherDatasetFields															*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load mother dataset fields.</h4>
+	 *
+	 * This method can be used to load the mother dataset fields into the data dictionary,
+	 * the method will process the dataset columns and determine the data type of each
+	 * column; if the columns have not yet been loaded, the method will raise an exception.
+	 */
+	public function LoadMotherDatasetFields()
+	{
+		return $this->loadDatasetFields( self::kDDICT_MOTHER_ID );					// ==>
+
+	} // LoadMotherDatasetFields.
+
+
+	/*===================================================================================
+	 *	LoadHouseholdDatasetFields														*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load household dataset fields.</h4>
+	 *
+	 * This method can be used to load the household dataset fields into the data
+	 * the method will process the dataset columns and determine the data type of each
+	 * column; if the columns have not yet been loaded, the method will raise an exception.
+	 */
+	public function LoadHouseholdDatasetFields()
+	{
+		return $this->loadDatasetFields( self::kDDICT_HOUSEHOLD_ID );				// ==>
+
+	} // LoadHouseholdDatasetFields.
 
 
 
@@ -2459,9 +2509,11 @@ class SMARTLoader extends Container
 	protected function newDataDictionary( string $theIdentifier )
 	{
 		return [
-			'_id'				=> $theIdentifier,
-			self::kDDICT_STATUS	=> self::kDDICT_STATUS_IDLE,
-			self::kDDICT_FIELDS	=> []
+			'_id'						=> $theIdentifier,
+			self::kDDICT_STATUS			=> self::kSTATUS_IDLE,
+			self::kDDICT_COLUMNS		=> [],
+			self::kDDICT_COLUMN_DUPS	=> [],
+			self::kDDICT_FIELDS			=> []
 		];																			// ==>
 
 	} // newDataDictionary.
@@ -2474,6 +2526,109 @@ class SMARTLoader extends Container
  *																						*
  *======================================================================================*/
 
+
+
+	/*===================================================================================
+	 *	datasetStatus																	*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Manage dataset status.</h4>
+	 *
+	 * This method is used by the public interface to set or retrieve the dataset status
+	 * code, the method expects three parameters:
+	 *
+	 * <ul>
+	 * 	<li><b>$theDataset</b>: Dataset identifier:
+	 * 	 <ul>
+	 * 		<li><tt>{@link kDDICT_CHILD_ID}<tt>: Child dataset.
+	 * 		<li><tt>{@link kDDICT_MOTHER_ID}<tt>: Mother dataset.
+	 * 		<li><tt>{@link kDDICT_HOUSEHOLD_ID}<tt>: Household dataset.
+	 * 	 </ul>
+	 * 	<li><b>$theOperation</b>: Status operation. Since the status is a bitfield, the
+	 * 		provided value may:
+	 * 	 <ul>
+	 * 		<li><tt>NULL<tt>: Set the status with the provided value (<tt>=</tt>).
+	 * 		<li><tt>TRUE<tt>: Add the value to the existing status (<tt>|=</tt>).
+	 * 		<li><tt>FALSE<tt>: Remove the value from the existing status (<tt>\&= ~</tt>).
+	 * 	 </ul>
+	 * 		By default the value is <tt>NULL</tt>, so that retrieving the status needs only
+	 * 		the dataset selector.
+	 * 	<li><b>$theValue</b>: Status or operation:
+	 * 	 <ul>
+	 * 		<li><tt>NULL<tt>: Return current status; <em>in this case the previous parameter
+	 * 			is ignored</em>.
+	 * 		<li><i>int<i>: Set, add or reset status (depending on the previous parameter).
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The method will return the current status, or raise an exception if the the selector
+	 * is not correct.
+	 *
+	 * @param string				$theDataset			Dataset identifier.
+	 * @param mixed					$theOperation		Bitfield operation.
+	 * @param string				$theValue			Dataset variable name.
+	 * @return int					Current status.
+	 *
+	 * @throws InvalidArgumentException
+	 */
+	protected function datasetStatus( string $theDataset,
+										  	 $theOperation = NULL,
+											 $theValue = NULL )
+	{
+		//
+		// Check dataset selector.
+		//
+		switch( $theDataset )
+		{
+			case self::kDDICT_CHILD_ID:
+			case self::kDDICT_MOTHER_ID:
+			case self::kDDICT_HOUSEHOLD_ID:
+				break;
+
+			default:
+				throw new InvalidArgumentException(
+					"Invalid dataset selector [$theDataset]." );				// !@! ==>
+		}
+
+		//
+		// Retrieve current value.
+		//
+		if( $theValue === NULL )
+			return
+				$this->mDDICTInfo[ $theDataset ][ self::kDDICT_STATUS ];			// ==>
+
+		//
+		// Set new status.
+		//
+		if( $theOperation === NULL )
+			$this->mDDICTInfo[ $theDataset ][ self::kDDICT_STATUS ]
+				= $theValue;
+
+		//
+		// Add status.
+		//
+		elseif( $theOperation === TRUE )
+			$this->mDDICTInfo[ $theDataset ][ self::kDDICT_STATUS ]
+				|= $theValue;
+
+		//
+		// Reset status.
+		//
+		elseif( $theOperation === FALSE )
+			$this->mDDICTInfo[ $theDataset ][ self::kDDICT_STATUS ]
+				&= (~ $theValue);
+
+		//
+		// Invalid operation.
+		//
+		else
+			throw new InvalidArgumentException(
+				"Invalid bitfield operation." );								// !@! ==>
+
+		return $this->mDDICTInfo[ $theDataset ][ self::kDDICT_STATUS ];				// ==>
+
+	} // datasetStatus.
 
 
 	/*===================================================================================
@@ -2812,7 +2967,7 @@ class SMARTLoader extends Container
 	 */
 	protected function datasetOffset( string $theDataset,
 									  string $theOffset,
-									  		 $theValue = NULL )
+									  $theValue = NULL )
 	{
 		//
 		// Check dataset selector.
@@ -2854,14 +3009,120 @@ class SMARTLoader extends Container
 
 
 	/*===================================================================================
-	 *	getDatasetReader																*
+	 *	dictionaryList																	*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Get dataset reader.</h4>
+	 * <h4>Manage dictionary list.</h4>
 	 *
-	 * This method can be used to get a dataset reader, it expects a single parameter
-	 * representing the dataset selector:
+	 * This method is used by the public interface to set or retrieve data dictionary list
+	 * elements, the method expects three parameters:
+	 *
+	 * <ul>
+	 * 	<li><b>$theDataset</b>: Dataset identifier:
+	 * 	 <ul>
+	 * 		<li><tt>{@link kDDICT_CHILD_ID}<tt>: Child dataset.
+	 * 		<li><tt>{@link kDDICT_MOTHER_ID}<tt>: Mother dataset.
+	 * 		<li><tt>{@link kDDICT_HOUSEHOLD_ID}<tt>: Household dataset.
+	 * 	 </ul>
+	 * 	<li><b>$theOffset</b>: Dictionary offset, this value corresponds to the data
+	 * 		dictionary record offset to be managed:
+	 * 	 <ul>
+	 * 		<li><tt>{@link kDDICT_COLUMNS}<tt>: Dataset header columns list.
+	 * 		<li><tt>{@link kDDICT_FIELDS}<tt>: Data dictionary fields list.
+	 * 	 </ul>
+	 * 	<li><b>$theValue</b>: Offset or operation:
+	 * 	 <ul>
+	 * 		<li><tt>NULL<tt>: Return current value.
+	 * 		<li><i>array<i>: New value.
+	 * 	 </ul>
+	 * </ul>
+	 *
+	 * The method will raise an exception if the the selector is not correct; when
+	 * retrieving the current value and the dataset was not yet declared, the method will
+	 * return <tt>NULL</tt>.
+	 *
+	 * @param string				$theDataset			Dataset identifier.
+	 * @param string				$theOffset			Dictionary offset.
+	 * @param string				$theValue			Dataset variable name.
+	 * @return array				Current value.
+	 *
+	 * @throws InvalidArgumentException
+	 */
+	protected function dictionaryList( string $theDataset,
+									   string $theOffset,
+									   		  $theValue = NULL )
+	{
+		//
+		// Check dataset selector.
+		//
+		switch( $theDataset )
+		{
+			case self::kDDICT_CHILD_ID:
+			case self::kDDICT_MOTHER_ID:
+			case self::kDDICT_HOUSEHOLD_ID:
+				break;
+
+			default:
+				throw new InvalidArgumentException(
+					"Invalid dataset selector [$theDataset]." );				// !@! ==>
+		}
+
+		//
+		// Retrieve current value.
+		//
+		if( $theValue === NULL )
+		{
+			//
+			// Check dictionary.
+			//
+			if( ! array_key_exists( $theOffset, $this->mDDICTInfo[ $theDataset ] ) )
+				return NULL;														// ==>
+
+		} // Retrieve current value.
+
+		//
+		// Set new offset.
+		//
+		else
+		{
+			//
+			// Assert data type.
+			//
+			if( ! is_array( $theValue ) )
+				throw new InvalidArgumentException(
+					"Invalid columns list data type." );						// !@! ==>
+
+			//
+			// Set value in data dictionary.
+			//
+			$this->mDDICTInfo[ $theDataset ][ $theOffset ] = $theValue;
+
+		} // New value.
+
+		return $this->mDDICTInfo[ $theDataset ][ $theOffset ];						// ==>
+
+	} // dictionaryList.
+
+
+
+/*=======================================================================================
+ *																						*
+ *							PROTECTED PROCESSING UTILITIES								*
+ *																						*
+ *======================================================================================*/
+
+
+
+	/*===================================================================================
+	 *	loadDataset																		*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load a dataset.</h4>
+	 *
+	 * This method is used by the public interface to load a dataset file, the method
+	 * expects a single parameter that represents the dataset identifier:
 	 *
 	 * <ul>
 	 * 	<li><tt>{@link kDDICT_CHILD_ID}<tt>: Child dataset.
@@ -2869,37 +3130,376 @@ class SMARTLoader extends Container
 	 * 	<li><tt>{@link kDDICT_HOUSEHOLD_ID}<tt>: Household dataset.
 	 * </ul>
 	 *
-	 * The method will raise an exception if the the selector is not correct and if the
-	 * dataset path was not yet set.
+	 * The method will raise an exception if the the dataset file was not yet declared and
+	 * will set and return the {@link kSTATUS_LOADED} status code.
 	 *
 	 * @param string				$theDataset			Dataset identifier.
-	 * @return PHPExcel_Reader_Abstract
+	 * @return int					Status code ({@link kSTATUS_LOADED}).
 	 *
 	 * @throws RuntimeException
 	 */
-	protected function getDatasetReader( string $theDataset )
+	protected function loadDataset( string $theDataset )
 	{
 		//
-		// Get dataset path.
+		// Check dataset.
 		//
 		$path = $this->datasetPath( $theDataset );
 		if( $path !== NULL )
 		{
 			//
-			// Create reader.
+			// Get original collection.
 			//
-			$type = PHPExcel_IOFactory::identify( $path );
-			$reader = PHPExcel_IOFactory::createReader( $type );
-			$reader = $reader->load( $path );
+			$collection = $this->originalCollection( $theDataset );
+			$collection->drop();
 
-			return $reader;														// ==>
+			//
+			// Load current worksheet.
+			//
+			$worksheet =
+				PHPExcel_IOFactory::createReader(
+					PHPExcel_IOFactory::identify( $path ) )
+					->setReadDataOnly( TRUE )
+					->load( $path )
+					->getActiveSheet();
 
-		} // Dataset was declared.
+			//
+			// Reset data dictionary.
+			//
+			$this->datasetStatus( $theDataset, NULL, self::kSTATUS_IDLE );
+			$this->dictionaryList( $theDataset, self::kDDICT_FIELDS, [] );
+			$this->dictionaryList( $theDataset, self::kDDICT_COLUMNS, [] );
+			$this->dictionaryList( $theDataset, self::kDDICT_COLUMN_DUPS, [] );
 
+			//
+			// Iterate rows.
+			//
+			foreach( $worksheet->getRowIterator() as $row )
+			{
+				//
+				// Init local storage.
+				//
+				$document = [ '_id' => $row->getRowIndex() ];
+
+				//
+				// Iterate columns.
+				//
+				foreach( $row->getCellIterator() as $cell )
+					$document[ $cell->getColumn() ]
+						= $cell->getValue();
+
+				//
+				// Save document.
+				//
+				$collection->insertOne( $document );
+
+			} // Iterating rows.
+
+			return
+				$this->datasetStatus(
+					$theDataset,
+					NULL,
+					self::kSTATUS_LOADED
+				);																	// ==>
+
+		} // Has dataset path.
+
+		//
+		// Check parameter.
+		//
 		throw new RuntimeException(
-			"Dataset [$theDataset] was not declared." );						// !@! ==>
+			"Dataset file not yet defined." );									// !@! ==>
 
-	} // getDatasetReader.
+	} // loadDataset.
+
+
+	/*===================================================================================
+	 *	loadDatasetHeader																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load dataset header.</h4>
+	 *
+	 * This method is used by the public interface to load the dataset header, the method
+	 * expects a single parameter that represents the dataset identifier:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kDDICT_CHILD_ID}<tt>: Child dataset.
+	 * 	<li><tt>{@link kDDICT_MOTHER_ID}<tt>: Mother dataset.
+	 * 	<li><tt>{@link kDDICT_HOUSEHOLD_ID}<tt>: Household dataset.
+	 * </ul>
+	 *
+	 * The method will raise an exception if the the dataset header row number was not yet
+	 * declared and if the declared row cannot be found in the original collection.
+	 *
+	 * If the method encounters duplicate header values, the method will fill the header row
+	 * in the data dictionary, but return the {@link kSTATUS_DUPLICATE_COLUMNS} status code.
+	 *
+	 * @param string				$theDataset			Dataset identifier.
+	 * @return int					Status code ({@link kSTATUS_LOADED}).
+	 *
+	 * @throws RuntimeException
+	 */
+	protected function loadDatasetHeader( string $theDataset )
+	{
+		//
+		// Check header row.
+		//
+		$row = $this->datasetHeaderRow( $theDataset );
+		if( $row !== NULL )
+		{
+			//
+			// Load header row.
+			//
+			$document =
+				$this->originalCollection( $theDataset )
+					->findOne( [ '_id' => $row ] );
+			if( $document !== NULL )
+			{
+				//
+				// Init local storage.
+				//
+				$header = $errors = [];
+
+				//
+				// Iterate row.
+				//
+				foreach( $document as $column => $value )
+				{
+					//
+					// Skip row number.
+					//
+					if( $column == '_id' )
+						continue;												// =>
+
+					//
+					// Skip empty values.
+					//
+					$value = trim( $value );
+					if( strlen( $value ) )
+					{
+						//
+						// Check header.
+						//
+						$index = array_search( $value, $header );
+						if( $index !== FALSE )
+						{
+							//
+							// Set value.
+							//
+							if( ! in_array( $value, $errors ) )
+								$errors[] = $value;
+
+						} // Found duplicate.
+
+						//
+						// Set header.
+						//
+						$header[ $column ] = $value;
+
+					} // Not empty.
+
+				} // Iterating header row.
+
+				//
+				// Load columns and errors.
+				//
+				$this->dictionaryList( $theDataset, self::kDDICT_COLUMNS, $header );
+				$this->dictionaryList( $theDataset, self::kDDICT_COLUMN_DUPS, $errors );
+
+				//
+				// Handle duplicates.
+				//
+				if( count( $errors ) )
+					$this->datasetStatus(
+						$theDataset,
+						TRUE,
+						self::kSTATUS_DUPLICATE_COLUMNS
+					);
+
+				return $this->datasetStatus( $theDataset );							// ==>
+
+			} // Found row.
+
+			//
+			// Missing header row.
+			//
+			throw new RuntimeException(
+				"Missing dataset header row [$row]." );							// !@! ==>
+
+		} // Has header row.
+
+		//
+		// Check parameter.
+		//
+		throw new RuntimeException(
+			"Dataset header row not yet defined." );							// !@! ==>
+
+	} // loadDatasetHeader.
+
+
+	/*===================================================================================
+	 *	loadDatasetFields																*
+	 *==================================================================================*/
+
+	/**
+	 * <h4>Load dataset fields.</h4>
+	 *
+	 * This method is used by the public interface to load the dataset fields, the method
+	 * expects a single parameter that represents the dataset identifier:
+	 *
+	 * <ul>
+	 * 	<li><tt>{@link kDDICT_CHILD_ID}<tt>: Child dataset.
+	 * 	<li><tt>{@link kDDICT_MOTHER_ID}<tt>: Mother dataset.
+	 * 	<li><tt>{@link kDDICT_HOUSEHOLD_ID}<tt>: Household dataset.
+	 * </ul>
+	 *
+	 * The method will raise an exception if the the dataset columns were not yet loaded.
+	 *
+	 * The method will determine the data type of all columns and load the information in
+	 * the {@link kDDICT_FIELDS} element of the data dictionary.
+	 *
+	 * @param string				$theDataset			Dataset identifier.
+	 *
+	 * @throws RuntimeException
+	 */
+	protected function loadDatasetFields( string $theDataset )
+	{
+		//
+		// Check data row.
+		//
+		$row = $this->datasetDataRow( $theDataset );
+		if( $row !== NULL )
+		{
+			//
+			// Check dataset columns.
+			//
+			$columns = $this->dictionaryList( $theDataset, self::kDDICT_COLUMNS );
+			if( count( $columns  ) )
+			{
+				//
+				// Init local storage.
+				//
+				$fields = [];
+
+				//
+				// Iterate columns.
+				//
+				foreach( $columns as $column => $field )
+				{
+					//
+					// Handle distinct values.
+					//
+					$values =
+						$this->originalCollection( $theDataset )
+							->distinct(
+								$column,
+								[ '_id' => [ '$gt' => $row ],
+								  $column => [ '$ne' => NULL ] ]
+							);
+					if( count( $values ) )
+					{
+						//
+						// Init local storage.
+						//
+						$count = 0;
+						$fields[ $field ] = [];
+						$kind = $type = self::kTYPE_INTEGER;
+
+						//
+						// Iterate distinct values.
+						//
+						foreach( $values as $value )
+						{
+							//
+							// Skip empty values.
+							//
+							$value = trim( $value );
+							if( strlen( $value ) )
+							{
+								//
+								// Handle number.
+								//
+								if( is_numeric( $value ) )
+								{
+									//
+									// Check decimal.
+									//
+									$tmp = explode( '.', $value );
+									if( count( $tmp ) > 1 )
+									{
+										//
+										// Set kind.
+										//
+										$kind = self::kTYPE_NUMBER;
+
+										//
+										// Check decimal.
+										//
+										if( $tmp[ 1 ] != '0' )
+											$kind = $type = self::kTYPE_DOUBLE;
+
+									} // Has decimals.
+
+								} // Is numeric.
+
+								//
+								// Handle string.
+								//
+								else
+								{
+									//
+									// Must be string.
+									//
+									$kind = $type = self::kTYPE_STRING;
+
+									break;										// =>
+
+								} // Value is string.
+
+								//
+								// Increment distinct values count.
+								//
+								$count++;
+
+							} // Not empty.
+
+						} // Iterating distinct values.
+
+						//
+						// Set kind, type and distinct count.
+						//
+						$fields[ $field ][ self::kFIELD_KIND ] = $kind;
+						$fields[ $field ][ self::kFIELD_TYPE ] = $type;
+						$fields[ $field ][ self::kFIELD_DISTINCT ] = $count;
+
+					} // Column has values.
+
+				} // Iterating columns.
+
+				//
+				// Update data dictionary.
+				//
+				$this->dictionaryList( $theDataset, self::kDDICT_FIELDS, $fields );
+
+			} // Has columns.
+
+			//
+			// Missing columns.
+			//
+			else
+				throw new RuntimeException(
+					"Dataset header columns not yet loaded." );					// !@! ==>
+
+		} // Declared data row.
+
+		//
+		// Missing data row.
+		//
+		else
+			throw new RuntimeException(
+				"Dataset data row not yet declared." );							// !@! ==>
+
+	} // loadDatasetFields.
 
 
 
@@ -2957,2151 +3557,62 @@ class SMARTLoader extends Container
 	} // manageCollection.
 
 
-
-/*=======================================================================================
- *																						*
- *									PROTECTED UTILITIES									*
- *																						*
- *======================================================================================*/
-
-
-
 	/*===================================================================================
-	 *	setDataset																		*
+	 *	originalCollection																*
 	 *==================================================================================*/
 
 	/**
-	 * <h4>Set dataset information.</h4>
+	 * <h4>Get the original collection.</h4>
 	 *
-	 * This method can be used by public accessor methods to set a dataset information
-	 * record, it expects the dataset file path, the header line number and the first data
-	 * line number. This information will be compiled and returned into an array structured
-	 * as follows:
+	 * This method will return the original dataset collection connection, the method
+	 * expects a single parameter that represents the dataset identifier:
 	 *
 	 * <ul>
-	 * 	<li><tt>{@link kOFFSET_FILE}</tt>: The file reference (SplFileObject).
-	 * 	<li><tt>{@link kOFFSET_READER}</tt>: The file PHPExcel reader (PHPExcel_Reader).
-	 * 	<li><tt>{@link kOFFSET_HEADER}</tt>: The variables header line (int).
-	 * 	<li><tt>{@link kOFFSET_DATA}</tt>: The variables data line (int).
-	 * 	<li><tt>{@link kOFFSET_DATE}</tt>: The date variable name (string).
-	 * 	<li><tt>{@link kOFFSET_LOCATION}</tt>: The location variable name (string).
-	 * 	<li><tt>{@link kOFFSET_TEAM}</tt>: The team variable name (string).
-	 * 	<li><tt>{@link kOFFSET_CLUSTER}</tt>: The cluster variable name (string).
-	 * 	<li><tt>{@link kOFFSET_IDENT_HOUSEHOLD}</tt>: The household identifier variable name
-	 * 		(string), valid for mother and child datasets.
-	 * 	<li><tt>{@link kOFFSET_IDENT_MOTHER}</tt>: The mother identifier variable name
-	 * 		(string), valid for child dataset.
-	 * 	<li><tt>{@link kOFFSET_IDENT}</tt>: The identifier variable name (string).
-	 * 	<li><tt>{@link kOFFSET_STATUS}</tt>: The processing status (string).
-	 * 	<li><tt>{@link kOFFSET_DUPS}</tt>: The eventual duplicate records (array).
-	 * 	<li><tt>{@link kOFFSET_RELATED}</tt>: The eventual invalid related records (array).
+	 * 	<li><tt>{@link kDDICT_CHILD_ID}<tt>: Child dataset.
+	 * 	<li><tt>{@link kDDICT_MOTHER_ID}<tt>: Mother dataset.
+	 * 	<li><tt>{@link kDDICT_HOUSEHOLD_ID}<tt>: Household dataset.
 	 * </ul>
 	 *
-	 * @param string				$thePath			Dataset file path.
-	 * @param int					$theHeader			Header line number.
-	 * @param int					$theData			Data line number.
-	 * @param string				$theDate			Date variable name.
-	 * @param string				$theLocation		Location variable name.
-	 * @param string				$theTeam			Team variable name.
-	 * @param string				$theCluster			Cluster variable name.
-	 * @param string				$theIdentifier		Unit identifier variable name.
-	 * @param string				$theHousehold		Household identifier variable name.
-	 * @param string				$theMother			Mother identifier variable name.
-	 * @return array
+	 * The method will raise an exception if the the dataset selector is invalid.
+	 *
+	 * @param string				$theDataset			Dataset identifier.
+	 * @return Collection			Original collection.
+	 *
 	 * @throws InvalidArgumentException
 	 */
-	protected function setDataset( string $thePath,
-								   int	  $theHeader,
-								   int	  $theData,
-								   string $theDate,
-								   string $theLocation,
-								   string $theTeam,
-								   string $theCluster,
-								   string $theIdentifier,
-								   string $theHousehold = NULL,
-								   string $theMother = NULL )
+	protected function originalCollection( string $theDataset )
 	{
 		//
-		// Open file in read.
+		// Check dataset selector and set collection.
 		//
-		$file = new SplFileObject( (string)$theValue, "r" );
-
-		//
-		// Check file.
-		//
-		if( (! $file->isFile())
-			|| (! $file->isWritable()) )
-			throw new InvalidArgumentException(
-				"Invalid file reference [$theValue]." );						// !@! ==>
-
-		//
-		// Create reader.
-		//
-		$type = PHPExcel_IOFactory::identify( $thePath );
-		$reader = PHPExcel_IOFactory::createReader( $type );
-		$reader = $reader->load( $thePath );
-
-		//
-		// Init record.
-		//
-		$record = [
-			self::kDATASET_OFFSET_FILE		=> $file,
-			self::kDATASET_OFFSET_READER	=> $reader,
-			self::kDATASET_OFFSET_HEADER	=> $theHeader,
-			self::kDATASET_OFFSET_DATA		=> $theData,
-			self::kDATASET_OFFSET_DATE		=> $theDate,
-			self::kDATASET_OFFSET_LOCATION	=> $theLocation,
-			self::kDATASET_OFFSET_TEAM		=> $theTeam,
-			self::kDATASET_OFFSET_CLUSTER	=> $theCluster,
-			self::kDATASET_OFFSET_IDENTIFIER		=> $theIdentifier,
-			self::kDDICT_STATUS	=> self::kDDICT_STATUS_IDLE,
-			self::kOFFSET_DDICT		=> [],
-			self::kOFFSET_DUPS		=> [],
-			self::kOFFSET_RELATED	=> []
-		];
-
-		//
-		// Add other elements.
-		//
-		if( $theHousehold !== NULL )
-			$record[ self::kDATASET_OFFSET_HOUSEHOLD ] = $theHousehold;
-		if( $theMother !== NULL )
-			$record[ self::kDATASET_OFFSET_MOTHER ] = $theMother;
-
-		return $record;																// ==>
-
-	} // setDataset.
-
-
-	/*===================================================================================
-	 *	getDatasetPath																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset path.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset file
-	 * path, if the dataset record was not yet set, the method will raise an exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return PHPExcel_Reader_Abstract
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetPath( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_FILE ]->getRealPath();					// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetPath.
-
-
-	/*===================================================================================
-	 *	getDatasetHeader																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset header.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset header
-	 * line number, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return int
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetHeader( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_HEADER ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetHeader.
-
-
-	/*===================================================================================
-	 *	getDatasetData																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset data.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the first dataset data
-	 * line number, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return int
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetData( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_DATA ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetData.
-
-
-	/*===================================================================================
-	 *	getDatasetDate																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset date.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset date
-	 * variable name, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetDate( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_DATE ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetDate.
-
-
-	/*===================================================================================
-	 *	getDatasetLocation																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset location.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset location
-	 * variable name, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetLocation( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_LOCATION ];							// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetLocation.
-
-
-	/*===================================================================================
-	 *	getDatasetTeam																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset team.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset team
-	 * variable name, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetTeam( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_TEAM ];							// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetTeam.
-
-
-	/*===================================================================================
-	 *	getDatasetCluster																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset cluster.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset cluster
-	 * variable name, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetCluster( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_CLUSTER ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetCluster.
-
-
-	/*===================================================================================
-	 *	getDatasetIdentifier															*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset unit identifier.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset unit
-	 * identifier variable name, if the dataset record was not yet set, the method will
-	 * raise an exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetIdentifier( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_IDENTIFIER ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetIdentifier.
-
-
-	/*===================================================================================
-	 *	getDatasetHouseholdIdentifier													*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset household identifier.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset household
-	 * identifier variable name, if the dataset record was not yet set, the method will
-	 * raise an exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetHouseholdIdentifier( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_HOUSEHOLD ];						// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetHouseholdIdentifier.
-
-
-	/*===================================================================================
-	 *	getDatasetMotherIdentifier														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset mother identifier.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset mother
-	 * identifier variable name, if the dataset record was not yet set, the method will
-	 * raise an exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetMotherIdentifier( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDATASET_OFFSET_MOTHER ];						// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetMotherIdentifier.
-
-
-	/*===================================================================================
-	 *	getDatasetStatus																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset status.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset status,
-	 * if the dataset record was not yet set, the method will raise an exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetStatus( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kDDICT_STATUS ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetStatus.
-
-
-	/*===================================================================================
-	 *	getDatasetRequired																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset required variables.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset required
-	 * variables list, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetRequired( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kOFFSET_REQUIRED ];							// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetRequired.
-
-
-	/*===================================================================================
-	 *	getDatasetDictionary															*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset data dictionary.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset data
-	 * dictionary, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetDictionary( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kOFFSET_DDICT ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetDictionary.
-
-
-	/*===================================================================================
-	 *	getDatasetDuplicates															*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset duplicates.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset duplicate
-	 * entries, if the dataset record was not yet set, the method will raise an exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetDuplicates( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kOFFSET_DUPS ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetDuplicates.
-
-
-	/*===================================================================================
-	 *	getDatasetRelated																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get dataset related.</h4>
-	 *
-	 * This method can be used by public accessor methods to retrieve the dataset invalid
-	 * referenced entries, if the dataset record was not yet set, the method will raise an
-	 * exception.
-	 *
-	 * The method expects a reference to the data member holding the dataset record.
-	 *
-	 * @param array				   &$theMember			Reference to dataset record.
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getDatasetRelated( &$theMember )
-	{
-		//
-		// Check dataset record member.
-		//
-		if( is_array( $theMember ) )
-			return $theMember[ self::kOFFSET_RELATED ];								// ==>
-
-		//
-		// Check parameter.
-		//
-		throw new RuntimeException(
-			"Dataset not yet defined." );										// !@! ==>
-
-	} // getDatasetRelated.
-
-
-
-/*=======================================================================================
- *																						*
- *								PROTECTED OPERATIONS INTERFACE							*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	loadDatasetTempCollection														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Load dataset temporary collection.</h4>
-	 *
-	 * This method can be used to load a temporary collection with data.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 * @param array					$theData			Dataset data as an array.
-	 * @return int					Number of written records.
-	 * @throws RuntimeException
-	 */
-	protected function loadDatasetTempCollection( array &$theInfo,
-												  string $theName,
-												  array  $theData )
-	{
-		//
-		// Init collection.
-		//
-		$collection = $this->Database()->selectCollection( "temp_$theName" );
-		$collection->drop();
-
-		//
-		// Load header row.
-		//
-		foreach( $theData[ $theInfo[ self::kDATASET_OFFSET_HEADER ] ] as $key => $value )
-			$theInfo[ self::kOFFSET_DDICT ][ (string)$key ] = (string)$value;
-
-		//
-		// Iterate rows.
-		//
-		for(
-			$row = $this->HouseholdDataLine();
-			$row < (count( $theData ) - ($this->HouseholdDataLine() - 1));
-			$row++ )
+		switch( $theDataset )
 		{
-			//
-			// Init local storage.
-			//
-			$record = [];
-			$data = $theData[ $row ];
-
-			//
-			// Load data.
-			//
-			foreach( $theInfo[ self::kOFFSET_DDICT ] as $column => $variable )
-			{
-				//
-				// Trim value.
-				//
-				$value = trim( $data[ $column ] );
-
-				//
-				// Set value.
-				//
-				if( strlen( $value ) )
-					$record[ $variable ] = $value;
-
-			} // Iterating variable names.
-
-			//
-			// Save record.
-			//
-			if( count( $record ) )
-			{
-				//
-				// Check for missing required variables.
-				//
-				$missing =
-					array_diff(
-						$theInfo[ self::kOFFSET_REQUIRED ],
-						array_intersect(
-							$theInfo[ self::kOFFSET_REQUIRED ],
-							array_keys( $record )
-						)
-					);
-				if( count( $missing ) )
-					throw new RuntimeException(
-						"Missing required variable(s) [" .
-						implode( ', ', $missing ) .
-						"] at line $row." );									// !@! ==>
-
-				//
-				// Write row.
-				//
-				$record[ '_id' ] = $row;
-				$collection->insertOne( $record );
-
-			} // Record not empty.
-
-		} // Iterating rows.
-
-		return $collection->count();												// ==>
-
-	} // loadDatasetTempCollection.
-
-
-	/*===================================================================================
-	 *	collectTempCollectionDataTypes													*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Collect data types.</h4>
-	 *
-	 * This method can be used to collect the data types of a temporary collection and
-	 * update the data dictionary in the dataset record.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 * @return array				Data dictionary with types.
-	 * @throws RuntimeException
-	 */
-	protected function collectTempCollectionDataTypes( array &$theInfo,
-													   string $theName )
-	{
-		//
-		// Init local storage.
-		//
-		$types = [];
-		$collection = $this->Database()->selectCollection( "temp_$theName" );
-
-		//
-		// Load data types.
-		//
-		foreach( $theInfo[ self::kOFFSET_DDICT ] as $variable )
-		{
-			//
-			// Init default data type.
-			//
-			$types[ $variable ] = 'int';
-
-			//
-			// Handle distinct values.
-			//
-			$values = $collection->distinct( $variable );
-			foreach( $values as $value )
-			{
-				//
-				// Handle number.
-				//
-				if( is_numeric( $value ) )
-				{
-					//
-					// Check decimal.
-					//
-					$tmp = explode( '.', (string)$value );
-					if( (count( $tmp ) > 1)
-					 && ($tmp[ 1 ] != '0') )
-						$types[ $variable ] = 'double';
-
-				} // Is numeric.
-
-				//
-				// Handle string.
-				//
-				else
-				{
-					$types[ $variable ] = 'string';
-					break;														// =>
-
-				} // Value is string.
-
-			} // Iterating variable distinct values.
-
-		} // Iterating variable names.
-
-		//
-		// Update data dictionary.
-		//
-		$theInfo[ self::kOFFSET_DDICT ] = $types;
-
-		return $types;																// ==>
-
-	} // collectTempCollectionDataTypes.
-
-
-	/*===================================================================================
-	 *	normaliseTempCollectionDataTypes												*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Normalise data types.</h4>
-	 *
-	 * This method can be used to normalise the data types of a temporary collection.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 * @throws RuntimeException
-	 */
-	protected function normaliseTempCollectionDataTypes( array &$theInfo,
-														 string $theName )
-	{
-		//
-		// Init local storage.
-		//
-		$records = [];
-		$collection = $this->Database()->selectCollection( "temp_$theName" );
-
-		//
-		// Iterate all temp collection documents.
-		//
-		$cursor = $collection->find();
-		foreach( $cursor as $record )
-		{
-			//
-			// Convert to array.
-			//
-			$record = $record->getArrayCopy();
-
-			//
-			// Convert data.
-			//
-			foreach( $theInfo[ self::kOFFSET_DDICT ] as $variable => $type )
-			{
-				//
-				// Skip missing variables.
-				//
-				if( array_key_exists( $variable, $record ) )
-				{
-					//
-					// Parse by type.
-					//
-					switch( $type )
-					{
-						case 'int':
-							$record[ $variable ] = (int)$record[ $variable ];
-							break;
-
-						case 'double':
-							$record[ $variable ] = (double)$record[ $variable ];
-							break;
-
-						case 'string':
-							$record[ $variable ] = (string)$record[ $variable ];
-							break;
-					}
-					 
-				} // Has variable.
-				
-			} // Iterating data dictionary.
-
-			//
-			// Save record.
-			//
-			$records[] = $record;
-			
-		} // Iterating cursor.
-
-		//
-		// Clear collection.
-		//
-		$collection->drop();
-
-		//
-		// Write data.
-		//
-		$collection->insertMany( $records );
-
-	} // normaliseTempCollectionDataTypes.
-
-
-	/*===================================================================================
-	 *	identifyTempCollectionDuplicates												*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Identify temp collection duplicates.</h4>
-	 *
-	 * This method can be used to identify duplicate records, it will return the status
-	 * code: {@link kOFFSET_STATUS_LOADED} id there are no duplicates, or
-	 * {@link kOFFSET_STATUS_DUPLICATES}.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 * @return string				Status code.
-	 * @throws RuntimeException
-	 */
-	protected function identifyTempCollectionDuplicates( array &$theInfo,
-														 string $theName )
-	{
-		//
-		// Init local storage.
-		//
-		$pipeline = [];
-		$collection = $this->Database()->selectCollection( "temp_$theName" );
-
-		//
-		// Init selection group.
-		//
-		$temp = [
-			$theInfo[ self::kDATASET_OFFSET_LOCATION ] => '$' . $theInfo[ self::kDATASET_OFFSET_LOCATION ],
-			$theInfo[ self::kDATASET_OFFSET_TEAM ] => '$' . $theInfo[ self::kDATASET_OFFSET_TEAM ],
-			$theInfo[ self::kDATASET_OFFSET_CLUSTER ] => '$' . $theInfo[ self::kDATASET_OFFSET_CLUSTER ]
-		];
-
-		//
-		// Add identifiers to selection group.
-		//
-		for( $i = 4; $i < count( $theInfo[ self::kOFFSET_REQUIRED ] ); $i++ )
-			$temp[ $theInfo[ self::kOFFSET_REQUIRED ][ $i ] ]
-				= '$' . $theInfo[ self::kOFFSET_REQUIRED ][ $i ];
-
-		//
-		// Add group.
-		//
-		$pipeline[] = [
-			'$group' => [ '_id' => $temp,
-				'count' => [ '$sum' => 1 ] ]
-		];
-
-		//
-		// Add duplicates match.
-		//
-		$pipeline[] = [
-			'$match' => [ 'count' => [ '$gt' => 1 ] ]
-		];
-
-		//
-		// Aggregate.
-		//
-		$duplicates =
-			iterator_to_array(
-				$collection->aggregate( $pipeline, [ 'allowDiskUse' => TRUE ] )
-			);
-
-		//
-		// Handle duplicates.
-		//
-		if( count( $duplicates ) )
-		{
-			//
-			// Set status.
-			//
-			$theInfo[ self::kDDICT_STATUS ] = self::kDDICT_STATUS_DUPLICATES;
-
-			//
-			// Iterate duplicate groups.
-			//
-			$duplicate_id = 1;
-			foreach( $duplicates as $duplicate )
-			{
-				//
-				// Init duplicates entry.
-				//
-				$theInfo[ self::kOFFSET_DUPS ][ $duplicate_id ] = [
-					'Record identifiers' => $duplicate[ '_id' ]->getArrayCopy(),
-					'Duplicate rows' => []
-				];
-
-				//
-				// Get duplicate group.
-				//
-				$duplicate = $duplicate->getArrayCopy();
-				$duplicate = $duplicate[ '_id' ]->getArrayCopy();
-
-				//
-				// Locate duplicates.
-				//
-				$cursor =
-					iterator_to_array(
-						$collection->find( $duplicate )
-					);
-				foreach( $cursor as $document )
-					$theInfo[ self::kOFFSET_DUPS ]
-					[ $duplicate_id ]
-					[ 'Duplicate rows' ]
-					[]
-						= $document[ '_id' ];
-
-				//
-				// Ingrement group identifier.
-				//
-				$duplicate_id++;
-
-			} // Iterating duplicates.
-
-			return self::kDDICT_STATUS_DUPLICATES;									// ==>
-
-		} // Has duplicates.
-
-		return
-			$theInfo[ self::kDDICT_STATUS ] = self::kDDICT_STATUS_LOADED;			// ==>
-
-	} // identifyTempCollectionDuplicates.
-
-
-	/*===================================================================================
-	 *	signalTempCollectionDuplicates													*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Signal temp collection duplicates.</h4>
-	 *
-	 * This method can be used to load duplicate information onto the temporary collection.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 */
-	protected function signalTempCollectionDuplicates( array &$theInfo,
-													   string $theName )
-	{
-		//
-		// Check if there are duplicates.
-		//
-		if( count( $theInfo[ self::kOFFSET_DUPS ] ) )
-		{
-			//
-			// Init local storage.
-			//
-			$collection = $this->Database()->selectCollection( "temp_$theName" );
-
-			//
-			// Iterate duplicates.
-			//
-			foreach( $theInfo[ self::kOFFSET_DUPS ] as $id => $data )
-			{
-				//
-				// Set update commands.
-				//
-				$query = [ '_id' => [ '$in' => $data[ 'Duplicate rows' ] ] ];
-				$criteria = [ '$set' => [ self::kFILE_OFFSET_DUPLICATES => $id ] ];
-
-				//
-				// Update documents.
-				//
-				$collection->updateMany( $query, $criteria );
-
-			} // Iterating duplicates.
-
-		} // Has duplicates.
-
-	} // signalTempCollectionDuplicates.
-
-
-	/*===================================================================================
-	 *	signalFileDuplicates															*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Signal file duplicates.</h4>
-	 *
-	 * This method can be used to load duplicate information onto the original file.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 */
-	protected function signalFileDuplicates( array &$theInfo,
-											 string $theName )
-	{
-		//
-		// Check if there are invalid references.
-		//
-		if( count( $theInfo[ self::kOFFSET_DUPS ] ) )
-		{
-			//
-			// Init local storage.
-			//
-			$style = [
-				'fill' => [
-					'type' => PHPExcel_Style_Fill::FILL_SOLID,
-					'color' => [ 'argb' => 'FFFF0000' ]
-				],
-				'font' => [
-					'bold' => TRUE
-				],
-				'alignment' => [
-					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
-				]
-			];
-
-			//
-			// Get worksheet.
-			//
-			$worksheet =
-				$theInfo[ self::kDATASET_OFFSET_READER ]
-					->getActiveSheet();
-
-			//
-			// Get highest row and column.
-			//
-			$end = $worksheet->getHighestRow();
-			$column = PHPExcel_Cell::columnIndexFromString(
-				$worksheet->getHighestColumn()
-			);
-
-			//
-			// Set header.
-			//
-			$worksheet->setCellValueByColumnAndRow(
-				$column,
-				$theInfo[ self::kDATASET_OFFSET_HEADER ],
-				self::kFILE_OFFSET_DUPLICATES );
-
-			//
-			// Iterate duplicate groups.
-			//
-			foreach( $theInfo[ self::kOFFSET_DUPS ] as $id => $data )
-			{
-
-				//
-				// Iterate duplicate rows.
-				//
-				foreach( $data[ 'Duplicate rows' ] as $row )
-				{
-					//
-					// Get cell.
-					//
-					$cell = $worksheet->getCellByColumnAndRow( $column, $row );
-
-					//
-					// Set cell style.
-					//
-					$cell->getStyle()->applyFromArray( $style );
-
-					//
-					// Set cell value.
-					//
-					$cell->setValue( "$id - DUPLICATE" );
-				}
-
-			} // Iterating duplicate groups.
-
-			//
-			// Write file.
-			//
-			$writer = PHPExcel_IOFactory::createWriter(
-					$theInfo[ self::kDATASET_OFFSET_READER ], 'Excel2007'
-			)->save( $this->getDatasetPath( $theInfo ) );
-
-		} // Has duplicates.
-
-	} // signalFileDuplicates.
-
-
-	/*===================================================================================
-	 *	identifyRelatedHouseholds														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Identify related households.</h4>
-	 *
-	 * This method can be used to identify related households, it will return the status
-	 * code: {@link kOFFSET_STATUS_LOADED} id there are no errors, or
-	 * {@link kOFFSET_STATUS_RELATED} if there are.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 * @return string				Status code.
-	 * @throws RuntimeException
-	 */
-	protected function identifyRelatedHouseholds( array &$theInfo,
-												  string $theName )
-	{
-		//
-		// Init local storage.
-		//
-		$collection = $this->Database()->selectCollection( "temp_$theName" );
-		$households = $this->Database()->selectCollection( "temp_".self::kNAME_HOUSEHOLD );
-		$default = [ self::kDATASET_OFFSET_LOCATION, self::kDATASET_OFFSET_TEAM, self::kDATASET_OFFSET_CLUSTER ];
-
-		//
-		// Init selection group.
-		//
-		$temp = [];
-		foreach( $default as $item )
-			$temp[ $theInfo[ $item ] ] = '$' . $theInfo[ $item ];
-		$temp[ $theInfo[ self::kDATASET_OFFSET_HOUSEHOLD ] ]
-			= '$' . $theInfo[ self::kDATASET_OFFSET_HOUSEHOLD ];
-
-		//
-		// Add group.
-		//
-		$pipeline[] = [
-			'$group' => [ '_id' => $temp ]
-		];
-
-		//
-		// Aggregate.
-		//
-		$related =
-			iterator_to_array(
-				$collection->aggregate( $pipeline, [ 'allowDiskUse' => TRUE ] )
-			);
-
-		//
-		// Handle related households.
-		//
-		if( count( $related ) )
-		{
-			//
-			// Iterate duplicate groups.
-			//
-			foreach( $related as $relation )
-			{
-				//
-				// Normalise relation.
-				//
-				$relation = $relation[ '_id' ]->getArrayCopy();
-
-				//
-				// Init query.
-				//
-				$query = [];
-				foreach( $default as $item )
-					$query[ $this->mHouseholdInfo[ $item ] ]
-						= $relation[ $theInfo[ $item ] ];
-				$query[ $this->mHouseholdInfo[ self::kDATASET_OFFSET_IDENTIFIER ] ]
-					= $relation[ $theInfo[ self::kDATASET_OFFSET_HOUSEHOLD ] ];
-
-				//
-				// Check household.
-				//
-				$household = $households->findOne( $query );
-				if( $household !== NULL )
-				{
-					//
-					// Set update commands.
-					//
-					$criteria = [
-						'$set' => [ self::kCOLLECTION_OFFSET_HOUSEHOLD_ID => $household[ '_id' ] ]
-					];
-
-					//
-					// Update documents.
-					//
-					$collection->updateMany( $relation, $criteria );
-
-				} // Found household.
-
-				//
-				// Handle missing household.
-				//
-				else
-				{
-					//
-					// Set status.
-					//
-					$theInfo[ self::kDDICT_STATUS ] = self::kDDICT_STATUS_REFERENCES;
-
-					//
-					// Add missing info.
-					//
-					$index = count( $theInfo[ self::kOFFSET_RELATED ] );
-					$theInfo[ self::kOFFSET_RELATED ][ $index ]
-						= [ 'Household reference' => $relation,
-							'Rows' => [] ];
-
-					//
-					// Select offending rows.
-					//
-					$documents = $collection->find( $relation );
-					foreach( $documents as $document )
-						$theInfo[ self::kOFFSET_RELATED ][ $index ][ 'Rows' ][]
-							= $document[ '_id' ];
-
-				} // Missing household.
-
-			} // Iterating related households.
-
-		} // Has related households.
-
-		return $theInfo[ self::kDDICT_STATUS ];									// ==>
-
-	} // identifyRelatedHouseholds.
-
-
-	/*===================================================================================
-	 *	signalFileRelatedHouseholds														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Signal invalid household references.</h4>
-	 *
-	 * This method can be used to signal invalid household references onto the original
-	 * file.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 */
-	protected function signalFileRelatedHouseholds( array &$theInfo,
-													string $theName )
-	{
-		//
-		// Check if there are duplicates.
-		//
-		if( count( $theInfo[ self::kOFFSET_RELATED ] ) )
-		{
-			//
-			// Init local storage.
-			//
-			$style = [
-				'fill' => [
-					'type' => PHPExcel_Style_Fill::FILL_SOLID,
-					'color' => [ 'argb' => 'FFFF0000' ]
-				],
-				'font' => [
-					'bold' => TRUE
-				],
-				'alignment' => [
-					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
-				]
-			];
-
-			//
-			// Get worksheet.
-			//
-			$worksheet =
-				$theInfo[ self::kDATASET_OFFSET_READER ]
-					->getActiveSheet();
-
-			//
-			// Get highest row and column.
-			//
-			$end = $worksheet->getHighestRow();
-			$column = PHPExcel_Cell::columnIndexFromString(
-				$worksheet->getHighestColumn()
-			);
-
-			//
-			// Set header.
-			//
-			$worksheet->setCellValueByColumnAndRow(
-				$column,
-				$theInfo[ self::kDATASET_OFFSET_HEADER ],
-				self::kFILE_OFFSET_HOUSEHOLD_REF );
-
-			//
-			// Iterate missing related households.
-			//
-			foreach( $theInfo[ self::kOFFSET_RELATED ] as $data )
-			{
-				//
-				// Iterate offending rows.
-				//
-				foreach( $data[ 'Rows' ] as $row )
-				{
-					//
-					// Get cell.
-					//
-					$cell = $worksheet->getCellByColumnAndRow( $column, $row );
-
-					//
-					// Set cell style.
-					//
-					$cell->getStyle()->applyFromArray( $style );
-
-					//
-					// Set cell value.
-					//
-					$cell->setValue( "MISSING HOUSEHOLD" );
-
-				} // Iterating offending rows.
-
-			} // Iterating duplicate groups.
-
-			//
-			// Write file.
-			//
-			$writer = PHPExcel_IOFactory::createWriter(
-				$theInfo[ self::kDATASET_OFFSET_READER ], 'Excel2007'
-			)->save( $this->getDatasetPath( $theInfo ) );
-
-		} // Has missing households.
-
-	} // signalFileRelatedHouseholds.
-
-
-	/*===================================================================================
-	 *	identifyRelatedMothers															*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Identify related mothers.</h4>
-	 *
-	 * This method can be used to identify related mothers, it will return the status
-	 * code: {@link kOFFSET_STATUS_LOADED} id there are no errors, or
-	 * {@link kOFFSET_STATUS_RELATED} if there are.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 * @return string				Status code.
-	 * @throws RuntimeException
-	 */
-	protected function identifyRelatedMothers( array &$theInfo,
-											   string $theName )
-	{
-		//
-		// Init local storage.
-		//
-		$collection = $this->Database()->selectCollection( "temp_$theName" );
-		$mothers = $this->Database()->selectCollection( "temp_".self::kNAME_MOTHER );
-		$default = [
-			self::kDATASET_OFFSET_LOCATION,
-			self::kDATASET_OFFSET_TEAM,
-			self::kDATASET_OFFSET_CLUSTER,
-			self::kDATASET_OFFSET_HOUSEHOLD
-		];
-
-		//
-		// Init selection group.
-		//
-		$temp = [];
-		foreach( $default as $item )
-			$temp[ $theInfo[ $item ] ] = '$' . $theInfo[ $item ];
-		$temp[ $theInfo[ self::kDATASET_OFFSET_MOTHER ] ]
-			= '$' . $theInfo[ self::kDATASET_OFFSET_MOTHER ];
-
-		//
-		// Add group.
-		//
-		$pipeline[] = [
-			'$group' => [ '_id' => $temp ]
-		];
-
-		//
-		// Aggregate.
-		//
-		$related =
-			iterator_to_array(
-				$collection->aggregate( $pipeline, [ 'allowDiskUse' => TRUE ] )
-			);
-
-		//
-		// Handle related mothers.
-		//
-		if( count( $related ) )
-		{
-			//
-			// Iterate duplicate groups.
-			//
-			foreach( $related as $relation )
-			{
-				//
-				// Normalise relation.
-				//
-				$relation = $relation[ '_id' ]->getArrayCopy();
-
-				//
-				// Init query.
-				//
-				$query = [];
-				foreach( $default as $item )
-					$query[ $this->mMotherInfo[ $item ] ]
-						= $relation[ $theInfo[ $item ] ];
-				$query[ $this->mMotherInfo[ self::kDATASET_OFFSET_IDENTIFIER ] ]
-					= $relation[ $theInfo[ self::kDATASET_OFFSET_MOTHER ] ];
-
-				//
-				// Check household.
-				//
-				$mother = $mothers->findOne( $query );
-				if( $mother !== NULL )
-				{
-					//
-					// Set update commands.
-					//
-					$criteria = [
-						'$set' => [ self::kCOLLECTION_OFFSET_MOTHER_ID => $mother[ '_id' ] ]
-					];
-
-					//
-					// Update documents.
-					//
-					$collection->updateMany( $relation, $criteria );
-
-				} // Found household.
-
-				//
-				// Handle missing mother.
-				//
-				else
-				{
-					//
-					// Set status.
-					//
-					$theInfo[ self::kDDICT_STATUS ] = self::kDDICT_STATUS_REFERENCES;
-
-					//
-					// Add missing info.
-					//
-					$index = count( $theInfo[ self::kOFFSET_RELATED ] );
-					$theInfo[ self::kOFFSET_RELATED ][ $index ]
-						= [ 'Mother reference' => $relation,
-							'Rows' => [] ];
-
-					//
-					// Select offending rows.
-					//
-					$documents = $collection->find( $relation );
-					foreach( $documents as $document )
-						$theInfo[ self::kOFFSET_RELATED ][ $index ][ 'Rows' ][]
-							= $document[ '_id' ];
-
-				} // Missing mother.
-
-			} // Iterating related mothers.
-
-		} // Has related mother.
-
-		return $theInfo[ self::kDDICT_STATUS ];									// ==>
-
-	} // identifyRelatedMothers.
-
-
-	/*===================================================================================
-	 *	signalFileRelatedMothers														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Signal invalid mother references.</h4>
-	 *
-	 * This method can be used to signal invalid mother references onto the original
-	 * file.
-	 *
-	 * @param array				   &$theInfo			Dataset info record.
-	 * @param string				$theName			Collection base name.
-	 */
-	protected function signalFileRelatedMothers( array &$theInfo,
-												 string $theName )
-	{
-		//
-		// Check if there are invalid references.
-		//
-		if( count( $theInfo[ self::kOFFSET_RELATED ] ) )
-		{
-			//
-			// Init local storage.
-			//
-			$style = [
-				'fill' => [
-					'type' => PHPExcel_Style_Fill::FILL_SOLID,
-					'color' => [ 'argb' => 'FFFF0000' ]
-				],
-				'font' => [
-					'bold' => TRUE
-				],
-				'alignment' => [
-					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
-				]
-			];
-
-			//
-			// Get worksheet.
-			//
-			$worksheet =
-				$theInfo[ self::kDATASET_OFFSET_READER ]
-					->getActiveSheet();
-
-			//
-			// Get highest row and column.
-			//
-			$end = $worksheet->getHighestRow();
-			$column = PHPExcel_Cell::columnIndexFromString(
-				$worksheet->getHighestColumn()
-			);
-
-			//
-			// Set header.
-			//
-			$worksheet->setCellValueByColumnAndRow(
-				$column,
-				$theInfo[ self::kDATASET_OFFSET_HEADER ],
-				self::kFILE_OFFSET_MOTHER_REF );
-
-			//
-			// Iterate missing related households.
-			//
-			foreach( $theInfo[ self::kOFFSET_RELATED ] as $data )
-			{
-				//
-				// Iterate offending rows.
-				//
-				foreach( $data[ 'Rows' ] as $row )
-				{
-					//
-					// Get cell.
-					//
-					$cell = $worksheet->getCellByColumnAndRow( $column, $row );
-
-					//
-					// Set cell style.
-					//
-					$cell->getStyle()->applyFromArray( $style );
-
-					//
-					// Set cell value.
-					//
-					$cell->setValue( "MISSING MOTHER" );
-
-				} // Iterating offending rows.
-
-			} // Iterating duplicate groups.
-
-			//
-			// Write file.
-			//
-			$writer = PHPExcel_IOFactory::createWriter(
-				$theInfo[ self::kDATASET_OFFSET_READER ], 'Excel2007'
-			)->save( $this->getDatasetPath( $theInfo ) );
-
-		} // Has missing mothers.
-
-	} // signalFileRelatedMothers.
-
-
-	/*===================================================================================
-	 *	loadFinalHouseholdCollection													*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Load final household collection.</h4>
-	 *
-	 * This method can be used to load the final household dataset.
-	 */
-	protected function loadFinalHouseholdCollection()
-	{
-		//
-		// Init collections.
-		//
-		$this->mHousehold->drop();
-		$collection =
-			$this->Database()->selectCollection( "temp_" . self::kNAME_HOUSEHOLD );
-
-		//
-		// Init default fields.
-		//
-		$defaults = [
-			$this->mHouseholdInfo[ self::kDATASET_OFFSET_DATE ]
-				=> self::kCOLLECTION_OFFSET_DATE,
-			$this->mHouseholdInfo[ self::kDATASET_OFFSET_LOCATION ]
-				=> self::kCOLLECTION_OFFSET_LOCATION,
-			$this->mHouseholdInfo[ self::kDATASET_OFFSET_TEAM ]
-				=> self::kCOLLECTION_OFFSET_TEAM,
-			$this->mHouseholdInfo[ self::kDATASET_OFFSET_CLUSTER ]
-				=> self::kCOLLECTION_OFFSET_CLUSTER,
-			$this->mHouseholdInfo[ self::kDATASET_OFFSET_IDENTIFIER ]
-				=> self::kCOLLECTION_OFFSET_IDENTIFIER
-		];
-
-		//
-		// Init other fields.
-		//
-		$other =
-			array_diff(
-				array_keys( $this->mHouseholdInfo[ self::kOFFSET_DDICT ] ),
-				array_keys( $defaults )
-			);
-
-		//
-		// Iterate temporary collection.
-		//
-		$cursor = $collection->find();
-		foreach( $cursor as $record )
-		{
-			//
-			// Init document.
-			//
-			$document = [ '_id' => $record[ '_id' ] ];
-
-			//
-			// Load default fields.
-			//
-			foreach( $defaults as $name => $default )
-				$document[ $default ] = $record[ $name ];
-
-			//
-			// Load other fields.
-			//
-			foreach( $other as $name )
-			{
-				if( array_key_exists( $name, $record ) )
-					$document[ $name ] = $record[ $name ];
-			}
-
-			//
-			// Save record.
-			//
-			$this->mHousehold->insertOne( $document );
-
-		} // Iterating temporary collection.
-
-	} // loadFinalHouseholdCollection.
-
-
-	/*===================================================================================
-	 *	loadFinalMotherCollection														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Load final mother collection.</h4>
-	 *
-	 * This method can be used to load the final mother dataset.
-	 */
-	protected function loadFinalMotherCollection()
-	{
-		//
-		// Init collections.
-		//
-		$this->mMother->drop();
-		$collection =
-			$this->Database()->selectCollection( "temp_" . self::kNAME_MOTHER );
-
-		//
-		// Init default fields.
-		//
-		$defaults = [
-			$this->mMotherInfo[ self::kDATASET_OFFSET_DATE ] => self::kCOLLECTION_OFFSET_DATE,
-			$this->mMotherInfo[ self::kDATASET_OFFSET_LOCATION ] => self::kCOLLECTION_OFFSET_LOCATION,
-			$this->mMotherInfo[ self::kDATASET_OFFSET_TEAM ] => self::kCOLLECTION_OFFSET_TEAM,
-			$this->mMotherInfo[ self::kDATASET_OFFSET_CLUSTER ] => self::kCOLLECTION_OFFSET_CLUSTER,
-			$this->mMotherInfo[ self::kDATASET_OFFSET_HOUSEHOLD ] => self::kCOLLECTION_OFFSET_HOUSEHOLD,
-			$this->mMotherInfo[ self::kDATASET_OFFSET_IDENTIFIER ] => self::kCOLLECTION_OFFSET_IDENTIFIER,
-			self::kCOLLECTION_OFFSET_HOUSEHOLD_ID => self::kCOLLECTION_OFFSET_HOUSEHOLD_ID
-		];
-
-		//
-		// Init other fields.
-		//
-		$other =
-			array_diff(
-				array_keys( $this->mMotherInfo[ self::kOFFSET_DDICT ] ),
-				array_keys( $defaults )
-			);
-
-		//
-		// Iterate temporary collection.
-		//
-		$cursor = $collection->find();
-		foreach( $cursor as $record )
-		{
-			//
-			// Init document.
-			//
-			$document = [ '_id' => $record[ '_id' ] ];
-
-			//
-			// Load default fields.
-			//
-			foreach( $defaults as $name => $default )
-				$document[ $default ] = $record[ $name ];
-
-			//
-			// Load other fields.
-			//
-			foreach( $other as $name )
-			{
-				if( array_key_exists( $name, $record ) )
-					$document[ $name ] = $record[ $name ];
-			}
-
-			//
-			// Save record.
-			//
-			$this->mMother->insertOne( $document );
-
-		} // Iterating temporary collection.
-
-	} // loadFinalMotherCollection.
-
-
-	/*===================================================================================
-	 *	loadFinalChildCollection														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Load final child collection.</h4>
-	 *
-	 * This method can be used to load the final child dataset.
-	 */
-	protected function loadFinalChildCollection()
-	{
-		//
-		// Init collections.
-		//
-		$this->mChild->drop();
-		$collection =
-			$this->Database()->selectCollection( "temp_" . self::kNAME_CHILD );
-
-		//
-		// Init default fields.
-		//
-		$defaults = [
-			$this->mChildInfo[ self::kDATASET_OFFSET_DATE ] => self::kCOLLECTION_OFFSET_DATE,
-			$this->mChildInfo[ self::kDATASET_OFFSET_LOCATION ] => self::kCOLLECTION_OFFSET_LOCATION,
-			$this->mChildInfo[ self::kDATASET_OFFSET_TEAM ] => self::kCOLLECTION_OFFSET_TEAM,
-			$this->mChildInfo[ self::kDATASET_OFFSET_CLUSTER ] => self::kCOLLECTION_OFFSET_CLUSTER,
-			$this->mChildInfo[ self::kDATASET_OFFSET_HOUSEHOLD ] => self::kCOLLECTION_OFFSET_HOUSEHOLD,
-			$this->mChildInfo[ self::kDATASET_OFFSET_MOTHER ] => self::kCOLLECTION_OFFSET_MOTHER,
-			$this->mChildInfo[ self::kDATASET_OFFSET_IDENTIFIER ] => self::kCOLLECTION_OFFSET_IDENTIFIER,
-			self::kCOLLECTION_OFFSET_HOUSEHOLD_ID => self::kCOLLECTION_OFFSET_HOUSEHOLD_ID,
-			self::kCOLLECTION_OFFSET_MOTHER_ID => self::kCOLLECTION_OFFSET_MOTHER_ID
-		];
-
-		//
-		// Init other fields.
-		//
-		$other =
-			array_diff(
-				array_keys( $this->mChildInfo[ self::kOFFSET_DDICT ] ),
-				array_keys( $defaults )
-			);
-
-		//
-		// Iterate temporary collection.
-		//
-		$cursor = $collection->find();
-		foreach( $cursor as $record )
-		{
-			//
-			// Init document.
-			//
-			$document = [ '_id' => $record[ '_id' ] ];
-
-			//
-			// Load default fields.
-			//
-			foreach( $defaults as $name => $default )
-				$document[ $default ] = $record[ $name ];
-
-			//
-			// Load other fields.
-			//
-			foreach( $other as $name )
-			{
-				if( array_key_exists( $name, $record ) )
-					$document[ $name ] = $record[ $name ];
-			}
-
-			//
-			// Save record.
-			//
-			$this->mChild->insertOne( $document );
-
-		} // Iterating temporary collection.
-
-	} // loadFinalChildCollection.
-
-
-	/*===================================================================================
-	 *	loadFinalSurveyCollection														*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Load final survey collection.</h4>
-	 *
-	 * This method can be used to merge the child, mother and household surveys into the
-	 * final survey collection.
-	 */
-	protected function loadFinalSurveyCollection()
-	{
-		//
-		// Init collections.
-		//
-		$this->mSurvey->drop();
-
-		//
-		// Init default fields.
-		//
-		$defaults = [
-			self::kCOLLECTION_OFFSET_DATE,
-			self::kCOLLECTION_OFFSET_LOCATION,
-			self::kCOLLECTION_OFFSET_TEAM,
-			self::kCOLLECTION_OFFSET_CLUSTER,
-			self::kCOLLECTION_OFFSET_HOUSEHOLD,
-			self::kCOLLECTION_OFFSET_MOTHER,
-			self::kCOLLECTION_OFFSET_IDENTIFIER
-		];
-
-		//
-		// Init other fields.
-		//
-		$child_fields = $this->getChildFields();
-		$mother_fields = $this->getMotherFields();
-		$household_fields = $this->getHouseholdFields();
-
-		//
-		// Iterate children.
-		//
-		$child_cursor = $this->mChild->find();
-		foreach( $child_cursor as $child )
-		{
-			//
-			// Init document.
-			//
-			$document = [ '_id' => $child[ '_id' ] ];
-
-			//
-			// Load default fields.
-			//
-			foreach( $defaults as $name => $default )
-				$document[ $default ] = $child[ $default ];
-
-			//
-			// Load child fields.
-			//
-			foreach( $child_fields as $name )
-			{
-				if( array_key_exists( $name, $child ) )
-					$document[ $name ] = $child[ $name ];
-			}
-
-			//
-			// Get mother.
-			//
-			$mother =
-				$this->mMother->findOne(
-					[ '_id' => $child[ self::kCOLLECTION_OFFSET_MOTHER_ID ] ] );
-			if( $mother !== NULL )
-			{
-				//
-				// Set mother ID.
-				//
-				$document[ self::kCOLLECTION_OFFSET_MOTHER_ID ] = $child[ self::kCOLLECTION_OFFSET_MOTHER_ID ];
-
-				//
-				// Load mother fields.
-				//
-				foreach( $mother_fields as $name )
-				{
-					if( array_key_exists( $name, $mother ) )
-						$document[ $name ] = $mother[ $name ];
-				}
-
-				//
-				// Get household.
-				//
-				$household =
-					$this->mHousehold->findOne(
-						[ '_id' => $child[ self::kCOLLECTION_OFFSET_HOUSEHOLD_ID ] ] );
-				if( $household !== NULL )
-				{
-					//
-					// Set household ID.
-					//
-					$document[ self::kCOLLECTION_OFFSET_HOUSEHOLD_ID ]
-						= $child[ self::kCOLLECTION_OFFSET_HOUSEHOLD_ID ];
-
-					//
-					// Load household fields.
-					//
-					foreach( $household_fields as $name )
-					{
-						if( array_key_exists( $name, $household ) )
-							$document[ $name ] = $household[ $name ];
-					}
-
-				} // Found household.
-
-				else
-					throw new InvalidArgumentException(
-						"Missing household with ID [" .
-						$child[ self::kCOLLECTION_OFFSET_HOUSEHOLD_ID ] .
-						"]." );													// !@! ==>
-
-			} // Found mother.
-
-			else
-				throw new InvalidArgumentException(
-					"Missing mother with ID [" .
-					$child[ self::kCOLLECTION_OFFSET_MOTHER_ID ] .
-					"]." );														// !@! ==>
-
-			//
-			// Save record.
-			//
-			$this->mSurvey->insertOne( $document );
-
-		} // Iterating children.
-
-	} // loadFinalSurveyCollection.
-
-
-
-/*=======================================================================================
- *																						*
- *									PROTECTED UTILITIES									*
- *																						*
- *======================================================================================*/
-
-
-
-	/*===================================================================================
-	 *	getChildFields																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get significant child fields.</h4>
-	 *
-	 * This method can be used to retrieve the list of child collection fields excluding
-	 * default fields.
-	 *
-	 * The method assumes all required information is loaded into the object.
-	 *
-	 * @return array
-	 */
-	protected function getChildFields()
-	{
-		//
-		// Init default fields.
-		//
-		$defaults = [
-			self::kCOLLECTION_OFFSET_DATE,
-			self::kCOLLECTION_OFFSET_LOCATION,
-			self::kCOLLECTION_OFFSET_TEAM,
-			self::kCOLLECTION_OFFSET_CLUSTER,
-			self::kCOLLECTION_OFFSET_HOUSEHOLD,
-			self::kCOLLECTION_OFFSET_MOTHER,
-			self::kCOLLECTION_OFFSET_IDENTIFIER
-		];
-
-		return
-			array_diff(
-				array_keys( $this->mChildInfo[ self::kOFFSET_DDICT ] ),
-				$defaults,
-				[	$this->mChildInfo[ self::kDATASET_OFFSET_DATE ],
-					$this->mChildInfo[ self::kDATASET_OFFSET_LOCATION ],
-					$this->mChildInfo[ self::kDATASET_OFFSET_TEAM ],
-					$this->mChildInfo[ self::kDATASET_OFFSET_CLUSTER ],
-					$this->mChildInfo[ self::kDATASET_OFFSET_HOUSEHOLD ],
-					$this->mChildInfo[ self::kDATASET_OFFSET_MOTHER ],
-					$this->mChildInfo[ self::kDATASET_OFFSET_IDENTIFIER ] ],
-				[ self::kCOLLECTION_OFFSET_HOUSEHOLD_ID, self::kCOLLECTION_OFFSET_MOTHER_ID ]
-			);																		// ==>
-
-	} // getChildFields.
-
-
-	/*===================================================================================
-	 *	getMotherFields																	*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get significant mother fields.</h4>
-	 *
-	 * This method can be used to retrieve the list of mother collection fields excluding
-	 * default fields.
-	 *
-	 * The method assumes all required information is loaded into the object.
-	 *
-	 * @return array
-	 */
-	protected function getMotherFields()
-	{
-		//
-		// Init default fields.
-		//
-		$defaults = [
-			self::kCOLLECTION_OFFSET_DATE,
-			self::kCOLLECTION_OFFSET_LOCATION,
-			self::kCOLLECTION_OFFSET_TEAM,
-			self::kCOLLECTION_OFFSET_CLUSTER,
-			self::kCOLLECTION_OFFSET_HOUSEHOLD,
-			self::kCOLLECTION_OFFSET_IDENTIFIER
-		];
-
-		return
-			array_diff(
-				array_keys( $this->mMotherInfo[ self::kOFFSET_DDICT ] ),
-				$defaults,
-				[	$this->mMotherInfo[ self::kDATASET_OFFSET_DATE ],
-					$this->mMotherInfo[ self::kDATASET_OFFSET_LOCATION ],
-					$this->mMotherInfo[ self::kDATASET_OFFSET_TEAM ],
-					$this->mMotherInfo[ self::kDATASET_OFFSET_CLUSTER ],
-					$this->mMotherInfo[ self::kDATASET_OFFSET_HOUSEHOLD ],
-					$this->mMotherInfo[ self::kDATASET_OFFSET_IDENTIFIER ] ],
-				[ self::kCOLLECTION_OFFSET_HOUSEHOLD_ID ]
-			);																		// ==>
-
-	} // getMotherFields.
-
-
-	/*===================================================================================
-	 *	getHouseholdFields																*
-	 *==================================================================================*/
-
-	/**
-	 * <h4>Get significant mother fields.</h4>
-	 *
-	 * This method can be used to retrieve the list of mother collection fields excluding
-	 * default fields.
-	 *
-	 * The method assumes all required information is loaded into the object.
-	 *
-	 * @return array
-	 */
-	protected function getHouseholdFields()
-	{
-		//
-		// Init default fields.
-		//
-		$defaults = [
-			self::kCOLLECTION_OFFSET_DATE,
-			self::kCOLLECTION_OFFSET_LOCATION,
-			self::kCOLLECTION_OFFSET_TEAM,
-			self::kCOLLECTION_OFFSET_CLUSTER,
-			self::kCOLLECTION_OFFSET_IDENTIFIER
-		];
-
-		return
-			array_diff(
-				array_keys( $this->mHouseholdInfo[ self::kOFFSET_DDICT ] ),
-				$defaults,
-				[	$this->mHouseholdInfo[ self::kDATASET_OFFSET_DATE ],
-					$this->mHouseholdInfo[ self::kDATASET_OFFSET_LOCATION ],
-					$this->mHouseholdInfo[ self::kDATASET_OFFSET_TEAM ],
-					$this->mHouseholdInfo[ self::kDATASET_OFFSET_CLUSTER ],
-					$this->mHouseholdInfo[ self::kDATASET_OFFSET_IDENTIFIER ] ]
-			);																		// ==>
-
-	} // getHouseholdFields.
+			case self::kDDICT_CHILD_ID:
+				return
+					$this->Database()
+						->selectCollection(
+							self::kNAME_PREFIX_ORIGINAL . self::kNAME_CHILD
+						);															// ==>
+
+			case self::kDDICT_MOTHER_ID:
+				return
+					$this->Database()
+						->selectCollection(
+							self::kNAME_PREFIX_ORIGINAL . self::kNAME_MOTHER
+						);															// ==>
+
+			case self::kDDICT_HOUSEHOLD_ID:
+				return
+					$this->Database()
+						->selectCollection(
+							self::kNAME_PREFIX_ORIGINAL . self::kNAME_HOUSEHOLD
+						);															// ==>
+		}
+
+		throw new InvalidArgumentException(
+			"Invalid dataset selector [$theDataset]." );						// !@! ==>
+
+	} // originalCollection.
 
 
 

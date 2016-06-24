@@ -28,7 +28,6 @@ require_once( kPATH_LIBRARY_ROOT . "/src/PHPLib/SMARTLoader.php" );
 //
 echo( '$test = new SMARTLoader();' . "\n" );
 $test = new SMARTLoader();
-print_r( $test );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -272,6 +271,100 @@ echo( "\n" );
 echo( '$result = $test->ChildDatasetMotherOffset( "MOTHER" );' . "\n" );
 $result = $test->ChildDatasetMotherOffset( "MOTHER" );
 var_dump( $result );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Load child dataset.
+//
+echo( '$result = $test->LoadChildDataset();' . "\n" );
+$result = $test->LoadChildDataset();
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Get child header.
+//
+echo( '$result = $test->LoadChildDatasetHeader();' . "\n" );
+$result = $test->LoadChildDatasetHeader();
+var_dump( $result );
+if( $result & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
+	print_r( $test->ChildDatasetDuplicateHeaderCoumns() );
+print_r( $test->ChildDatasetHeaderCoumns() );
+
+echo( "\n" );
+
+//
+// Get child fields.
+//
+echo( '$result = $test->LoadChildDatasetFields();' . "\n" );
+$result = $test->LoadChildDatasetFields();
+var_dump( $result );
+print_r( $test->ChildDatasetFields() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Load mother dataset.
+//
+echo( '$result = $test->LoadMotherDataset();' . "\n" );
+$result = $test->LoadMotherDataset();
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Get mother header.
+//
+echo( '$result = $test->LoadMotherDatasetHeader();' . "\n" );
+$result = $test->LoadMotherDatasetHeader();
+var_dump( $result );
+if( $result & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
+	print_r( $test->motherDatasetDuplicateHeaderCoumns() );
+print_r( $test->motherDatasetHeaderCoumns() );
+
+echo( "\n" );
+
+//
+// Get mother fields.
+//
+echo( '$result = $test->LoadMotherDatasetFields();' . "\n" );
+$result = $test->LoadMotherDatasetFields();
+var_dump( $result );
+print_r( $test->motherDatasetFields() );
+
+echo( "\n====================================================================================\n\n" );
+
+//
+// Load household dataset.
+//
+echo( '$result = $test->LoadHouseholdDataset();' . "\n" );
+$result = $test->LoadHouseholdDataset();
+var_dump( $result );
+
+echo( "\n" );
+
+//
+// Get household header.
+//
+echo( '$result = $test->LoadHouseholdDatasetHeader();' . "\n" );
+$result = $test->LoadHouseholdDatasetHeader();
+var_dump( $result );
+if( $result & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
+	print_r( $test->HouseholdDatasetDuplicateHeaderCoumns() );
+print_r( $test->HouseholdDatasetHeaderCoumns() );
+
+echo( "\n" );
+
+//
+// Get household fields.
+//
+echo( '$result = $test->LoadHouseholdDatasetFields();' . "\n" );
+$result = $test->LoadHouseholdDatasetFields();
+var_dump( $result );
+print_r( $test->HouseholdDatasetFields() );
+
 exit;
 
 echo( "\n====================================================================================\n\n" );
