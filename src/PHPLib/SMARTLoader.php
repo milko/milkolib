@@ -51,7 +51,7 @@ use MongoDB\Collection;
  *	@version	1.00
  *	@since		17/06/2016
  */
-class SMARTLoader extends Container
+class SMARTLoader
 {
 	/**
 	 * <h4>Default client DSN.</h4>
