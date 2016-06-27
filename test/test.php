@@ -1,13 +1,15 @@
 <?php
 
 /**
- * Document object test suite.
+ * Test suite.
  *
  *
  *	@author		Milko A. Škofič <skofic@gmail.com>
  *	@version	1.00
  *	@since		17/03/2016
  */
+
+
 
 //
 // Global definitions.

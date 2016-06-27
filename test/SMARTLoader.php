@@ -26,8 +26,8 @@ require_once( kPATH_LIBRARY_ROOT . "/src/PHPLib/SMARTLoader.php" );
 //
 // Instantiate object.
 //
-echo( '$test = new SMARTLoader();' . "\n" );
-$test = new SMARTLoader();
+echo( '$test = new SMARTLoader( "SMART" );' . "\n" );
+$test = new SMARTLoader( "SMART" );
 
 echo( "\n====================================================================================\n\n" );
 
@@ -289,19 +289,46 @@ echo( "\n" );
 echo( '$result = $test->LoadChildDatasetHeader();' . "\n" );
 $result = $test->LoadChildDatasetHeader();
 var_dump( $result );
-if( $result & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
-	print_r( $test->ChildDatasetDuplicateHeaderCoumns() );
-print_r( $test->ChildDatasetHeaderCoumns() );
 
 echo( "\n" );
 
 //
 // Get child fields.
 //
-echo( '$result = $test->LoadChildDatasetFields();' . "\n" );
-$result = $test->LoadChildDatasetFields();
+echo( '$test->LoadChildDatasetFields();' . "\n" );
+$test->LoadChildDatasetFields();
+
+echo( "\n" );
+
+//
+// Get child data.
+//
+echo( '$test->LoadChildDatasetData();' . "\n" );
+$test->LoadChildDatasetData();
+
+echo( "\n" );
+
+//
+// Get child duplicates.
+//
+echo( '$result = $test->CheckChildDatasetDuplicates();' . "\n" );
+$result = $test->CheckChildDatasetDuplicates();
 var_dump( $result );
-print_r( $test->ChildDatasetFields() );
+
+//
+// Show status.
+//
+echo( "\nSTATUS:\n" );
+if( $test->ChildDatasetStatus() & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
+{
+	echo( "==> Has duplicate header columns:\n" );
+	print_r( $test->ChildDatasetDuplicateHeaderCoumns() );
+}
+if( $test->ChildDatasetStatus() & SMARTLoader::kSTATUS_DUPLICATE_ENTRIES )
+{
+	echo( "==> Has duplicate entry records:\n" );
+	print_r( $test->ChildDatasetDuplicateEntries() );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -320,19 +347,46 @@ echo( "\n" );
 echo( '$result = $test->LoadMotherDatasetHeader();' . "\n" );
 $result = $test->LoadMotherDatasetHeader();
 var_dump( $result );
-if( $result & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
-	print_r( $test->motherDatasetDuplicateHeaderCoumns() );
-print_r( $test->motherDatasetHeaderCoumns() );
 
 echo( "\n" );
 
 //
 // Get mother fields.
 //
-echo( '$result = $test->LoadMotherDatasetFields();' . "\n" );
-$result = $test->LoadMotherDatasetFields();
+echo( '$test->LoadMotherDatasetFields();' . "\n" );
+$test->LoadMotherDatasetFields();
+
+echo( "\n" );
+
+//
+// Get mother data.
+//
+echo( '$test->LoadMotherDatasetData();' . "\n" );
+$test->LoadMotherDatasetData();
+
+echo( "\n" );
+
+//
+// Get mother duplicates.
+//
+echo( '$result = $test->CheckMotherDatasetDuplicates();' . "\n" );
+$result = $test->CheckMotherDatasetDuplicates();
 var_dump( $result );
-print_r( $test->motherDatasetFields() );
+
+//
+// Show status.
+//
+echo( "\nSTATUS:\n" );
+if( $test->MotherDatasetStatus() & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
+{
+	echo( "==> Has duplicate header columns:\n" );
+	print_r( $test->MotherDatasetDuplicateHeaderCoumns() );
+}
+if( $test->MotherDatasetStatus() & SMARTLoader::kSTATUS_DUPLICATE_ENTRIES )
+{
+	echo( "==> Has duplicate entry records:\n" );
+	print_r( $test->MotherDatasetDuplicateEntries() );
+}
 
 echo( "\n====================================================================================\n\n" );
 
@@ -351,140 +405,47 @@ echo( "\n" );
 echo( '$result = $test->LoadHouseholdDatasetHeader();' . "\n" );
 $result = $test->LoadHouseholdDatasetHeader();
 var_dump( $result );
-if( $result & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
-	print_r( $test->HouseholdDatasetDuplicateHeaderCoumns() );
-print_r( $test->HouseholdDatasetHeaderCoumns() );
 
 echo( "\n" );
 
 //
 // Get household fields.
 //
-echo( '$result = $test->LoadHouseholdDatasetFields();' . "\n" );
-$result = $test->LoadHouseholdDatasetFields();
+echo( '$test->LoadHouseholdDatasetFields();' . "\n" );
+$test->LoadHouseholdDatasetFields();
 var_dump( $result );
-print_r( $test->HouseholdDatasetFields() );
 
-exit;
-
-echo( "\n====================================================================================\n\n" );
+echo( "\n" );
 
 //
-// Set household dataset.
+// Get household data.
 //
-echo( '$result = $test->SetHouseholdDataset( __DIR__ . "/SMART/HOUSEHOLD.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MENAGE" );' . "\n" );
-$result = $test->SetHouseholdDataset( __DIR__ . "/SMART/HOUSEHOLD.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MENAGE" );
+echo( '$test->LoadHouseholdDatasetData();' . "\n" );
+$test->LoadHouseholdDatasetData();
+
+echo( "\n" );
 
 //
-// Set mother dataset.
+// Get household duplicates.
 //
-echo( '$result = $test->SetMotherDataset( __DIR__ . "/SMART/MOTHER.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MERE", "MENAGE" );' . "\n" );
-$result = $test->SetMotherDataset( __DIR__ . "/SMART/MOTHER.xlsx", 3, 4, "DATE", "COMMUNE", "EQUIPE", "GRAPPE", "MERE", "MENAGE" );
-
-//
-// Set child dataset.
-//
-echo( '$result = $test->SetChildDataset( __DIR__ . "/SMART/CHILD.xlsx", 2, 3, "SURVDATE", "COMMUNE", "TEAM", "CLUSTER", "ID", "HH", "MOTHER" );' . "\n" );
-$result = $test->SetChildDataset( __DIR__ . "/SMART/CHILD.xlsx", 2, 3, "SURVDATE", "COMMUNE", "TEAM", "CLUSTER", "ID", "HH", "MOTHER" );
-
-echo( "\n====================================================================================\n\n" );
-
-//
-// Load household dataset.
-//
-echo( '$result = $test->LoadHouseholdDataset();' . "\n" );
-$result = $test->LoadHouseholdDataset();
+echo( '$result = $test->CheckHouseholdDatasetDuplicates();' . "\n" );
+$result = $test->CheckHouseholdDatasetDuplicates();
 var_dump( $result );
-switch( $test->HouseholdStatus() )
+
+//
+// Show status.
+//
+echo( "\nSTATUS:\n" );
+if( $test->HouseholdDatasetStatus() & SMARTLoader::kSTATUS_DUPLICATE_COLUMNS )
 {
-	case SMARTLoader::kDDICT_STATUS_IDLE:
-		echo( "==> Dataset is empty\n" );
-		break;
-
-	case SMARTLoader::kDDICT_STATUS_LOADED:
-		echo( "==> Dataset loaded.\n" );
-		break;
-
-	default:
-		if( count( $tmp = $test->HouseholdDuplicates() ) )
-		{
-			echo( "==> Dataset has duplicates:\n" );
-			print_r( $tmp );
-		}
-		break;
+	echo( "==> Has duplicate header columns:\n" );
+	print_r( $test->HouseholdDatasetDuplicateHeaderCoumns() );
 }
-
-echo( "\n====================================================================================\n\n" );
-
-//
-// Load mother dataset.
-//
-echo( '$result = $test->LoadMotherDataset();' . "\n" );
-$result = $test->LoadMotherDataset();
-var_dump( $result );
-switch( $test->MotherStatus() )
+if( $test->HouseholdDatasetStatus() & SMARTLoader::kSTATUS_DUPLICATE_ENTRIES )
 {
-	case SMARTLoader::kDDICT_STATUS_IDLE:
-		echo( "==> Dataset is empty\n" );
-		break;
-
-	case SMARTLoader::kDDICT_STATUS_LOADED:
-		echo( "==> Dataset loaded.\n" );
-		break;
-
-	default:
-		if( count( $tmp = $test->MotherDuplicates() ) )
-		{
-			echo( "==> Dataset has duplicates:\n" );
-			print_r( $tmp );
-		}
-		if( count( $tmp = $test->MotherRelated() ) )
-		{
-			echo( "==> Dataset has invalid references:\n" );
-			print_r( $tmp );
-		}
-		break;
+	echo( "==> Has duplicate entry records:\n" );
+	print_r( $test->HouseholdDatasetDuplicateEntries() );
 }
-
-echo( "\n====================================================================================\n\n" );
-
-//
-// Load child dataset.
-//
-echo( '$result = $test->LoadChildDataset();' . "\n" );
-$result = $test->LoadChildDataset();
-var_dump( $result );
-switch( $test->ChildStatus() )
-{
-	case SMARTLoader::kDDICT_STATUS_IDLE:
-		echo( "==> Dataset is empty\n" );
-		break;
-
-	case SMARTLoader::kDDICT_STATUS_LOADED:
-		echo( "==> Dataset loaded.\n" );
-		break;
-
-	default:
-		if( count( $tmp = $test->ChildDuplicates() ) )
-		{
-			echo( "==> Dataset has duplicates:\n" );
-			print_r( $tmp );
-		}
-		if( count( $tmp = $test->ChildRelated() ) )
-		{
-			echo( "==> Dataset has invalid references:\n" );
-			print_r( $tmp );
-		}
-		break;
-}
-
-echo( "\n====================================================================================\n\n" );
-
-//
-// Merge datasets.
-//
-echo( '$test->CreateSurveyCollection();' . "\n" );
-$test->CreateSurveyCollection();
 
 
 ?>
